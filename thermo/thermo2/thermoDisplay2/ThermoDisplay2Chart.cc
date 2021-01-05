@@ -424,6 +424,76 @@ void ThermoDisplay2LinPressureChart::leftYAxisDoubleClicked()
   axisY_->configure();
 }
 
+ThermoDisplay2LinPressureDeltaPressureChart::ThermoDisplay2LinPressureDeltaPressureChart()
+  : ThermoDisplay2Chart()
+{
+  axisPressureAxis_ = new ThermoDisplay2ValueAxis();
+  axisPressureAxis_->setLabelFormat("%.2f");
+  axisPressureAxis_->setTitleText("Pressure [bar]");
+  addAxis(axisPressureAxis_, Qt::AlignLeft);
+
+  connect(axisPressureAxis_, SIGNAL(axisModeChanged()),
+          this, SLOT(refreshPressureAxis()));
+
+  axisDeltaPressureAxis_ = new ThermoDisplay2ValueAxis();
+  axisDeltaPressureAxis_->setLabelFormat("%.2f");
+  axisDeltaPressureAxis_->setTitleText("Pressure Difference [bar]");
+  addAxis(axisDeltaPressureAxis_, Qt::AlignRight);
+
+  connect(axisDeltaPressureAxis_, SIGNAL(axisModeChanged()),
+          this, SLOT(refreshDeltaPressureAxis()));
+
+  legend()->setAlignment(Qt::AlignTop);
+}
+
+void ThermoDisplay2LinPressureDeltaPressureChart::addSeries(QAbstractSeries *series)
+{
+  addPressureSeries(series);
+}
+
+void ThermoDisplay2LinPressureDeltaPressureChart::addPressureSeries(QAbstractSeries *series)
+{
+  QChart::addSeries(series);
+
+  series->attachAxis(axisX_);
+  series->attachAxis(axisPressureAxis_);
+}
+
+void ThermoDisplay2LinPressureDeltaPressureChart::addDeltaPressureSeries(QAbstractSeries *series)
+{
+  QChart::addSeries(series);
+
+  series->attachAxis(axisX_);
+  series->attachAxis(axisDeltaPressureAxis_);
+}
+
+void ThermoDisplay2LinPressureDeltaPressureChart::refreshAxes()
+{
+  refreshXAxis();
+  refreshPressureAxis();
+  refreshDeltaPressureAxis();
+}
+
+void ThermoDisplay2LinPressureDeltaPressureChart::refreshPressureAxis()
+{
+  axisPressureAxis_->refresh(series());
+}
+
+void ThermoDisplay2LinPressureDeltaPressureChart::leftYAxisDoubleClicked()
+{
+  axisPressureAxis_->configure();
+}
+
+void ThermoDisplay2LinPressureDeltaPressureChart::refreshDeltaPressureAxis()
+{
+  axisDeltaPressureAxis_->refresh(series());
+}
+
+void ThermoDisplay2LinPressureDeltaPressureChart::rightYAxisDoubleClicked()
+{
+  axisDeltaPressureAxis_->configure();
+}
+
 ThermoDisplay2LogPressureChart::ThermoDisplay2LogPressureChart()
   : ThermoDisplay2Chart()
 {
