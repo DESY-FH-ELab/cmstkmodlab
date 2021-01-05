@@ -104,7 +104,7 @@ protected:
   ThermoDisplay2LineSeries *MartaDP04CO2Series_;
 
   ThermoDisplay2ChartView *MartaTemperatureChartView_;
-  ThermoDisplay2TemperatureChart *MartaTemperatureChart_;
+  ThermoDisplay2TemperatureDeltaTemperatureChart *MartaTemperatureChart_;
   ThermoDisplay2LineSeries *MartaTSetPointSeries_;
   ThermoDisplay2LineSeries *MartaTT01CO2Series_;
   ThermoDisplay2LineSeries *MartaTT02CO2Series_;
@@ -117,6 +117,8 @@ protected:
   ThermoDisplay2LineSeries *MartaST02CO2Series_;
   ThermoDisplay2LineSeries *MartaST03CO2Series_;
   ThermoDisplay2LineSeries *MartaST04CO2Series_;
+  ThermoDisplay2LineSeries *MartaDT02CO2Series_;
+  ThermoDisplay2LineSeries *MartaDT03CO2Series_;
 };
 
 #endif // THERMODISPLAY2MAINWINDOW_H
