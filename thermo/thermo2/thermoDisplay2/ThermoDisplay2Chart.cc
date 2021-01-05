@@ -36,7 +36,7 @@ ThermoDisplay2Chart::ThermoDisplay2Chart()
   QFont font = legend()->font();
   font.setPointSizeF(8);
   legend()->setFont(font);
-    
+
   connect(axisX_, SIGNAL(axisModeChanged()),
           this, SLOT(refreshXAxis()));
 
@@ -146,7 +146,7 @@ void ThermoDisplay2Chart::setTheme(QChart::ChartTheme theme)
 
 void ThermoDisplay2Chart::refreshXAxis()
 {
-	axisX_->refresh(series());
+  axisX_->refresh(series());
 }
 
 void ThermoDisplay2Chart::xAxisDoubleClicked()
@@ -161,19 +161,19 @@ void ThermoDisplay2Chart::areaChanged(const QRectF & plotRect)
   std::cout << "plotRect.y() " << plotRect.y() << std::endl;
   std::cout << "plotRect.width() " << plotRect.width() << std::endl;
   std::cout << "plotRect.height() " << plotRect.height() << std::endl;
-  */
-  
+   */
+
   if (plotRect.width()<40) return;
   if (plotRect.height()<40) return;
-      
+
   qreal maxWidth = 0;
   qreal maxHeight = 0;
 
   QFontMetrics fm(legend()->font());
 
   for (QList<QAbstractSeries*>::Iterator it = series().begin();
-       it!=series().end();
-       ++it) {
+      it!=series().end();
+      ++it) {
     ThermoDisplay2LineSeries* s = dynamic_cast<ThermoDisplay2LineSeries*>(*it);
     if (s) {
       QRectF boundingRect = fm.boundingRect(s->name());
@@ -191,17 +191,17 @@ void ThermoDisplay2Chart::areaChanged(const QRectF & plotRect)
   std::cout << "maxHeight " << maxHeight << std::endl;
   std::cout << series().size() << std::endl;
   std::cout << availableHeight << std::endl;
-  */
-  
+   */
+
   while (nRows*(maxHeight+8)+14 > availableHeight) {
     //std::cout << nRows << std::endl;
     nColumns++;
     nRows = std::ceil(nSeries/nColumns);
   }
- 
+
   legend()->setGeometry(QRectF(plotRect.x()+10, plotRect.y()+5,
-			       nColumns*(maxWidth+24)+14,
-			       nRows*(maxHeight+8)+14));
+                               nColumns*(maxWidth+24)+14,
+                               nRows*(maxHeight+8)+14));
   legend()->update();
 }
 
@@ -229,8 +229,8 @@ void ThermoDisplay2TemperatureChart::addSeries(QAbstractSeries *series)
 
 void ThermoDisplay2TemperatureChart::refreshAxes()
 {
-	refreshXAxis();
-	refreshYAxis();
+  refreshXAxis();
+  refreshYAxis();
 }
 
 void ThermoDisplay2TemperatureChart::refreshYAxis()
