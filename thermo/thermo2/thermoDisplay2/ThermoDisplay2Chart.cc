@@ -437,7 +437,7 @@ ThermoDisplay2LinPressureDeltaPressureChart::ThermoDisplay2LinPressureDeltaPress
 
   axisDeltaPressureAxis_ = new ThermoDisplay2ValueAxis();
   axisDeltaPressureAxis_->setLabelFormat("%.2f");
-  axisDeltaPressureAxis_->setTitleText("Pressure Difference [bar]");
+  axisDeltaPressureAxis_->setTitleText("Delta Pressure [bar]");
   addAxis(axisDeltaPressureAxis_, Qt::AlignRight);
 
   connect(axisDeltaPressureAxis_, SIGNAL(axisModeChanged()),
@@ -507,7 +507,7 @@ ThermoDisplay2TemperatureDeltaTemperatureChart::ThermoDisplay2TemperatureDeltaTe
 
   axisDeltaTemperatureAxis_ = new ThermoDisplay2ValueAxis();
   axisDeltaTemperatureAxis_->setLabelFormat("%.2f");
-  axisDeltaTemperatureAxis_->setTitleText("Temperature Difference [°C]");
+  axisDeltaTemperatureAxis_->setTitleText("Delta Temperature [°C]");
   addAxis(axisDeltaTemperatureAxis_, Qt::AlignRight);
 
   connect(axisDeltaTemperatureAxis_, SIGNAL(axisModeChanged()),
