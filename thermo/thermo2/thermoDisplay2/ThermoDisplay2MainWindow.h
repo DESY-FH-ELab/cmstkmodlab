@@ -106,6 +106,7 @@ protected:
   ThermoDisplay2ChartView *MartaTemperatureChartView_;
   ThermoDisplay2TemperatureDeltaTemperatureChart *MartaTemperatureChart_;
   ThermoDisplay2LineSeries *MartaTSetPointSeries_;
+  ThermoDisplay2LineSeries *MartaTT02Series_;
   ThermoDisplay2LineSeries *MartaTT01CO2Series_;
   ThermoDisplay2LineSeries *MartaTT02CO2Series_;
   ThermoDisplay2LineSeries *MartaTT03CO2Series_;
