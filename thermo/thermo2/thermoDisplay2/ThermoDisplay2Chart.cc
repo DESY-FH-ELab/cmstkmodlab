@@ -13,6 +13,8 @@
 #include <iostream>
 #include <cmath>
 
+#include <QFont>
+#include <QFontMetrics>
 #include <QtCharts/QLegendMarker>
 
 #include <nqlogger.h>
@@ -28,8 +30,18 @@ ThermoDisplay2Chart::ThermoDisplay2Chart()
   axisX_->setTitleText("Time");
   addAxis(axisX_, Qt::AlignBottom);
 
+  legend()->detachFromChart();
+  legend()->setBackgroundVisible(true);
+  legend()->setBrush(QBrush(QColor(240, 240, 240, 220)));
+  QFont font = legend()->font();
+  font.setPointSizeF(8);
+  legend()->setFont(font);
+    
   connect(axisX_, SIGNAL(axisModeChanged()),
           this, SLOT(refreshXAxis()));
+
+  connect(this, SIGNAL(plotAreaChanged(const QRectF)),
+          this, SLOT(areaChanged(const QRectF)));
 }
 
 void ThermoDisplay2Chart::connectMarkers()
@@ -142,6 +154,57 @@ void ThermoDisplay2Chart::xAxisDoubleClicked()
   axisX_->configure();
 }
 
+void ThermoDisplay2Chart::areaChanged(const QRectF & plotRect)
+{
+  /*
+  std::cout << "plotRect.x() " << plotRect.x() << std::endl;
+  std::cout << "plotRect.y() " << plotRect.y() << std::endl;
+  std::cout << "plotRect.width() " << plotRect.width() << std::endl;
+  std::cout << "plotRect.height() " << plotRect.height() << std::endl;
+  */
+  
+  if (plotRect.width()<40) return;
+  if (plotRect.height()<40) return;
+      
+  qreal maxWidth = 0;
+  qreal maxHeight = 0;
+
+  QFontMetrics fm(legend()->font());
+
+  for (QList<QAbstractSeries*>::Iterator it = series().begin();
+       it!=series().end();
+       ++it) {
+    ThermoDisplay2LineSeries* s = dynamic_cast<ThermoDisplay2LineSeries*>(*it);
+    if (s) {
+      QRectF boundingRect = fm.boundingRect(s->name());
+      maxWidth = std::max(maxWidth, boundingRect.width());
+      maxHeight = std::max(maxHeight, boundingRect.height());
+    }
+  }
+
+  qreal availableHeight = plotRect.height()-10;
+  qreal nSeries = series().size();
+  qreal nRows = nSeries;
+  qreal nColumns = 1;
+
+  /*
+  std::cout << "maxHeight " << maxHeight << std::endl;
+  std::cout << series().size() << std::endl;
+  std::cout << availableHeight << std::endl;
+  */
+  
+  while (nRows*(maxHeight+8)+14 > availableHeight) {
+    //std::cout << nRows << std::endl;
+    nColumns++;
+    nRows = std::ceil(nSeries/nColumns);
+  }
+ 
+  legend()->setGeometry(QRectF(plotRect.x()+10, plotRect.y()+5,
+			       nColumns*(maxWidth+24)+14,
+			       nRows*(maxHeight+8)+14));
+  legend()->update();
+}
+
 ThermoDisplay2TemperatureChart::ThermoDisplay2TemperatureChart()
   : ThermoDisplay2Chart()
 {
@@ -199,8 +262,6 @@ ThermoDisplay2TemperatureStateChart::ThermoDisplay2TemperatureStateChart()
   axisStateY_->append("Off", 0.5);
   axisStateY_->append("On", 1.5);
   addAxis(axisStateY_, Qt::AlignRight);
-
-  legend()->setAlignment(Qt::AlignTop);
 }
 
 void ThermoDisplay2TemperatureStateChart::addSeries(QAbstractSeries *series)
