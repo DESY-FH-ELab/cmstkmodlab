@@ -191,7 +191,7 @@ void ThermoDisplay2TemperatureChart::refreshAxes()
 ThermoDisplay2TemperatureStateChart::ThermoDisplay2TemperatureStateChart()
   : ThermoDisplay2Chart()
 {
-  axisTemperatureY_ = new QValueAxis();
+  axisTemperatureY_ = new ThermoDisplay2ValueAxis();
   axisTemperatureY_->setLabelFormat("%.2f");
   axisTemperatureY_->setTitleText("T [°C]");
   addAxis(axisTemperatureY_, Qt::AlignLeft);
@@ -237,35 +237,14 @@ void ThermoDisplay2TemperatureStateChart::refreshAxes()
 
 void ThermoDisplay2TemperatureStateChart::refreshTemperatureAxis()
 {
-  qreal minY = std::numeric_limits<qreal>::max();
-  qreal maxY = -std::numeric_limits<qreal>::max();
+  axisTemperatureY_->refresh(series());
+}
 
-  bool hasValues = false;
-  for (QList<QAbstractSeries*>::Iterator it = series().begin();
-       it!=series().end();
-       ++it) {
-    ThermoDisplay2LineSeries* s = dynamic_cast<ThermoDisplay2LineSeries*>(*it);
-    if (s && s->isInitialized()) {
+void ThermoDisplay2TemperatureStateChart::leftYAxisDoubleClicked()
+{
+  NQLogDebug("ThermoDisplay2TemperatureStateChart") << "leftYAxisDoubleClicked()";
 
-      QList<QAbstractAxis*> axes = s->attachedAxes();
-      for (QList<QAbstractAxis*>::Iterator ita = axes.begin();
-           ita!=axes.end();
-           ++ita) {
-
-        if ((*ita)->alignment()==Qt::AlignLeft) {
-          minY = std::min(minY, s->minY());
-          maxY = std::max(maxY, s->maxY());
-          hasValues = true;
-        }
-      }
-    }
-  }
-  if (!hasValues) return;
-
-  qreal deltaY = maxY-minY;
-  if (deltaY<5.0) deltaY = 5.0;
-  deltaY = std::floor(deltaY);
-  axisTemperatureY_->setRange(std::floor(minY)-0.1*deltaY, std::ceil(maxY)+0.1*deltaY);
+  axisTemperatureY_->configure();
 }
 
 ThermoDisplay2VoltageChart::ThermoDisplay2VoltageChart()

@@ -41,8 +41,14 @@ ThermoDisplay2ChartView::ThermoDisplay2ChartView(ThermoDisplay2Chart *chart, QWi
 
   setMouseTracking(true);
 
+  connect(this, SIGNAL(leftYAxisDoubleClicked()),
+          chart_, SLOT(leftYAxisDoubleClicked()));
+
+  connect(this, SIGNAL(rightYAxisDoubleClicked()),
+          chart_, SLOT(rightYAxisDoubleClicked()));
+
   connect(this, SIGNAL(xAxisDoubleClicked()),
-	  chart_, SLOT(xAxisDoubleClicked()));
+          chart_, SLOT(xAxisDoubleClicked()));
 }
 
 void ThermoDisplay2ChartView::refreshAxes()

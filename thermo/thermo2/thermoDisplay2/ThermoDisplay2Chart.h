@@ -23,6 +23,7 @@
 #include <QtCharts/QCategoryAxis>
 
 #include "ThermoDisplay2DateTimeAxis.h"
+#include "ThermoDisplay2ValueAxis.h"
 
 QT_CHARTS_USE_NAMESPACE
 
@@ -45,6 +46,8 @@ public slots:
   void updateLegend();
   void handleMarkerClicked();
   void clearData();
+  virtual void leftYAxisDoubleClicked() { }
+  virtual void rightYAxisDoubleClicked() { }
   void xAxisDoubleClicked();
   void refreshXAxis();
 
@@ -82,11 +85,15 @@ public:
 
   void refreshAxes();
 
+public slots:
+
+  void leftYAxisDoubleClicked();
+
 protected:
 
   void refreshTemperatureAxis();
 
-  QValueAxis *axisTemperatureY_;
+  ThermoDisplay2ValueAxis *axisTemperatureY_;
   QCategoryAxis *axisStateY_;
 };
 
