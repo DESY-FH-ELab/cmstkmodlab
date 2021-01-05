@@ -261,4 +261,3 @@ void ThermoDisplay2DateTimeAxisDialog::buttonClicked(QAbstractButton *)
     userMax_->setEnabled(false);
   }
 }
-
