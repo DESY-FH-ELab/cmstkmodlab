@@ -234,15 +234,31 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   MartaPT06CO2Series_ = new ThermoDisplay2LineSeries();
   MartaPT06CO2Series_->setName("PT06CO2");
 
-  MartaPressureChart_ = new ThermoDisplay2LinPressureChart();
-  MartaPressureChart_->addSeries(MartaPT03Series_);
-  MartaPressureChart_->addSeries(MartaPT05Series_);
-  MartaPressureChart_->addSeries(MartaPT01CO2Series_);
-  MartaPressureChart_->addSeries(MartaPT02CO2Series_);
-  MartaPressureChart_->addSeries(MartaPT03CO2Series_);
-  MartaPressureChart_->addSeries(MartaPT04CO2Series_);
-  MartaPressureChart_->addSeries(MartaPT05CO2Series_);
-  MartaPressureChart_->addSeries(MartaPT06CO2Series_);
+  MartaDP01CO2Series_ = new ThermoDisplay2LineSeries();
+  MartaDP01CO2Series_->setName("DP01CO2");
+
+  MartaDP02CO2Series_ = new ThermoDisplay2LineSeries();
+  MartaDP02CO2Series_->setName("DP02CO2");
+
+  MartaDP03CO2Series_ = new ThermoDisplay2LineSeries();
+  MartaDP03CO2Series_->setName("DP03CO2");
+
+  MartaDP04CO2Series_ = new ThermoDisplay2LineSeries();
+  MartaDP04CO2Series_->setName("DP04CO2");
+
+  MartaPressureChart_ = new ThermoDisplay2LinPressureDeltaPressureChart();
+  MartaPressureChart_->addPressureSeries(MartaPT03Series_);
+  MartaPressureChart_->addPressureSeries(MartaPT05Series_);
+  MartaPressureChart_->addPressureSeries(MartaPT01CO2Series_);
+  MartaPressureChart_->addPressureSeries(MartaPT02CO2Series_);
+  MartaPressureChart_->addPressureSeries(MartaPT03CO2Series_);
+  MartaPressureChart_->addPressureSeries(MartaPT04CO2Series_);
+  MartaPressureChart_->addPressureSeries(MartaPT05CO2Series_);
+  MartaPressureChart_->addPressureSeries(MartaPT06CO2Series_);
+  MartaPressureChart_->addDeltaPressureSeries(MartaDP01CO2Series_);
+  MartaPressureChart_->addDeltaPressureSeries(MartaDP02CO2Series_);
+  MartaPressureChart_->addDeltaPressureSeries(MartaDP03CO2Series_);
+  MartaPressureChart_->addDeltaPressureSeries(MartaDP04CO2Series_);
 
   MartaPressureChartView_ = new ThermoDisplay2PressureChartView(MartaPressureChart_);
   MartaPressureChartView_->setRenderHint(QPainter::Antialiasing);
@@ -636,6 +652,11 @@ void ThermoDisplay2MainWindow::updateInfo()
     MartaPT05CO2Series_->setEnabled(m.martaState_);
     MartaPT06CO2Series_->setEnabled(m.martaState_);
 
+    MartaDP01CO2Series_->setEnabled(m.martaState_);
+    MartaDP02CO2Series_->setEnabled(m.martaState_);
+    MartaDP03CO2Series_->setEnabled(m.martaState_);
+    MartaDP04CO2Series_->setEnabled(m.martaState_);
+
     MartaTSetPointSeries_->setEnabled(m.martaState_);
     MartaTT01CO2Series_->setEnabled(m.martaState_);
     MartaTT02CO2Series_->setEnabled(m.martaState_);
@@ -658,6 +679,11 @@ void ThermoDisplay2MainWindow::updateInfo()
     MartaPT04CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaPT04CO2_);
     MartaPT05CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaPT05CO2_);
     MartaPT06CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaPT06CO2_);
+
+    MartaDP01CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaDP01CO2_);
+    MartaDP02CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaDP02CO2_);
+    MartaDP03CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaDP03CO2_);
+    MartaDP04CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaDP04CO2_);
 
     MartaTSetPointSeries_->append(m.dt.toMSecsSinceEpoch(), m.martaTemperatureSetpoint_);
     MartaTT01CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaTT01CO2_);

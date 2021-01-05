@@ -89,7 +89,7 @@ protected:
   ThermoDisplay2LineSeries *TSeries_[2][10];
 
   ThermoDisplay2ChartView *MartaPressureChartView_;
-  ThermoDisplay2LinPressureChart *MartaPressureChart_;
+  ThermoDisplay2LinPressureDeltaPressureChart *MartaPressureChart_;
   ThermoDisplay2LineSeries *MartaPT03Series_;
   ThermoDisplay2LineSeries *MartaPT05Series_;
   ThermoDisplay2LineSeries *MartaPT01CO2Series_;
@@ -98,6 +98,10 @@ protected:
   ThermoDisplay2LineSeries *MartaPT04CO2Series_;
   ThermoDisplay2LineSeries *MartaPT05CO2Series_;
   ThermoDisplay2LineSeries *MartaPT06CO2Series_;
+  ThermoDisplay2LineSeries *MartaDP01CO2Series_;
+  ThermoDisplay2LineSeries *MartaDP02CO2Series_;
+  ThermoDisplay2LineSeries *MartaDP03CO2Series_;
+  ThermoDisplay2LineSeries *MartaDP04CO2Series_;
 
   ThermoDisplay2ChartView *MartaTemperatureChartView_;
   ThermoDisplay2TemperatureChart *MartaTemperatureChart_;
