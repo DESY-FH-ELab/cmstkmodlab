@@ -242,8 +242,6 @@ void ThermoDisplay2PressureChartView::tooltip(QPointF point, bool state)
 
     ThermoDisplay2LineSeries *ls = qobject_cast<ThermoDisplay2LineSeries*>(sender());
 
-    QAbstractAxis* axis = ls->attachedAxes().at(1);
-
     double pressure = point.y();
     char dummy[40];
     if (pressure<1) {
