@@ -67,9 +67,14 @@ public:
 
   void refreshAxes();
 
+public slots:
+
+    void leftYAxisDoubleClicked();
+    void refreshYAxis();
+
 protected:
 
-  QValueAxis *axisY_;
+  ThermoDisplay2ValueAxis *axisY_;
 };
 
 class ThermoDisplay2TemperatureStateChart : public ThermoDisplay2Chart
@@ -107,9 +112,14 @@ public:
 
   void refreshAxes();
 
+public slots:
+
+  void leftYAxisDoubleClicked();
+  void refreshYAxis();
+
 protected:
 
-  QValueAxis *axisY_;
+  ThermoDisplay2ValueAxis *axisY_;
 };
 
 class ThermoDisplay2CurrentChart : public ThermoDisplay2Chart
@@ -123,9 +133,14 @@ public:
 
   void refreshAxes();
 
+public slots:
+
+  void leftYAxisDoubleClicked();
+  void refreshYAxis();
+
 protected:
 
-  QValueAxis *axisY_;
+  ThermoDisplay2ValueAxis *axisY_;
 };
 
 class ThermoDisplay2PowerPressureChart : public ThermoDisplay2Chart
@@ -141,13 +156,17 @@ public:
 
   void refreshAxes();
 
-protected:
+public slots:
 
+  void leftYAxisDoubleClicked();
+  void rightYAxisDoubleClicked();
   void refreshPowerAxis();
   void refreshPressureAxis();
 
-  QValueAxis *axisPowerY_;
-  QValueAxis *axisPressureY_;
+protected:
+
+  ThermoDisplay2ValueAxis *axisPowerY_;
+  ThermoDisplay2ValueAxis *axisPressureY_;
 };
 
 class ThermoDisplay2LinPressureChart : public ThermoDisplay2Chart
@@ -161,11 +180,14 @@ public:
 
   void refreshAxes();
 
+public slots:
+
+  void leftYAxisDoubleClicked();
+  void refreshYAxis();
+
 protected:
 
-  void refreshPressureAxis();
-
-  QValueAxis *axisPressureY_;
+  ThermoDisplay2ValueAxis *axisY_;
 };
 
 class ThermoDisplay2LogPressureChart : public ThermoDisplay2Chart
