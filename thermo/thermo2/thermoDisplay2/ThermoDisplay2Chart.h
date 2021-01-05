@@ -50,6 +50,7 @@ public slots:
   virtual void rightYAxisDoubleClicked() { }
   void xAxisDoubleClicked();
   void refreshXAxis();
+  void areaChanged(const QRectF &);
 
 protected:
 
