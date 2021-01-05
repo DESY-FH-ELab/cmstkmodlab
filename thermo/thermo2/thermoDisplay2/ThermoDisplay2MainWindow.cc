@@ -211,10 +211,10 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   layout = new QVBoxLayout(w);
 
   MartaPT03Series_ = new ThermoDisplay2LineSeries();
-  MartaPT03Series_->setName("PT03");
+  MartaPT03Series_->setName("PT03R507");
 
   MartaPT05Series_ = new ThermoDisplay2LineSeries();
-  MartaPT05Series_->setName("PT05");
+  MartaPT05Series_->setName("PT05R507");
 
   MartaPT01CO2Series_ = new ThermoDisplay2LineSeries();
   MartaPT01CO2Series_->setName("PT01CO2");
