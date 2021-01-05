@@ -196,6 +196,9 @@ ThermoDisplay2TemperatureStateChart::ThermoDisplay2TemperatureStateChart()
   axisTemperatureY_->setTitleText("T [°C]");
   addAxis(axisTemperatureY_, Qt::AlignLeft);
 
+  connect(axisTemperatureY_, SIGNAL(axisModeChanged()),
+          this, SLOT(refreshTemperatureAxis()));
+
   axisStateY_ = new QCategoryAxis();
   axisStateY_->setTitleText("Status");
   axisStateY_->setMin(-0.5);
@@ -242,8 +245,6 @@ void ThermoDisplay2TemperatureStateChart::refreshTemperatureAxis()
 
 void ThermoDisplay2TemperatureStateChart::leftYAxisDoubleClicked()
 {
-  NQLogDebug("ThermoDisplay2TemperatureStateChart") << "leftYAxisDoubleClicked()";
-
   axisTemperatureY_->configure();
 }
 

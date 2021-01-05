@@ -88,10 +88,9 @@ public:
 public slots:
 
   void leftYAxisDoubleClicked();
+  void refreshTemperatureAxis();
 
 protected:
-
-  void refreshTemperatureAxis();
 
   ThermoDisplay2ValueAxis *axisTemperatureY_;
   QCategoryAxis *axisStateY_;
