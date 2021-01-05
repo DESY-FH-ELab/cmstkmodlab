@@ -494,6 +494,76 @@ void ThermoDisplay2LinPressureDeltaPressureChart::rightYAxisDoubleClicked()
   axisDeltaPressureAxis_->configure();
 }
 
+ThermoDisplay2TemperatureDeltaTemperatureChart::ThermoDisplay2TemperatureDeltaTemperatureChart()
+  : ThermoDisplay2Chart()
+{
+  axisTemperatureAxis_ = new ThermoDisplay2ValueAxis();
+  axisTemperatureAxis_->setLabelFormat("%.2f");
+  axisTemperatureAxis_->setTitleText("Temperature [°C]");
+  addAxis(axisTemperatureAxis_, Qt::AlignLeft);
+
+  connect(axisTemperatureAxis_, SIGNAL(axisModeChanged()),
+          this, SLOT(refreshTemperatureAxis()));
+
+  axisDeltaTemperatureAxis_ = new ThermoDisplay2ValueAxis();
+  axisDeltaTemperatureAxis_->setLabelFormat("%.2f");
+  axisDeltaTemperatureAxis_->setTitleText("Temperature Difference [°C]");
+  addAxis(axisDeltaTemperatureAxis_, Qt::AlignRight);
+
+  connect(axisDeltaTemperatureAxis_, SIGNAL(axisModeChanged()),
+          this, SLOT(refreshDeltaTemperatureAxis()));
+
+  legend()->setAlignment(Qt::AlignTop);
+}
+
+void ThermoDisplay2TemperatureDeltaTemperatureChart::addSeries(QAbstractSeries *series)
+{
+  addTemperatureSeries(series);
+}
+
+void ThermoDisplay2TemperatureDeltaTemperatureChart::addTemperatureSeries(QAbstractSeries *series)
+{
+  QChart::addSeries(series);
+
+  series->attachAxis(axisX_);
+  series->attachAxis(axisTemperatureAxis_);
+}
+
+void ThermoDisplay2TemperatureDeltaTemperatureChart::addDeltaTemperatureSeries(QAbstractSeries *series)
+{
+  QChart::addSeries(series);
+
+  series->attachAxis(axisX_);
+  series->attachAxis(axisDeltaTemperatureAxis_);
+}
+
+void ThermoDisplay2TemperatureDeltaTemperatureChart::refreshAxes()
+{
+  refreshXAxis();
+  refreshTemperatureAxis();
+  refreshDeltaTemperatureAxis();
+}
+
+void ThermoDisplay2TemperatureDeltaTemperatureChart::refreshTemperatureAxis()
+{
+  axisTemperatureAxis_->refresh(series());
+}
+
+void ThermoDisplay2TemperatureDeltaTemperatureChart::leftYAxisDoubleClicked()
+{
+  axisTemperatureAxis_->configure();
+}
+
+void ThermoDisplay2TemperatureDeltaTemperatureChart::refreshDeltaTemperatureAxis()
+{
+  axisDeltaTemperatureAxis_->refresh(series());
+}
+
+void ThermoDisplay2TemperatureDeltaTemperatureChart::rightYAxisDoubleClicked()
+{
+  axisDeltaTemperatureAxis_->configure();
+}
+
 ThermoDisplay2LogPressureChart::ThermoDisplay2LogPressureChart()
   : ThermoDisplay2Chart()
 {

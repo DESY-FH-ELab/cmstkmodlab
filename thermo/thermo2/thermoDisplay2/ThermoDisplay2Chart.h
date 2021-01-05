@@ -216,6 +216,32 @@ protected:
   ThermoDisplay2ValueAxis *axisDeltaPressureAxis_;
 };
 
+class ThermoDisplay2TemperatureDeltaTemperatureChart : public ThermoDisplay2Chart
+{
+  Q_OBJECT
+public:
+
+  explicit ThermoDisplay2TemperatureDeltaTemperatureChart();
+
+  void addSeries(QAbstractSeries *series);
+  void addTemperatureSeries(QAbstractSeries *series);
+  void addDeltaTemperatureSeries(QAbstractSeries *series);
+
+  void refreshAxes();
+
+public slots:
+
+  void leftYAxisDoubleClicked();
+  void rightYAxisDoubleClicked();
+  void refreshTemperatureAxis();
+  void refreshDeltaTemperatureAxis();
+
+protected:
+
+  ThermoDisplay2ValueAxis *axisTemperatureAxis_;
+  ThermoDisplay2ValueAxis *axisDeltaTemperatureAxis_;
+};
+
 class ThermoDisplay2LogPressureChart : public ThermoDisplay2Chart
 {
   Q_OBJECT
