@@ -96,7 +96,7 @@ protected:
   ThermoDisplay2LineSeries *MartaPT02CO2Series_;
   ThermoDisplay2LineSeries *MartaPT03CO2Series_;
   ThermoDisplay2LineSeries *MartaPT04CO2Series_;
-  ThermoDisplay2LineSeries *MartaPT05CO2Series_;
+  //ThermoDisplay2LineSeries *MartaPT05CO2Series_;
   ThermoDisplay2LineSeries *MartaPT06CO2Series_;
   ThermoDisplay2LineSeries *MartaDP01CO2Series_;
   ThermoDisplay2LineSeries *MartaDP02CO2Series_;
@@ -111,7 +111,7 @@ protected:
   ThermoDisplay2LineSeries *MartaTT02CO2Series_;
   ThermoDisplay2LineSeries *MartaTT03CO2Series_;
   ThermoDisplay2LineSeries *MartaTT04CO2Series_;
-  ThermoDisplay2LineSeries *MartaTT05CO2Series_;
+  //ThermoDisplay2LineSeries *MartaTT05CO2Series_;
   ThermoDisplay2LineSeries *MartaTT06CO2Series_;
   ThermoDisplay2LineSeries *MartaTT07CO2Series_;
   ThermoDisplay2LineSeries *MartaST01CO2Series_;

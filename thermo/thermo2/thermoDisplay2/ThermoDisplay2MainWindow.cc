@@ -230,9 +230,11 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   MartaPT04CO2Series_ = new ThermoDisplay2LineSeries();
   MartaPT04CO2Series_->setName("PT04CO2");
 
+  /*
   MartaPT05CO2Series_ = new ThermoDisplay2LineSeries();
   MartaPT05CO2Series_->setName("PT05CO2");
-
+  */
+  
   MartaPT06CO2Series_ = new ThermoDisplay2LineSeries();
   MartaPT06CO2Series_->setName("PT06CO2");
 
@@ -255,7 +257,7 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   MartaPressureChart_->addPressureSeries(MartaPT02CO2Series_);
   MartaPressureChart_->addPressureSeries(MartaPT03CO2Series_);
   MartaPressureChart_->addPressureSeries(MartaPT04CO2Series_);
-  MartaPressureChart_->addPressureSeries(MartaPT05CO2Series_);
+  //MartaPressureChart_->addPressureSeries(MartaPT05CO2Series_);
   MartaPressureChart_->addPressureSeries(MartaPT06CO2Series_);
   MartaPressureChart_->addDeltaPressureSeries(MartaDP01CO2Series_);
   MartaPressureChart_->addDeltaPressureSeries(MartaDP02CO2Series_);
@@ -288,9 +290,11 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   MartaTT04CO2Series_ = new ThermoDisplay2LineSeries();
   MartaTT04CO2Series_->setName("TT04CO2");
 
+  /*
   MartaTT05CO2Series_ = new ThermoDisplay2LineSeries();
   MartaTT05CO2Series_->setName("TT05CO2");
-
+  */
+  
   MartaTT06CO2Series_ = new ThermoDisplay2LineSeries();
   MartaTT06CO2Series_->setName("TT06CO2");
 
@@ -322,7 +326,7 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   MartaTemperatureChart_->addTemperatureSeries(MartaTT02CO2Series_);
   MartaTemperatureChart_->addTemperatureSeries(MartaTT03CO2Series_);
   MartaTemperatureChart_->addTemperatureSeries(MartaTT04CO2Series_);
-  MartaTemperatureChart_->addTemperatureSeries(MartaTT05CO2Series_);
+  //MartaTemperatureChart_->addTemperatureSeries(MartaTT05CO2Series_);
   MartaTemperatureChart_->addTemperatureSeries(MartaTT06CO2Series_);
   MartaTemperatureChart_->addTemperatureSeries(MartaTT07CO2Series_);
   MartaTemperatureChart_->addTemperatureSeries(MartaST01CO2Series_);
@@ -663,7 +667,7 @@ void ThermoDisplay2MainWindow::updateInfo()
     MartaPT02CO2Series_->setEnabled(m.martaState_);
     MartaPT03CO2Series_->setEnabled(m.martaState_);
     MartaPT04CO2Series_->setEnabled(m.martaState_);
-    MartaPT05CO2Series_->setEnabled(m.martaState_);
+    //MartaPT05CO2Series_->setEnabled(m.martaState_);
     MartaPT06CO2Series_->setEnabled(m.martaState_);
 
     MartaDP01CO2Series_->setEnabled(m.martaState_);
@@ -677,7 +681,7 @@ void ThermoDisplay2MainWindow::updateInfo()
     MartaTT02CO2Series_->setEnabled(m.martaState_);
     MartaTT03CO2Series_->setEnabled(m.martaState_);
     MartaTT04CO2Series_->setEnabled(m.martaState_);
-    MartaTT05CO2Series_->setEnabled(m.martaState_);
+    //MartaTT05CO2Series_->setEnabled(m.martaState_);
     MartaTT06CO2Series_->setEnabled(m.martaState_);
     MartaTT07CO2Series_->setEnabled(m.martaState_);
 
@@ -695,7 +699,7 @@ void ThermoDisplay2MainWindow::updateInfo()
     MartaPT02CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaPT02CO2_);
     MartaPT03CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaPT03CO2_);
     MartaPT04CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaPT04CO2_);
-    MartaPT05CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaPT05CO2_);
+    //MartaPT05CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaPT05CO2_);
     MartaPT06CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaPT06CO2_);
 
     MartaDP01CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaDP01CO2_);
@@ -709,7 +713,7 @@ void ThermoDisplay2MainWindow::updateInfo()
     MartaTT02CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaTT02CO2_);
     MartaTT03CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaTT03CO2_);
     MartaTT04CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaTT04CO2_);
-    MartaTT05CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaTT05CO2_);
+    //MartaTT05CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaTT05CO2_);
     MartaTT06CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaTT06CO2_);
     MartaTT07CO2Series_->append(m.dt.toMSecsSinceEpoch(), m.martaTT07CO2_);
 
