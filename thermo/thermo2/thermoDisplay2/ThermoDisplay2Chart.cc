@@ -488,15 +488,15 @@ void ThermoDisplay2LinPressureChart::leftYAxisDoubleClicked()
 ThermoDisplay2LinPressureDeltaPressureChart::ThermoDisplay2LinPressureDeltaPressureChart()
   : ThermoDisplay2Chart()
 {
-  axisPressureAxis_ = new ThermoDisplay2ValueAxis();
-  axisPressureAxis_->setLabelFormat("%.2f");
+  axisPressureAxis_ = new ThermoDisplay2ValueAxis(0);
+  axisPressureAxis_->setLabelFormat("%.0f");
   axisPressureAxis_->setTitleText("Pressure [bar]");
   addAxis(axisPressureAxis_, Qt::AlignLeft);
 
   connect(axisPressureAxis_, SIGNAL(axisModeChanged()),
           this, SLOT(refreshPressureAxis()));
 
-  axisDeltaPressureAxis_ = new ThermoDisplay2ValueAxis();
+  axisDeltaPressureAxis_ = new ThermoDisplay2ValueAxis(2);
   axisDeltaPressureAxis_->setLabelFormat("%.2f");
   axisDeltaPressureAxis_->setTitleText("Delta Pressure [bar]");
   addAxis(axisDeltaPressureAxis_, Qt::AlignRight);
@@ -558,15 +558,15 @@ void ThermoDisplay2LinPressureDeltaPressureChart::rightYAxisDoubleClicked()
 ThermoDisplay2TemperatureDeltaTemperatureChart::ThermoDisplay2TemperatureDeltaTemperatureChart()
   : ThermoDisplay2Chart()
 {
-  axisTemperatureAxis_ = new ThermoDisplay2ValueAxis();
-  axisTemperatureAxis_->setLabelFormat("%.2f");
+  axisTemperatureAxis_ = new ThermoDisplay2ValueAxis(0);
+  axisTemperatureAxis_->setLabelFormat("%.0f");
   axisTemperatureAxis_->setTitleText("Temperature [°C]");
   addAxis(axisTemperatureAxis_, Qt::AlignLeft);
 
   connect(axisTemperatureAxis_, SIGNAL(axisModeChanged()),
           this, SLOT(refreshTemperatureAxis()));
 
-  axisDeltaTemperatureAxis_ = new ThermoDisplay2ValueAxis();
+  axisDeltaTemperatureAxis_ = new ThermoDisplay2ValueAxis(2);
   axisDeltaTemperatureAxis_->setLabelFormat("%.2f");
   axisDeltaTemperatureAxis_->setTitleText("Delta Temperature [°C]");
   addAxis(axisDeltaTemperatureAxis_, Qt::AlignRight);
