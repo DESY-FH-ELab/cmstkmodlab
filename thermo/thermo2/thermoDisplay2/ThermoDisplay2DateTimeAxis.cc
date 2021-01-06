@@ -26,7 +26,7 @@
 
 ThermoDisplay2DateTimeAxis::ThermoDisplay2DateTimeAxis()
  : QDateTimeAxis(),
-   axisMode_(AxisModeFull)
+   axisMode_(AxisMode15Minutes)
 {
 
 }
@@ -61,7 +61,11 @@ void ThermoDisplay2DateTimeAxis::refresh(QList<QAbstractSeries*> series)
     dtMax = max_;
    
     QDateTime dtTemp = dtMax;
-    if (axisMode_==AxisMode1Hour) {
+    if (axisMode_==AxisMode15Minutes) {
+      dtTemp = dtTemp.addSecs(-15 * 60);
+    } else if (axisMode_==AxisMode30Minutes) {
+      dtTemp = dtTemp.addSecs(-30 * 60);
+    } else if (axisMode_==AxisMode1Hour) {
       dtTemp = dtTemp.addSecs(-1 * 60 * 60);
     } else if (axisMode_==AxisMode2Hour) {
       dtTemp = dtTemp.addSecs(-2 * 60 * 60);
@@ -74,7 +78,7 @@ void ThermoDisplay2DateTimeAxis::refresh(QList<QAbstractSeries*> series)
     }
 
     if (axisMode_!=AxisModeFull) {
-      if (dtMin<dtTemp) dtMin = dtTemp;
+      dtMin = dtTemp;
     }
     
     qint64 deltaX = 0.01 * dtMin.secsTo(dtMax);
@@ -96,9 +100,9 @@ void ThermoDisplay2DateTimeAxis::refresh(QList<QAbstractSeries*> series)
 
 void ThermoDisplay2DateTimeAxis::configure()
 {
-	ThermoDisplay2DateTimeAxisDialog dialog;
+  ThermoDisplay2DateTimeAxisDialog dialog;
 
-	dialog.setAxisMode(axisMode_);
+  dialog.setAxisMode(axisMode_);
   dialog.setMinMaxRange(min_, max_);
   dialog.setUserRange(userMin_, userMax_);
 
@@ -116,9 +120,6 @@ void ThermoDisplay2DateTimeAxis::configure()
 ThermoDisplay2DateTimeAxisDialog::ThermoDisplay2DateTimeAxisDialog(QWidget* parent)
  : QDialog(parent)
 {
-  // setMinimumWidth(600);
-  // setMinimumHeight(400);
-
   QVBoxLayout* layout = new QVBoxLayout(this);
   setLayout(layout);
 
@@ -129,6 +130,10 @@ ThermoDisplay2DateTimeAxisDialog::ThermoDisplay2DateTimeAxisDialog(QWidget* pare
 
   modeFull_ = new QRadioButton("Auto range");
   buttonGroup_->addButton(modeFull_, ThermoDisplay2DateTimeAxis::AxisModeFull);
+  mode15Minutes_ = new QRadioButton("Last 15 minutes");
+  buttonGroup_->addButton(mode15Minutes_, ThermoDisplay2DateTimeAxis::AxisMode15Minutes);
+  mode30Minutes_ = new QRadioButton("Last 30 minutes");
+  buttonGroup_->addButton(mode30Minutes_, ThermoDisplay2DateTimeAxis::AxisMode30Minutes);
   mode1Hour_ = new QRadioButton("Last hour");
   buttonGroup_->addButton(mode1Hour_, ThermoDisplay2DateTimeAxis::AxisMode1Hour);
   mode2Hour_ = new QRadioButton("Last 2 hours");
@@ -149,6 +154,8 @@ ThermoDisplay2DateTimeAxisDialog::ThermoDisplay2DateTimeAxisDialog(QWidget* pare
 
   QVBoxLayout *vbox = new QVBoxLayout;
   vbox->addWidget(modeFull_);
+  vbox->addWidget(mode15Minutes_);
+  vbox->addWidget(mode30Minutes_);
   vbox->addWidget(mode1Hour_);
   vbox->addWidget(mode2Hour_);
   vbox->addWidget(mode6Hour_);
@@ -184,7 +191,11 @@ void ThermoDisplay2DateTimeAxisDialog::setAxisMode(ThermoDisplay2DateTimeAxis::A
 {
   axisMode_ = axisMode;
 
-  if (axisMode_==ThermoDisplay2DateTimeAxis::AxisMode1Hour) {
+  if (axisMode_==ThermoDisplay2DateTimeAxis::AxisMode15Minutes) {
+    mode15Minutes_->setChecked(true);
+  } else if (axisMode_==ThermoDisplay2DateTimeAxis::AxisMode30Minutes) {
+    mode30Minutes_->setChecked(true);
+  } else if (axisMode_==ThermoDisplay2DateTimeAxis::AxisMode1Hour) {
     mode1Hour_->setChecked(true);
   } else if (axisMode_==ThermoDisplay2DateTimeAxis::AxisMode2Hour) {
     mode2Hour_->setChecked(true);
@@ -236,22 +247,8 @@ void ThermoDisplay2DateTimeAxisDialog::getUserRange(QDateTime& dtMin,
 void ThermoDisplay2DateTimeAxisDialog::buttonClicked(QAbstractButton *)
 {
   int id = buttonGroup_->checkedId();
-  
-  if (id==ThermoDisplay2DateTimeAxis::AxisMode1Hour) {
-    axisMode_ = ThermoDisplay2DateTimeAxis::AxisMode1Hour;
-  } else if (id==ThermoDisplay2DateTimeAxis::AxisMode2Hour) {
-    axisMode_ = ThermoDisplay2DateTimeAxis::AxisMode2Hour;
-  } else if (id==ThermoDisplay2DateTimeAxis::AxisMode6Hour) {
-    axisMode_ = ThermoDisplay2DateTimeAxis::AxisMode6Hour;
-  } else if (id==ThermoDisplay2DateTimeAxis::AxisMode12Hour) {
-    axisMode_ = ThermoDisplay2DateTimeAxis::AxisMode12Hour;
-  } else if (id==ThermoDisplay2DateTimeAxis::AxisMode24Hour) {
-    axisMode_ = ThermoDisplay2DateTimeAxis::AxisMode24Hour;
-  } else if (id==ThermoDisplay2DateTimeAxis::AxisModeUser) {
-    axisMode_ = ThermoDisplay2DateTimeAxis::AxisModeUser;
-  } else {
-    axisMode_ = ThermoDisplay2DateTimeAxis::AxisModeFull;
-  }
+
+  axisMode_ = static_cast<ThermoDisplay2DateTimeAxis::AxisMode>(id);
 
   if (axisMode_==ThermoDisplay2DateTimeAxis::AxisModeUser) {
     userMin_->setEnabled(true);

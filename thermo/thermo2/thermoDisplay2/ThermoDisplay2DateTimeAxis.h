@@ -30,15 +30,17 @@ class ThermoDisplay2DateTimeAxis : public QDateTimeAxis
   Q_OBJECT
 public:
 
-	enum AxisMode {
-		AxisMode1Hour = 0,
-		AxisMode2Hour,
-		AxisMode6Hour,
-		AxisMode12Hour,
-		AxisMode24Hour,
-		AxisModeUser,
-		AxisModeFull
-	};
+  typedef enum axismode {
+    AxisMode15Minutes = 0,
+    AxisMode30Minutes,
+    AxisMode1Hour,
+    AxisMode2Hour,
+    AxisMode6Hour,
+    AxisMode12Hour,
+    AxisMode24Hour,
+    AxisModeUser,
+    AxisModeFull
+  } AxisMode;
 
   explicit ThermoDisplay2DateTimeAxis();
 
@@ -61,9 +63,9 @@ class ThermoDisplay2DateTimeAxisDialog : public QDialog
   Q_OBJECT
  public:
 
-	ThermoDisplay2DateTimeAxisDialog(QWidget* parent = 0);
+  ThermoDisplay2DateTimeAxisDialog(QWidget* parent = 0);
 
-	void setAxisMode(ThermoDisplay2DateTimeAxis::AxisMode axisMode);
+  void setAxisMode(ThermoDisplay2DateTimeAxis::AxisMode axisMode);
   void setMinMaxRange(const QDateTime& dtMin, const QDateTime& dtMax);
   void setUserRange(const QDateTime& dtMin, const QDateTime& dtMax);
 
@@ -73,6 +75,8 @@ class ThermoDisplay2DateTimeAxisDialog : public QDialog
  protected:
 
   QButtonGroup *buttonGroup_;
+  QRadioButton *mode15Minutes_;
+  QRadioButton *mode30Minutes_;
   QRadioButton *mode1Hour_;
   QRadioButton *mode2Hour_;
   QRadioButton *mode6Hour_;
