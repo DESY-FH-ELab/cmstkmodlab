@@ -264,7 +264,7 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   MartaPressureChart_->addDeltaPressureSeries(MartaDP03CO2Series_);
   MartaPressureChart_->addDeltaPressureSeries(MartaDP04CO2Series_);
 
-  MartaPressureChartView_ = new ThermoDisplay2PressureChartView(MartaPressureChart_);
+  MartaPressureChartView_ = new ThermoDisplay2PressureDeltaPressureChartView(MartaPressureChart_);
   MartaPressureChartView_->setRenderHint(QPainter::Antialiasing);
   MartaPressureChartView_->setMinimumSize(800, 300);
   layout->addWidget(MartaPressureChartView_);
@@ -336,7 +336,7 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   MartaTemperatureChart_->addDeltaTemperatureSeries(MartaDT02CO2Series_);
   MartaTemperatureChart_->addDeltaTemperatureSeries(MartaDT03CO2Series_);
 
-  MartaTemperatureChartView_ = new ThermoDisplay2TemperatureChartView(MartaTemperatureChart_);
+  MartaTemperatureChartView_ = new ThermoDisplay2TemperatureDeltaTemperatureChartView(MartaTemperatureChart_);
   MartaTemperatureChartView_->setRenderHint(QPainter::Antialiasing);
   MartaTemperatureChartView_->setMinimumSize(800, 300);
   layout->addWidget(MartaTemperatureChartView_);

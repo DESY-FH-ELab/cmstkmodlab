@@ -99,7 +99,10 @@ void ThermoDisplay2TemperatureChartView::tooltip(QPointF point, bool state)
     callout_ = new ThermoDisplay2Callout(chart_);
 
   if (state) {
-    callout_->setText(QString("%1\n%2\n%3 °C").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")).arg(point.y(), 0, 'f', 3));
+
+    ThermoDisplay2LineSeries *ls = qobject_cast<ThermoDisplay2LineSeries*>(sender());
+    
+    callout_->setText(QString("%1\n%2\n%3: %4 °C").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")).arg(ls->name()).arg(point.y(), 0, 'f', 3));
     callout_->setAnchor(point);
     callout_->setZValue(11);
     callout_->updateGeometry();
@@ -129,7 +132,7 @@ void ThermoDisplay2TemperatureStateChartView::tooltip(QPointF point, bool state)
 
     QAbstractAxis* axis = ls->attachedAxes().at(1);
     if (axis->alignment()==Qt::AlignLeft) {
-      callout_->setText(QString("%1\n%2\n%3 °C").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")).arg(point.y(), 0, 'f', 3));
+      callout_->setText(QString("%1\n%2\n%3: %4 °C").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")).arg(ls->name()).arg(point.y(), 0, 'f', 3));
     } else {
       callout_->setText(QString("%1\n%2").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")));
     }
@@ -155,7 +158,10 @@ void ThermoDisplay2VoltageChartView::tooltip(QPointF point, bool state)
     callout_ = new ThermoDisplay2Callout(chart_);
 
   if (state) {
-    callout_->setText(QString("%1\n%2\n%3 V").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")).arg(point.y(), 0, 'f', 3));
+
+    ThermoDisplay2LineSeries *ls = qobject_cast<ThermoDisplay2LineSeries*>(sender());
+    
+    callout_->setText(QString("%1\n%2\n%3: %4 V").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")).arg(ls->name()).arg(point.y(), 0, 'f', 3));
     callout_->setAnchor(point);
     callout_->setZValue(11);
     callout_->updateGeometry();
@@ -179,7 +185,10 @@ void ThermoDisplay2CurrentChartView::tooltip(QPointF point, bool state)
     callout_ = new ThermoDisplay2Callout(chart_);
 
   if (state) {
-    callout_->setText(QString("%1\n%2\n%3 A").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")).arg(point.y(), 0, 'f', 3));
+
+    ThermoDisplay2LineSeries *ls = qobject_cast<ThermoDisplay2LineSeries*>(sender());
+    
+    callout_->setText(QString("%1\n%2\n%3\n%4 A").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")).arg(ls->name()).arg(point.y(), 0, 'f', 3));
     callout_->setAnchor(point);
     callout_->setZValue(11);
     callout_->updateGeometry();
@@ -209,9 +218,79 @@ void ThermoDisplay2PowerPressureChartView::tooltip(QPointF point, bool state)
 
     QAbstractAxis* axis = ls->attachedAxes().at(1);
     if (axis->alignment()==Qt::AlignLeft) {
-      callout_->setText(QString("%1\n%2\n%3 kW").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")).arg(point.y(), 0, 'f', 3));
+      callout_->setText(QString("%1\n%2\n%3\n%4 kW").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")).arg(ls->name()).arg(point.y(), 0, 'f', 3));
     } else if (axis->alignment()==Qt::AlignRight) {
-      callout_->setText(QString("%1\n%2\n%3 bar").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")).arg(point.y(), 0, 'f', 3));
+      callout_->setText(QString("%1\n%2\n%3\n%4 bar").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")).arg(ls->name()).arg(point.y(), 0, 'f', 3));
+    } else {
+      callout_->setText(QString("%1\n%2").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")));
+    }
+    callout_->setAnchor(point, ls);
+    callout_->setZValue(11);
+    callout_->updateGeometry();
+    callout_->show();
+  } else {
+    callout_->hide();
+  }
+}
+
+ThermoDisplay2PressureDeltaPressureChartView::ThermoDisplay2PressureDeltaPressureChartView(ThermoDisplay2Chart *chart,
+											   QWidget *parent)
+  : ThermoDisplay2ChartView(chart, parent)
+{
+
+}
+
+void ThermoDisplay2PressureDeltaPressureChartView::tooltip(QPointF point, bool state)
+{
+  QDateTime dt = QDateTime::fromMSecsSinceEpoch(point.x());
+
+  if (callout_ == nullptr)
+    callout_ = new ThermoDisplay2Callout(chart_);
+
+  if (state) {
+
+    ThermoDisplay2LineSeries *ls = qobject_cast<ThermoDisplay2LineSeries*>(sender());
+
+    QAbstractAxis* axis = ls->attachedAxes().at(1);
+    if (axis->alignment()==Qt::AlignLeft) {
+      callout_->setText(QString("%1\n%2\n%3\n%4 bar").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")).arg(ls->name()).arg(point.y(), 0, 'f', 2));
+    } else if (axis->alignment()==Qt::AlignRight) {
+      callout_->setText(QString("%1\n%2\n%3\n%4 bar").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")).arg(ls->name()).arg(point.y(), 0, 'f', 2));
+    } else {
+      callout_->setText(QString("%1\n%2").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")));
+    }
+    callout_->setAnchor(point, ls);
+    callout_->setZValue(11);
+    callout_->updateGeometry();
+    callout_->show();
+  } else {
+    callout_->hide();
+  }
+}
+
+ThermoDisplay2TemperatureDeltaTemperatureChartView::ThermoDisplay2TemperatureDeltaTemperatureChartView(ThermoDisplay2Chart *chart,
+												       QWidget *parent)
+  : ThermoDisplay2ChartView(chart, parent)
+{
+
+}
+
+void ThermoDisplay2TemperatureDeltaTemperatureChartView::tooltip(QPointF point, bool state)
+{
+  QDateTime dt = QDateTime::fromMSecsSinceEpoch(point.x());
+
+  if (callout_ == nullptr)
+    callout_ = new ThermoDisplay2Callout(chart_);
+
+  if (state) {
+
+    ThermoDisplay2LineSeries *ls = qobject_cast<ThermoDisplay2LineSeries*>(sender());
+
+    QAbstractAxis* axis = ls->attachedAxes().at(1);
+    if (axis->alignment()==Qt::AlignLeft) {
+      callout_->setText(QString("%1\n%2\n%3\n%4 °C").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")).arg(ls->name()).arg(point.y(), 0, 'f', 2));
+    } else if (axis->alignment()==Qt::AlignRight) {
+      callout_->setText(QString("%1\n%2\n%3\n%4 °C").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")).arg(ls->name()).arg(point.y(), 0, 'f', 2));
     } else {
       callout_->setText(QString("%1\n%2").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")));
     }
@@ -252,7 +331,7 @@ void ThermoDisplay2PressureChartView::tooltip(QPointF point, bool state)
       sprintf(dummy, "%d", (int)pressure);
     }
 
-    callout_->setText(QString("%1\n%2\n%3 mbar").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")).arg(dummy));
+    callout_->setText(QString("%1\n%2\n%3\n%4 mbar").arg(dt.toString("dd/MM/yyyy")).arg(dt.toString("hh:mm:ss")).arg(ls->name()).arg(dummy));
     callout_->setAnchor(point, ls);
     callout_->setZValue(11);
     callout_->updateGeometry();
