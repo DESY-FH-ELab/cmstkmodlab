@@ -25,8 +25,9 @@
 #include "ThermoDisplay2LineSeries.h"
 #include "ThermoDisplay2ValueAxis.h"
 
-ThermoDisplay2ValueAxis::ThermoDisplay2ValueAxis()
+ThermoDisplay2ValueAxis::ThermoDisplay2ValueAxis(int precision)
  : QValueAxis(),
+   precision_(precision),
    axisMode_(AxisModeFull)
 {
 
@@ -54,8 +55,8 @@ void ThermoDisplay2ValueAxis::refresh(QList<QAbstractSeries*> series)
     qreal deltaY = max_-min_;
     if (deltaY<5.0) deltaY = 5.0;
 
-    setRange(0.1*std::round(10*(min_-0.1*deltaY)),
-	     0.1*std::round(10*(max_+0.1*deltaY)));
+    setRange(std::pow(10,-precision_)*std::round(std::pow(10,precision_)*(min_-0.1*deltaY)),
+	     std::pow(10,-precision_)*std::round(std::pow(10,precision_)*(max_+0.1*deltaY)));
   } else {
 
     setRange(userMin_, userMax_);
@@ -64,7 +65,7 @@ void ThermoDisplay2ValueAxis::refresh(QList<QAbstractSeries*> series)
 
 void ThermoDisplay2ValueAxis::configure()
 {
-  ThermoDisplay2ValueAxisDialog dialog;
+  ThermoDisplay2ValueAxisDialog dialog(precision_);
 
   dialog.setAxisMode(axisMode_);
   dialog.setMinMaxRange(-std::numeric_limits<qreal>::max(), std::numeric_limits<qreal>::max());
@@ -73,8 +74,8 @@ void ThermoDisplay2ValueAxis::configure()
   } else {
     qreal deltaY = max_-min_;
     if (deltaY<5.0) deltaY = 5.0;
-    dialog.setUserRange(0.1*std::round(10*(min_-0.1*deltaY)),
-			0.1*std::round(10*(max_+0.1*deltaY)));
+    dialog.setUserRange(std::pow(10,-precision_)*std::round(std::pow(10,precision_)*(min_-0.1*deltaY)),
+			std::pow(10,-precision_)*std::round(std::pow(10,precision_)*(max_+0.1*deltaY)));
   }
   
   NQLogDebug("ThermoDisplay2ValueAxis") << "min_ = " << min_ << "; max_ = " << max_;
@@ -90,8 +91,9 @@ void ThermoDisplay2ValueAxis::configure()
   }
 }
 
-ThermoDisplay2ValueAxisDialog::ThermoDisplay2ValueAxisDialog(QWidget* parent)
- : QDialog(parent)
+ThermoDisplay2ValueAxisDialog::ThermoDisplay2ValueAxisDialog(int precision, QWidget* parent)
+  : QDialog(parent),
+    precision_(precision)
 {
   QVBoxLayout* layout = new QVBoxLayout(this);
   setLayout(layout);
@@ -119,13 +121,13 @@ ThermoDisplay2ValueAxisDialog::ThermoDisplay2ValueAxisDialog(QWidget* parent)
   QFormLayout *flayout = new QFormLayout;
 
   userMin_ = new QDoubleSpinBox();
-  userMin_->setDecimals(2);
+  userMin_->setDecimals(precision_);
   flayout->addRow("Minimum", userMin_);
   connect(userMin_, SIGNAL(valueChanged(double)),
           this, SLOT(userMinChanged(double)));
 
   userMax_ = new QDoubleSpinBox();
-  userMax_->setDecimals(2);
+  userMax_->setDecimals(precision_);
   flayout->addRow("Maximum", userMax_);
   connect(userMax_, SIGNAL(valueChanged(double)),
           this, SLOT(userMaxChanged(double)));

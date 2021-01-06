@@ -35,7 +35,7 @@ public:
 		AxisModeFull
 	};
 
-  explicit ThermoDisplay2ValueAxis();
+  explicit ThermoDisplay2ValueAxis(int precision = 2);
 
   void refresh(QList<QAbstractSeries*> series);
   void configure();
@@ -46,6 +46,7 @@ signals:
 
 protected:
 
+  int precision_;
   AxisMode axisMode_;
   qreal min_, userMin_;
   qreal max_, userMax_;
@@ -56,9 +57,9 @@ class ThermoDisplay2ValueAxisDialog : public QDialog
   Q_OBJECT
  public:
 
-	ThermoDisplay2ValueAxisDialog(QWidget* parent = 0);
+  ThermoDisplay2ValueAxisDialog(int precision, QWidget* parent = 0);
 
-	void setAxisMode(ThermoDisplay2ValueAxis::AxisMode axisMode);
+  void setAxisMode(ThermoDisplay2ValueAxis::AxisMode axisMode);
   void setMinMaxRange(const qreal min, const qreal max);
   void setUserRange(const qreal min, const qreal max);
 
@@ -71,6 +72,7 @@ class ThermoDisplay2ValueAxisDialog : public QDialog
   QRadioButton *modeUser_;
   QRadioButton *modeFull_;
 
+  int precision_;
   qreal absoluteMin_;
   QDoubleSpinBox *userMin_;
   qreal absoluteMax_;
