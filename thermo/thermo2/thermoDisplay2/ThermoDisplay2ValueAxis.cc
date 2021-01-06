@@ -44,6 +44,19 @@ void ThermoDisplay2ValueAxis::refresh(QList<QAbstractSeries*> series)
         it!=series.end();
         ++it) {
       ThermoDisplay2LineSeries* s = dynamic_cast<ThermoDisplay2LineSeries*>(*it);
+
+      bool hasAxis = false;
+      QList<QAbstractAxis*> axes = s->attachedAxes();
+      for (QList<QAbstractAxis*>::Iterator ita = axes.begin();
+        ita!=axes.end();
+        ++ita) {
+	if (*ita==this) {
+	  hasAxis = true;
+	  break;
+	}
+      }
+      if (!hasAxis) continue;
+      
       if (s && s->isInitialized()) {
         min_ = std::min(min_, s->minY());
         max_ = std::max(max_, s->maxY());
