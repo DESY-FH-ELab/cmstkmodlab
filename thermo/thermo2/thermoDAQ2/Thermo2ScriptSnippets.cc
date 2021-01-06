@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -26,8 +26,6 @@ Thermo2ScriptSnippets::Thermo2ScriptSnippets(QWidget *parent)
   addItem("thermo2 - unix time", "utime = thermo2.uTime()\n");
   addItem("thermo2 - execution time", "etime = thermo2.uTime()\n");
   addItem("thermo2 - make unix time", "utime = thermo2.mkUTime(year, month, day, hour, minute, second)\n");
-  // addItem("huber - set temperature set point", "huber.setTemperatureSetPoint()\n");
-  // addItem("huber - get temperature set point", "temp = huber.getTemperatureSetPoint()\n");
   // addItem("huber - set temperature set point", "huber.setTemperatureSetPoint(temperature)\n");
   // addItem("huber - get temperature set point", "temperature = huber.getTemperatureSetPoint()\n");
   addItem("marta - set temperature set point", "marta.setTemperatureSetPoint(temperature)\n");
