@@ -110,7 +110,7 @@ void AgilentTwisTorr304ComHandler::OpenIoPort( void ) noexcept(false)
 
   // check if successful
   if ( fIoPortFileDescriptor == -1 ) {
-    std::cerr << "[Iota300ComHandler::OpenIoPort] ** ERROR: could not open device file "
+    std::cerr << "[AgilentTwisTorr304ComHandler::OpenIoPort] ** ERROR: could not open device file "
 	      << fIoPort << "." << std::endl;
     std::cerr << "                               (probably it's not user-writable)."
           << std::endl;
