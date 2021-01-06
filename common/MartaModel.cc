@@ -242,9 +242,9 @@ void MartaModel::updateInformation()
         for (int b=0;b<16;++b) {
 
           if (Alarms_[idx] & bit) {
-            std::map<uint16_t,std::string>::iterator itfind = AllAlarmTexts_[idx].find(bit);
+            std::map<uint16_t,Alarm_t>::iterator itfind = AllAlarmTexts_[idx].find(bit);
             if (itfind!=AllAlarmTexts_[idx].end()) {
-              CurrentAlarmTexts_.append(QString(itfind->second.c_str()));
+              CurrentAlarmTexts_.append(QString(std::get<1>(itfind->second).c_str()) + " (" + std::get<0>(itfind->second).c_str());
             }
           }
 
@@ -391,71 +391,71 @@ bool MartaModel::valueChanged(uint16_t &storage, uint16_t value)
 
 void MartaModel::initializeAlarmTexts()
 {
-  AllAlarmTexts_[0][0x0001] = "Pressure drop over FL1 high"; // "b_dP01_CO2_AL";
-  AllAlarmTexts_[0][0x0002] = "Pressure drop over FL1 too high"; // "b_dP01_CO2_FS";
-  AllAlarmTexts_[0][0x0004] = "Pressure drop over FL2 high"; // "b_dP02_CO2_AL";
-  AllAlarmTexts_[0][0x0008] = "Pressure drop over FL2 too high"; // "b_dP02_CO2_FS";
-  AllAlarmTexts_[0][0x0010] = "Pump LP1 delta pressure low"; // "b_dP03_CO2_LP_AL";
-  AllAlarmTexts_[0][0x0020] = "Pump LP1 delta pressure too low"; // "b_dP03_CO2_LP_FS";
-  AllAlarmTexts_[0][0x0040] = "Pump LP1 delta pressure high"; // "b_dP03_CO2_HP_AL";
-  AllAlarmTexts_[0][0x0080] = "Pump LP1 delta pressure too high"; // "b_dP03_CO2_HP_FS";
-  AllAlarmTexts_[0][0x0100] = "b_dP04_CO2_HP_FS";
-  AllAlarmTexts_[0][0x0200] = "Pump LP1 delta temperature high"; // "b_dT03_CO2_HT_AL";
-  AllAlarmTexts_[0][0x0400] = "Pump outlet pressure too high"; // "b_PT03_CO2_HP_FS";
-  AllAlarmTexts_[0][0x0800] = "Pump suction subcooling low"; // "b_SC01_CO2_AL";
-  AllAlarmTexts_[0][0x1000] = "Pump suction subcooling too low"; // "b_SC01_CO2_FS";
-  AllAlarmTexts_[0][0x2000] = "Too low CO2 temperature"; // "b_TT01_CO2_LT_FS";
-  AllAlarmTexts_[0][0x4000] = "Accumulator pressure high"; // "b_PT04_CO2_HP_TS";
-  AllAlarmTexts_[0][0x8000] = "Accumulator pressure too high"; // "b_PT04_CO2_HP_FS";
+  AllAlarmTexts_[0][0x0001] = std::make_tuple("b_dP01_CO2_AL", "Pressure drop over FL1 high", false);
+  AllAlarmTexts_[0][0x0002] = std::make_tuple("b_dP01_CO2_FS", "Pressure drop over FL1 too high", true);
+  AllAlarmTexts_[0][0x0004] = std::make_tuple("b_dP02_CO2_AL", "Pressure drop over FL2 high", false);
+  AllAlarmTexts_[0][0x0008] = std::make_tuple("b_dP02_CO2_FS", "Pressure drop over FL2 too high", true);
+  AllAlarmTexts_[0][0x0010] = std::make_tuple("b_dP03_CO2_LP_AL", "Pump LP1 delta pressure low", false);
+  AllAlarmTexts_[0][0x0020] = std::make_tuple("b_dP03_CO2_LP_FS", "Pump LP1 delta pressure too low", true);
+  AllAlarmTexts_[0][0x0040] = std::make_tuple("b_dP03_CO2_HP_AL", "Pump LP1 delta pressure high", false);
+  AllAlarmTexts_[0][0x0080] = std::make_tuple("b_dP03_CO2_HP_FS", "Pump LP1 delta pressure too high", true);
+  AllAlarmTexts_[0][0x0100] = std::make_tuple("b_dP04_CO2_HP_FS", "b_dP04_CO2_HP_FS", true);
+  AllAlarmTexts_[0][0x0200] = std::make_tuple("b_dT03_CO2_HT_AL", "Pump LP1 delta temperature high", false);
+  AllAlarmTexts_[0][0x0400] = std::make_tuple("b_PT03_CO2_HP_FS", "Pump outlet pressure too high", true);
+  AllAlarmTexts_[0][0x0800] = std::make_tuple("b_SC01_CO2_AL", "Pump suction subcooling low", false);
+  AllAlarmTexts_[0][0x1000] = std::make_tuple("b_SC01_CO2_FS", "Pump suction subcooling too low", true);
+  AllAlarmTexts_[0][0x2000] = std::make_tuple("b_SC01_CO2_FS", "Too low CO2 temperature", true);
+  AllAlarmTexts_[0][0x4000] = std::make_tuple("b_PT04_CO2_HP_TS", "Accumulator pressure high", false);
+  AllAlarmTexts_[0][0x8000] = std::make_tuple("b_PT04_CO2_HP_FS", "Accumulator pressure too high", true);
 
-  AllAlarmTexts_[1][0x0001] = "Accumulator heater temperature high"; // "b_TT04_CO2_HT_AL";
-  AllAlarmTexts_[1][0x0002] = "Accumulator heater temperature very high"; // "b_TT04_CO2_HT_TS";
-  AllAlarmTexts_[1][0x0004] = "Accumulator heater temperature too high"; // "b_TT04_CO2_HT_FS";
-  AllAlarmTexts_[1][0x0008] = "Compressor circuit breaker"; // "b_Compressor_FS";
-  AllAlarmTexts_[1][0x0010] = "Fans circuit breaker"; // "b_Vent_FS";
-  AllAlarmTexts_[1][0x0020] = "Heater circuit breaker"; // "b_Heater_FS";
-  AllAlarmTexts_[1][0x0040] = "CO2 pump circuit breaker of driver error"; // "b_Pump_FS";
-  AllAlarmTexts_[1][0x0080] = "Low pressure - Pressure switch"; // "b_Pressure_Switch_LP_FS";
-  AllAlarmTexts_[1][0x0100] = "High pressure - Pressure switch"; // "b_Pressure_Switch_HP_FS";
-  AllAlarmTexts_[1][0x0200] = "Pressure in compressor too high"; // "b_Switching_Off_Pressure";
-  AllAlarmTexts_[1][0x0400] = "Power supply error"; // "b_Supply_Error_FS";
-  AllAlarmTexts_[1][0x0800] = "Emergency stop"; // "b_Emergency_Stop";
-  AllAlarmTexts_[1][0x1000] = "Interlock IN trigger"; // "bInterlock_IN_HMI";
-  AllAlarmTexts_[1][0x2000] = "Kill switch trigger"; // "bKill_Switch_HMI";
-  AllAlarmTexts_[1][0x4000] = "b_PT03_R507A_IOError_FS";
-  AllAlarmTexts_[1][0x8000] = "b_PT05_R507A_IOError_FS";
+  AllAlarmTexts_[1][0x0001] = std::make_tuple("b_TT04_CO2_HT_AL", "Accumulator heater temperature high", false);
+  AllAlarmTexts_[1][0x0002] = std::make_tuple("b_TT04_CO2_HT_TS", "Accumulator heater temperature very high", false);
+  AllAlarmTexts_[1][0x0004] = std::make_tuple("b_TT04_CO2_HT_FS", "Accumulator heater temperature too high", true);
+  AllAlarmTexts_[1][0x0008] = std::make_tuple("b_Compressor_FS", "Compressor circuit breaker", true);
+  AllAlarmTexts_[1][0x0010] = std::make_tuple("b_Vent_FS", "Fans circuit breaker", true);
+  AllAlarmTexts_[1][0x0020] = std::make_tuple("b_Heater_FS", "Heater circuit breaker", true);
+  AllAlarmTexts_[1][0x0040] = std::make_tuple("b_Pump_FS", "CO2 pump circuit breaker of driver error", true);
+  AllAlarmTexts_[1][0x0080] = std::make_tuple("b_Pressure_Switch_LP_FS", "Low pressure - Pressure switch", true);
+  AllAlarmTexts_[1][0x0100] = std::make_tuple("b_Pressure_Switch_HP_FS", "High pressure - Pressure switch", true);
+  AllAlarmTexts_[1][0x0200] = std::make_tuple("b_Switching_Off_Pressure", "Pressure in compressor too high", true);
+  AllAlarmTexts_[1][0x0400] = std::make_tuple("b_Supply_Error_FS", "Power supply error", true);
+  AllAlarmTexts_[1][0x0800] = std::make_tuple("b_Emergency_Stop", "Emergency stop", true);
+  AllAlarmTexts_[1][0x1000] = std::make_tuple("bInterlock_IN_HMI", "Interlock IN trigger", true);
+  AllAlarmTexts_[1][0x2000] = std::make_tuple("bKill_Switch_HMI", "Kill switch trigger", true);
+  AllAlarmTexts_[1][0x4000] = std::make_tuple("b_PT03_R507A_IOError_FS", "b_PT03_R507A_IOError_FS", true);
+  AllAlarmTexts_[1][0x8000] = std::make_tuple("b_PT05_R507A_IOError_FS", "b_PT05_R507A_IOError_FS", true);
 
-  AllAlarmTexts_[2][0x0001] = "b_PT01_CO2_IOError_FS";
-  AllAlarmTexts_[2][0x0002] = "b_PT02_CO2_IOError_FS";
-  AllAlarmTexts_[2][0x0004] = "b_PT03_CO2_IOError_FS";
-  AllAlarmTexts_[2][0x0008] = "b_PT04_CO2_IOError_FS";
-  AllAlarmTexts_[2][0x0010] = "b_PT05_CO2_IOError_FS";
-  AllAlarmTexts_[2][0x0020] = "b_PT06_CO2_IOError_FS";
-  AllAlarmTexts_[2][0x0040] = "b_Flowmeter_IOError_FS";
-  AllAlarmTexts_[2][0x0080] = "b_TT02_R507A_IOError_FS";
-  AllAlarmTexts_[2][0x0100] = "b_TT01_CO2_IOError_FS";
-  AllAlarmTexts_[2][0x0200] = "b_TT02_CO2_IOError_FS";
-  AllAlarmTexts_[2][0x0400] = "b_TT03_CO2_IOError_FS";
-  AllAlarmTexts_[2][0x0800] = "b_TT04_CO2_IOError_FS";
-  AllAlarmTexts_[2][0x1000] = "b_TT05_CO2_IOError_FS";
-  AllAlarmTexts_[2][0x2000] = "b_TT06_CO2_IOError_FS";
-  AllAlarmTexts_[2][0x4000] = "b_Compressor_LP_AL";
-  AllAlarmTexts_[2][0x8000] = "b_Compressor_LP_FS";
+  AllAlarmTexts_[2][0x0001] = std::make_tuple("b_PT01_CO2_IOError_FS", "b_PT01_CO2_IOError_FS", true);
+  AllAlarmTexts_[2][0x0002] = std::make_tuple("b_PT02_CO2_IOError_FS", "b_PT02_CO2_IOError_FS", true);
+  AllAlarmTexts_[2][0x0004] = std::make_tuple("b_PT03_CO2_IOError_FS", "b_PT03_CO2_IOError_FS", true);
+  AllAlarmTexts_[2][0x0008] = std::make_tuple("b_PT04_CO2_IOError_FS", "b_PT04_CO2_IOError_FS", true);
+  AllAlarmTexts_[2][0x0010] = std::make_tuple("b_PT05_CO2_IOError_FS", "b_PT05_CO2_IOError_FS", true);
+  AllAlarmTexts_[2][0x0020] = std::make_tuple("b_PT06_CO2_IOError_FS", "b_PT06_CO2_IOError_FS", true);
+  AllAlarmTexts_[2][0x0040] = std::make_tuple("b_Flowmeter_IOError_FS", "b_Flowmeter_IOError_FS", true);
+  AllAlarmTexts_[2][0x0080] = std::make_tuple("b_TT02_R507A_IOError_FS", "b_TT02_R507A_IOError_FS", true);
+  AllAlarmTexts_[2][0x0100] = std::make_tuple("b_TT01_CO2_IOError_FS", "b_TT01_CO2_IOError_FS", true);
+  AllAlarmTexts_[2][0x0200] = std::make_tuple("b_TT02_CO2_IOError_FS", "b_TT02_CO2_IOError_FS", true);
+  AllAlarmTexts_[2][0x0400] = std::make_tuple("b_TT03_CO2_IOError_FS", "b_TT03_CO2_IOError_FS", true);
+  AllAlarmTexts_[2][0x0800] = std::make_tuple("b_TT04_CO2_IOError_FS", "b_TT04_CO2_IOError_FS", true);
+  AllAlarmTexts_[2][0x1000] = std::make_tuple("b_TT05_CO2_IOError_FS", "b_TT05_CO2_IOError_FS", true);
+  AllAlarmTexts_[2][0x2000] = std::make_tuple("b_TT06_CO2_IOError_FS", "b_TT06_CO2_IOError_FS", true);
+  AllAlarmTexts_[2][0x4000] = std::make_tuple("b_Compressor_LP_AL", "b_Compressor_LP_AL", false);
+  AllAlarmTexts_[2][0x8000] = std::make_tuple("b_Compressor_LP_FS", "b_Compressor_LP_FS", true);
 
-  AllAlarmTexts_[3][0x0001] = "b_Compressor_HP_AL";
-  AllAlarmTexts_[3][0x0002] = "b_Compressor_HP_FS";
-  AllAlarmTexts_[3][0x0004] = "b_Compressor_Cnt_Alarm";
-  AllAlarmTexts_[3][0x0008] = "bEV1_Error_FS";
-  AllAlarmTexts_[3][0x0010] = "bEV2_Error_FS";
-  AllAlarmTexts_[3][0x0020] = "bEV3_Error_FS";
-  AllAlarmTexts_[3][0x0040] = "b_dT03_CO2_HT_FS";
-  AllAlarmTexts_[3][0x0080] = "b_Chiller_SH05_TS";
-  AllAlarmTexts_[3][0x0100] = "Reserve";
-  AllAlarmTexts_[3][0x0200] = "Reserve";
-  AllAlarmTexts_[3][0x0400] = "Reserve";
-  AllAlarmTexts_[3][0x0800] = "Reserve";
-  AllAlarmTexts_[3][0x1000] = "Reserve";
-  AllAlarmTexts_[3][0x2000] = "Reserve";
-  AllAlarmTexts_[3][0x4000] = "Reserve";
-  AllAlarmTexts_[3][0x8000] = "Reserve";
+  AllAlarmTexts_[3][0x0001] = std::make_tuple("b_Compressor_HP_AL", "b_Compressor_HP_AL", false);
+  AllAlarmTexts_[3][0x0002] = std::make_tuple("b_Compressor_HP_FS", "b_Compressor_HP_FS", true);
+  AllAlarmTexts_[3][0x0004] = std::make_tuple("b_Compressor_Cnt_Alarm", "b_Compressor_Cnt_Alarm", false);
+  AllAlarmTexts_[3][0x0008] = std::make_tuple("bEV1_Error_FS", "bEV1_Error_FS", true);
+  AllAlarmTexts_[3][0x0010] = std::make_tuple("bEV2_Error_FS", "bEV2_Error_FS", true);
+  AllAlarmTexts_[3][0x0020] = std::make_tuple("bEV3_Error_FS", "bEV3_Error_FS", true);
+  AllAlarmTexts_[3][0x0040] = std::make_tuple("b_dT03_CO2_HT_FS", "b_dT03_CO2_HT_FS", true);
+  AllAlarmTexts_[3][0x0080] = std::make_tuple("b_Chiller_SH05_TS", "b_Chiller_SH05_TS", false);
+  AllAlarmTexts_[3][0x0100] = std::make_tuple("Reserve", "Reserve", false);
+  AllAlarmTexts_[3][0x0200] = std::make_tuple("Reserve", "Reserve", false);
+  AllAlarmTexts_[3][0x0400] = std::make_tuple("Reserve", "Reserve", false);
+  AllAlarmTexts_[3][0x0800] = std::make_tuple("Reserve", "Reserve", false);
+  AllAlarmTexts_[3][0x1000] = std::make_tuple("Reserve", "Reserve", false);
+  AllAlarmTexts_[3][0x2000] = std::make_tuple("Reserve", "Reserve", false);
+  AllAlarmTexts_[3][0x4000] = std::make_tuple("Reserve", "Reserve", false);
+  AllAlarmTexts_[3][0x8000] = std::make_tuple("Reserve", "Reserve", false);
 }

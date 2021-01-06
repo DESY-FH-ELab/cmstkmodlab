@@ -15,6 +15,7 @@
 
 #include <string>
 #include <array>
+#include <tuple>
 
 #include <QString>
 #include <QStringList>
@@ -172,7 +173,11 @@ protected:
   std::array<uint16_t,4> Alarms_;
   QStringList CurrentAlarmTexts_;
   void initializeAlarmTexts();
-  std::array<std::map<uint16_t,std::string>,4> AllAlarmTexts_;
+  // std::array<std::map<uint16_t,std::string>,4> AllAlarmTexts_;
+
+  typedef std::tuple<std::string,std::string,bool> Alarm_t;
+  std::array<std::map<uint16_t,Alarm_t>,4> AllAlarmTexts_;
+
   uint16_t AlarmStatus_;
 
   uint16_t Status_;
