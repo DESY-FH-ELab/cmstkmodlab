@@ -200,7 +200,7 @@ void ThermoDisplay2Chart::areaChanged(const QRectF & plotRect)
   }
 
   legend()->setGeometry(QRectF(plotRect.x()+10, plotRect.y()+5,
-                               nColumns*(maxWidth+22)+16,
+                               nColumns*(maxWidth+24)+16,
                                nRows*(maxHeight+8)+14));
   legend()->update();
 }
