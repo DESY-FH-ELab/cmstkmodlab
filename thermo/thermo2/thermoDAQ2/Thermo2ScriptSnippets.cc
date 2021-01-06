@@ -28,4 +28,12 @@ Thermo2ScriptSnippets::Thermo2ScriptSnippets(QWidget *parent)
   addItem("thermo2 - make unix time", "utime = thermo2.mkUTime(year, month, day, hour, minute, second)\n");
   // addItem("huber - set temperature set point", "huber.setTemperatureSetPoint()\n");
   // addItem("huber - get temperature set point", "temp = huber.getTemperatureSetPoint()\n");
+  // addItem("huber - set temperature set point", "huber.setTemperatureSetPoint(temperature)\n");
+  // addItem("huber - get temperature set point", "temperature = huber.getTemperatureSetPoint()\n");
+  addItem("marta - set temperature set point", "marta.setTemperatureSetPoint(temperature)\n");
+  addItem("marta - get temperature set point", "temperature = marta.getTemperatureSetPoint()\n");
+  addItem("marta - set speed set point", "marta.setSpeedSetPoint(speed)\n");
+  addItem("marta - get speed set point", "speed = marta.getSpeedSetPoint()\n");
+  addItem("marta - set flow set point", "marta.setFlowSetPoint(flow)\n");
+  addItem("marta - get flow set point", "flow = marta.getFlowSetPoint()\n");
 }
