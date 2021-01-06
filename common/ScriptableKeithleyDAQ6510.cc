@@ -10,9 +10,9 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <unistd.h>
-
 #include <iostream>
+#include <chrono>
+#include <thread>
 #include <sstream>
 #include <vector>
 #include <cmath>
@@ -82,6 +82,8 @@ void ScriptableKeithleyDAQ6510::setUpdateInterval(int updateInterval)
 void ScriptableKeithleyDAQ6510::waitForStableTemperature(const QString & sensors,
                                                          int timeout)
 {
+  using namespace std::chrono_literals;
+
   std::vector<unsigned int> activeSensors;
   std::istringstream iss(sensors.toStdString().c_str());
   int c;
@@ -135,7 +137,8 @@ void ScriptableKeithleyDAQ6510::waitForStableTemperature(const QString & sensors
     }
     if (stable) break;
 
-    sleep(60);
+    std::this_thread::sleep_for(60s);
+
     t += 60;
   }
 
@@ -147,15 +150,20 @@ void ScriptableKeithleyDAQ6510::waitForTemperatureAbove(unsigned int sensor,
                                                         float temperature,
                                                         int timeout)
 {
+  using namespace std::chrono_literals;
+
   keithleyModel_->statusMessage(QString("wait for T(%1) > %2 deg C ...").arg(sensor).arg(temperature));
   NQLog("keithley") << QString("wait for T(%1) > %2 deg C ...").arg(sensor).arg(temperature);
 
   for (int m=0;m<=timeout;m+=60) {
+
     QMutexLocker locker(&mutex_);
     double temp = keithleyModel_->getTemperature(sensor);
     locker.unlock();
+
     if (temp>temperature) break;
-    sleep(60);
+
+    std::this_thread::sleep_for(60s);
   }
 
   keithleyModel_->statusMessage("done");
@@ -166,15 +174,20 @@ void ScriptableKeithleyDAQ6510::waitForTemperatureBelow(unsigned int sensor,
                                                         float temperature,
                                                         int timeout)
 {
+  using namespace std::chrono_literals;
+
   keithleyModel_->statusMessage(QString("wait for T(%1) < %2 deg C ...").arg(sensor).arg(temperature));
   NQLog("keithley") << QString("wait for T(%1) < %2 deg C ...").arg(sensor).arg(temperature);
 
   for (int m=0;m<=timeout;m+=60) {
+
     QMutexLocker locker(&mutex_);
     double temp = keithleyModel_->getTemperature(sensor);
     locker.unlock();
+
     if (temp<temperature) break;
-    sleep(60);
+
+    std::this_thread::sleep_for(60s);
   }
 
   keithleyModel_->statusMessage("done");
