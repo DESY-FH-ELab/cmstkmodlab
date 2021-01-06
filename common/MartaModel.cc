@@ -163,7 +163,8 @@ void MartaModel::updateInformation()
     changed |= valueChanged(SpeedSetpoint_, controller_->ToFloatBADC(&tab_reg[66]), 3);
     changed |= valueChanged(FlowSetpoint_, controller_->ToFloatBADC(&tab_reg[68]), 3);
     changed |= valueChanged(TemperatureSetpoint_, controller_->ToFloatBADC(&tab_reg[70]), 3);
-    
+
+    /*
     printf("PT03:            %f\n", PT03_);
     printf("PT05:            %f\n", PT05_);
     printf("PT01CO2:         %f\n", PT01CO2_);
@@ -200,7 +201,8 @@ void MartaModel::updateInformation()
     printf("SpeedSetpoint:   %f\n", SpeedSetpoint_);
     printf("FlowSetpoint:    %f\n", FlowSetpoint_);
     printf("TempSetpoint:    %f\n", TemperatureSetpoint_);
-
+    */
+    
     controller_->ReadRegisters(80, 5, tab_reg);
     
     alarmChanged |= valueChanged(Alarms_[0], tab_reg[0]);
@@ -208,13 +210,15 @@ void MartaModel::updateInformation()
     alarmChanged |= valueChanged(Alarms_[2], tab_reg[2]);
     alarmChanged |= valueChanged(Alarms_[3], tab_reg[3]);
     alarmChanged |= valueChanged(AlarmStatus_, tab_reg[4]);
-    
+
+    /*
     printf("Alarm 1:     0x%04x\n", Alarms_[0]);
     printf("Alarm 2:     0x%04x\n", Alarms_[1]);
     printf("Alarm 3:     0x%04x\n", Alarms_[2]);
     printf("Alarm 4:     0x%04x\n", Alarms_[3]);
     printf("AlarmStatus:   %d\n", AlarmStatus_);
-
+    */
+    
     controller_->ReadRegisters(100, 7, tab_reg);
     
     changed |= valueChanged(Status_, tab_reg[0]);
@@ -222,11 +226,13 @@ void MartaModel::updateInformation()
     changed |= valueChanged(SpeedSetpoint2_, controller_->ToFloatBADC(&tab_reg[3]), 3);
     changed |= valueChanged(FlowSetpoint2_, controller_->ToFloatBADC(&tab_reg[5]), 3);
 
+    /*
     printf("Status:        0x%04x\n", Status_);
     printf("TempSetpoint2:   %f\n", TemperatureSetpoint2_);
     printf("SpeedSetpoint2:  %f\n", SpeedSetpoint2_);
     printf("FlowSetpoint2:   %f\n", FlowSetpoint2_);
-
+    */
+    
     if (alarmChanged) {
 
       CurrentAlarmTexts_.clear();
