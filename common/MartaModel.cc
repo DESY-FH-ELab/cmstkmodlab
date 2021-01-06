@@ -22,7 +22,7 @@
    MartaModel implementation
   */
 MartaModel::MartaModel(const char* ipaddress,
-		       float updateInterval, QObject* /*parent*/)
+                       float updateInterval, QObject* /*parent*/)
   : QObject(),
     AbstractDeviceModel<Marta_t>(),
     ipaddress_(ipaddress),
@@ -238,23 +238,23 @@ void MartaModel::updateInformation()
       CurrentAlarmTexts_.clear();
 
       for (int idx=0;idx<4;++idx) {
-	uint16_t bit = 1;
-	for (int b=0;b<16;++b) {
+        uint16_t bit = 1;
+        for (int b=0;b<16;++b) {
 
-	  if (Alarms_[idx] & bit) {
-	    std::map<uint16_t,std::string>::iterator itfind = AllAlarmTexts_[idx].find(bit);
-	    if (itfind!=AllAlarmTexts_[idx].end()) {
-	      CurrentAlarmTexts_.append(QString(itfind->second.c_str()));
-	    }
-	  }
+          if (Alarms_[idx] & bit) {
+            std::map<uint16_t,std::string>::iterator itfind = AllAlarmTexts_[idx].find(bit);
+            if (itfind!=AllAlarmTexts_[idx].end()) {
+              CurrentAlarmTexts_.append(QString(itfind->second.c_str()));
+            }
+          }
 
-	  bit <<= 1;
-	}
+          bit <<= 1;
+        }
       }
 
       emit alarmsChanged();
     }
-    
+
     if (changed || alarmChanged) {
       NQLog("MartaModel", NQLog::Spam) << "information changed";
       emit informationChanged();
