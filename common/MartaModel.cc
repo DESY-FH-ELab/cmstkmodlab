@@ -391,37 +391,37 @@ bool MartaModel::valueChanged(uint16_t &storage, uint16_t value)
 
 void MartaModel::initializeAlarmTexts()
 {
-  AllAlarmTexts_[0][0x0001] = "b_dP01_CO2_AL";
-  AllAlarmTexts_[0][0x0002] = "b_dP01_CO2_FS";
-  AllAlarmTexts_[0][0x0004] = "b_dP02_CO2_AL";
-  AllAlarmTexts_[0][0x0008] = "b_dP02_CO2_FS";
-  AllAlarmTexts_[0][0x0010] = "b_dP03_CO2_LP_AL";
-  AllAlarmTexts_[0][0x0020] = "b_dP03_CO2_LP_FS";
-  AllAlarmTexts_[0][0x0040] = "b_dP03_CO2_HP_AL";
-  AllAlarmTexts_[0][0x0080] = "b_dP03_CO2_HP_FS";
+  AllAlarmTexts_[0][0x0001] = "Pressure drop over FL1 high"; // "b_dP01_CO2_AL";
+  AllAlarmTexts_[0][0x0002] = "Pressure drop over FL1 too high"; // "b_dP01_CO2_FS";
+  AllAlarmTexts_[0][0x0004] = "Pressure drop over FL2 high"; // "b_dP02_CO2_AL";
+  AllAlarmTexts_[0][0x0008] = "Pressure drop over FL2 too high"; // "b_dP02_CO2_FS";
+  AllAlarmTexts_[0][0x0010] = "Pump LP1 delta pressure low"; // "b_dP03_CO2_LP_AL";
+  AllAlarmTexts_[0][0x0020] = "Pump LP1 delta pressure too low"; // "b_dP03_CO2_LP_FS";
+  AllAlarmTexts_[0][0x0040] = "Pump LP1 delta pressure high"; // "b_dP03_CO2_HP_AL";
+  AllAlarmTexts_[0][0x0080] = "Pump LP1 delta pressure too high"; // "b_dP03_CO2_HP_FS";
   AllAlarmTexts_[0][0x0100] = "b_dP04_CO2_HP_FS";
-  AllAlarmTexts_[0][0x0200] = "b_dT03_CO2_HT_AL";
-  AllAlarmTexts_[0][0x0400] = "b_PT03_CO2_HP_FS";
-  AllAlarmTexts_[0][0x0800] = "b_SC01_CO2_AL";
-  AllAlarmTexts_[0][0x1000] = "b_SC01_CO2_FS";
-  AllAlarmTexts_[0][0x2000] = "b_TT01_CO2_LT_FS";
-  AllAlarmTexts_[0][0x4000] = "b_PT04_CO2_HP_TS";
-  AllAlarmTexts_[0][0x8000] = "b_PT04_CO2_HP_FS";
+  AllAlarmTexts_[0][0x0200] = "Pump LP1 delta temperature high"; // "b_dT03_CO2_HT_AL";
+  AllAlarmTexts_[0][0x0400] = "Pump outlet pressure too high"; // "b_PT03_CO2_HP_FS";
+  AllAlarmTexts_[0][0x0800] = "Pump suction subcooling low"; // "b_SC01_CO2_AL";
+  AllAlarmTexts_[0][0x1000] = "Pump suction subcooling too low"; // "b_SC01_CO2_FS";
+  AllAlarmTexts_[0][0x2000] = "Too low CO2 temperature"; // "b_TT01_CO2_LT_FS";
+  AllAlarmTexts_[0][0x4000] = "Accumulator pressure high"; // "b_PT04_CO2_HP_TS";
+  AllAlarmTexts_[0][0x8000] = "Accumulator pressure too high"; // "b_PT04_CO2_HP_FS";
 
-  AllAlarmTexts_[1][0x0001] = "b_TT04_CO2_HT_AL";
-  AllAlarmTexts_[1][0x0002] = "b_TT04_CO2_HT_TS";
-  AllAlarmTexts_[1][0x0004] = "b_TT04_CO2_HT_FS";
-  AllAlarmTexts_[1][0x0008] = "b_Compressor_FS";
-  AllAlarmTexts_[1][0x0010] = "b_Vent_FS";
-  AllAlarmTexts_[1][0x0020] = "b_Heater_FS";
-  AllAlarmTexts_[1][0x0040] = "b_Pump_FS";
-  AllAlarmTexts_[1][0x0080] = "b_Pressure_Switch_LP_FS";
-  AllAlarmTexts_[1][0x0100] = "b_Pressure_Switch_HP_FS";
-  AllAlarmTexts_[1][0x0200] = "b_Switching_Off_Pressure";
-  AllAlarmTexts_[1][0x0400] = "b_Supply_Error_FS";
-  AllAlarmTexts_[1][0x0800] = "b_Emergency_Stop";
-  AllAlarmTexts_[1][0x1000] = "bInterlock_IN_HMI";
-  AllAlarmTexts_[1][0x2000] = "bKill_Switch_HMI";
+  AllAlarmTexts_[1][0x0001] = "Accumulator heater temperature high"; // "b_TT04_CO2_HT_AL";
+  AllAlarmTexts_[1][0x0002] = "Accumulator heater temperature very high"; // "b_TT04_CO2_HT_TS";
+  AllAlarmTexts_[1][0x0004] = "Accumulator heater temperature too high"; // "b_TT04_CO2_HT_FS";
+  AllAlarmTexts_[1][0x0008] = "Compressor circuit breaker"; // "b_Compressor_FS";
+  AllAlarmTexts_[1][0x0010] = "Fans circuit breaker"; // "b_Vent_FS";
+  AllAlarmTexts_[1][0x0020] = "Heater circuit breaker"; // "b_Heater_FS";
+  AllAlarmTexts_[1][0x0040] = "CO2 pump circuit breaker of driver error"; // "b_Pump_FS";
+  AllAlarmTexts_[1][0x0080] = "Low pressure - Pressure switch"; // "b_Pressure_Switch_LP_FS";
+  AllAlarmTexts_[1][0x0100] = "High pressure - Pressure switch"; // "b_Pressure_Switch_HP_FS";
+  AllAlarmTexts_[1][0x0200] = "Pressure in compressor too high"; // "b_Switching_Off_Pressure";
+  AllAlarmTexts_[1][0x0400] = "Power supply error"; // "b_Supply_Error_FS";
+  AllAlarmTexts_[1][0x0800] = "Emergency stop"; // "b_Emergency_Stop";
+  AllAlarmTexts_[1][0x1000] = "Interlock IN trigger"; // "bInterlock_IN_HMI";
+  AllAlarmTexts_[1][0x2000] = "Kill switch trigger"; // "bKill_Switch_HMI";
   AllAlarmTexts_[1][0x4000] = "b_PT03_R507A_IOError_FS";
   AllAlarmTexts_[1][0x8000] = "b_PT05_R507A_IOError_FS";
 
