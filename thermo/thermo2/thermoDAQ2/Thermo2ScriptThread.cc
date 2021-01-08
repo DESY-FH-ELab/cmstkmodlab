@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -21,17 +21,20 @@
 #include "Thermo2ScriptableGlobals.h"
 
 #include "ScriptableHuberUnistat525w.h"
+#include "ScriptableMarta.h"
 #include "ScriptableRohdeSchwarzNGE103B.h"
 #include "ScriptableKeithleyDAQ6510.h"
 
 Thermo2ScriptThread::Thermo2ScriptThread(Thermo2ScriptModel* scriptModel,
                                          HuberUnistat525wModel* huberModel,
+																				 MartaModel* martaModel,
                                          RohdeSchwarzNGE103BModel* nge103BModel,
                                          KeithleyDAQ6510Model* keithleyModel,
                                          QObject *parent)
   : QThread(parent),
     scriptModel_(scriptModel),
     huberModel_(huberModel),
+		martaModel_(martaModel),
     nge103BModel_(nge103BModel),
     keithleyModel_(keithleyModel)
 {
@@ -52,6 +55,10 @@ void Thermo2ScriptThread::executeScript(const QString & script)
   ScriptableHuberUnistat525w* huberobj = new ScriptableHuberUnistat525w(huberModel_, this);
   QScriptValue huberValue = engine_->newQObject(huberobj);
   engine_->globalObject().setProperty("huber", huberValue);
+
+  ScriptableMarta* martaobj = new ScriptableMarta(martaModel_, this);
+  QScriptValue martaValue = engine_->newQObject(martaobj);
+  engine_->globalObject().setProperty("marta", martaValue);
 
   ScriptableRohdeSchwarzNGE103B *nge103BObj = new ScriptableRohdeSchwarzNGE103B(nge103BModel_, this);
   QScriptValue nge103BValue = engine_->newQObject(nge103BObj);

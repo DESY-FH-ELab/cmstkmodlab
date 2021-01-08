@@ -44,7 +44,7 @@ class LStepExpressSettingsComboBox : public QComboBox
  protected:
         LStepExpressSettings* settings_;
         QString key_;
-        
+
  signals:
 
         void valueChanged(double);
@@ -195,6 +195,8 @@ protected:
     void fillExtraToolBox();
 
 public slots:
+
+    void display_infoTab();
 
 protected slots:
     //    void lStepStateChanged( State state );

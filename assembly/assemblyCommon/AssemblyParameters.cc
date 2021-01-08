@@ -219,3 +219,48 @@ bool AssemblyParameters::update()
 
   return true;
 }
+
+//Check validity of some parameters
+bool AssemblyParameters::isValidConfig()
+{
+    for(std::map<std::string, double>::iterator it = map_double_.begin(); it != map_double_.end(); it++)
+    {
+        if(it->first == "Thickness_Baseplate" && it->second < 0)
+        {
+            NQLog("AssemblyParameters", NQLog::Fatal) << "\e[1;31mInvalid AssemblyParameters configuration !\e[0m ("<<it->first<<" = "<<it->second<<")";
+            return false;
+        }
+        if(it->first == "Thickness_PSS" && it->second < 0)
+        {
+            NQLog("AssemblyParameters", NQLog::Fatal) << "\e[1;31mInvalid AssemblyParameters configuration !\e[0m ("<<it->first<<" = "<<it->second<<")";
+            return false;
+        }
+        if(it->first == "Thickness_PSP" && it->second < 0)
+        {
+            NQLog("AssemblyParameters", NQLog::Fatal) << "\e[1;31mInvalid AssemblyParameters configuration !\e[0m ("<<it->first<<" = "<<it->second<<")";
+            return false;
+        }
+        if(it->first == "Thickness_MPA" && it->second < 0)
+        {
+            NQLog("AssemblyParameters", NQLog::Fatal) << "\e[1;31mInvalid AssemblyParameters configuration !\e[0m ("<<it->first<<" = "<<it->second<<")";
+            return false;
+        }
+        if(it->first == "Thickness_Spacer" && it->second < 0)
+        {
+            NQLog("AssemblyParameters", NQLog::Fatal) << "\e[1;31mInvalid AssemblyParameters configuration !\e[0m ("<<it->first<<" = "<<it->second<<")";
+            return false;
+        }
+        if(it->first == "Thickness_Spacer" && it->second < 0)
+        {
+            NQLog("AssemblyParameters", NQLog::Fatal) << "\e[1;31mInvalid AssemblyParameters configuration !\e[0m ("<<it->first<<" = "<<it->second<<")";
+            return false;
+        }
+        if(it->first == "Thickness_GlueLayer" && it->second < 0)
+        {
+            NQLog("AssemblyParameters", NQLog::Fatal) << "\e[1;31mInvalid AssemblyParameters configuration !\e[0m ("<<it->first<<" = "<<it->second<<")";
+            return false;
+        }
+    }
+
+    return true;
+}

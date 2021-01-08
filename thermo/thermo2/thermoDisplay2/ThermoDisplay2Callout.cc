@@ -44,7 +44,7 @@ QRectF ThermoDisplay2Callout::boundingRect() const
 }
 
 void ThermoDisplay2Callout::paint(QPainter *painter,
-                                  const QStyleOptionGraphicsItem *option,
+                                  const QStyleOptionGraphicsItem * /* option */,
                                   QWidget *widget)
 {
   QPainterPath path;
