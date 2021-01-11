@@ -110,7 +110,7 @@ void ScriptableKeithley::waitForStableTemperature(const QString & channels,
 
     std::this_thread::sleep_for(60s);
 
-    t += 60;
+    t++;
   }
 
   keithleyModel_->statusMessage("done");
@@ -126,7 +126,7 @@ void ScriptableKeithley::waitForTemperatureAbove(unsigned int channel,
   keithleyModel_->statusMessage(QString("wait for T(%1) > %2 deg C ...").arg(channel).arg(temperature));
   NQLog("keithley") << QString("wait for T(%1) > %2 deg C ...").arg(channel).arg(temperature);
 
-  for (int m=0;m<=timeout;m+=60) {
+  for (int m=0;m<=timeout;++m) {
     QMutexLocker locker(&mutex_);
     double temp = keithleyModel_->getTemperature(channel);
     locker.unlock();
@@ -148,7 +148,7 @@ void ScriptableKeithley::waitForTemperatureBelow(unsigned int channel,
   keithleyModel_->statusMessage(QString("wait for T(%1) < %2 deg C ...").arg(channel).arg(temperature));
   NQLog("keithley") << QString("wait for T(%1) < %2 deg C ...").arg(channel).arg(temperature);
 
-  for (int m=0;m<=timeout;m+=60) {
+  for (int m=0;m<=timeout;++m) {
     QMutexLocker locker(&mutex_);
     double temp = keithleyModel_->getTemperature(channel);
     locker.unlock();
