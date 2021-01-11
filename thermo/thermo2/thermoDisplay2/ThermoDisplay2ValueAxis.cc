@@ -65,7 +65,7 @@ void ThermoDisplay2ValueAxis::refresh(QList<QAbstractSeries*> series)
     if (deltaY<5.0) deltaY = 5.0;
 
     setRange(std::pow(10,-precision_)*std::round(std::pow(10,precision_)*(min_-0.1*deltaY)),
-	     std::pow(10,-precision_)*std::round(std::pow(10,precision_)*(max_+0.1*deltaY)));
+             std::pow(10,-precision_)*std::round(std::pow(10,precision_)*(max_+0.1*deltaY)));
   } else {
 
     setRange(userMin_, userMax_);

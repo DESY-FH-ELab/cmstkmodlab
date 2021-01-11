@@ -234,7 +234,7 @@ void ThermoDisplay2PowerPressureChartView::tooltip(QPointF point, bool state)
 }
 
 ThermoDisplay2PressureDeltaPressureChartView::ThermoDisplay2PressureDeltaPressureChartView(ThermoDisplay2Chart *chart,
-											   QWidget *parent)
+                                                                                           QWidget *parent)
   : ThermoDisplay2ChartView(chart, parent)
 {
 
