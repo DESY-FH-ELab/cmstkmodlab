@@ -164,12 +164,11 @@ void ThermoDisplay2Chart::areaChanged(const QRectF & plotRect)
 
   QFontMetrics fm(legend()->font());
 
-  for (QList<QAbstractSeries*>::Iterator it = series().begin();
-      it!=series().end();
-      ++it) {
-    ThermoDisplay2LineSeries* s = dynamic_cast<ThermoDisplay2LineSeries*>(*it);
-    if (s) {
-      QRectF boundingRect = fm.boundingRect(s->name());
+  auto ss = series();
+  for (QAbstractSeries *s : ss) {
+    ThermoDisplay2LineSeries* ls = dynamic_cast<ThermoDisplay2LineSeries*>(s);
+    if (ls) {
+      QRectF boundingRect = fm.boundingRect(ls->name());
       maxWidth = std::max(maxWidth, boundingRect.width());
       maxHeight = std::max(maxHeight, boundingRect.height());
     }
@@ -643,20 +642,17 @@ void ThermoDisplay2LogPressureChart::refreshPressureAxis()
   qreal maxY = -std::numeric_limits<qreal>::max();
 
   bool hasValues = false;
-  for (QList<QAbstractSeries*>::Iterator it = series().begin();
-      it!=series().end();
-      ++it) {
-    ThermoDisplay2LineSeries* s = dynamic_cast<ThermoDisplay2LineSeries*>(*it);
-    if (s && s->isInitialized()) {
+  auto ss = series();
+  for (QAbstractSeries *s : ss) {
+    ThermoDisplay2LineSeries* ls = dynamic_cast<ThermoDisplay2LineSeries*>(s);
+    if (ls && ls->isInitialized()) {
 
-      QList<QAbstractAxis*> axes = s->attachedAxes();
-      for (QList<QAbstractAxis*>::Iterator ita = axes.begin();
-          ita!=axes.end();
-          ++ita) {
+      auto axes = ls->attachedAxes();
+      for (QAbstractAxis * axis : axes) {
 
-        if ((*ita)->alignment()==Qt::AlignLeft) {
-          minY = std::min(minY, s->minY());
-          maxY = std::max(maxY, s->maxY());
+        if (axis->alignment()==Qt::AlignLeft) {
+          minY = std::min(minY, ls->minY());
+          maxY = std::max(maxY, ls->maxY());
           hasValues = true;
         }
       }

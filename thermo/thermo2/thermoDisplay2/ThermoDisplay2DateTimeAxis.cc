@@ -42,13 +42,11 @@ void ThermoDisplay2DateTimeAxis::refresh(QList<QAbstractSeries*> series)
     qreal maxX = -std::numeric_limits<qreal>::max();
 
     bool hasValues = false;
-    for (QList<QAbstractSeries*>::Iterator it = series.begin();
-        it!=series.end();
-        ++it) {
-      ThermoDisplay2LineSeries* s = dynamic_cast<ThermoDisplay2LineSeries*>(*it);
-      if (s && s->isInitialized()) {
-        minX = std::min(minX, s->minX());
-        maxX = std::max(maxX, s->maxX());
+    for (QAbstractSeries * s : series) {
+      ThermoDisplay2LineSeries* ls = dynamic_cast<ThermoDisplay2LineSeries*>(s);
+      if (ls && ls->isInitialized()) {
+        minX = std::min(minX, ls->minX());
+        maxX = std::max(maxX, ls->maxX());
         hasValues = true;
       }
     }
