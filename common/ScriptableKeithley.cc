@@ -95,14 +95,12 @@ void ScriptableKeithley::waitForStableTemperature(const QString & channels,
   while (t<=timeout) {
 
     bool stable = true;
-    for (std::vector<unsigned int>::iterator it = activeChannels.begin();
-	 it!=activeChannels.end();
-	 ++it) {
-      current[*it] = keithleyModel_->getTemperature(*it);
-      buffer[*it].push_back(current[*it]);
+    for (unsigned int channel : activeChannels) {
+      current[channel] = keithleyModel_->getTemperature(channel);
+      buffer[channel].push_back(current[channel]);
 
-      float delta = current[*it]-buffer[*it].get();
-      NQLog("keithley") << QString("dT(%1) = %2").arg(*it).arg(delta);
+      float delta = current[channel]-buffer[channel].get();
+      NQLog("keithley") << QString("dT(%1) = %2").arg(channel).arg(delta);
 
       if (std::fabs(delta)>=0.01) stable = false;
     }
