@@ -101,7 +101,7 @@ void MartaAlarmDialog::updateInfo()
 }
 
 MartaWidget::MartaWidget(MartaModel* model,
-			 QWidget *parent)
+                         QWidget *parent)
  : QWidget(parent),
    model_(model),
    alarmDialog_(0)
