@@ -156,13 +156,6 @@ void ThermoDisplay2Chart::xAxisDoubleClicked()
 
 void ThermoDisplay2Chart::areaChanged(const QRectF & plotRect)
 {
-  /*
-  std::cout << "plotRect.x() " << plotRect.x() << std::endl;
-  std::cout << "plotRect.y() " << plotRect.y() << std::endl;
-  std::cout << "plotRect.width() " << plotRect.width() << std::endl;
-  std::cout << "plotRect.height() " << plotRect.height() << std::endl;
-   */
-
   if (plotRect.width()<40) return;
   if (plotRect.height()<40) return;
 
@@ -186,12 +179,6 @@ void ThermoDisplay2Chart::areaChanged(const QRectF & plotRect)
   qreal nSeries = series().size();
   qreal nRows = nSeries;
   qreal nColumns = 1;
-
-  /*
-  std::cout << "maxHeight " << maxHeight << std::endl;
-  std::cout << series().size() << std::endl;
-  std::cout << availableHeight << std::endl;
-   */
 
   while (nRows*(maxHeight+8)+14 > availableHeight) {
     //std::cout << nRows << std::endl;
