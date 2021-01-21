@@ -405,7 +405,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   ++row_index;
 
   tmp_tag = "FromPlatformRefPointCalibrationSpacersToSpacerEdge";
-  tmp_des = "From Platform Ref-Point for Spacers-Calibration to Spacer's Edge :";
+  tmp_des = "From Platform Ref-Point to Spacer's Edge :"; //Was: 'From Platform Ref-Point for Spacers-Calibration to Spacer's Edge'
 
   map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
@@ -423,7 +423,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   ++row_index;
 
   tmp_tag = "FromPlatformRefPointCalibrationBaseplateToPSPEdge";
-  tmp_des = "From Platform Ref-Point for Baseplate-Calibration to PS-p Edge :";
+  tmp_des = "From Platform Ref-Point to PS-p Edge :"; //Was: 'From Platform Ref-Point for Baseplate-Calibration to PS-p Edge'
 
   map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
