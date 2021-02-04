@@ -692,9 +692,8 @@ void AssemblyAssembly::GoToXYAPositionToGluePSSToSpacers_start()
    + this->parameters()->get("FromPlatformRefPointCalibrationSpacersToSpacerEdge_dX")
    + this->parameters()->get("FromSpacerEdgeToPSSRefPoint_dX")
    + this->parameters()->get("FromSensorRefPointToSensorPickup_dX")
-    //+ 0.375
    - motion_->get_position_X();
-  // Michael added -0.375 in an attempt to recenter the spacers on 9/10/2020
+  
   const double dy0 =
      this->parameters()->get("PlatformRefPointCalibrationSpacers_Y")
    + this->parameters()->get("FromPlatformRefPointCalibrationSpacersToSpacerEdge_dY")
