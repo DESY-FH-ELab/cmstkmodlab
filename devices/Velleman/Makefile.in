@@ -1,0 +1,70 @@
+ARCHITECTURE  = @architecture@
+USEFAKEDEVICES= @usefakedevices@
+
+BASEPATH      = @basepath@
+include $(BASEPATH)/devices/Makefile.common
+
+LIBDIR        = $(BASEPATH)/devices/lib
+
+LIB           = TkModLabVelleman
+
+VELLEMAN = $(BASEPATH)/devices/Velleman
+
+MODULES       = VellemanCommunication \
+                IVellemanController \
+                VellemanController \
+                VellemanControllerFake \
+
+ALLDEPEND     = $(addsuffix .d,$(MODULES))
+
+NEWHEADERS    = $(addsuffix _cpp.h,$(MODULES))
+
+EXISTDEPEND   = $(shell find . -name \*.d -type f -print)
+
+all: vellemanTest lib
+
+depend: $(ALLDEPEND)
+
+lib: $(LIBDIR)/lib$(LIB).so
+
+$(LIBDIR)/lib$(LIB).so: $(addsuffix .o, $(MODULES))
+	@(test -e $(LIBDIR) || mkdir $(LIBDIR))
+	@echo "Linking shared library $@"
+	$(LD) $(SOFLAGS) $^ -o $@
+
+%.d: %.cpp
+	@echo "Making dependency for file $< . . ."
+	@set -e;\
+	$(CXX) -M $(CPPFLAGS) $(CXXFLAGS) $< |\
+	sed 's!$*\.o!& $@!' >$@;\
+	[ -s $@ ] || rm -f $@
+
+%.o: %.cpp
+	@echo "Compiling $<"
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+utils: $(NEWHEADERS)
+
+%_cpp.h: %.cpp
+	@/bin/cp -rf $< ./utils/$*_cpp.h
+
+vellemanTest: depend utils $(VELLEMAN)/utils/vellemanTest.cpp
+	cd $(VELLEMAN)/utils;
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) \
+	-I$(VELLEMAN) -o $(VELLEMAN)/utils/$@ $(VELLEMAN)/utils/vellemanTest.cpp
+
+install:
+	install -m 755 -p $(LIBDIR)/lib$(LIB).so /usr/lib
+	strip /usr/lib/lib$(LIB).so
+
+clean:
+	@rm -f $(LIBDIR)/lib$(LIB).so
+	@rm -f $(addsuffix .o,$(MODULES))
+	@rm -f *.d
+	@rm -f *~
+
+ifeq ($(findstring clean,$(MAKECMDGOALS)),)
+ifneq ($(EXISTDEPEND),)
+-include $(EXISTDEPEND)
+endif
+endif

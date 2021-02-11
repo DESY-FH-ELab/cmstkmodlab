@@ -50,7 +50,7 @@ int main(int argc, char** argv)
     app.setStyle("cleanlooks");
 
     // log output -----------
-    ApplicationConfig* config = ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath)+"/assembly/assembly.cfg");
+    ApplicationConfig* config = ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath)+"/assembly/assembly_glass.cfg");
 
     const NQLog::LogLevel nqloglevel_stdout  = ((NQLog::LogLevel) config->getValue<int>("LogLevel_stdout" , 2));
     const NQLog::LogLevel nqloglevel_logfile = ((NQLog::LogLevel) config->getValue<int>("LogLevel_logfile", 2));
@@ -89,6 +89,7 @@ int main(int argc, char** argv)
     // ----------------------
 
     AssemblyMainWindow mainWindow(outputdir_path, logfile_path, DBlogfile_path);
+
 
     mainWindow.setWindowTitle("Automated Pixel-Strip Module Assembly ["+QString(APPLICATIONVERSIONSTR)+"]");
     mainWindow.setWindowState(Qt::WindowMaximized);

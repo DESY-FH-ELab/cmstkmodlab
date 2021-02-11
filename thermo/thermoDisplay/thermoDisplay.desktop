@@ -1,0 +1,19 @@
+[Desktop Entry]
+Comment[en_US]=
+Comment=
+Exec=/home/brownhep/PS_AUTO/cmstkmodlab/thermo/thermoDisplay/startThermoDisplay.sh
+GenericName[en_US]=
+GenericName=
+Icon=/home/brownhep/PS_AUTO/cmstkmodlab/share/snowflake.png
+MimeType=
+Name[en_US]=thermoDisplay
+Name=thermoDisplay
+Path=/scratch/measurements
+StartupNotify=false
+Terminal=true
+TerminalOptions=
+Type=Application
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=

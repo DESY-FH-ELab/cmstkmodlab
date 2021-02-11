@@ -322,12 +322,55 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
 
   map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
-
+  map_lineEdit_[tmp_tag+"_dZ"] = new QLineEdit(tr(""));
+  
   dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
   dist_lay->addWidget(new QLabel(tr("dX"))    , row_index, 1, Qt::AlignRight);
   dist_lay->addWidget(this->get(tmp_tag+"_dX"), row_index, 2, Qt::AlignRight);
   dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 3, Qt::AlignRight);
   dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 4, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dZ"))    , row_index, 5, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dZ"), row_index, 6, Qt::AlignRight);
+
+  // distance: shift from PSs Ref-Point to PSSTL Ref-Point
+  ++row_index;
+
+  tmp_tag = "FromPSSRefPointToPSSTLRefPoint";
+  tmp_des = "From PSS Ref-Point To PSS TL Ref-Point :";
+
+  map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_dZ"] = new QLineEdit(tr(""));
+  
+  dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("dX"))    , row_index, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dX"), row_index, 2, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 3, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 4, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dZ"))    , row_index, 5, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dZ"), row_index, 6, Qt::AlignRight);
+
+
+  // distance: shift from PSs Ref-Point to PSSTL Ref-Point
+  ++row_index;
+
+  tmp_tag = "FromPSSTLToPSPTL";
+  tmp_des = "From PSSTL Fiducial To PSPTL Fiducial :";
+
+  map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_dZ"] = new QLineEdit(tr(""));
+  
+  dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("dX"))    , row_index, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dX"), row_index, 2, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 3, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 4, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dZ"))    , row_index, 5, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dZ"), row_index, 6, Qt::AlignRight);
+
+  
+
 
   button_moveRelRefDist3_  = new QPushButton(tr("Apply Relative Movement"));
   dist_lay->addWidget(button_moveRelRefDist3_, row_index, 9, Qt::AlignLeft);

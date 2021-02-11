@@ -4,6 +4,7 @@ NOUEYE="X@noueye@"
 
 LIBS += -L@basepath@/devices/lib -lTkModLabLang
 LIBS += -L@basepath@/devices/lib -lTkModLabConrad
+LIBS += -L@basepath@/devices/lib -lTkModLabVelleman
 LIBS += -L@basepath@/devices/lib -lTkModLabArduino
 LIBS += -L@basepath@/devices/lib -lTkModLabKeyence
 LIBS += -L@basepath@/common -lCommon
@@ -112,6 +113,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyLogFileController.h \
            AssemblyLogFileView.h \
            ConradManager.h \
+           VellemanManager.h \
            LStepExpressModel.h \
            LStepExpressMotion.h \
            LStepExpressMotionManager.h \
@@ -133,7 +135,10 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyUtilities.h \
            AssemblyDBLoggerController.h \
            AssemblyDBLoggerModel.h \
-           AssemblyDBLoggerView.h
+           AssemblyDBLoggerView.h \
+           AlignmentCheckView.h \
+           AlignmentCheck.h \
+           
 
 equals(NOUEYE,"X0") {
 HEADERS += AssemblyUEyeCamera.h \
@@ -180,6 +185,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyLogFileController.cc \
            AssemblyLogFileView.cc \
            ConradManager.cc \
+           VellemanManager.cc \
            LStepExpressModel.cc \
            LStepExpressMotion.cc \
            LStepExpressMotionManager.cc \
@@ -201,8 +207,12 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyUtilities.cc \
            AssemblyDBLoggerController.cc \
            AssemblyDBLoggerModel.cc \
-           AssemblyDBLoggerView.cc
+           AssemblyDBLoggerView.cc \
+           AlignmentCheckView.cc \
+           AlignmentCheck.cc \
 
+
+           
 equals(NOUEYE,"X0") {
 SOURCES += AssemblyUEyeCamera.cc \
            AssemblyUEyeModel.cc

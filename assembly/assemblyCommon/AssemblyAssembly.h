@@ -10,13 +10,21 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//            Fourth Vacuum Line Capability Added by Elise Hinkle              //
+//                       Last Modified October 7, 2019                         //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #ifndef ASSEMBLYASSEMBLY_H
 #define ASSEMBLYASSEMBLY_H
 
 #include <QObject>
 
 #include <LStepExpressMotionManager.h>
-#include <ConradManager.h>
+// #include <ConradManager.h> // CONRAD
+#include <VellemanManager.h> // VELLEMAN
 
 #include <AssemblySmartMotionManager.h>
 #include <AssemblyParameters.h>
@@ -28,26 +36,34 @@ class AssemblyAssembly : public QObject
  Q_OBJECT
 
  public:
-  explicit AssemblyAssembly(const LStepExpressMotionManager* const, const ConradManager* const, const AssemblySmartMotionManager* const smart_motion=nullptr, QObject* parent=nullptr);
+  // explicit AssemblyAssembly(const LStepExpressMotionManager* const, const ConradManager* const, const AssemblySmartMotionManager* const smart_motion=nullptr, QObject* parent=nullptr); // CONRAD 
+  explicit AssemblyAssembly(const LStepExpressMotionManager* const, const VellemanManager* const, const AssemblySmartMotionManager* const smart_motion=nullptr, QObject* parent=nullptr);  // VELLEMAN
+
   virtual ~AssemblyAssembly() {}
 
   AssemblyParameters* parameters() const;
 
   const LStepExpressMotionManager* motion() const;
-  const ConradManager* vacuum() const;
+
+  // const ConradManager*             vacuum() const; // CONRAD
+  const VellemanManager*           vacuum() const;    // VELLEMAN
+
 
   const AssemblySmartMotionManager* smart_motion() const;
 
  protected:
 
   const LStepExpressMotionManager* const motion_;
-  const ConradManager* const vacuum_;
 
+  // const ConradManager*             const vacuum_; // CONRAD
+  const VellemanManager*           const vacuum_;    // VELLEMAN
+  
   const AssemblySmartMotionManager* const smart_motion_;
 
   int vacuum_pickup_;
   int vacuum_spacer_;
   int vacuum_basepl_;
+  int vacuum_stage_;
 
   double pickup1_Z_;
   double pickup2_Z_;
@@ -136,6 +152,12 @@ class AssemblyAssembly : public QObject
 
   void DisableVacuumBaseplate_start();
   void DisableVacuumBaseplate_finish();
+
+  void  EnableVacuumStage_start();
+  void  EnableVacuumStage_finish();
+
+  void DisableVacuumStage_start();
+  void DisableVacuumStage_finish();
   // ---------
 
  signals:
@@ -193,7 +215,12 @@ class AssemblyAssembly : public QObject
   void EnableVacuumBaseplate_finished();
   void DisableVacuumBaseplate_finished();
 
+
   void DBLogMessage(const QString);
+
+  void  EnableVacuumStage_finished();
+  void DisableVacuumStage_finished();
+
   // ------
 };
 

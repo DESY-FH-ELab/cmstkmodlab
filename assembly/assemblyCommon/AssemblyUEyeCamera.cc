@@ -123,7 +123,7 @@ void AssemblyUEyeCamera::open()
         setColorMode(sensorInfo->nColorMode);
         setMaxWidth(sensorInfo->nMaxWidth);
         setMaxHeight(sensorInfo->nMaxHeight);
-        setMasterGain(sensorInfo->bMasterGain);
+        setMasterGain(sensorInfo->bMasterGain); 
         setRedGain(sensorInfo->bRGain);
         setGreenGain(sensorInfo->bGGain);
         setBlueGain(sensorInfo->bBGain);
@@ -264,7 +264,7 @@ void AssemblyUEyeCamera::updateInformation()
         setColorMode(sensorInfo->nColorMode);
         setMaxWidth(sensorInfo->nMaxWidth);
         setMaxHeight(sensorInfo->nMaxHeight);
-        setMasterGain(sensorInfo->bMasterGain);
+        setMasterGain(sensorInfo->bMasterGain); 
         setRedGain(sensorInfo->bRGain);
         setGreenGain(sensorInfo->bGGain);
         setBlueGain(sensorInfo->bBGain);
@@ -300,7 +300,7 @@ void AssemblyUEyeCamera::updatePixelClock()
     if (nRet == IS_SUCCESS) {
       nMin = nRange[0];
       nMax = nRange[1];
-      nInc = nRange[2];
+      nInc = nRange[2] ? nRange[2] : 1;
     }
 
     NQLog("AssemblyUEyeCamera", NQLog::Debug) << "updatePixelClock"

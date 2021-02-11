@@ -18,7 +18,6 @@
 #include <AssemblyLogFileView.h>
 #include <AssemblyParameters.h>
 #include <AssemblyUtilities.h>
-
 #include <string>
 
 #include <QApplication>
@@ -29,8 +28,10 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   QMainWindow(parent),
 
   // Low-Level Controllers (Motion, Camera, Vacuum)
-  conradModel_(nullptr),
-  conradManager_(nullptr),
+  // conradModel_(nullptr),   // CONRAD 
+  // conradManager_(nullptr), // CONRAD 
+  vellemanModel_(nullptr),      // VELLEMAN
+  vellemanManager_(nullptr),    // VELLEMAN
 
   motion_model_(nullptr),
   motion_manager_(nullptr),
@@ -41,7 +42,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
   camera_model_(nullptr),
   camera_thread_(nullptr),
-//  camera_widget_(nullptr),
+  //  camera_widget_(nullptr),
   camera_(nullptr),
   camera_ID_(camera_ID),
 
@@ -53,7 +54,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   assembly_(nullptr),
   assemblyV2_(nullptr),
   multipickup_tester_(nullptr),
-
+  alignmentCheck_(nullptr),
   finder_(nullptr),
   finder_thread_(nullptr),
 
@@ -85,7 +86,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   button_mainEmergencyStop_(nullptr),
   button_info_(nullptr),
   autofocus_checkbox_(nullptr),
-
+  alignmentCheck_view_(nullptr),
   // flags
   images_enabled_(false),
   aligner_connected_(false),
@@ -149,9 +150,11 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     }
     /// -------------------
 
-    /// Vacuum Manager
-    conradModel_   = new ConradModel(config->getValue<std::string>("ConradDevice"));
-    conradManager_ = new ConradManager(conradModel_);
+    /// Vacuum Manager (use Conrad lines OR Velleman lines depending on relay card used)
+    // conradModel_   = new ConradModel(config->getValue<std::string>("ConradDevice"));    // CONRAD
+    // conradManager_ = new ConradManager(conradModel_);                                   // CONRAD
+    vellemanModel_   = new VellemanModel(config->getValue<std::string>("VellemanDevice")); // VELLEMAN
+    vellemanManager_ = new VellemanManager(vellemanModel_);                                // VELLEMAN
     /// -------------------
 
     /// TAB: ASSEMBLY FUNCTIONALITIES --------------------------
@@ -238,16 +241,18 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Alignm;
     // ---------------------------------------------------------
 
+
     // ASSEMBLY VIEW -------------------------------------------
     const QString tabname_Assembly("Assembly");
 
     smart_motion_ = new AssemblySmartMotionManager(motion_manager_);
 
+
     const int assembly_sequence(config->getValue<int>("assembly_sequence", 1));
 
     if(assembly_sequence == 1)
     {
-      assembly_ = new AssemblyAssembly(motion_manager_, conradManager_, smart_motion_);
+      assembly_ = new AssemblyAssembly(motion_manager_, vellemanManager_, smart_motion_);
 
       assembly_view_ = new AssemblyAssemblyView(assembly_, assembly_tab);
       assembly_tab->addTab(assembly_view_, tabname_Assembly);
@@ -259,10 +264,14 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     }
     else if(assembly_sequence == 2)
     {
-      assemblyV2_ = new AssemblyAssemblyV2(motion_manager_, conradManager_, smart_motion_);
+      assemblyV2_ = new AssemblyAssemblyV2(motion_manager_, vellemanManager_, smart_motion_);
 
       assemblyV2_view_ = new AssemblyAssemblyV2View(assemblyV2_, assembly_tab);
       assembly_tab->addTab(assemblyV2_view_, tabname_Assembly);
+
+    // assembly_ = new AssemblyAssembly(motion_manager_, conradManager_, smart_motion_); // CONRAD
+    //assembly_ = new AssemblyAssembly(motion_manager_, vellemanManager_, smart_motion_);  // VELLEMAN 
+
 
       NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly
          << " (assembly_sequence = " << assembly_sequence << ")";
@@ -279,30 +288,53 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(motion_manager_, SIGNAL(motion_finished()), image_view_, SLOT(InfoMotionFinished()));
     // ---------------------------------------------------------
 
+
+
+    // Alignment Check
+
+    const QString tabname_AlignmentCheck("AlignmentCheck");
+
+    alignmentCheck_view_ = new AlignmentCheckView(assembly_tab);
+    assembly_tab->addTab(alignmentCheck_view_, tabname_AlignmentCheck);
+
+    alignmentCheck_ = new AlignmentCheck(motion_manager_);
+
+    connect(alignmentCheck_view_, SIGNAL(configuration(AlignmentCheck::Configuration)), this, SLOT(start_alignmentCheck(AlignmentCheck::Configuration)));
+
+    alignmentCheck_view_->PatRecOne_Image()->connectImageProducer(alignmentCheck_, SIGNAL(image_PatRecOne(cv::Mat)));
+    alignmentCheck_view_->PatRecTwo_Image()->connectImageProducer(alignmentCheck_, SIGNAL(image_PatRecTwo(cv::Mat)));
+    alignmentCheck_view_->PatRecThree_Image()->connectImageProducer(alignmentCheck_, SIGNAL(image_PatRecThree(cv::Mat)));
+    alignmentCheck_view_->PatRecFour_Image()->connectImageProducer(alignmentCheck_, SIGNAL(image_PatRecFour(cv::Mat)));
+
+
+    
     /// TAB: MANUAL CONTROLLERS AND PARAMETERS -----------------
     QTabWidget* controls_tab = new QTabWidget;
+
 
     controls_tab->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     controls_tab->setTabPosition(QTabWidget::North);
     // controls_tab->setUsesScrollButtons(false); //Make all the widgets fit in the tab's width (else : scroll to invisible widgets)
 
-//    finderView_ = new AssemblyUEyeSnapShooter(assembly_tab);
-//    assembly_tab->addTab(finderView_, "finder");
-//
-//    edgeView_ = new AssemblyUEyeSnapShooter(assembly_tab);
-//    assembly_tab->addTab(edgeView_, "edges");
-//
-//    rawView_ = new AssemblyUEyeSnapShooter(assembly_tab);
-//    assembly_tab->addTab(rawView_, "raw");
-//
-//    // U-EYE VIEW ----------------------------------------------
-//    const QString tabname_uEye("uEye");
-//
-//    camera_widget_ = new AssemblyUEyeWidget(camera_model_, this);
-//    controls_tab->addTab(camera_widget_, tabname_uEye);
-//
-//    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_uEye;
+   finderView_ = new AssemblyUEyeSnapShooter(assembly_tab);
+   assembly_tab->addTab(finderView_, "finder");
+
+   edgeView_ = new AssemblyUEyeSnapShooter(assembly_tab);
+   assembly_tab->addTab(edgeView_, "edges");
+
+   rawView_ = new AssemblyUEyeSnapShooter(assembly_tab);
+   assembly_tab->addTab(rawView_, "raw");
+
+   // U-EYE VIEW ----------------------------------------------
+   const QString tabname_uEye("uEye");
+
+   camera_widget_ = new AssemblyUEyeWidget(camera_model_, this);
+   controls_tab->addTab(camera_widget_, tabname_uEye);
+
+   NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_uEye;
 //    // ---------------------------------------------------------
+
+
 
     // HARDWARE CONTROLLERs VIEW (motion/vacuum) ---------------
     const QString tabname_HWCtrl("HW Controllers (Motion/Vacuum)");
@@ -310,6 +342,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     hwctr_view_ = new AssemblyHardwareControlView(motion_manager_, controls_tab);
     controls_tab->addTab(hwctr_view_, tabname_HWCtrl);
 
+    /// *****LEAVE BLOCK (5 lines of code) UNCOMMENTED IF USING CONRAD RELAY CARD***** ///
+    /*
     connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))              , conradManager_, SLOT(toggleVacuum(int)));
     connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), conradManager_, SLOT(transmit_vacuumChannelState(int)));
 
@@ -317,7 +351,19 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     connect(conradManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
     connect(conradManager_, SIGNAL(disableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(disableVacuumButton()));
+    */
 
+    /// *****LEAVE BLOCK (5 lines of code) UNCOMMENTED IF USING VELLEMAN RELAY CARD***** ///
+    /**/
+    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))              , vellemanManager_, SLOT(toggleVacuum(int)));
+    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), vellemanManager_, SLOT(transmit_vacuumChannelState(int)));
+
+    connect(vellemanManager_, SIGNAL(vacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
+
+    connect(vellemanManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
+    connect(vellemanManager_, SIGNAL(disableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(disableVacuumButton()));
+    /**/
+    
     hwctr_view_->Vacuum_Widget()->updateVacuumChannelsStatus();
 
     // enable motion stage controllers at startup
@@ -371,11 +417,11 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     // multi-pickup tester
     multipickup_tester_ = new AssemblyMultiPickupTester(motion_manager_);
 
-    connect(toolbox_view_->MultiPickupTester_Widget(), SIGNAL(multipickup_request(AssemblyMultiPickupTester::Configuration)), this, SLOT(start_multiPickupTest(AssemblyMultiPickupTester::Configuration)));
+        connect(toolbox_view_->MultiPickupTester_Widget(), SIGNAL(multipickup_request(AssemblyMultiPickupTester::Configuration)), this, SLOT(start_multiPickupTest(AssemblyMultiPickupTester::Configuration)));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Toolbox;
     // ---------------------------------------------------------
-
+    
     // TERMINAL VIEW -------------------------------------------
     const QString tabname_Terminal("Terminal View");
 
@@ -401,20 +447,20 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     // DATABASE LOG VIEW ---------------------------------------
     //Logfile stored in TkUpgrade database, containing relevant info related to each assembly
 
-    const QString tabname_DBLog("Database Log");
-    DBLog_view_ = new AssemblyDBLoggerView(outputdir_path); //View
+    //const QString tabname_DBLog("Database Log");
+    //DBLog_view_ = new AssemblyDBLoggerView(outputdir_path); //View
 
-    DBLog_model_ = new AssemblyDBLoggerModel(DBlogfile_path); //Model
+    //DBLog_model_ = new AssemblyDBLoggerModel(DBlogfile_path); //Model
 
-    DBLog_ctrl_ = new AssemblyDBLoggerController(DBLog_model_, DBLog_view_); //Controller
+    //DBLog_ctrl_ = new AssemblyDBLoggerController(DBLog_model_, DBLog_view_); //Controller
 
-    connect_DBLogger();
+    //connect_DBLogger();
 
-    if(assembly_sequence == 1) {emit DBLogMessage("== Using default assembly sequence == (MaPSA glued to baseplate last)");}
-    else if(assembly_sequence == 2) {emit DBLogMessage("== Using modified assembly sequence == (MaPSA glued to baseplate first)");}
+    //if(assembly_sequence == 1) {emit DBLogMessage("== Using default assembly sequence == (MaPSA glued to baseplate last)");}
+    //else if(assembly_sequence == 2) {emit DBLogMessage("== Using modified assembly sequence == (MaPSA glued to baseplate first)");}
 
-    controls_tab->addTab(DBLog_view_, tabname_DBLog);
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_DBLog;
+    //controls_tab->addTab(DBLog_view_, tabname_DBLog);
+    //NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_DBLog;
     // ---------------------------------------------------------
 
     /// --------------------------------------------------------
@@ -790,6 +836,124 @@ void AssemblyMainWindow::disconnect_objectAligner()
 
   return;
 }
+//################################
+
+void AssemblyMainWindow::start_alignmentCheck(const AlignmentCheck::Configuration& conf)
+{
+  if(image_ctr_ == nullptr)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "start_objectAligner"
+       << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+
+    return;
+  }
+
+  if(params_ != nullptr)
+  {
+    const bool valid_params = params_->update();
+
+    if(valid_params == false)
+    {
+      NQLog("AssemblyMainWindow", NQLog::Warning) << "start_objectAligner"
+         << ": failed to update AssemblyParameters, no action taken";
+
+      return;
+    }
+  }
+
+  // acquire image
+  connect(alignmentCheck_, SIGNAL(image_request()), image_ctr_, SLOT(acquire_image()));
+  connect(alignmentCheck_, SIGNAL(autofocused_image_request()), image_ctr_, SLOT(acquire_autofocused_image()));
+
+  // master-image updated, go to next step (PatRec)
+  connect(finder_, SIGNAL(updated_image_master()), alignmentCheck_, SLOT(launch_next_alignment_step()));
+
+  // launch PatRec
+  connect(alignmentCheck_, SIGNAL(PatRec_request(AssemblyObjectFinderPatRec::Configuration)), finder_, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
+
+  // show PatRec-edited image in Aligner widget
+  connect(finder_, SIGNAL(PatRec_res_image_master_edited(cv::Mat)), alignmentCheck_, SLOT(redirect_image(cv::Mat)));
+
+  // use PatRec results for next alignment step
+  connect(finder_, SIGNAL(PatRec_results(double, double, double)), alignmentCheck_, SLOT(run_alignment(double, double, double)));
+
+  // show measured angle
+  connect(alignmentCheck_, SIGNAL(measured_angle(double)), alignmentCheck_view_, SLOT(show_measured_angle(double)));
+
+  // show fiducial positions
+  connect(alignmentCheck_, SIGNAL(pspbl_pos(double, double)), alignmentCheck_view_, SLOT(show_pspbl_pos(double,double)));
+  connect(alignmentCheck_, SIGNAL(pssbl_pos(double, double)), alignmentCheck_view_, SLOT(show_pssbl_pos(double,double)));
+  connect(alignmentCheck_, SIGNAL(psstl_pos(double, double)), alignmentCheck_view_, SLOT(show_psstl_pos(double,double)));
+  connect(alignmentCheck_, SIGNAL(psptl_pos(double, double)), alignmentCheck_view_, SLOT(show_psptl_pos(double,double)));
+
+  
+  connect(alignmentCheck_, SIGNAL(offs_pos(double, double)), alignmentCheck_view_, SLOT(show_offs_pos(double,double)));
+  
+  // once completed, disable connections between controllers used for alignment
+  connect(alignmentCheck_, SIGNAL(execution_completed()), this, SLOT(disconnect_alignmentCheck()));
+
+  // kick-start alignment
+  connect(alignmentCheck_, SIGNAL(configuration_updated()), alignmentCheck_, SLOT(execute()));
+
+  alignmentCheck_view_->Configuration_Widget()->setEnabled(false);
+
+  // if successful, emits signal "configuration_updated()"
+  alignmentCheck_->update_configuration(conf);
+
+  return;
+}
+
+void AssemblyMainWindow::disconnect_alignmentCheck()
+{
+  if(image_ctr_ == nullptr)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "disconnect_objectAligner"
+       << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+
+    return;
+  }
+
+  // acquire image
+  disconnect(alignmentCheck_, SIGNAL(image_request()), image_ctr_, SLOT(acquire_image()));
+  disconnect(alignmentCheck_, SIGNAL(autofocused_image_request()), image_ctr_, SLOT(acquire_autofocused_image()));
+
+  // master-image updated, go to next step (PatRec)
+  disconnect(finder_, SIGNAL(updated_image_master()), alignmentCheck_, SLOT(launch_next_alignment_step()));
+
+  // launch PatRec
+  disconnect(alignmentCheck_, SIGNAL(PatRec_request(AssemblyObjectFinderPatRec::Configuration)), finder_, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
+
+  // show PatRec-edited image in Aligner widget
+  disconnect(finder_, SIGNAL(PatRec_res_image_master_edited(cv::Mat)), alignmentCheck_, SLOT(redirect_image(cv::Mat)));
+
+  // use PatRec results for next alignment step
+  disconnect(finder_, SIGNAL(PatRec_results(double, double, double)), alignmentCheck_, SLOT(run_alignment(double, double, double)));
+
+  // show measured angle
+  disconnect(alignmentCheck_, SIGNAL(measured_angle(double)), alignmentCheck_view_, SLOT(show_measured_angle(double)));
+
+  // show fiducial positions
+
+  disconnect(alignmentCheck_, SIGNAL(pspbl_pos(double, double)), alignmentCheck_view_, SLOT(show_pspbl_pos(double,double)));
+  disconnect(alignmentCheck_, SIGNAL(pssbl_pos(double, double)), alignmentCheck_view_, SLOT(show_pssbl_pos(double,double)));
+  disconnect(alignmentCheck_, SIGNAL(psstl_pos(double, double)), alignmentCheck_view_, SLOT(show_psstl_pos(double,double)));
+  disconnect(alignmentCheck_, SIGNAL(psptl_pos(double, double)), alignmentCheck_view_, SLOT(show_psptl_pos(double,double)));
+
+  disconnect(alignmentCheck_, SIGNAL(offs_pos(double, double)), alignmentCheck_view_, SLOT(show_offs_pos(double,double)));
+ 
+  // once completed, disable connections between controllers used for alignment
+  disconnect(alignmentCheck_, SIGNAL(execution_completed()), this, SLOT(disconnect_alignmentCheck()));
+
+  // kick-start alignment
+  disconnect(alignmentCheck_, SIGNAL(configuration_updated()), alignmentCheck_, SLOT(execute()));
+
+  //  alignmentCheck_view_->Configuration_Widget()->setEnabled(true);
+
+  return;
+}
+
+
+//################################
 
 void AssemblyMainWindow::start_multiPickupTest(const AssemblyMultiPickupTester::Configuration& conf)
 {
@@ -828,9 +992,11 @@ void AssemblyMainWindow::start_multiPickupTest(const AssemblyMultiPickupTester::
   // ---
 
   // pickup (vacuum)
-  connect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), conradManager_, SLOT(toggleVacuum(int)));
+  // connect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), conradManager_, SLOT(toggleVacuum(int))); // CONRAD
+  // connect(conradManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));   // CONRAD
 
-  connect(conradManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));
+  connect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), vellemanManager_, SLOT(toggleVacuum(int)));  // VELLEMAN
+  connect(vellemanManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));    // VELLEMAN
   // ---
 
   multipickup_tester_->set_configuration(conf);
@@ -854,9 +1020,10 @@ void AssemblyMainWindow::disconnect_multiPickupTest()
   // ---
 
   // pickup (vacuum)
-  disconnect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), conradManager_, SLOT(toggleVacuum(int)));
-
-  disconnect(conradManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));
+  // disconnect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), conradManager_, SLOT(toggleVacuum(int))); // CONRAD
+  // disconnect(conradManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));   // CONRAD
+  disconnect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), vellemanManager_, SLOT(toggleVacuum(int)));  // VELLEMAN
+  disconnect(vellemanManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));    // VELLEMAN
   // ---
 
   toolbox_view_->MultiPickupTester_Widget()->enable(true);
@@ -895,7 +1062,7 @@ void AssemblyMainWindow::connect_DBLogger()
     connect(this, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
     connect(aligner_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
     connect(finder_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
-    connect(conradManager_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
+    connect(vellemanManager_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
     if(assembly_ != nullptr) {connect(assembly_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));}
     else if(assemblyV2_ != nullptr) {connect(assemblyV2_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));}
 
@@ -964,3 +1131,7 @@ void AssemblyMainWindow::quit()
 
     return;
 }
+
+
+
+
