@@ -17,6 +17,10 @@
 #include <QMutex>
 #include <QString>
 
+/** @addtogroup common
+ *  @{
+ */
+
 class SlackBot : public QObject
 {
   Q_OBJECT
@@ -37,5 +41,7 @@ protected:
   QString channel_;
   QMutex mutex_;
 };
+
+/** @} */
 
 #endif // SLACKBOT_H

@@ -18,6 +18,7 @@
 #include <AssemblyPositionsRegistryWidget.h>
 
 #include <QWidget>
+#include <QMessageBox>
 
 class AssemblyToolboxView : public QWidget
 {
@@ -38,9 +39,12 @@ class AssemblyToolboxView : public QWidget
 
  public slots:
 
- signals:
+  void display_infoTab();
 
+ signals:
+  
   void multipickup_request(const AssemblyMultiPickupTester::Configuration&);
+
 };
 // ===========================================================================
 

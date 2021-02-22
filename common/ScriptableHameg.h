@@ -19,6 +19,14 @@
 
 #include <HamegModel.h>
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup scripting
+ *  @{
+ */
+
 class ScriptableHameg : public QObject
 {
   Q_OBJECT
@@ -55,5 +63,9 @@ protected:
   // For thread safety
   QMutex mutex_;
 };
+
+/** @} */
+
+/** @} */
 
 #endif // SCRIPTABLEHAMEG_H

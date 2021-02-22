@@ -57,7 +57,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   ++row_index;
 
   tmp_tag = "Thickness_Baseplate";
-  tmp_des = "Thickness of Baseplate :";
+  tmp_des = "Thickness of Baseplate (incl. kapton sheet) :";
 
   map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
 
@@ -89,7 +89,19 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dime_lay->addWidget(new QLabel(tr("dZ")), row_index, 5, Qt::AlignRight);
   dime_lay->addWidget(this->get(tmp_tag)  , row_index, 6, Qt::AlignRight);
 
-  // dimension: thickness of Spacer
+  // dimension: thickness of MPA attached to PS-p (including bump-bond)
+  ++row_index;
+
+  tmp_tag = "Thickness_MPA";
+  tmp_des = "Thickness of MPA (incl. bump-bond) :";
+
+  map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
+
+  dime_lay->addWidget(new QLabel(tmp_des) , row_index, 0, Qt::AlignLeft);
+  dime_lay->addWidget(new QLabel(tr("dZ")), row_index, 5, Qt::AlignRight);
+  dime_lay->addWidget(this->get(tmp_tag)  , row_index, 6, Qt::AlignRight);
+
+  // dimension: thickness of Spacers
   ++row_index;
 
   tmp_tag = "Thickness_Spacer";
@@ -158,26 +170,8 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
   posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
 
-  // position: XYZA position of ref-point on assembly platform for calibration of spacers
-  ++row_index;
-
-  tmp_tag = "PlatformRefPointCalibrationSpacers";
-  tmp_des = "[Calibration: Spacers] Ref-Point :";
-
-  map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
-  map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
-  map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
-  map_lineEdit_[tmp_tag+"_A"] = new QLineEdit(tr(""));
-
-  posi_lay->addWidget(new QLabel(tmp_des)    , row_index, 0, Qt::AlignLeft);
-  posi_lay->addWidget(new QLabel(tr("X"))    , row_index, 1, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_X"), row_index, 2, Qt::AlignRight);
-  posi_lay->addWidget(new QLabel(tr("Y"))    , row_index, 3, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_Y"), row_index, 4, Qt::AlignRight);
-  posi_lay->addWidget(new QLabel(tr("Z"))    , row_index, 5, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_Z"), row_index, 6, Qt::AlignRight);
-  posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
+  button_moveAbsRefPos1_  = new QPushButton(tr("Move To Abs. Position"));
+  posi_lay->addWidget(button_moveAbsRefPos1_, row_index, 9, Qt::AlignRight);
 
   // position: XYZA position of ref-point on assembly platform for calibration of baseplate
   ++row_index;
@@ -200,6 +194,33 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
   posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
 
+  button_moveAbsRefPos2_  = new QPushButton(tr("Move To Abs. Position"));
+  posi_lay->addWidget(button_moveAbsRefPos2_, row_index, 9, Qt::AlignRight);
+
+  // position: XYZA position of ref-point on assembly platform for calibration of spacers
+  ++row_index;
+
+  tmp_tag = "PlatformRefPointCalibrationSpacers";
+  tmp_des = "[Calibration: Spacers] Ref-Point :";
+
+  map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_A"] = new QLineEdit(tr(""));
+
+  posi_lay->addWidget(new QLabel(tmp_des)    , row_index, 0, Qt::AlignLeft);
+  posi_lay->addWidget(new QLabel(tr("X"))    , row_index, 1, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_X"), row_index, 2, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("Y"))    , row_index, 3, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_Y"), row_index, 4, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("Z"))    , row_index, 5, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_Z"), row_index, 6, Qt::AlignRight);
+  posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
+  posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
+
+  button_moveAbsRefPos3_  = new QPushButton(tr("Move To Abs. Position"));
+  posi_lay->addWidget(button_moveAbsRefPos3_, row_index, 9, Qt::AlignRight);
+
   // position: z-position where camera is focused on Assembly Stage surface
   ++row_index;
 
@@ -221,6 +242,9 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
   posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
 
+  button_moveAbsRefPos4_  = new QPushButton(tr("Move To Abs. Position"));
+  posi_lay->addWidget(button_moveAbsRefPos4_, row_index, 9, Qt::AlignRight);
+
   // position: z-position where camera is focused on Gluing Stage surface
   ++row_index;
 
@@ -241,6 +265,9 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   posi_lay->addWidget(this->get(tmp_tag+"_Z"), row_index, 6, Qt::AlignRight);
   posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
   posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
+
+  button_moveAbsRefPos5_  = new QPushButton(tr("Move To Abs. Position"));
+  posi_lay->addWidget(button_moveAbsRefPos5_, row_index, 9, Qt::AlignRight);
 
   //// ---------------------
 
@@ -266,6 +293,9 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dist_lay->addWidget(new QLabel(tr("dA"))    , row_index, 7, Qt::AlignRight);
   dist_lay->addWidget(this->get(tmp_tag+"_dA"), row_index, 8, Qt::AlignRight);
 
+  button_moveRelRefDist1_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist1_, row_index, 9, Qt::AlignLeft);
+
   // distance: from Sensor Ref-Point to Sensor Pickup Position
   ++row_index;
 
@@ -281,6 +311,9 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 3, Qt::AlignRight);
   dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 4, Qt::AlignRight);
 
+  button_moveRelRefDist2_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist2_, row_index, 9, Qt::AlignLeft);
+
   // distance: shift from PS-p marker-1 Ref-Point to PS-s marker-1 Ref-Point
   ++row_index;
 
@@ -289,12 +322,58 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
 
   map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
-
+  map_lineEdit_[tmp_tag+"_dZ"] = new QLineEdit(tr(""));
+  
   dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
   dist_lay->addWidget(new QLabel(tr("dX"))    , row_index, 1, Qt::AlignRight);
   dist_lay->addWidget(this->get(tmp_tag+"_dX"), row_index, 2, Qt::AlignRight);
   dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 3, Qt::AlignRight);
   dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 4, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dZ"))    , row_index, 5, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dZ"), row_index, 6, Qt::AlignRight);
+
+  // distance: shift from PSs Ref-Point to PSSTL Ref-Point
+  ++row_index;
+
+  tmp_tag = "FromPSSRefPointToPSSTLRefPoint";
+  tmp_des = "From PSS Ref-Point To PSS TL Ref-Point :";
+
+  map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_dZ"] = new QLineEdit(tr(""));
+  
+  dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("dX"))    , row_index, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dX"), row_index, 2, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 3, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 4, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dZ"))    , row_index, 5, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dZ"), row_index, 6, Qt::AlignRight);
+
+
+  // distance: shift from PSs Ref-Point to PSSTL Ref-Point
+  ++row_index;
+
+  tmp_tag = "FromPSSTLToPSPTL";
+  tmp_des = "From PSSTL Fiducial To PSPTL Fiducial :";
+
+  map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_dZ"] = new QLineEdit(tr(""));
+  
+  dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("dX"))    , row_index, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dX"), row_index, 2, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 3, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 4, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dZ"))    , row_index, 5, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dZ"), row_index, 6, Qt::AlignRight);
+
+  
+
+
+  button_moveRelRefDist3_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist3_, row_index, 9, Qt::AlignLeft);
 
   // distance: from Spacer's Edge to PS-s Sensor Ref-Point
   ++row_index;
@@ -311,6 +390,9 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 3, Qt::AlignRight);
   dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 4, Qt::AlignRight);
 
+  button_moveRelRefDist4_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist4_, row_index, 9, Qt::AlignLeft);
+
   // distance: from Edge of PS-p Sensor to PS-p Ref-Point
   ++row_index;
 
@@ -326,11 +408,14 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 3, Qt::AlignRight);
   dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 4, Qt::AlignRight);
 
-  // distance: from Baseplate Ref-Point to PS-s Ref-Point relative to Baseplate
+  button_moveRelRefDist5_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist5_, row_index, 9, Qt::AlignLeft);
+
+  // distance: from PSS-To-PSP Position to PSS-To-GluingStage Position
   ++row_index;
 
-  tmp_tag = "FromPSPToPSSPosToGluingStage";
-  tmp_des = "From PSS-To-PSP Position to PSS-To-GluingStage Position :";
+  tmp_tag = "FromPSSPlusSpacersToMaPSAPositionToGluingStage";
+  tmp_des = "From PSs-To-PSp Position to PSs-To-GluingStage Position :";
 
   map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
@@ -340,6 +425,9 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dist_lay->addWidget(this->get(tmp_tag+"_dX"), row_index, 2, Qt::AlignRight);
   dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 3, Qt::AlignRight);
   dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 4, Qt::AlignRight);
+
+  button_moveRelRefDist6_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist6_, row_index, 9, Qt::AlignLeft);
 
   // distance: from best-focus z-position to pickup z-position
   ++row_index;
@@ -352,6 +440,9 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
   dist_lay->addWidget(new QLabel(tr("dZ"))    , row_index, 5, Qt::AlignRight);
   dist_lay->addWidget(this->get(tmp_tag+"_dZ"), row_index, 6, Qt::AlignRight);
+
+  button_moveRelRefDist7_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist7_, row_index, 9, Qt::AlignLeft);
 
   // distance: from ref-point on assembly platform (for spacers' calibration) to spacer's edge
   ++row_index;
@@ -368,6 +459,9 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 3, Qt::AlignRight);
   dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 4, Qt::AlignRight);
 
+  button_moveRelRefDist8_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist8_, row_index, 9, Qt::AlignLeft);
+
   // distance: from ref-point on assembly platform (for baseplate's calibration) to edge of PS-p sensor
   ++row_index;
 
@@ -382,6 +476,9 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dist_lay->addWidget(this->get(tmp_tag+"_dX"), row_index, 2, Qt::AlignRight);
   dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 3, Qt::AlignRight);
   dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 4, Qt::AlignRight);
+
+  button_moveRelRefDist9_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist9_, row_index, 9, Qt::AlignLeft);
 
   //// ---------------------
 
@@ -400,6 +497,51 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   paramIO_lay->addWidget(paramIO_button_write_, 50);
 
   layout->addLayout(paramIO_lay);
+
+  //Connections
+  connect(button_moveAbsRefPos1_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos1()));
+  connect(button_moveAbsRefPos2_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos2()));
+  connect(button_moveAbsRefPos3_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos3()));
+  connect(button_moveAbsRefPos4_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos4()));
+  connect(button_moveAbsRefPos5_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos5()));
+  connect(this , SIGNAL(click_moveToAbsRefPos(int)), this, SLOT(askConfirmMoveToAbsRefPoint(int)));
+
+  connect(button_moveRelRefDist1_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist1()));
+  connect(button_moveRelRefDist2_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist2()));
+  connect(button_moveRelRefDist3_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist3()));
+  connect(button_moveRelRefDist4_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist4()));
+  connect(button_moveRelRefDist5_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist5()));
+  connect(button_moveRelRefDist6_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist6()));
+  connect(button_moveRelRefDist7_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist7()));
+  connect(button_moveRelRefDist8_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist8()));
+  connect(button_moveRelRefDist9_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist9()));
+  connect(this , SIGNAL(click_moveByRelRefDist(int)), this, SLOT(askConfirmMoveByRelRefDist(int)));
+}
+
+AssemblyParametersView::~AssemblyParametersView()
+{
+    //-- Disconnect slots
+    disconnect(paramIO_button_read_ , SIGNAL(clicked()), this, SLOT( read_parameters()));
+    disconnect(paramIO_button_write_, SIGNAL(clicked()), this, SLOT(write_parameters()));
+
+    //Disconnections
+    disconnect(button_moveAbsRefPos1_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos1()));
+    disconnect(button_moveAbsRefPos2_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos2()));
+    disconnect(button_moveAbsRefPos3_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos3()));
+    disconnect(button_moveAbsRefPos4_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos4()));
+    disconnect(button_moveAbsRefPos5_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos5()));
+    disconnect(this , SIGNAL(click_moveToAbsRefPos(int)), this, SLOT(askConfirmMoveToAbsRefPoint(int)));
+
+    disconnect(button_moveRelRefDist1_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist1()));
+    disconnect(button_moveRelRefDist2_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist2()));
+    disconnect(button_moveRelRefDist3_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist3()));
+    disconnect(button_moveRelRefDist4_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist4()));
+    disconnect(button_moveRelRefDist5_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist5()));
+    disconnect(button_moveRelRefDist6_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist6()));
+    disconnect(button_moveRelRefDist7_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist7()));
+    disconnect(button_moveRelRefDist8_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist8()));
+    disconnect(button_moveRelRefDist9_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist9()));
+    disconnect(this , SIGNAL(click_moveByRelRefDist(int)), this, SLOT(askConfirmMoveByRelRefDist(int)));
 }
 
 void AssemblyParametersView::read_parameters()
@@ -514,4 +656,139 @@ void AssemblyParametersView::setText(const std::string& key, const double val)
   ptr->setText(QString::fromStdString(strs.str()));
 
   return;
+}
+
+//Prompt y/n message box. If yes, move to selected ref point absolute position
+void AssemblyParametersView::askConfirmMoveToAbsRefPoint(int refPoint)
+{
+    //Get the coordinates (in GUI) of the selected refPoint
+    std::string tmp_tag("");
+    switch(refPoint)
+    {
+        case 1: tmp_tag = "RefPointSensor";
+            break;
+        case 2: tmp_tag = "PlatformRefPointCalibrationBaseplate";
+            break;
+        case 3: tmp_tag = "PlatformRefPointCalibrationSpacers";
+            break;
+        case 4: tmp_tag = "CameraFocusOnAssemblyStage";
+            break;
+        case 5: tmp_tag = "CameraFocusOnGluingStage";
+            break;
+        default: return;
+    }
+    double x = this->get(tmp_tag+"_X")->text().toDouble();
+    double y = this->get(tmp_tag+"_Y")->text().toDouble();
+    double z = this->get(tmp_tag+"_Z")->text().toDouble();
+    double a = this->get(tmp_tag+"_A")->text().toDouble();
+
+    QMessageBox msgBox;
+    msgBox.setWindowTitle(tr("Move to absolute position"));
+    msgBox.setText(QString("<p style=\"color:#dd4f0b\"><b>x=%1 / y=%2 / z=%3 / a=%4.</b></p>").arg(x).arg(y).arg(z).arg(a));
+    msgBox.setInformativeText("Do you want to move to this absolute position?");
+    msgBox.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+    msgBox.setDefaultButton(QMessageBox::No);
+    int ret = msgBox.exec();
+
+    switch(ret)
+    {
+      case QMessageBox::No: return; //Exit
+      case QMessageBox::Yes: break; //Continue function execution
+      default: return; //Exit
+    }
+
+    NQLog("AssemblyParametersView", NQLog::Spam) << "askConfirmMoveToAbsRefPoint"
+       << ": request move to absolute ref. position " << refPoint << " (x="<<x<<" / y="<<y<<" / z="<<z<<" / a="<<a<<")";
+
+    emit request_moveToAbsRefPosition(x,y,z,a);
+
+    return;
+}
+
+//Prompt y/n message box. If yes, move by selected relative distance
+//Possible improvement: highlight the row currently hovered by the mouse (to avoid clicking button corresponding to a different row)
+void AssemblyParametersView::askConfirmMoveByRelRefDist(int refPoint)
+{
+    //Get the coordinates (in GUI) of the selected refPoint
+    std::string tmp_tag("");
+    switch(refPoint)
+    {
+        case 1: tmp_tag = "AngleOfCameraFrameInRefFrame";
+            break;
+        case 2: tmp_tag = "FromSensorRefPointToSensorPickup";
+            break;
+        case 3: tmp_tag = "FromPSPRefPointToPSSRefPoint";
+            break;
+        case 4: tmp_tag = "FromSpacerEdgeToPSSRefPoint";
+            break;
+        case 5: tmp_tag = "FromPSPEdgeToPSPRefPoint";
+            break;
+        case 6: tmp_tag = "FromPSSPlusSpacersToMaPSAPositionToGluingStage";
+            break;
+        case 7: tmp_tag = "FromCameraBestFocusToPickupHeight";
+            break;
+        case 8: tmp_tag = "FromPlatformRefPointCalibrationSpacersToSpacerEdge";
+            break;
+        case 9: tmp_tag = "FromPlatformRefPointCalibrationBaseplateToPSPEdge";
+            break;
+        default: return;
+    }
+
+    //Get relative movements (not all 4 coordinates are available, depending on variable)
+    double dx = 0., dy = 0., dz = 0., da = 0.;
+    if(this->has(tmp_tag+"_dX") == true) {dx = this->get(tmp_tag+"_dX")->text().toDouble();}
+    if(this->has(tmp_tag+"_dY") == true) {dy = this->get(tmp_tag+"_dY")->text().toDouble();}
+    if(this->has(tmp_tag+"_dZ") == true) {dz = this->get(tmp_tag+"_dZ")->text().toDouble();}
+    if(this->has(tmp_tag+"_dA") == true) {da = this->get(tmp_tag+"_dA")->text().toDouble();}
+
+    QMessageBox msgBox;
+    msgBox.setWindowTitle(tr("Move by relative distance"));
+    msgBox.setText(QString("<p style=\"color:#dd4f0b\"><b>dX=%1 / dY=%2 / dZ=%3 / dA=%4.</b></p>").arg(dx).arg(dy).arg(dz).arg(da));
+    msgBox.setInformativeText("Do you want to apply this relative movement?");
+    msgBox.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+    msgBox.setDefaultButton(QMessageBox::No);
+    int ret = msgBox.exec();
+
+    switch(ret)
+    {
+      case QMessageBox::No: return; //Exit
+      case QMessageBox::Yes: break; //Continue function execution
+      default: return; //Exit
+    }
+
+    NQLog("AssemblyParametersView", NQLog::Spam) << "askConfirmMoveByRelRefDist"
+       << ": request move by relative ref. distance " << refPoint << " (dX="<<dx<<" / dY="<<dy<<" / dZ="<<dz<<" / dA="<<da<<")";
+
+    emit request_moveByRelRefDistance(dx,dy,dz,da);
+
+    return;
+}
+
+//-- Information about this tab in GUI
+//HTML markup (<xxx></xxx>): p paragraph, b bold, em emphasize, i italic, s small, section, summary, var variable, ... . Use <br> for a newline in html ('\n' in plain text).
+//Ex: <p style="color:red">This is a red paragraph.</p>
+void AssemblyParametersView::display_infoTab()
+{
+    QMessageBox messageBox;
+    messageBox.setWindowTitle(tr("Information - Parameters"));
+
+    messageBox.setText(tr("<p>This tab stores reference values (dimensions, distances, etc.) necessary to the assembly procedure.<br>"
+    "The values are read from a config file (whose path is hardcoded as option <i>[AssemblyParameters_file_path]</i> in the file <i>[assembly/assembly.cfg])</i>, and may be edited interactively and non-permanently by the user.</p>"
+    "<p style=color:orange>NB: make sure to read the proper config file, which differs for glass or silicon assembly !</p>"
+    "<p>[<b>Dimensions of Assembly Components</b>] -- Reference thickness values of assembly components, used to compute distances along the Z-axis and apply the corresponding movements during assembly.</p>"
+    "<p>[<b>Reference Positions</b>] -- Absolute positions of several reference points <i>(related to assembly platform, spacer slots, gluing stage, ec.)</i> expressed in the reference frame of the motion stage (MS). These values must be determined manually as part of a periodic calibration procedure."
+    "<ul>"
+    "<li> <u>Sensor Marker-1 Ref Point</u>: position of the top-left fiducial marker of a sensor. This position is arbitrary and only used as a starting point for PatRec, which ultimately determines the exact marker position. The purpose of this constant is solely to provide a good starting point for the PatRec to run as fast as possible.</li>"
+    "<li> <u>Baseplate Ref Point</u>: position of the inner edge of the black right angle engraved on the bottom-left corner of the platform. This point provides all the necessary information about the positions of the platform in the MS reference frame, since all point-to-point distances on the platform are assumed to be known exactly.</li>"
+    "<li> <u>Spacers Ref Point</u>: position of the same platform edge mentioned above, after a -90degrees rotation has been applied to the platform. The XYZ coordinates must be determined independently, while the angle is assumed to be shifted by exactly -90deg w.r.t. its initial value. <i>NB: the axis of rotation of the platform is not assumed to be known exactly, hence this position is measured rather than deduced from other quantities.</i></li>"
+    "</ul></p>"
+    "<p>[<b>Reference Distances</b>] -- Distances between reference points.</p>"
+    ));
+
+    QSpacerItem* horizontalSpacer = new QSpacerItem(3000, 0, QSizePolicy::Minimum, QSizePolicy::Expanding); //Use this to enlarge box width
+    QGridLayout* layout = (QGridLayout*) messageBox.layout();
+    layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
+    messageBox.exec();
+
+    return;
 }

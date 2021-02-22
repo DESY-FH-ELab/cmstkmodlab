@@ -25,6 +25,10 @@
 
 #include <nvector3D.h>
 
+/** @addtogroup common
+ *  @{
+ */
+
 class NDirection3D : public NVector3D
 {
 public:
@@ -39,5 +43,7 @@ protected:
 
   void normalize();
 };
+
+/** @} */
 
 #endif // NDIRECTION3D_H

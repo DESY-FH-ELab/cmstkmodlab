@@ -44,8 +44,12 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   patrec_exe_button_(nullptr),
   patrec_exe_label_(nullptr),
 
+  patrec_exe_button_2_(nullptr),
+  patrec_exe_label_2_(nullptr),
+  
   patrec_wid_(nullptr),
-
+  patrec_wid_2_(nullptr),
+  
   patrec_res_dX_linee_(nullptr),
   patrec_res_dY_linee_(nullptr),
   patrec_res_ang_linee_(nullptr),
@@ -147,9 +151,14 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
 
   QGridLayout* patrec_exe_lay = new QGridLayout;
 
-  patrec_exe_button_ = new QPushButton(tr("Standalone PatRec"), this);
-  patrec_exe_lay->addWidget(patrec_exe_button_, 0, 0);
 
+    
+  patrec_exe_button_ = new QPushButton(tr("Standalone PatRec"), this);
+  
+  
+  patrec_exe_lay->addWidget(patrec_exe_button_, 0, 0);
+  
+  
   QPixmap pixmap(100, 100);
   pixmap.fill(QColor("transparent"));
 
@@ -194,7 +203,11 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
 
   patrec_lay->addWidget(patrec_wid_);
   // -----------
+  
+  // imageView_4_->connectImageProducer(this->PatRec_Widget(), SIGNAL(updated_image_template(cv::Mat)));
 
+  
+  
   // PatRec results
   QLabel* patrec_res_title = new QLabel(tr("Results"));
   patrec_res_title->setAlignment(Qt::AlignCenter);
@@ -429,4 +442,15 @@ void AssemblyObjectFinderPatRecView::keyReleaseEvent(QKeyEvent* event)
         break;
     }
   }
+}
+
+//-- Information about this tab in GUI
+//HTML markup (<xxx></xxx>): p paragraph, b bold, em emphasize, i italic, s small, section, summary, var variable, ...
+//Ex: <p style="color:red">This is a red paragraph.</p>
+void AssemblyObjectFinderPatRecView::display_infoTab()
+{
+    QMessageBox::information(this, tr("Information - Pattern Recognition"),
+            tr("<p>There is no available information about the content of this tab yet.</p>"));
+
+    return;
 }

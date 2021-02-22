@@ -82,6 +82,8 @@ class AssemblyThresholderView : public QWidget
   void apply_threshold();
   void apply_adaptiveThreshold();
 
+  void display_infoTab();
+
  signals:
 
   void image_raw_request();

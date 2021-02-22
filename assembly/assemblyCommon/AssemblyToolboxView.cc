@@ -60,6 +60,30 @@ AssemblyToolboxView::AssemblyToolboxView(const LStepExpressMotionManager* const 
 
   toolbox->addItem(mupite_wid_, tr("Multi-Pickup Tester (PatRec + pick-up + put-down)"));
   // ---------------------
-
   layout->addStretch(1);
+}
+
+//-- Information about this tab in GUI
+//HTML markup (<xxx></xxx>): p paragraph, b bold, em emphasize, i italic, s small, section, summary, var variable, ...
+//Ex: <p style="color:red">This is a red paragraph.</p>
+void AssemblyToolboxView::display_infoTab()
+{
+    QMessageBox messageBox;
+    messageBox.setWindowTitle(tr("Information - Toolbox"));
+
+    messageBox.setText(tr("<p>This tab offers helper tools and functionalities.</p>"
+
+    "<ul>"
+    "<li> <u>Record positions</u>: Save the current absolute position of the Motion Stage, and comment it if desired. It is possible to determine the relative distance between 2 registered positions.</li>"
+    "<br>"
+    "<li> <u>Multi-Pickup Tester</u>: advanced functionality, for calibrating the relative distance along the Z axis to pickup an object, when the camera is focused on the platform surface. The basic procedure is: a) take snapshot; b) lower pickup tool; c) pickup object; d) lift up; e) put back down; f) take new snapshot; g) repeat for several relative distances dZ. Each time, PatRec is run before/after pickup to verify whether the object was displaced in XY, which indicates that excessive or insufficient pressure was applied to the object.</li>"
+    "</ul></p>"
+    ));
+
+    QSpacerItem* horizontalSpacer = new QSpacerItem(3000, 0, QSizePolicy::Minimum, QSizePolicy::Expanding); //Use this to enlarge box width
+    QGridLayout* layout = (QGridLayout*) messageBox.layout();
+    layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
+    messageBox.exec();
+
+    return;
 }

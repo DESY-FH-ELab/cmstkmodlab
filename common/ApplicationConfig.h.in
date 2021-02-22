@@ -23,16 +23,20 @@
 #include <QVariant>
 #include <QMessageBox>
 
+/** @addtogroup common
+ *  @{
+ */
+
 namespace Config {
   extern const std::string CMSTkModLabBasePath;
 }
 
 class ApplicationConfig
-{  
+{
 public:
-  
+
   static ApplicationConfig* instance(const std::string filename = std::string());
-  
+
   template <class aType> aType getValue(std::string const& key) const {
     aType returnValue = 0;
     std::multimap<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
@@ -70,7 +74,7 @@ public:
     }
     return returnValue;
   }
-  
+
   std::string getValue(std::string const& key) const {
     std::multimap<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
     if (it!=keyvalueMap_.end()) {
@@ -80,7 +84,7 @@ public:
     }
     return std::string();
   }
-  
+
   std::vector<std::string> getValueVector(std::string const& key) const {
     std::vector<std::string> returnVector;
     std::pair<std::multimap<std::string,std::string>::const_iterator,
@@ -91,7 +95,7 @@ public:
     }
     return returnVector;
   }
-  
+
   std::string getValue(std::string const& key, std::string defaultValue) const {
     std::multimap<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
     if (it!=keyvalueMap_.end()) {
@@ -100,22 +104,22 @@ public:
       return defaultValue;
     }
   }
-  
+
   template <class aType> void setValue(std::string const& key, aType value) {
     QVariant variant(value);
     keyvalueMap_.erase(key);
     keyvalueMap_.insert(std::make_pair(key, variant.toString().toStdString()));
   }
-  
+
   void safe(const std::string filename);
-  
+
 protected:
-  
+
   ApplicationConfig(const std::string filename);
   static ApplicationConfig* instance_;
-  
+
   void issueKeyError(const std::string&) const;
-  
+
   std::multimap<std::string,std::string> keyvalueMap_;
 };
 
@@ -130,5 +134,9 @@ template <> int ApplicationConfig::getValue(std::string const& key, int defaultV
 template <> unsigned int ApplicationConfig::getValue(std::string const& key) const;
 template <> std::vector<unsigned int> ApplicationConfig::getValueVector(std::string const& key) const;
 template <> unsigned int ApplicationConfig::getValue(std::string const& key, unsigned int defaultValue) const;
+
+template <> void ApplicationConfig::setValue(std::string const& key, std::string value);
+
+/** @} */
 
 #endif // APPLICATIONCONFIG_H

@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//                           All rights reserved                               //
+//                                                                             //
+//      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
+//      You have the right to modify and/or redistribute this source code      //
+//      under the terms specified in the license, which may be found online    //
+//      at http://www.gnu.org/licenses or at License.txt.                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #ifndef SCRIPTABLEIOTA_H
 #define SCRIPTABLEIOTA_H
 
@@ -6,6 +18,14 @@
 #include <QScriptValue>
 
 #include <IotaModel.h>
+
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup scripting
+ *  @{
+ */
 
 class ScriptableIota : public QObject
 {
@@ -48,5 +68,9 @@ public:
   // For thread safety
   QMutex mutex_;
 };
+
+/** @} */
+
+/** @} */
 
 #endif // SCRIPTABLEIOTA_H

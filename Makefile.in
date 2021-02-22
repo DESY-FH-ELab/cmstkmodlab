@@ -1,5 +1,6 @@
 BASEPATH      = @basepath@
 NOTHERMAL     = @nothermal@
+NOTHERMAL2    = @nothermal2@
 NODEFO        = @nodefo@
 NOASSEMBLY    = @noassembly@
 NOPLASMA      = @noplasma@
@@ -10,9 +11,9 @@ USEFAKEDEVICES= @usefakedevices@
 QMAKE         = @qmake@
 
 subdirs	      = devices python external tools common common_test
-ifeq ($(NOTHERMAL),0)
+
 subdirs      += thermo
-endif
+
 ifeq ($(NODEFO),0)
 subdirs      += defo
 endif
@@ -25,18 +26,26 @@ endif
 ifeq ($(NOPUMPSTATION),0)
 subdirs      += pumpstation
 endif
-
 qtsubdirs     = common common_test
 ifeq ($(NOTHERMAL),0)
-qtsubdirs    += thermo/thermoDAQ thermo/thermoDisplay
-qtsubdirs    += thermo/microDAQ thermo/microDisplay
-qtsubdirs    += thermo/thermoDAQ2Root thermo/thermoDAQ2Log thermo/thermoDAQ2Plots
+ifeq ($(NOTHERMAL2),0)
+qtsubdirs    += thermo/thermoDAQ2Root
 endif
+endif
+ifeq ($(NOTHERMAL),0)
+qtsubdirs    += thermo/thermo1/thermoDAQ thermo/thermo1/thermoDisplay
+qtsubdirs    += thermo/thermo1/microDAQ thermo/thermo1/microDisplay
+qtsubdirs    += thermo/thermo1/thermoDAQ2Log thermo/thermo1/thermoDAQ2Plots
+endif
+ifeq ($(NOTHERMAL2),0)
+qtsubdirs    += thermo/thermo2/thermoDAQ2 thermo/thermo2/thermoDisplay2
+endif
+
 ifeq ($(NODEFO),0)
 qtsubdirs    += defo/defoCommon defo/defoDAQ defo/defoDisplay defo/defoReco defo/defoCalib defo/defoDAQ2Root
 endif
 ifeq ($(NOASSEMBLY),0)
-qtsubdirs    += assembly/assemblyCommon assembly/vision/circleCalibration assembly/motion/motionCommander assembly/assembly
+qtsubdirs    += assembly/assemblyCommon assembly/motion/motionCommander assembly/assembly
 endif
 ifeq ($(NOPLASMA),0)
 qtsubdirs    += plasma
@@ -48,13 +57,13 @@ endif
 installsubdirs = devices external common pumpstation
 
 all: qt
-	@for dir in $(subdirs); do (cd $$dir; make); done
+	@for dir in $(subdirs); do (cd $$dir && make); done
 
 qt:
-	@for dir in $(qtsubdirs); do (cd $$dir; @qmake@); done
+	@for dir in $(qtsubdirs); do (cd $$dir && @qmake@); done
 
 install:
-	@for dir in $(installsubdirs); do (cd $$dir; make install); done
+	@for dir in $(installsubdirs); do (cd $$dir && make install); done
 
 Makefile: Makefile.in @basepath@/config.status
 	@basepath@/config.status Makefile.in
@@ -67,6 +76,9 @@ tkmodlabenv.csh: tkmodlabenv.csh.in @basepath@/config.status
 
 clean:
 	@rm -f *~
-	@for dir in $(subdirs); do (cd $$dir; make clean); done
+	@for dir in $(subdirs); do (cd $$dir && make clean); done
 	@rm -f tkmodlabenv.sh
 	@rm -f tkmodlabenv.csh
+
+anew:
+	@if [ -f ./reconfigure ]; then make clean && ./reconfigure && make all; fi;

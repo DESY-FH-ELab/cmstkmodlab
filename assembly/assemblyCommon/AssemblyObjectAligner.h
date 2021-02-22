@@ -26,8 +26,6 @@ class AssemblyObjectAligner : public QObject
   explicit AssemblyObjectAligner(const LStepExpressMotionManager* const, QObject* parent=nullptr);
   virtual ~AssemblyObjectAligner() {}
 
-  void reset();
-
   class Configuration {
 
    public:
@@ -52,6 +50,7 @@ class AssemblyObjectAligner : public QObject
     double angle_max_dontIter;
     double angle_max_complete;
 
+    //Cfg instances which must be transmitted when running PatRec on markers 1 and 2
     AssemblyObjectFinderPatRec::Configuration PatRecOne_configuration;
     AssemblyObjectFinderPatRec::Configuration PatRecTwo_configuration;
   };
@@ -68,20 +67,23 @@ class AssemblyObjectAligner : public QObject
 
     void enable_motion_manager(const bool);
 
-    void    connect_motion_manager() { this->enable_motion_manager(true) ; }
+    void connect_motion_manager() { this->enable_motion_manager(true) ; }
     void disconnect_motion_manager() { this->enable_motion_manager(false); }
 
-    // parameters
-    double angle_max_dontIter_;
-    double angle_max_complete_;
+    // maximum number of allowed iterations in a single alignment execution
+    int max_numOfRotations_;
 
     // transient data (values to be updated during alignment)
     int alignment_step_;
+    int counter_numOfRotations_; //Count the number of rotations executed during the alignment routine
 
     double posi_x1_, posi_y1_;
     double posi_x2_, posi_y2_;
 
     double obj_angle_deg_;
+
+    void reset();
+    void reset_counter_numOfRotations();
 
   public slots:
 
@@ -120,6 +122,8 @@ class AssemblyObjectAligner : public QObject
     void measured_angle(const double);
 
     void execution_completed();
+
+    void DBLogMessage(const QString);
 };
 
 #endif // AssemblyObjectAligner_h

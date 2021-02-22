@@ -45,6 +45,8 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
   imgbin_adathr_label_ (nullptr),
   imgbin_adathr_linee_ (nullptr)
 {
+  ApplicationConfig* config = ApplicationConfig::instance();
+
   QGridLayout* l = new QGridLayout;
   this->setLayout(l);
 
@@ -138,7 +140,7 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
   imgbin_thresh_label_->setText("Threshold (pos int)");
 
   imgbin_thresh_linee_ = new QLineEdit(this);
-  imgbin_thresh_linee_->setText("100");
+  assembly::QLineEdit_setText(imgbin_thresh_linee_, config->getValue<int>("AssemblyThresholderView_threshold", 30));
 
   imgbin_thresh_inputcfg->addWidget(imgbin_thresh_label_, 40);
   imgbin_thresh_inputcfg->addWidget(imgbin_thresh_linee_, 60);
@@ -162,7 +164,7 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
   imgbin_adathr_label_->setText("Block Size (pos odd int)");
 
   imgbin_adathr_linee_ = new QLineEdit(this);
-  imgbin_adathr_linee_->setText("587");
+  assembly::QLineEdit_setText(imgbin_adathr_linee_, config->getValue<int>("AssemblyThresholderView_adaptiveThreshold", 587));
 
   imgbin_adathr_inputcfg->addWidget(imgbin_adathr_label_, 40);
   imgbin_adathr_inputcfg->addWidget(imgbin_adathr_linee_, 60);
@@ -373,4 +375,15 @@ void AssemblyThresholderView::keyReleaseEvent(QKeyEvent* event)
         break;
     }
   }
+}
+
+//-- Information about this tab in GUI
+//HTML markup (<xxx></xxx>): p paragraph, b bold, em emphasize, i italic, s small, section, summary, var variable, ...
+//Ex: <p style="color:red">This is a red paragraph.</p>
+void AssemblyThresholderView::display_infoTab()
+{
+    QMessageBox::information(this, tr("Information - Convert Image to B/W"),
+            tr("<p>There is no available information about the content of this tab yet.</p>"));
+
+    return;
 }

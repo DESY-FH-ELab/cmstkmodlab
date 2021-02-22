@@ -15,7 +15,11 @@ LIB           = TkModLabHuber
 MODULES       = PetiteFleurComHandler \
                 VHuberPetiteFleur \
                 HuberPetiteFleurFake \
-                HuberPetiteFleur
+                HuberPetiteFleur \
+                PilotOneComHandler \
+                VHuberPilotOne \
+                HuberPilotOneFake \
+                HuberPilotOne
 
 ALLDEPEND = $(addsuffix .d,$(MODULES))
 

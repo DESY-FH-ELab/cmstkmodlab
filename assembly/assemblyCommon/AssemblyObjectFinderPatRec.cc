@@ -164,6 +164,8 @@ void AssemblyObjectFinderPatRec::launch_PatRec(const AssemblyObjectFinderPatRec:
     emit PatRec_exitcode(1);
   }
 
+  // emit DBLogMessage("Starting Pattern Recognition");
+
   mutex_.lock();
 
   img_template_ = img_templa;
@@ -634,12 +636,19 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
      << ": best matching position in pixels x = " << best_matchLoc.x << ", y = " << best_matchLoc.y << "\"";
-  
   double patrec_dX, patrec_dY;
   assembly::rotation2D_deg(patrec_dX, patrec_dY, angle_FromCameraXYtoRefFrameXY_deg, dX_0, dY_0);
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
      << ": emitting signal \"PatRec_results(" << patrec_dX << ", " << patrec_dY << ", " << best_angle << ")\"";
+
+  const QString mess_tmp = "PatRec results:\n" +
+                // QString("-- Best match X = ")     + QString::number(best_matchLoc.x) + " (px) \n" +
+                // QString("-- Best match X = ")     + QString::number(best_matchLoc.x) + " (px) \n" +
+                QString("-- Best match X = ")     + QString::number(patrec_dX) + " (mm) \n" +
+                QString("-- Best match Y = ")     + QString::number(patrec_dY) + " (mm) \n" +
+                QString("-- Best match angle = ") + QString::number(best_angle) + " (deg)";
+  emit DBLogMessage(mess_tmp);
 
   emit PatRec_results(patrec_dX, patrec_dY, best_angle);
 

@@ -34,6 +34,14 @@
 #include "NanotecSMCI36Model.h"
 #include "DeviceState.h"
 
+/** @addtogroup common
+ *  @{
+ */
+
+/** @addtogroup widgets
+ *  @{
+ */
+
 class NanotecSMCI36ErrorCorrectionModeWidget : public QComboBox
 {
   Q_OBJECT
@@ -293,5 +301,9 @@ public slots:
   void controlStateChanged(bool);
   void updateInfo();
 };
+
+/** @} */
+
+/** @} */
 
 #endif // NANOTECSMCI36WIDGET_H

@@ -19,6 +19,10 @@
 
 #include <QObject>
 
+/** @addtogroup common
+ *  @{
+ */
+
 class ApplicationConfigReader : public QObject
 {
 
@@ -35,5 +39,7 @@ class ApplicationConfigReader : public QObject
 
   std::string inputFileName_;
 };
+
+/** @} */
 
 #endif // APPLICATIONCONFIGREADER_H

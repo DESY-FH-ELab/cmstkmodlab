@@ -149,3 +149,30 @@ void AssemblyHardwareControlView::disableMotionTools(const bool disable)
 {
   this->enableMotionTools(!disable);
 }
+
+//-- Information about this tab in GUI
+//HTML markup (<xxx></xxx>): p paragraph, b bold, em emphasize, i italic, s small, section, summary, var variable, ...
+//Ex: <p style="color:red">This is a red paragraph.</p>
+void AssemblyHardwareControlView::display_infoTab()
+{
+    QMessageBox messageBox;
+    messageBox.setWindowTitle(tr("Information - HW Controllers"));
+
+    messageBox.setText(tr("<p>This tab allows for manual control of the Motion Stage (MS) and vacuum lines.</p>"
+
+    "<p style=color:orange>When starting the program, always click 'Calibrate' first to make the MS aware of its physical boundaries. Click 'Origin' anytime to go back to the (0,0,0,0) absolute position.</p>"
+
+    "<ul>"
+    "<li>[<b>Motion Stage</b>]: apply any relative/absolute movement to the MS (within boundaries). <i>NB: always click the 'Clear XYZA' button afterwards to avoid mistakes !</i></li>"
+    "<li>[<b>Toggle Vacuum</b>]: (dis)activate the vacuum lines for pickup (pickup tool), spacers (spacer slots on platform) or baseplate (baseplate slot on platform).</li>"
+    "<li>[<b>Arrows (at bottom)</b>]: apply predefined relative movements along desired axis. This is to be prefered for small movements (limited to +-10mm).</li>"
+    "</ul>"
+    ));
+
+    QSpacerItem* horizontalSpacer = new QSpacerItem(3000, 0, QSizePolicy::Minimum, QSizePolicy::Expanding); //Use this to enlarge box width
+    QGridLayout* layout = (QGridLayout*) messageBox.layout();
+    layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
+    messageBox.exec();
+
+    return;
+}

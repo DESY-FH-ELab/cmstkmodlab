@@ -20,6 +20,15 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @defgroup Leybold Leybold
+ * Classes to handle low level communication with Leybold devices
+ *  @{
+ */
+
 typedef const char* ioport_t;
 typedef struct termios termios_t;
 
@@ -54,6 +63,10 @@ class LeyboldComHandler {
   ioport_t fIoPort;
   termios_t fCurrentTermios, fThisTermios;
 };
+ 
+/** @} */
+
+/** @} */
 
 #endif // _LEYBOLDCOMHANDLER_H_
 

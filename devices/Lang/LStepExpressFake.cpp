@@ -16,6 +16,7 @@
 
 LStepExpressFake::LStepExpressFake(const std::string& ioPort, const std::string& /* lstep_ver */, const std::string& /* lstep_iver */)
  : VLStepExpress(ioPort)
+ , ioPort_(ioPort)
  , autoStatus_(1)
  , port_(ioPort)
 {
@@ -44,12 +45,16 @@ LStepExpressFake::LStepExpressFake(const std::string& ioPort, const std::string&
   posCtrl_enabled_ = false;
 }
 
+//! Return name of port used to initialize LStepExpressFake
+std::string LStepExpressFake::ioPort() const
+{
+  return ioPort_;
+}
+
 LStepExpressFake::~LStepExpressFake()
 {
 
 }
-
-std::string LStepExpressFake::ioPort() const {return port_;}
 
 void LStepExpressFake::GetAutoStatus(int & value)
 {

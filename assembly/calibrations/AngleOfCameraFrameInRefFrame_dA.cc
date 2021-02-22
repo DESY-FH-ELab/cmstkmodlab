@@ -8,6 +8,25 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 // MEASUREMENTS
+//// From here until the dotted line, DESY's values
+	//const double ANGDEG_PATREC = 0.1;
+
+// const int PR1_PIXEL_X = 1109;
+// const int PR1_PIXEL_Y = 643;
+
+// const double PR1_MOTION_STAGE_POS_X = -70.028;
+// const double PR1_MOTION_STAGE_POS_Y = -79.495;
+
+// const int PR2_PIXEL_X = 1217;
+// const int PR2_PIXEL_Y = 728;
+
+// const double PR2_MOTION_STAGE_POS_X = 24.9708;
+// const double PR2_MOTION_STAGE_POS_Y = -78.4949;
+
+// // SENSOR, IMAGE SPECIFICATIONS - using markers in one line
+// const double ANGDEG_REFERC = 0.00; // PS-s
+// //const double ANGDEG_REFERC = 0.00; // PS-p
+//// ------------------------------------------///
 const double ANGDEG_PATREC = -0.14; // avg b/w PR1 -0.12 and PR2 -0.16
 
 const int PR1_PIXEL_X = 1313;
@@ -26,6 +45,7 @@ const double PR2_MOTION_STAGE_POS_Y = -108.5;
 const double ANGDEG_REFERC = 0.000; // two fiducials used aligned
 //const double ANGDEG_REFERC = -27.313500; // PS-s
 //const double ANGDEG_REFERC = -26.706931; // PS-p
+>>>>>>> alignment
 
 const double MM_PER_PIXEL = 0.0012;
 

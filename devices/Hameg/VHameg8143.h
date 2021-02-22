@@ -13,6 +13,14 @@
 #ifndef __VHAMEG8143_H
 #define __VHAMEG8143_H
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Hameg
+ *  @{
+ */
+
 typedef const char* ioport_t;
 
 class VHameg8143 {
@@ -52,5 +60,9 @@ class VHameg8143 {
   virtual bool SwitchOutputOn() const = 0;
   virtual bool SwitchOutputOff() const = 0;
 };
+
+/** @} */
+
+/** @} */
 
 #endif

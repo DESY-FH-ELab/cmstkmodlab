@@ -36,6 +36,8 @@ class AssemblyLogFileView : public QWidget
  public slots:
 
   void append_text(const QStringList&);
+
+  void display_infoTab();
 };
 
 class AssemblyLogTextViewer : public QPlainTextEdit

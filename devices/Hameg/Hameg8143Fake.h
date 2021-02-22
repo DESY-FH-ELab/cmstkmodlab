@@ -15,6 +15,14 @@
 
 #include "VHameg8143.h"
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Hameg
+ *  @{
+ */
+
 class Hameg8143Fake : public VHameg8143
 {
  public:
@@ -49,5 +57,9 @@ class Hameg8143Fake : public VHameg8143
   mutable float voltage_[2];
   mutable float current_[2];
 };
+
+/** @} */
+
+/** @} */
 
 #endif

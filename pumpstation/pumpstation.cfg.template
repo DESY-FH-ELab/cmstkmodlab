@@ -15,3 +15,7 @@ Pump2OperatingHours    1.000
 slackwebhook	       https://hooks.slack.com/services/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
 slackusername          pumpstation
 slackchannel	       #daf_25c
+
+mattermostwebhook      https://mattermost.web.cern.ch/hooks/d5tpf87e63ntmroe54peebo7eo
+mattermostusername     pumpstation
+mattermostchannel      daf

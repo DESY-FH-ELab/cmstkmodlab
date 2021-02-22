@@ -1,0 +1,3 @@
+SUBSYSTEM=="tty", ATTRS{idVendor}=="067b", ATTRS{idProduct}=="2303", SYMLINK+="ttyLeyboldGraphixOne"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="05e6", ATTRS{idProduct}=="6510", SYMLINK+="ttyKeithleyDAQ6510"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0aad", ATTRS{idProduct}=="013c", SYMLINK+="ttyRohdeSchwarzNGE103B"

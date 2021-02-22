@@ -18,14 +18,20 @@
 
 #include "VLStepExpress.h"
 
+/** @addtogroup devices
+ *  @{
+ */
+
+/** @addtogroup Lang Lang
+ *  @{
+ */
+
 class LStepExpressFake : public VLStepExpress
 {
  public:
 
   LStepExpressFake(const std::string&, const std::string& lstep_ver="", const std::string& lstep_iver="");
   ~LStepExpressFake();
-
- public:
 
   std::string ioPort() const;
 
@@ -125,7 +131,9 @@ class LStepExpressFake : public VLStepExpress
   void SendCommand(const std::string & command);
   void ReceiveString(std::string &) { }
 
-  private:
+ private:
+
+  std::string ioPort_;
 
   int autoStatus_;
   std::vector<int> axisStatus_;
@@ -147,5 +155,9 @@ class LStepExpressFake : public VLStepExpress
 
   bool posCtrl_enabled_;
 };
+
+/** @} */
+
+/** @} */
 
 #endif
