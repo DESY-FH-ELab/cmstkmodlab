@@ -564,6 +564,12 @@ double LStepExpressMotionManager::get_position(const int axis) const
         NQLog("LStepExpressMotionManager", NQLog::Warning) << "get_position(" << axis << ")"
            << ": cannot return motion stage position [try #" << tries << "] because positions vector has invalid size ("
            << this->model()->getPositions().size() << ")";
+
+        for(int iaxis=0; iaxis<this->model()->getPositions().size(); iaxis++) //Additional printout info: list all available/correct positions
+        {
+            NQLog("LStepExpressMotionManager", NQLog::Warning) << "Pos: " << this->model()->getPosition(iaxis);
+        }
+
       }
     }
 
