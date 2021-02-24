@@ -1262,7 +1262,7 @@ void LStepExpressModel::updateMotionInformation()
 
           emit motionFinished();
         }
-          
+
           /*
 	if (std::all_of(ivalues.begin(), ivalues.end(),
 	[](int i){	  NQLog("LStepExpressModel", NQLog::Spam)<< "updateMotionInformation() axis status =  "<<i; bool temp = (i==LStepExpress_t::AXISSTANDSANDREADY || i==LStepExpress_t::AXISACKAFTERCALIBRATION) && (axis_)[i]==1; return temp;})) {
@@ -1271,7 +1271,7 @@ void LStepExpressModel::updateMotionInformation()
 	emit motionFinished();
 	}*/
       }
-      
+
       if( (axis_)[0] || (axis_)[1] || (axis_)[2] || (axis_)[3]){
         controller_->GetPosition(dvalues);
         if (dvalues!=position_) {
@@ -1280,7 +1280,7 @@ void LStepExpressModel::updateMotionInformation()
           changed = true;
         }
       }
-      
+
       //      NQLog("LStepExpressModel", NQLog::Spam)<< "updateMotionInformation() finishedCalibrating_ =  "<<finishedCalibrating_<<" in motion =  "<<inMotion_  ;
       if(!inMotion_ && finishedCalibrating_){
         //  NQLog("LStepExpressModel", NQLog::Spam)<< "updateMotionInformation() after calibration, setting position values to zero"  ;
