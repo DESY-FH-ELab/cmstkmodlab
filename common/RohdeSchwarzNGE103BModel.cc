@@ -36,6 +36,11 @@ RohdeSchwarzNGE103BModel::RohdeSchwarzNGE103BModel(const char* port,
                              VRohdeSchwarzNGE103B::MaxEasyRampDuration,
                              2)
 {
+  voltage_ = { 0., 0., 0. };
+  measuredVoltage_ = { 0., 0., 0. };
+  current_ = { 0., 0., 0. };
+  measuredCurrent_ = { 0., 0., 0. };
+  
   for (int i=0;i<3;++i) {
     measuredVoltageHistory_[i] = ValueHistory<float>(updateInterval_, 2*60.*60.);
     measuredCurrentHistory_[i] = ValueHistory<float>(updateInterval_, 2*60.*60.);

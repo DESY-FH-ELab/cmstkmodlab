@@ -28,12 +28,8 @@ NanotecSMCI36ErrorCorrectionModeWidget::NanotecSMCI36ErrorCorrectionModeWidget(N
   // No user editable text
   setEditable(false);
 
-  const std::map<int,std::string>& modes = model_->getErrorCorrectionModeNames();
-
-  for (std::map<int,std::string>::const_iterator it = modes.begin();
-       it!=modes.end();
-       ++it) {
-    addItem(it->second.c_str(), QVariant(it->first));
+  for (const auto& kv : model_->getErrorCorrectionModeNames()) {
+    addItem(kv.second.c_str(), QVariant(kv.first));
   }
 
   // Connect all the signals
@@ -110,12 +106,8 @@ NanotecSMCI36RampModeWidget::NanotecSMCI36RampModeWidget(NanotecSMCI36Model* mod
   // No user editable text
   setEditable(false);
 
-  const std::map<int,std::string>& modes = model_->getRampModeNames();
-
-  for (std::map<int,std::string>::const_iterator it = modes.begin();
-       it!=modes.end();
-       ++it) {
-    addItem(it->second.c_str(), QVariant(it->first));
+  for (const auto& kv : model_->getRampModeNames()) {
+    addItem(kv.second.c_str(), QVariant(kv.first));
   }
 
   // Connect all the signals
@@ -192,15 +184,11 @@ NanotecSMCI36PositioningModeWidget::NanotecSMCI36PositioningModeWidget(NanotecSM
   // No user editable text
   setEditable(false);
 
-  const std::map<int,std::string>& modes = model_->getPositioningModeNames();
-
-  for (std::map<int,std::string>::const_iterator it = modes.begin();
-       it!=modes.end();
-       ++it) {
-    if (it->first==VNanotecSMCI36::smciRelativePositioning ||
-        it->first==VNanotecSMCI36::smciAbsolutePositioning ||
-        it->first==VNanotecSMCI36::smciExternalRefRun) {
-    addItem(it->second.c_str(), QVariant(it->first));
+  for (const auto& kv : model_->getPositioningModeNames()) {
+    if (kv.first==VNanotecSMCI36::smciRelativePositioning ||
+        kv.first==VNanotecSMCI36::smciAbsolutePositioning ||
+        kv.first==VNanotecSMCI36::smciExternalRefRun) {
+      addItem(kv.second.c_str(), QVariant(kv.first));
     }
   }
 

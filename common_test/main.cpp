@@ -37,6 +37,8 @@
 
 #include <ApplicationConfig.h>
 
+#include <MartaModel.h>
+
 double imageScale(double focalLength)
 {
   double p0 = -0.0240888;
@@ -49,6 +51,13 @@ double imageScale(double focalLength)
 int main(int /* argc */, char ** /* argv */)
 {
   {
+    MartaModel *marta = new MartaModel("10.255.21.224:502");
+
+    delete marta;
+  }
+  
+  /*
+  {
     ValueHistory<float> history(10, 200);
 
     for (int i=0;i<=40;++i) {
@@ -57,7 +66,8 @@ int main(int /* argc */, char ** /* argv */)
       std::cout << i << "\t" << history.at(0) << "\t" << history.secondsAgo(30) << std::endl;
     }
   }
-
+  */
+  
   /*
   {
     ApplicationConfig * config = ApplicationConfig::instance("test.cfg");
@@ -437,6 +447,7 @@ int main(int /* argc */, char ** /* argv */)
   }
   */
 
+  /*
   {
     ApplicationConfig * config = ApplicationConfig::instance("mattermost.cfg");
 
@@ -444,4 +455,5 @@ int main(int /* argc */, char ** /* argv */)
 
     bot.postMessage("message from cmstkmodlab");
   }
+  */
 }

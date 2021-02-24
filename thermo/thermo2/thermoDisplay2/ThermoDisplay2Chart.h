@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -21,6 +21,9 @@
 #include <QtCharts/QValueAxis>
 #include <QtCharts/QLogValueAxis>
 #include <QtCharts/QCategoryAxis>
+
+#include "ThermoDisplay2DateTimeAxis.h"
+#include "ThermoDisplay2ValueAxis.h"
 
 QT_CHARTS_USE_NAMESPACE
 
@@ -43,6 +46,15 @@ public slots:
   void updateLegend();
   void handleMarkerClicked();
   void clearData();
+  virtual void leftYAxisDoubleClicked() { }
+  virtual void rightYAxisDoubleClicked() { }
+  void xAxisDoubleClicked();
+  void refreshXAxis();
+  void areaChanged(const QRectF &);
+
+protected:
+
+  ThermoDisplay2DateTimeAxis *axisX_;
 };
 
 class ThermoDisplay2TemperatureChart : public ThermoDisplay2Chart
@@ -56,14 +68,14 @@ public:
 
   void refreshAxes();
 
-protected slots:
+public slots:
 
-signals:
+    void leftYAxisDoubleClicked();
+    void refreshYAxis();
 
 protected:
 
-  QDateTimeAxis *axisX_;
-  QValueAxis *axisY_;
+  ThermoDisplay2ValueAxis *axisY_;
 };
 
 class ThermoDisplay2TemperatureStateChart : public ThermoDisplay2Chart
@@ -79,17 +91,14 @@ public:
 
   void refreshAxes();
 
-protected slots:
+public slots:
 
-signals:
+  void leftYAxisDoubleClicked();
+  void refreshTemperatureAxis();
 
 protected:
 
-  void refreshXAxis();
-  void refreshTemperatureAxis();
-
-  QDateTimeAxis *axisX_;
-  QValueAxis *axisTemperatureY_;
+  ThermoDisplay2ValueAxis *axisTemperatureY_;
   QCategoryAxis *axisStateY_;
 };
 
@@ -104,14 +113,14 @@ public:
 
   void refreshAxes();
 
-protected slots:
+public slots:
 
-signals:
+  void leftYAxisDoubleClicked();
+  void refreshYAxis();
 
 protected:
 
-  QDateTimeAxis *axisX_;
-  QValueAxis *axisY_;
+  ThermoDisplay2ValueAxis *axisY_;
 };
 
 class ThermoDisplay2CurrentChart : public ThermoDisplay2Chart
@@ -125,14 +134,14 @@ public:
 
   void refreshAxes();
 
-protected slots:
+public slots:
 
-signals:
+  void leftYAxisDoubleClicked();
+  void refreshYAxis();
 
 protected:
 
-  QDateTimeAxis *axisX_;
-  QValueAxis *axisY_;
+  ThermoDisplay2ValueAxis *axisY_;
 };
 
 class ThermoDisplay2PowerPressureChart : public ThermoDisplay2Chart
@@ -148,42 +157,107 @@ public:
 
   void refreshAxes();
 
-protected slots:
+public slots:
 
-signals:
-
-protected:
-
-  void refreshXAxis();
+  void leftYAxisDoubleClicked();
+  void rightYAxisDoubleClicked();
   void refreshPowerAxis();
   void refreshPressureAxis();
 
-  QDateTimeAxis *axisX_;
-  QValueAxis *axisPowerY_;
-  QValueAxis *axisPressureY_;
+protected:
+
+  ThermoDisplay2ValueAxis *axisPowerY_;
+  ThermoDisplay2ValueAxis *axisPressureY_;
 };
 
-class ThermoDisplay2PressureChart : public ThermoDisplay2Chart
+class ThermoDisplay2LinPressureChart : public ThermoDisplay2Chart
 {
   Q_OBJECT
 public:
 
-  explicit ThermoDisplay2PressureChart();
+  explicit ThermoDisplay2LinPressureChart();
 
   void addSeries(QAbstractSeries *series);
 
   void refreshAxes();
 
-protected slots:
+public slots:
 
-signals:
+  void leftYAxisDoubleClicked();
+  void refreshYAxis();
 
 protected:
 
-  void refreshXAxis();
+  ThermoDisplay2ValueAxis *axisY_;
+};
+
+class ThermoDisplay2LinPressureDeltaPressureChart : public ThermoDisplay2Chart
+{
+  Q_OBJECT
+public:
+
+  explicit ThermoDisplay2LinPressureDeltaPressureChart();
+
+  void addSeries(QAbstractSeries *series);
+  void addPressureSeries(QAbstractSeries *series);
+  void addDeltaPressureSeries(QAbstractSeries *series);
+
+  void refreshAxes();
+
+public slots:
+
+  void leftYAxisDoubleClicked();
+  void rightYAxisDoubleClicked();
+  void refreshPressureAxis();
+  void refreshDeltaPressureAxis();
+
+protected:
+
+  ThermoDisplay2ValueAxis *axisPressureAxis_;
+  ThermoDisplay2ValueAxis *axisDeltaPressureAxis_;
+};
+
+class ThermoDisplay2TemperatureDeltaTemperatureChart : public ThermoDisplay2Chart
+{
+  Q_OBJECT
+public:
+
+  explicit ThermoDisplay2TemperatureDeltaTemperatureChart();
+
+  void addSeries(QAbstractSeries *series);
+  void addTemperatureSeries(QAbstractSeries *series);
+  void addDeltaTemperatureSeries(QAbstractSeries *series);
+
+  void refreshAxes();
+
+public slots:
+
+  void leftYAxisDoubleClicked();
+  void rightYAxisDoubleClicked();
+  void refreshTemperatureAxis();
+  void refreshDeltaTemperatureAxis();
+
+protected:
+
+  ThermoDisplay2ValueAxis *axisTemperatureAxis_;
+  ThermoDisplay2ValueAxis *axisDeltaTemperatureAxis_;
+};
+
+class ThermoDisplay2LogPressureChart : public ThermoDisplay2Chart
+{
+  Q_OBJECT
+public:
+
+  explicit ThermoDisplay2LogPressureChart();
+
+  void addSeries(QAbstractSeries *series);
+
+  void refreshAxes();
+
+protected:
+
   void refreshPressureAxis();
 
-  QDateTimeAxis *axisX_;
   QLogValueAxis *axisPressureY_;
 };
 

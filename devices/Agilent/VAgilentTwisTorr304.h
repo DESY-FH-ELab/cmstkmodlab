@@ -19,7 +19,7 @@
  *  @{
  */
 
-/** @addtogroup Nanotec
+/** @addtogroup Agilent
  *  @{
  */
 
@@ -30,12 +30,12 @@ class VAgilentTwisTorr304
  public:
 
   enum CommandCode {
-    STX    = 0x02,
-    ETX    = 0x03,
-    RD     = 0x30,
-    WR     = 0x31,
-    OFF    = 0x30,
-    ON     = 0x31
+  	AgilentSTX    = 0x02,
+		AgilentETX    = 0x03,
+		AgilentRD     = 0x30,
+		AgilentWR     = 0x31,
+		AgilentOFF    = 0x30,
+		AgilentON     = 0x31
   };
 
   enum StatusCode {

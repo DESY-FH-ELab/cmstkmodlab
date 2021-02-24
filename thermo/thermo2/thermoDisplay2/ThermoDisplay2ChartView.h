@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -40,8 +40,16 @@ public slots:
 
 protected:
 
+  virtual void mouseDoubleClickEvent(QMouseEvent *event) override;
+ 
   ThermoDisplay2Chart * chart_;
   ThermoDisplay2Callout * callout_;
+
+ signals:
+
+  void leftYAxisDoubleClicked();
+  void rightYAxisDoubleClicked();
+  void xAxisDoubleClicked();
 };
 
 class ThermoDisplay2TemperatureChartView : public ThermoDisplay2ChartView
@@ -98,6 +106,30 @@ class ThermoDisplay2PowerPressureChartView : public ThermoDisplay2ChartView
 public:
 
   explicit ThermoDisplay2PowerPressureChartView(ThermoDisplay2Chart *chart, QWidget *parent = nullptr);
+
+public slots:
+
+  void tooltip(QPointF point, bool state);
+};
+
+class ThermoDisplay2PressureDeltaPressureChartView : public ThermoDisplay2ChartView
+{
+  Q_OBJECT
+public:
+
+  explicit ThermoDisplay2PressureDeltaPressureChartView(ThermoDisplay2Chart *chart, QWidget *parent = nullptr);
+
+public slots:
+
+  void tooltip(QPointF point, bool state);
+};
+
+class ThermoDisplay2TemperatureDeltaTemperatureChartView : public ThermoDisplay2ChartView
+{
+  Q_OBJECT
+public:
+
+  explicit ThermoDisplay2TemperatureDeltaTemperatureChartView(ThermoDisplay2Chart *chart, QWidget *parent = nullptr);
 
 public slots:
 

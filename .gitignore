@@ -8,3 +8,4 @@ tkmodlabenv.sh
 share/assembly/*png
 *~
 html/
+.DS_Store

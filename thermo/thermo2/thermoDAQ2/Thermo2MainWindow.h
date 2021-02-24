@@ -18,6 +18,7 @@
 #include <QDir>
 
 #include "HuberUnistat525wModel.h"
+#include "MartaModel.h"
 #include "AgilentTwisTorr304Model.h"
 #include "LeyboldGraphixOneModel.h"
 #include "RohdeSchwarzNGE103BModel.h"
@@ -47,6 +48,7 @@ protected:
   QTabWidget* tabWidget_;
 
   HuberUnistat525wModel* huberModel_;
+  MartaModel* martaModel_;
   AgilentTwisTorr304Model* agilentModel_;
   LeyboldGraphixOneModel* leyboldModel_;
   RohdeSchwarzNGE103BModel* nge103BModel_;

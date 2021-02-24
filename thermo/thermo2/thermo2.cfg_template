@@ -1,0 +1,15 @@
+AgilentTwisTorr304Device /dev/tty1
+HuberUnistatDevice       /dev/tty0
+MartaIPAddress           10.255.21.224:502
+LeyboldGraphixOneDevice  /dev/ttyUSB0
+RohdeSchwarzNGE103B      /dev/ttyACM0
+KeithleyDAQ6510          /dev/usbtmc0
+
+DataPath                 /home/mussgill/development/cmstkmodlab/thermo/thermo2/thermoDAQ2/data
+DataGroup                cms
+
+ServerPort               55555
+
+mattermostwebhook        https://mattermost.web.cern.ch/hooks/d5tpf87e63ntmroe54peebo7eo
+mattermostusername       thermoDAQ2
+mattermostchannel        daf

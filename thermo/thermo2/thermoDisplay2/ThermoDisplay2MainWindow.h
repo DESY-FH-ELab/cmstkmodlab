@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2019 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -69,7 +69,7 @@ protected:
   ThermoDisplay2LineSeries *ChillerPressureSeries_;
 
   ThermoDisplay2ChartView *VacuumChartView_;
-  ThermoDisplay2PressureChart *VacuumPressureChart_;
+  ThermoDisplay2LogPressureChart *VacuumPressureChart_;
   ThermoDisplay2LineSeries *VacuumPressureSeries_;
 
   ThermoDisplay2ChartView *UChartView_;
@@ -87,6 +87,39 @@ protected:
   ThermoDisplay2ChartView *TChartView_[2];
   ThermoDisplay2TemperatureChart *TChart_[2];
   ThermoDisplay2LineSeries *TSeries_[2][10];
+
+  ThermoDisplay2PressureDeltaPressureChartView *MartaPressureChartView_;
+  ThermoDisplay2LinPressureDeltaPressureChart *MartaPressureChart_;
+  ThermoDisplay2LineSeries *MartaPT03Series_;
+  ThermoDisplay2LineSeries *MartaPT05Series_;
+  ThermoDisplay2LineSeries *MartaPT01CO2Series_;
+  ThermoDisplay2LineSeries *MartaPT02CO2Series_;
+  ThermoDisplay2LineSeries *MartaPT03CO2Series_;
+  ThermoDisplay2LineSeries *MartaPT04CO2Series_;
+  //ThermoDisplay2LineSeries *MartaPT05CO2Series_;
+  ThermoDisplay2LineSeries *MartaPT06CO2Series_;
+  ThermoDisplay2LineSeries *MartaDP01CO2Series_;
+  ThermoDisplay2LineSeries *MartaDP02CO2Series_;
+  ThermoDisplay2LineSeries *MartaDP03CO2Series_;
+  ThermoDisplay2LineSeries *MartaDP04CO2Series_;
+
+  ThermoDisplay2TemperatureDeltaTemperatureChartView *MartaTemperatureChartView_;
+  ThermoDisplay2TemperatureDeltaTemperatureChart *MartaTemperatureChart_;
+  ThermoDisplay2LineSeries *MartaTSetPointSeries_;
+  ThermoDisplay2LineSeries *MartaTT02Series_;
+  ThermoDisplay2LineSeries *MartaTT01CO2Series_;
+  ThermoDisplay2LineSeries *MartaTT02CO2Series_;
+  ThermoDisplay2LineSeries *MartaTT03CO2Series_;
+  ThermoDisplay2LineSeries *MartaTT04CO2Series_;
+  //ThermoDisplay2LineSeries *MartaTT05CO2Series_;
+  ThermoDisplay2LineSeries *MartaTT06CO2Series_;
+  ThermoDisplay2LineSeries *MartaTT07CO2Series_;
+  ThermoDisplay2LineSeries *MartaST01CO2Series_;
+  ThermoDisplay2LineSeries *MartaST02CO2Series_;
+  ThermoDisplay2LineSeries *MartaST03CO2Series_;
+  ThermoDisplay2LineSeries *MartaST04CO2Series_;
+  ThermoDisplay2LineSeries *MartaDT02CO2Series_;
+  ThermoDisplay2LineSeries *MartaDT03CO2Series_;
 };
 
 #endif // THERMODISPLAY2MAINWINDOW_H

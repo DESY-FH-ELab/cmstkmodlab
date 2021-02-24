@@ -116,7 +116,7 @@ template <> std::vector<int> ApplicationConfig::getValueVector(std::string const
 }
 
 template <> int ApplicationConfig::getValue(std::string const& key,
-                                                    int defaultValue) const
+                                            int defaultValue) const
 {
   int returnValue = 0;
   std::multimap<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);

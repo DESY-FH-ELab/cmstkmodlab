@@ -30,8 +30,8 @@
 #include "ThermoDAQ2NetworkReader.h"
 #include "ThermoDAQ2Client.h"
 
-static const char* thermoDisplay2GUID = "{413A4B5E-EEAD-44E5-8195-4106D8C1A2DD}";
-//#define SINGLETON 1
+// static const char* thermoDisplay2GUID = "{413A4B5E-EEAD-44E5-8195-4106D8C1A2DD}";
+// #define SINGLETON 1
 
 int main( int argc, char** argv )
 {
