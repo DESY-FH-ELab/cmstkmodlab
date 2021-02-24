@@ -62,7 +62,7 @@ AssemblyMultiPickupTesterWidget::AssemblyMultiPickupTesterWidget(const LStepExpr
   g2->addWidget(pickup_button_, 1, 2);
 
   iteraN_label_  = new QLabel("N Iterations (int)");
-  iteraN_lineed_ = new QLineEdit("10");
+  iteraN_lineed_ = new QLineEdit("5");
   g2->addWidget(iteraN_label_ , 2, 0);
   g2->addWidget(iteraN_lineed_, 2, 1);
 
