@@ -20,7 +20,6 @@
 
 LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, QObject* parent)
  : QObject(parent)
-
  , model_(model)
  , model_connected_(false)
  , inMotion_(false)
@@ -542,6 +541,26 @@ double LStepExpressMotionManager::get_position(const int axis) const
       }
       else if(this->model()->getPositions().size() != 4)
       {
+    	//FIXME -- debugging recurrent MS instability (returning incorrect pos vector) //Related to angle... ?
+    	std::cout<<"this->model()->getPositions().size() = "<<this->model()->getPositions().size()<<std::endl;
+    	for(int i=0; i<this->model()->getPositions().size(); i++)
+    	{
+            std::cout<<"this->model()->getPositions().at("<<i<<") = "<<this->model()->getPositions().at(i)<<std::endl;
+        }
+        //Additional debug messages -- other vectors still have correct size ?
+        for(int i=0; i<4; i++)
+    	{
+            // check axes status
+            if(this->AxisIsReady(i)) {continue;}
+
+            std::cout<<"this->model()->getVelocity("<<i<<") = "<<this->model()->getVelocity(i)<<std::endl;
+            std::cout<<"this->model()->getAccelerationJerk("<<i<<") = "<<this->model()->getAccelerationJerk(i)<<std::endl;
+            std::cout<<"this->model()->getDecelerationJerk("<<i<<") = "<<this->model()->getDecelerationJerk(i)<<std::endl;
+            std::cout<<"this->model()->getAcceleration("<<i<<") = "<<this->model()->getAcceleration(i)<<std::endl;
+            std::cout<<"this->model()->getDeceleration("<<i<<") = "<<this->model()->getDeceleration(i)<<std::endl;
+            std::cout<<"this->model()->getPosition("<<i<<") = "<<this->model()->getPosition(i)<<std::endl;
+        }
+
         NQLog("LStepExpressMotionManager", NQLog::Warning) << "get_position(" << axis << ")"
            << ": cannot return motion stage position [try #" << tries << "] because positions vector has invalid size ("
            << this->model()->getPositions().size() << ")";
