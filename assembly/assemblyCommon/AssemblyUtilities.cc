@@ -93,7 +93,7 @@ cv::Mat assembly::cv_imread(const QString& path_qstr, const int imread_flag)
 
   if(img_reader.format() == "png" && (img.channels() > 1))
   {
-    cv::cvtColor(img, img_1, CV_RGB2BGR);
+    cv::cvtColor(img, img_1, cv::COLOR_RGB2BGR);
   }
   else
   {
@@ -120,7 +120,7 @@ void assembly::cv_imwrite(const QString& path_qstr, const cv::Mat& img)
   else if(img.channels() > 1)
   {
     cv::Mat img_1;
-    cv::cvtColor(img, img_1, CV_BGR2RGB);
+    cv::cvtColor(img, img_1, cv::COLOR_BGR2RGB);
     cv::imwrite(path_qstr.toUtf8().constData(), img_1);
   }
   else
