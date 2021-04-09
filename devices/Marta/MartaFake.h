@@ -34,6 +34,9 @@ class MartaFake : public VMarta
 
  public:
 
+  void ReadRegisters(int, int, uint16_t*) {};
+  void WriteRegisters(int, int, const uint16_t*) {};
+
   bool DeviceAvailable() const { return true; }
 
   private:
