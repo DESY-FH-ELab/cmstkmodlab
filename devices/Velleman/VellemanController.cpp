@@ -23,7 +23,7 @@
 
 //! Default constructor
 VellemanController::VellemanController(const std::string& ioPort)
-  : IVellemanController(ioPort)
+  : VVellemanController(ioPort)
   , m_communication(new VellemanCommunication(ioPort))
 {
 }

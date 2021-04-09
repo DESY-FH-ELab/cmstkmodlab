@@ -10,14 +10,14 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include "IVellemanController.h"
+#include "VVellemanController.h"
 
 //! Default constructor
-IVellemanController::IVellemanController(const std::string&)
+VVellemanController::VVellemanController(const std::string&)
 {
 }
 
 //! Default destructor
-IVellemanController::~IVellemanController()
+VVellemanController::~VVellemanController()
 {
 }

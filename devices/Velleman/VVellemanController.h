@@ -10,19 +10,19 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef IVellemanController_h
-#define IVellemanController_h
+#ifndef VVellemanController_h
+#define VVellemanController_h
 
 #include <string>
 #include <vector>
 
 /// \brief Interface Class handling readout of Velleman Relay Card
-class IVellemanController {
+class VVellemanController {
 
 public:
 
-  IVellemanController(const std::string&);
-  virtual ~IVellemanController();
+  VVellemanController(const std::string&);
+  virtual ~VVellemanController();
 
   virtual bool initialize() = 0;
 
@@ -32,4 +32,4 @@ public:
   virtual bool setMultiRelays(std::vector<unsigned> relays, unsigned char relayCMD) const = 0;
 };
 
-#endif   // ends #ifndef IVellemanController_h
+#endif   // ends #ifndef VVellemanController_h

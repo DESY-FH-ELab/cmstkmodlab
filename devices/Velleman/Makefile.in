@@ -11,7 +11,7 @@ LIB           = TkModLabVelleman
 VELLEMAN = $(BASEPATH)/devices/Velleman
 
 MODULES       = VellemanCommunication \
-                IVellemanController \
+                VVellemanController \
                 VellemanController \
                 VellemanControllerFake \
 
