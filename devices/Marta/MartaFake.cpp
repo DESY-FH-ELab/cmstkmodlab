@@ -14,6 +14,12 @@
 
 #include "MartaFake.h"
 
+MartaFake::MartaFake( ipaddress_t ipaddress )
+  :VMarta(ipaddress)
+{
+
+}
+
 MartaFake::MartaFake( ipaddress_t ipaddress, port_t port)
   :VMarta(ipaddress, port)
 {
