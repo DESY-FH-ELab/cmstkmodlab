@@ -28,6 +28,7 @@ class MartaFake : public VMarta
 {
  public:
 
+  MartaFake( ipaddress_t );
   MartaFake( ipaddress_t, port_t );
   ~MartaFake();
 
