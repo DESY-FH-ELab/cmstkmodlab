@@ -37,8 +37,8 @@ public:
 
 public:
 
-  virtual void ReadRegisters(int addr, int nb, uint16_t *dest) = 0;
-  virtual void WriteRegisters(int addr, int nb, const uint16_t *src) = 0;
+  virtual void ReadRegisters(int, int, uint16_t*) = 0;
+  virtual void WriteRegisters(int, int, const uint16_t*) = 0;
   
   virtual bool DeviceAvailable() const = 0;
 

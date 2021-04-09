@@ -28,10 +28,14 @@ class MartaFake : public VMarta
 {
  public:
 
+  MartaFake( ipaddress_t );
   MartaFake( ipaddress_t, port_t );
   ~MartaFake();
 
  public:
+
+  void ReadRegisters(int, int, uint16_t*) {};
+  void WriteRegisters(int, int, const uint16_t*) {};
 
   bool DeviceAvailable() const { return true; }
 
