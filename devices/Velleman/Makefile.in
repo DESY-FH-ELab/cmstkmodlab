@@ -21,7 +21,7 @@ NEWHEADERS    = $(addsuffix _cpp.h,$(MODULES))
 
 EXISTDEPEND   = $(shell find . -name \*.d -type f -print)
 
-all: lib vellemanTest
+all: vellemanTest lib
 
 depend: $(ALLDEPEND)
 
