@@ -115,6 +115,7 @@ HEADERS += nqlogger.h \
            IntegerComboBox.h \
            NanotecSMCI36Model.h \
            NanotecSMCI36Widget.h \
+           VRelayCardModel.h \
            ConradModel.h \
            VellemanModel.h \
            LeyboldGraphixThreeModel.h \
@@ -181,6 +182,7 @@ SOURCES += nqlogger.cc \
            IntegerComboBox.cc \
            NanotecSMCI36Model.cc \
            NanotecSMCI36Widget.cc \
+           VRelayCardModel.cc \
            ConradModel.cc \
            VellemanModel.cc \
            LeyboldGraphixThreeModel.cc \
