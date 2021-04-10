@@ -4,6 +4,7 @@ NOUEYE="X@noueye@"
 
 LIBS += -L@basepath@/devices/lib -lTkModLabLang
 LIBS += -L@basepath@/devices/lib -lTkModLabConrad
+LIBS += -L@basepath@/devices/lib -lTkModLabVelleman
 LIBS += -L@basepath@/devices/lib -lTkModLabArduino
 LIBS += -L@basepath@/devices/lib -lTkModLabKeyence
 LIBS += -L@basepath@/common -lCommon
@@ -111,7 +112,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyHardwareControlView.h \
            AssemblyLogFileController.h \
            AssemblyLogFileView.h \
-           ConradManager.h \
+           RelayCardManager.h \
            LStepExpressModel.h \
            LStepExpressMotion.h \
            LStepExpressMotionManager.h \
@@ -179,7 +180,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyHardwareControlView.cc \
            AssemblyLogFileController.cc \
            AssemblyLogFileView.cc \
-           ConradManager.cc \
+           RelayCardManager.cc \
            LStepExpressModel.cc \
            LStepExpressMotion.cc \
            LStepExpressMotionManager.cc \

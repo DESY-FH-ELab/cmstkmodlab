@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -10,28 +10,29 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef CONRADMANAGER_H
-#define CONRADMANAGER_H
+#ifndef RELAYCARDMANAGER_H
+#define RELAYCARDMANAGER_H
 
-#include <ConradModel.h>
+#include <VRelayCardModel.h>
 
 #include <QObject>
 #include <QTimer>
 
-class ConradManager : public QObject
+class RelayCardManager : public QObject
 {
  Q_OBJECT
 
  public:
 
   //add constructor
-  explicit ConradManager(ConradModel* const);
+  explicit RelayCardManager(VRelayCardModel* const);
+  virtual ~RelayCardManager();
 
-  ConradModel* conradModel() const;
+  VRelayCardModel* relayCardModel() const;
 
  protected:
 
-  ConradModel* const conradModel_;
+  VRelayCardModel* const relayCardModel_;
 
   int channelNumber_;
   QTimer* liveTimer_;
@@ -66,7 +67,7 @@ class ConradManager : public QObject
   void DBLogMessage(const QString);
 };
 
-#endif // CONRADMANAGER_H
+#endif // RELAYCARDMANAGER_H
 
 /*
 

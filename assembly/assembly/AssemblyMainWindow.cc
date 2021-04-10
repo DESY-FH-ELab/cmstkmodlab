@@ -13,6 +13,9 @@
 #include <nqlogger.h>
 #include <ApplicationConfig.h>
 
+#include <ConradModel.h>
+#include <VellemanModel.h>
+
 #include <AssemblyMainWindow.h>
 #include <AssemblyLogFileController.h>
 #include <AssemblyLogFileView.h>
@@ -29,8 +32,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   QMainWindow(parent),
 
   // Low-Level Controllers (Motion, Camera, Vacuum)
-  conradModel_(nullptr),
-  conradManager_(nullptr),
+	relayCardModel_(nullptr),
+	relayCardManager_(nullptr),
 
   motion_model_(nullptr),
   motion_manager_(nullptr),
@@ -150,8 +153,15 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     /// -------------------
 
     /// Vacuum Manager
-    conradModel_   = new ConradModel(config->getValue<std::string>("ConradDevice"));
-    conradManager_ = new ConradManager(conradModel_);
+    std::string relayCardDevice = config->getValue<std::string>("RelayCardDevice");
+    if (relayCardDevice=="Velleman")
+    {
+    	relayCardModel_ = new VellemanModel(config->getValue<std::string>("VellemanDevice"));
+    } else {
+    	relayCardModel_ = new ConradModel(config->getValue<std::string>("ConradDevice"));
+    }
+
+    relayCardManager_ = new RelayCardManager(relayCardModel_);
     /// -------------------
 
     /// TAB: ASSEMBLY FUNCTIONALITIES --------------------------
@@ -247,7 +257,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     if(assembly_sequence == 1)
     {
-      assembly_ = new AssemblyAssembly(motion_manager_, conradManager_, smart_motion_);
+      assembly_ = new AssemblyAssembly(motion_manager_, relayCardManager_, smart_motion_);
 
       assembly_view_ = new AssemblyAssemblyView(assembly_, assembly_tab);
       assembly_tab->addTab(assembly_view_, tabname_Assembly);
@@ -259,7 +269,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     }
     else if(assembly_sequence == 2)
     {
-      assemblyV2_ = new AssemblyAssemblyV2(motion_manager_, conradManager_, smart_motion_);
+      assemblyV2_ = new AssemblyAssemblyV2(motion_manager_, relayCardManager_, smart_motion_);
 
       assemblyV2_view_ = new AssemblyAssemblyV2View(assemblyV2_, assembly_tab);
       assembly_tab->addTab(assemblyV2_view_, tabname_Assembly);
@@ -310,13 +320,13 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     hwctr_view_ = new AssemblyHardwareControlView(motion_manager_, controls_tab);
     controls_tab->addTab(hwctr_view_, tabname_HWCtrl);
 
-    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))              , conradManager_, SLOT(toggleVacuum(int)));
-    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), conradManager_, SLOT(transmit_vacuumChannelState(int)));
+    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))              , relayCardManager_, SLOT(toggleVacuum(int)));
+    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), relayCardManager_, SLOT(transmit_vacuumChannelState(int)));
 
-    connect(conradManager_, SIGNAL(vacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
+    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
 
-    connect(conradManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
-    connect(conradManager_, SIGNAL(disableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(disableVacuumButton()));
+    connect(relayCardManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
+    connect(relayCardManager_, SIGNAL(disableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(disableVacuumButton()));
 
     hwctr_view_->Vacuum_Widget()->updateVacuumChannelsStatus();
 
@@ -828,9 +838,9 @@ void AssemblyMainWindow::start_multiPickupTest(const AssemblyMultiPickupTester::
   // ---
 
   // pickup (vacuum)
-  connect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), conradManager_, SLOT(toggleVacuum(int)));
+  connect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), relayCardManager_, SLOT(toggleVacuum(int)));
 
-  connect(conradManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));
+  connect(relayCardManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));
   // ---
 
   multipickup_tester_->set_configuration(conf);
@@ -854,9 +864,9 @@ void AssemblyMainWindow::disconnect_multiPickupTest()
   // ---
 
   // pickup (vacuum)
-  disconnect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), conradManager_, SLOT(toggleVacuum(int)));
+  disconnect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), relayCardManager_, SLOT(toggleVacuum(int)));
 
-  disconnect(conradManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));
+  disconnect(relayCardManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));
   // ---
 
   toolbox_view_->MultiPickupTester_Widget()->enable(true);
@@ -895,7 +905,7 @@ void AssemblyMainWindow::connect_DBLogger()
     connect(this, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
     connect(aligner_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
     connect(finder_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
-    connect(conradManager_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
+    connect(relayCardManager_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
     if(assembly_ != nullptr) {connect(assembly_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));}
     else if(assemblyV2_ != nullptr) {connect(assemblyV2_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));}
 
