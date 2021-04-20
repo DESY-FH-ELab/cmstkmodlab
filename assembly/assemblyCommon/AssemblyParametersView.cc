@@ -717,7 +717,7 @@ void AssemblyParametersView::askConfirmMoveByRelRefDist(int refPoint)
             break;
         case 2: tmp_tag = "FromSensorRefPointToSensorPickup";
             break;
-        case 3: tmp_tag = "FromPSPRefPointToPSSRefPoint";
+        case 3: tmp_tag = "FromPSSTLToPSPTL";
             break;
         case 4: tmp_tag = "FromSpacerEdgeToPSSRefPoint";
             break;
