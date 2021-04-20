@@ -947,7 +947,7 @@ void AssemblyMainWindow::disconnect_alignmentCheck()
   // kick-start alignment
   disconnect(alignmentCheck_, SIGNAL(configuration_updated()), alignmentCheck_, SLOT(execute()));
 
-  //  alignmentCheck_view_->Configuration_Widget()->setEnabled(true);
+  alignmentCheck_view_->Configuration_Widget()->setEnabled(true);
 
   return;
 }
