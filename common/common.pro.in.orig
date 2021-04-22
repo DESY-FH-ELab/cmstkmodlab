@@ -15,7 +15,6 @@ LIBS += -L@basepath@/devices/lib -lTkModLabArduino
 LIBS += -L@basepath@/devices/lib -lTkModLabCori
 LIBS += -L@basepath@/devices/lib -lTkModLabNanotec
 LIBS += -L@basepath@/devices/lib -lTkModLabConrad
-LIBS += -L@basepath@/devices/lib -lTkModLabVelleman
 LIBS += -L@basepath@/devices/lib -lTkModLabLeybold
 LIBS += -L@basepath@/devices/lib -lTkModLabRohdeSchwarz
 LIBS += -L@basepath@/devices/lib -lTkModLabAgilent
@@ -110,9 +109,7 @@ HEADERS += nqlogger.h \
            IntegerComboBox.h \
            NanotecSMCI36Model.h \
            NanotecSMCI36Widget.h \
-           VRelayCardModel.h \
            ConradModel.h \
-           VellemanModel.h \
            LeyboldGraphixThreeModel.h \
            LeyboldGraphixOneModel.h \
            LeyboldGraphixOneWidget.h \
@@ -173,9 +170,7 @@ SOURCES += nqlogger.cc \
            IntegerComboBox.cc \
            NanotecSMCI36Model.cc \
            NanotecSMCI36Widget.cc \
-           VRelayCardModel.cc \
            ConradModel.cc \
-           VellemanModel.cc \
            LeyboldGraphixThreeModel.cc \
            LeyboldGraphixOneModel.cc \
            LeyboldGraphixOneWidget.cc \

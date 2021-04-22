@@ -20,7 +20,7 @@
 
 #include <QMessageBox>
 
-AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion, const ConradManager* const vacuum, const AssemblySmartMotionManager* const smart_motion, QObject* parent)
+AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion, const RelayCardManager* const vacuum, const AssemblySmartMotionManager* const smart_motion, QObject* parent)
  : QObject(parent)
 
  , motion_(motion)
@@ -80,14 +80,14 @@ const LStepExpressMotionManager* AssemblyAssembly::motion() const
   return motion_;
 }
 
-const ConradManager* AssemblyAssembly::vacuum() const
+const RelayCardManager* AssemblyAssembly::vacuum() const
 {
   if(motion_ == nullptr)
   {
     NQLog("AssemblyAssembly", NQLog::Fatal) << "vacuum"
-       << ": pointer to ConradManager is NULL, exiting constructor";
+       << ": pointer to RelayCardManager is NULL, exiting constructor";
 
-    assembly::kill_application(tr("[AssemblyAssembly]"), tr("pointer to ConradManager is NULL, aborting"));
+    assembly::kill_application(tr("[AssemblyAssembly]"), tr("pointer to RelayCardManager is NULL, aborting"));
   }
 
   return vacuum_;

@@ -15,8 +15,7 @@
 
 #include <string>
 
-#include <QString>
-
+#include "VRelayCardModel.h"
 #include "DeviceState.h"
 
 #ifdef USE_FAKEIO
@@ -50,7 +49,7 @@ typedef ConradController ConradController_t;
   Currently any state changing command that does not comply with the ongoing
   operation will be ignored (e.g. disable switch while switch state is INITIALIZING).
   */
-class ConradModel : public QObject, public AbstractDeviceModel<ConradController_t>
+class ConradModel : public VRelayCardModel, public AbstractDeviceModel<ConradController_t>
 {
   Q_OBJECT
 
@@ -72,8 +71,6 @@ public slots:
   void setSwitchEnabled(int device, bool enabled);
 
 protected:
-
-  const QString port_;
 
   void initialize();
   void close();
