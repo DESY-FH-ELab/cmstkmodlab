@@ -21,20 +21,20 @@
 #include "Thermo2DAQModel.h"
 
 Thermo2DAQModel::Thermo2DAQModel(HuberUnistat525wModel* huberModel,
-																 MartaModel* martaModel,
-                                 AgilentTwisTorr304Model* agilentModel,
-                                 LeyboldGraphixOneModel* leyboldModel,
-                                 RohdeSchwarzNGE103BModel* nge103BModel,
-                                 KeithleyDAQ6510Model* keithleyModel,
-                                 QObject * /* parent */)
-  : QObject(),
-    daqState_(false),
-    huberModel_(huberModel),
-		martaModel_(martaModel),
-    agilentModel_(agilentModel),
-    leyboldModel_(leyboldModel),
-    nge103BModel_(nge103BModel),
-    keithleyModel_(keithleyModel)
+		MartaModel* martaModel,
+		AgilentTwisTorr304Model* agilentModel,
+		LeyboldGraphixOneModel* leyboldModel,
+		RohdeSchwarzNGE103BModel* nge103BModel,
+		KeithleyDAQ6510Model* keithleyModel,
+		QObject * /* parent */)
+ : QObject(),
+   daqState_(false),
+   huberModel_(huberModel),
+   martaModel_(martaModel),
+   agilentModel_(agilentModel),
+   leyboldModel_(leyboldModel),
+   nge103BModel_(nge103BModel),
+   keithleyModel_(keithleyModel)
 {
   currentTime_ = QDateTime::currentDateTime();
 

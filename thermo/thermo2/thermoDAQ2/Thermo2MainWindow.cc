@@ -94,20 +94,20 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 #endif
 
   daqModel_ = new Thermo2DAQModel(huberModel_,
-																	martaModel_,
-                                  agilentModel_,
-                                  leyboldModel_,
-                                  nge103BModel_,
-                                  keithleyModel_,
-                                  this);
+		  martaModel_,
+		  agilentModel_,
+		  leyboldModel_,
+		  nge103BModel_,
+		  keithleyModel_,
+		  this);
 
   // SCRIPT MODEL
   scriptModel_ = new Thermo2ScriptModel(daqModel_,
-                                        huberModel_,
-																				martaModel_,
-                                        nge103BModel_,
-                                        keithleyModel_,
-                                        this);
+		  huberModel_,
+		  martaModel_,
+		  nge103BModel_,
+		  keithleyModel_,
+		  this);
 
   daqStreamer_ = new Thermo2DAQStreamer(daqModel_, this);
 

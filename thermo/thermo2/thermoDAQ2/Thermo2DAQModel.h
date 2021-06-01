@@ -35,12 +35,12 @@ class Thermo2DAQModel : public QObject
 public:
 
   explicit Thermo2DAQModel(HuberUnistat525wModel* huberModel,
-													 MartaModel* martaModel,
-                           AgilentTwisTorr304Model* agilentModel,
-                           LeyboldGraphixOneModel* leyboldModel,
-                           RohdeSchwarzNGE103BModel* nge103BModel,
-                           KeithleyDAQ6510Model* keithleyModel,
-                           QObject *parent = 0);
+		  MartaModel* martaModel,
+		  AgilentTwisTorr304Model* agilentModel,
+		  LeyboldGraphixOneModel* leyboldModel,
+		  RohdeSchwarzNGE103BModel* nge103BModel,
+		  KeithleyDAQ6510Model* keithleyModel,
+		  QObject *parent = 0);
 
   QDateTime& currentTime();
 
@@ -72,7 +72,7 @@ protected:
   bool daqState_;
 
   HuberUnistat525wModel* huberModel_;
-	MartaModel* martaModel_;
+  MartaModel* martaModel_;
   AgilentTwisTorr304Model* agilentModel_;
   LeyboldGraphixOneModel* leyboldModel_;
   RohdeSchwarzNGE103BModel* nge103BModel_;
