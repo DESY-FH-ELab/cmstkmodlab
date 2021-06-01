@@ -21,9 +21,7 @@
 
 #include <string>
 
-#ifndef __Darwin__
-#include <modbus/modbus.h>
-#else
+#ifndef USE_FAKEIO
 #include <modbus.h>
 #endif
 
@@ -67,7 +65,9 @@ class MartaComHandler {
   std::string fIPAddress;
   port_t fPort;
 
+#ifndef USE_FAKEIO
   modbus_t *fMB;
+#endif
 };
  
 /** @} */
