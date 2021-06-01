@@ -1,5 +1,6 @@
 ARCHITECTURE=@architecture@
 USEFAKEDEVICES=@usefakedevices@
+NOMARTA       = @nomarta@
 
 BASEPATH      = @basepath@
 include $(BASEPATH)/devices/Makefile.common
@@ -13,7 +14,15 @@ MODULES       = MartaComHandler \
                 MartaFake \
                 Marta
 
-CXXFLAGS     += -D__@architecture@__ `pkg-config --cflags libmodbus`
+ifeq ($(USEFAKEDEVICES),1)
+NOMARTA       = 1
+endif
+
+CXXFLAGS     += -D__@architecture@__
+
+ifeq ($(NOMARTA),0)
+CXXFLAGS     += `pkg-config --cflags libmodbus`
+endif
 
 ALLDEPEND = $(addsuffix .d,$(MODULES))
 
