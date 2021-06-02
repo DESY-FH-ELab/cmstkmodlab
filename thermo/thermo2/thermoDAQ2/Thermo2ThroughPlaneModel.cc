@@ -180,6 +180,8 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
   		sampleTBottom_ = b;
 
   	  sampleTMiddle_ = 0.5*(sampleTTop_ + sampleTBottom_);
+  	} else {
+  		calculationState_ = false;
   	}
 
   	emit informationChanged();
