@@ -115,6 +115,14 @@ void Thermo2ThroughPlaneWidget::updateInfo()
   			svg.replace(p, "--.--");
   		}
   	}
+  } else {
+  	for (unsigned int c=0;c<6;++c) {
+  		p = "§TTop" + QString::number(c+1) + "§";
+  		svg.replace(p, "--.--");
+
+  		p = "§TBot" + QString::number(c+1) + "§";
+  		svg.replace(p, "--.--");
+  	}
   }
 
   if (model_->getCalculationState()) {
