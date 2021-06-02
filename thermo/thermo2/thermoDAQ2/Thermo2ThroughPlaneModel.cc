@@ -37,6 +37,7 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
   resistance_ = config->getValue<double>("ThroughPlaneResistance");
   cableResistance_ = config->getValue<double>("ThroughPlaneCableResistance");
   kBlock_ = config->getValue<double>("ThroughPlaneKBlock");
+  ABlock_ = config->getValue<double>("ThroughPlaneABlock");
   nge103BChannel_ = config->getValue<unsigned int>("ThroughPlaneNGE103BChannel");
   keithleyTopChannels_ = config->getValueArray<unsigned int,6>("ThroughPlaneKeithleyTopChannels");
   keithleyTopPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopPositions");

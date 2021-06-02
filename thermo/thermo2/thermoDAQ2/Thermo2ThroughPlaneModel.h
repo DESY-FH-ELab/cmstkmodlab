@@ -88,6 +88,7 @@ protected:
   double resistance_;
   double cableResistance_;
   double kBlock_;
+  double ABlock_;
 
   bool huberState_;
   double huberTemperatureSetPoint_;
