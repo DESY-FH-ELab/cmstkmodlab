@@ -13,3 +13,11 @@ ServerPort                             55555
 mattermostusername                     thermoDAQ2
 mattermostchannel                      daf
 
+ThroughPlaneResistance                 100.0
+ThroughPlaneCableResistance            1.1
+ThroughPlaneKBlock                     300.0
+ThroughPlaneNGE103BChannel             1
+ThroughPlaneKeithleyTopChannels        101 102 103 104 105 106
+ThroughPlaneKeithleyTopPositions       60.0 50.0 40.0 30.0 20.0 10.0 # mm from interface to sample
+ThroughPlaneKeithleyBottomChannels     201 202 203 204 205 206
+ThroughPlaneKeithleyBottomPositions    10.0 20.0 30.0 40.0 50.0 60.0 # mm from interface to sample
