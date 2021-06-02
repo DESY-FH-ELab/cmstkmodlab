@@ -21,7 +21,6 @@
 #include "DeviceState.h"
 #include "DeviceParameter.h"
 
-/*
 #ifdef USE_FAKEIO
 #include "devices/Huber/HuberPilotOneFake.h"
 typedef HuberPilotOneFake HuberPilotOne_t;
@@ -29,9 +28,6 @@ typedef HuberPilotOneFake HuberPilotOne_t;
 #include "devices/Huber/HuberPilotOne.h"
 typedef HuberPilotOne HuberPilotOne_t;
 #endif
-*/
-#include "devices/Huber/HuberPilotOneFake.h"
-typedef HuberPilotOneFake HuberPilotOne_t;
 
 /**
   Command and control model of the Huber Unistat 525w chiller.
