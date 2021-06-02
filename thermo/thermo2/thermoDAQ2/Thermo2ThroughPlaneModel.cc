@@ -13,6 +13,8 @@
 #include <iostream>
 #include <cmath>
 
+#include <gsl/gsl_multifit.h>
+
 #include <QApplication>
 #include <QDateTime>
 #include <QXmlStreamWriter>
@@ -138,6 +140,90 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
   	if (countTop>=2 && countBottom>=2) {
   		calculationState_ = true;
 
+  		gsl_matrix *X, *cov;
+  		gsl_vector *x, *y, *c;
+  		gsl_multifit_robust_workspace * work;
+  		unsigned int p;
+  		double pos;
+
+  		if (countTop<4) {
+  			p = 2;
+  		} else {
+  			p = 3;
+  		}
+
+  		X = gsl_matrix_alloc(countTop, p);
+  		x = gsl_vector_alloc(countTop);
+  		y = gsl_vector_alloc(countTop);
+  		c = gsl_vector_alloc(p);
+  		cov = gsl_matrix_alloc(p, p);
+
+  		for (unsigned int i=0;i<countTop;i++) {
+  			if (keithleyTopChannelStates_[i]) {
+  				pos = keithleyTopPositions_[i];
+  				gsl_vector_set(x, i, pos);
+  				gsl_vector_set(y, i, keithleyTopTemperatures_[i]);
+
+  				gsl_matrix_set(X, i, 0, 1.0);
+  				gsl_matrix_set(X, i, 1, pos);
+  				if (p==3) gsl_matrix_set(X, i, 2, pos*pos);
+  			}
+  		}
+
+  	  work = gsl_multifit_robust_alloc(gsl_multifit_robust_bisquare, X->size1, X->size2);
+  	  gsl_multifit_robust(X, y, c, cov, work);
+  	  gsl_multifit_robust_free(work);
+
+  	  sampleTTop_ = gsl_vector_get(c, 0);
+  	  gradientTop_ = -1.0*gsl_vector_get(c, 1);
+  	  powerTop_ = gradientTop_ * kBlock_ * ABlock_;
+
+  	  gsl_matrix_free(X);
+  	  gsl_vector_free(x);
+  	  gsl_vector_free(y);
+  	  gsl_vector_free(c);
+  	  gsl_matrix_free(cov);
+
+
+  		if (countBottom<4) {
+  			p = 2;
+  		} else {
+  			p = 3;
+  		}
+
+  		X = gsl_matrix_alloc(countBottom, p);
+  		x = gsl_vector_alloc(countBottom);
+  		y = gsl_vector_alloc(countBottom);
+  		c = gsl_vector_alloc(p);
+  		cov = gsl_matrix_alloc(p, p);
+
+  		for (unsigned int i=0;i<countBottom;i++) {
+  			if (keithleyBottomChannelStates_[i]) {
+  				pos = keithleyBottomPositions_[i];
+  				gsl_vector_set(x, i, pos);
+  				gsl_vector_set(y, i, keithleyBottomTemperatures_[i]);
+
+  				gsl_matrix_set(X, i, 0, 1.0);
+  				gsl_matrix_set(X, i, 1, pos);
+  				if (p==3) gsl_matrix_set(X, i, 2, pos*pos);
+  			}
+  		}
+
+  	  work = gsl_multifit_robust_alloc(gsl_multifit_robust_bisquare, X->size1, X->size2);
+  	  gsl_multifit_robust(X, y, c, cov, work);
+  	  gsl_multifit_robust_free(work);
+
+  	  sampleTBottom_ = gsl_vector_get(c, 0);
+  	  gradientBottom_ = gsl_vector_get(c, 1);
+  	  powerBottom_ = gradientBottom_ * kBlock_ * ABlock_;
+
+  	  gsl_matrix_free(X);
+  	  gsl_vector_free(x);
+  	  gsl_vector_free(y);
+  	  gsl_vector_free(c);
+  	  gsl_matrix_free(cov);
+
+  	  /*
   		double xsum, x2sum, ysum, xysum;
   		double a, b;
 
@@ -178,6 +264,7 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
   		gradientBottom_ = a;
   		powerBottom_ = gradientBottom_ * kBlock_ * ABlock_;
   		sampleTBottom_ = b;
+			*/
 
   	  sampleTMiddle_ = 0.5*(sampleTTop_ + sampleTBottom_);
   	} else {

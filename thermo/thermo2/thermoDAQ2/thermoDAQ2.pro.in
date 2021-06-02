@@ -29,6 +29,13 @@ macx {
 
 QMAKE_CXXFLAGS += `pkg-config --cflags libmodbus`
 
+macx {
+  QMAKE_CXXFLAGS += -I/opt/local/include
+  LIBS += -L/opt/local/lib -lgsl -lblas
+} else {
+  LIBS += -lgsl -lblas
+}
+
 DEFINES += @configdefines@
 
 QT += core gui xml network script svg
