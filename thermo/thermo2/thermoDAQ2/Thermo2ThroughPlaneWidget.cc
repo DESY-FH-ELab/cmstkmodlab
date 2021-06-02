@@ -69,34 +69,92 @@ void Thermo2ThroughPlaneWidget::updateInfo()
 {
 	QString svg = svgString;
 
-	/*
   double value;
-  QString s;
+  QString s, p;
 
-  value = model_->getPT03();
-  s = QString::number(value, 'f', 2);
-  svg.replace("§PT03§", s);
+  if (model_->getHuberState()) {
+  	value = model_->getSinkTemperature();
+  	s = QString::number(value, 'f', 2);
+  	svg.replace("§TSink§", s);
+  } else {
+  	svg.replace("§TSink§", "--.--");
+  }
 
-  value = model_->getPT05();
-  s = QString::number(value, 'f', 2);
-  svg.replace("§PT05§", s);
-  
-  value = model_->getPT01CO2();
-  s = QString::number(value, 'f', 2);
-  svg.replace("§PT01CO2§", s);
+  if (model_->getNGE103BState() && model_->getNGE103BChannelState()) {
+  	value = model_->getSourcePower();
+  	s = QString::number(value, 'f', 2);
+  	svg.replace("§PSource§", s);
+  } else {
+  	svg.replace("§PSource§", "--.--");
+  }
 
-  value = model_->getPT02CO2();
-  s = QString::number(value, 'f', 2);
-  svg.replace("§PT02CO2§", s);
+  for (unsigned int c=0;c<6;++c) {
+  	s = QString::number(model_->getKeithleyTopChannel(c));
+  	p = "§CTop" + QString::number(c+1) + "§";
+  	svg.replace(p, s);
 
-  value = model_->getPT03CO2();
-  s = QString::number(value, 'f', 2);
-  svg.replace("§PT03CO2§", s);
+  	s = QString::number(model_->getKeithleyBottomChannel(c));
+  	p = "§CBot" + QString::number(c+1) + "§";
+  	svg.replace(p, s);
+  }
+  if (model_->getKeithleyState()) {
+  	for (unsigned int c=0;c<6;++c) {
+  		p = "§TTop" + QString::number(c+1) + "§";
+  		if (model_->getKeithleyTopChannelState(c)) {
+  			s = QString::number(model_->getKeithleyTopTemperature(c),'f', 2);
+  			svg.replace(p, s);
+  		} else {
+  			svg.replace(p, "--.--");
+  		}
 
-  value = model_->getPT04CO2();
-  s = QString::number(value, 'f', 2);
-  svg.replace("§PT04CO2§", s);
-  */
+  		p = "§TBot" + QString::number(c+1) + "§";
+  		if (model_->getKeithleyBottomChannelState(c)) {
+  			s = QString::number(model_->getKeithleyBottomTemperature(c),'f', 2);
+  			svg.replace(p, s);
+  		} else {
+  			svg.replace(p, "--.--");
+  		}
+  	}
+  }
+
+  if (model_->getCalculationState()) {
+  	value = model_->getGradientTop();
+  	s = QString::number(value, 'f', 2);
+  	svg.replace("§GradTop§", s);
+
+  	value = model_->getPowerTop();
+  	s = QString::number(value, 'f', 2);
+  	svg.replace("§PTop§", s);
+
+  	value = model_->getSampleTemperatureTop();
+  	s = QString::number(value, 'f', 2);
+  	svg.replace("§TTopSample§", s);
+
+  	value = model_->getSampleTemperatureMiddle();
+  	s = QString::number(value, 'f', 2);
+  	svg.replace("§TMidSample§", s);
+
+  	value = model_->getSampleTemperatureBottom();
+  	s = QString::number(value, 'f', 2);
+  	svg.replace("§TBotSample§", s);
+
+  	value = model_->getGradientBottom();
+  	s = QString::number(value, 'f', 2);
+  	svg.replace("§GradBot§", s);
+
+  	value = model_->getPowerBottom();
+  	s = QString::number(value, 'f', 2);
+  	svg.replace("§PBot§", s);
+
+  } else {
+  	svg.replace("§GradTop§", "--.--");
+  	svg.replace("§PTop§", "--.--");
+  	svg.replace("§TTopSample§", "--.--");
+   	svg.replace("§TMidSample§", "--.--");
+   	svg.replace("§TBotSample§", "--.--");
+   	svg.replace("§GradBot§", "--.--");
+  	svg.replace("§PBot§", "--.--");
+  }
 
   svgWidget_->load(svg.toLocal8Bit());
 }
