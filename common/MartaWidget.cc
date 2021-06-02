@@ -273,7 +273,7 @@ void MartaWidget::updateInfo()
   chillerCheckBox_->setChecked(model_->getChillerOn());
   co2CheckBox_->setChecked(model_->getCO2On());
 
-  QString svg = svgString;
+  QString svg = MartaSVGString;
 
   double value;
   QString s;

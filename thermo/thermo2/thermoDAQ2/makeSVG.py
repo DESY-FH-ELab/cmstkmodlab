@@ -17,7 +17,7 @@ ofile.write("""/////////////////////////////////////////////////////////////////
 #ifndef THROUGPLANESVG_H
 #define THROUGPLANESVG_H
 
-const char * svgString = \"""")
+const char * ThroughPlaneSVGString = \"""")
 
 previousLine = ""
 

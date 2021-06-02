@@ -67,7 +67,7 @@ Thermo2ThroughPlaneWidget::Thermo2ThroughPlaneWidget(Thermo2ThroughPlaneModel* m
 
 void Thermo2ThroughPlaneWidget::updateInfo()
 {
-	QString svg = svgString;
+	QString svg = ThroughPlaneSVGString;
 
   double value;
   QString s, p;

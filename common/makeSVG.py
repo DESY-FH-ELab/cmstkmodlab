@@ -17,7 +17,7 @@ ofile.write("""/////////////////////////////////////////////////////////////////
 #ifndef MARTASVG_H
 #define MARTASVG_H
 
-const char * svgString = \"""")
+const char * MartaSVGString = \"""")
 
 previousLine = ""
 
