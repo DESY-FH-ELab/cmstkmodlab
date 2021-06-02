@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -17,6 +17,7 @@
 #include <sstream>
 #include <map>
 #include <vector>
+#include <array>
 #include <iomanip>
 
 #include <QObject>
@@ -61,6 +62,22 @@ public:
       returnVector.push_back(returnValue);
     }
     return returnVector;
+  }
+
+  template <class aType,std::size_t N> std::array<aType,N> getValueArray(std::string const& key) const {
+    aType returnValue = 0;
+    std::array<aType,N> returnArray;
+    std::pair<std::multimap<std::string,std::string>::const_iterator,
+              std::multimap<std::string,std::string>::const_iterator> ret;
+    ret = keyvalueMap_.equal_range(key);
+    std::size_t i = 0;
+    for (std::multimap<std::string,std::string>::const_iterator it=ret.first; it!=ret.second; ++it) {
+      std::istringstream iss(it->second.c_str(), std::istringstream::in);
+      iss >> returnValue;
+      returnArray[i++] = returnValue;
+      if (i==N) break;
+    }
+    return returnArray;
   }
 
   template <class aType> aType getValue(std::string const& key, aType defaultValue) const {
