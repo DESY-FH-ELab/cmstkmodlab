@@ -157,6 +157,7 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
   		b = (x2sum*ysum-xsum*xysum)/(x2sum*countTop-xsum*xsum); // offset
 
   		gradientTop_ = a;
+  		powerTop_ = gradientTop_ * kBlock_ * ABlock_;
   		sampleTTop_ = b;
 
   		xsum=0;
@@ -175,6 +176,7 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
   		b = (x2sum*ysum-xsum*xysum)/(x2sum*countBottom-xsum*xsum); // offset
 
   		gradientBottom_ = a;
+  		powerBottom_ = gradientBottom_ * kBlock_ * ABlock_;
   		sampleTBottom_ = b;
 
   	  sampleTMiddle_ = 0.5*(sampleTTop_ + sampleTBottom_);
