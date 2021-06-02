@@ -30,6 +30,7 @@
 //#include "ThermoDAQWebInfo.h"
 #include "Thermo2DAQServer.h"
 #include "Thermo2ScriptModel.h"
+#include "Thermo2ThroughPlaneModel.h"
 
 class Thermo2MainWindow : public QMainWindow
 {
@@ -60,6 +61,8 @@ protected:
   //ThermoDAQWebInfo* daqWebInfo_;
   Thermo2DAQServer* daqServer_;
   Thermo2ScriptModel* scriptModel_;
+
+  Thermo2ThroughPlaneModel* throughPlaneModel_;
 };
 
 #endif // THERMO2MAINWINDOW_H

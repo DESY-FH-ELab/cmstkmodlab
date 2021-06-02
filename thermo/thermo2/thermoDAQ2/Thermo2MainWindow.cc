@@ -32,6 +32,8 @@
 #include "Thermo2DAQWidget.h"
 #include "Thermo2ScriptWidget.h"
 
+#include "Thermo2ThroughPlaneWidget.h"
+
 #include "Thermo2MainWindow.h"
 
 Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
@@ -125,6 +127,11 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   daqThread_->start();
   daqModel_->myMoveToThread(daqThread_);
 
+  throughPlaneModel_ = new Thermo2ThroughPlaneModel(huberModel_,
+		  nge103BModel_,
+		  keithleyModel_,
+		  this);
+
   tabWidget_ = new QTabWidget(this);
   tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
@@ -182,6 +189,11 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   KeithleyDAQ6510Widget* keithleyWidget = new KeithleyDAQ6510Widget(keithleyModel_);
   keithleyWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   tabWidget_->addTab(keithleyWidget, "Multimeter");
+
+  // THROUGH PLANE MODEL
+  Thermo2ThroughPlaneWidget* throughPlaneWidget = new Thermo2ThroughPlaneWidget(throughPlaneModel_);
+  throughPlaneWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  tabWidget_->addTab(throughPlaneWidget, "Through Plane");
 
   widget = new QWidget();
   widget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
