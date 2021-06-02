@@ -14,8 +14,8 @@ ofile.write("""/////////////////////////////////////////////////////////////////
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MARTASVG_H
-#define MARTASVG_H
+#ifndef THROUGPLANESVG_H
+#define THROUGPLANESVG_H
 
 const char * svgString = \"""")
 
