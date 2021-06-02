@@ -115,13 +115,13 @@
         <g>
             <path d="M131.417,50l20,-0l0,70l10,-0l-20,40l-20,-40l10,-0l0,-70Z" style="fill:rgb(158,158,158);"/>
             <path d="M131.417,50l20,-0l0,70l10,-0l-20,40l-20,-40l10,-0l0,-70Zm0.667,0.667l18.667,-0c-0,-0 -0,70 -0,70l9.588,-0c-0,-0 -18.922,37.842 -18.922,37.842c0,0 -18.921,-37.842 -18.921,-37.842c-0,-0 9.588,-0 9.588,-0l-0,-70Z"/>
-            <text x="41.129px" y="67.766px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.667px;"><tspan x="41.129px 46.528px 54.291px 57.31px 62.709px 68.108px 72.908px 78.307px 83.706px 89.105px 91.535px 95.267px 102.437px 104.867px 113.219px " y="67.766px 67.766px 67.766px 67.766px 67.766px 67.766px 67.766px 67.766px 67.766px 67.766px 67.766px 67.766px 67.766px 67.766px 67.766px ">§GradTop§ °C/mm</tspan></text>
+            <text x="45.45px" y="67.766px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.667px;"><tspan x="45.45px 50.849px 58.612px 61.631px 67.03px 72.429px 77.229px 82.628px 88.027px 93.426px 95.856px 102.437px 104.867px 113.219px " y="67.766px 67.766px 67.766px 67.766px 67.766px 67.766px 67.766px 67.766px 67.766px 67.766px 67.766px 67.766px 67.766px 67.766px ">§GradTop§ K/mm</tspan></text>
             <text x="76.63px" y="87.766px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.667px;"><tspan x="76.63px 82.029px 88.61px 93.41px 98.809px 104.208px 109.607px 112.037px " y="87.766px 87.766px 87.766px 87.766px 87.766px 87.766px 87.766px 87.766px ">§PTop§ W</tspan></text>
         </g>
         <g>
             <path d="M131.417,320l20,0l0,70l10,0l-20,40l-20,-40l10,0l0,-70Z" style="fill:rgb(158,158,158);"/>
             <path d="M131.417,320l20,0l0,70l10,-0l-20,40l-20,-40l10,-0l0,-70Zm0.667,0.667l18.667,-0c-0,-0 -0,70 -0,70l9.588,-0c-0,-0 -18.922,37.842 -18.922,37.842c0,0 -18.921,-37.842 -18.921,-37.842c-0,-0 9.588,-0 9.588,-0l-0,-70Z"/>
-            <text x="42.316px" y="337.766px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.667px;"><tspan x="42.316px 47.715px 55.479px 58.498px 63.896px 69.295px 75.877px 81.276px 83.706px 89.105px 91.535px 95.267px 102.437px 104.867px 113.219px " y="337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px ">§GradBot§ °C/mm</tspan></text>
+            <text x="46.637px" y="337.766px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.667px;"><tspan x="46.637px 52.036px 59.8px 62.818px 68.217px 73.616px 80.198px 85.596px 88.027px 93.426px 95.856px 102.437px 104.867px 113.219px " y="337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px ">§GradBot§ K/mm</tspan></text>
             <text x="77.817px" y="357.766px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.667px;"><tspan x="77.817px 83.216px 89.798px 96.379px 101.778px 104.208px 109.607px 112.037px " y="357.766px 357.766px 357.766px 357.766px 357.766px 357.766px 357.766px 357.766px ">§PBot§ W</tspan></text>
         </g>
     </g>
