@@ -54,6 +54,10 @@ protected:
   ThermoDAQ2Client* client_;
   ThermoDAQ2NetworkReader* reader_;
 
+  bool chillerAndVacuumActive_;
+  bool martaActive_;
+  bool throughPlaneActive_;
+
   ThermoDisplay2ChartView *ChillerTSChartView_;
   ThermoDisplay2TemperatureStateChart *ChillerTSChart_;
   ThermoDisplay2LineSeries *ChillerTBathSeries_;
