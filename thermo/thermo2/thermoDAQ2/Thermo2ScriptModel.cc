@@ -49,17 +49,21 @@ Thermo2ScriptModel::Thermo2ScriptModel(Thermo2DAQModel* daqModel,
   connect(scriptThread_, SIGNAL(started()), this, SLOT(executionStarted()));
   connect(scriptThread_, SIGNAL(finished()), this, SLOT(executionFinished()));
 
-  connect(huberModel_, SIGNAL(message(const QString &)),
-          this, SLOT(doAppendMessageText(const QString &)));
+  if (huberModel_) {
+  	connect(huberModel_, SIGNAL(message(const QString &)),
+  			this, SLOT(doAppendMessageText(const QString &)));
+  }
 
-  connect(martaModel_, SIGNAL(message(const QString &)),
-          this, SLOT(doAppendMessageText(const QString &)));
+  if (martaModel_) {
+  	connect(martaModel_, SIGNAL(message(const QString &)),
+  			this, SLOT(doAppendMessageText(const QString &)));
+  }
 
   connect(nge103BModel_, SIGNAL(message(const QString &)),
-          this, SLOT(doAppendMessageText(const QString &)));
+  		this, SLOT(doAppendMessageText(const QString &)));
 
   connect(keithleyModel_, SIGNAL(message(const QString &)),
-          this, SLOT(doAppendMessageText(const QString &)));
+  		this, SLOT(doAppendMessageText(const QString &)));
 
   connect(&executionTimer_, SIGNAL(timeout()), this, SLOT(executionHeartBeat()));
 }

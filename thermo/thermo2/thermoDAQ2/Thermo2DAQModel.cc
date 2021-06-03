@@ -38,17 +38,25 @@ Thermo2DAQModel::Thermo2DAQModel(HuberUnistat525wModel* huberModel,
 {
   currentTime_ = QDateTime::currentDateTime();
 
-  connect(huberModel_, SIGNAL(informationChanged()),
-          this, SLOT(huberInfoChanged()));
+  if (huberModel_) {
+  	connect(huberModel_, SIGNAL(informationChanged()),
+  			this, SLOT(huberInfoChanged()));
+  }
 
-  connect(martaModel_, SIGNAL(informationChanged()),
-          this, SLOT(martaInfoChanged()));
+  if (martaModel_) {
+  	connect(martaModel_, SIGNAL(informationChanged()),
+  			this, SLOT(martaInfoChanged()));
+  }
 
-  connect(agilentModel_, SIGNAL(informationChanged()),
-          this, SLOT(agilentInfoChanged()));
+  if (agilentModel_) {
+  	connect(agilentModel_, SIGNAL(informationChanged()),
+  			this, SLOT(agilentInfoChanged()));
+  }
 
-  connect(leyboldModel_, SIGNAL(informationChanged()),
-          this, SLOT(leyboldInfoChanged()));
+  if (leyboldModel_) {
+  	connect(leyboldModel_, SIGNAL(informationChanged()),
+  			this, SLOT(leyboldInfoChanged()));
+  }
 
   connect(nge103BModel_, SIGNAL(informationChanged()),
   		this, SLOT(nge103BInfoChanged()));
@@ -59,10 +67,10 @@ Thermo2DAQModel::Thermo2DAQModel(HuberUnistat525wModel* huberModel,
 
 void Thermo2DAQModel::myMoveToThread(QThread *thread)
 {
-  huberModel_->moveToThread(thread);
-  martaModel_->moveToThread(thread);
-  agilentModel_->moveToThread(thread);
-  leyboldModel_->moveToThread(thread);
+  if (huberModel_) huberModel_->moveToThread(thread);
+  if (martaModel_) martaModel_->moveToThread(thread);
+  if (agilentModel_) agilentModel_->moveToThread(thread);
+  if (leyboldModel_) leyboldModel_->moveToThread(thread);
   nge103BModel_->moveToThread(thread);
   keithleyModel_->moveToThread(thread);
 
@@ -115,27 +123,29 @@ void Thermo2DAQModel::createDAQStatusMessage(QString &buffer, bool start)
   //
   // Start of Huber Unistat 525w
   //
-  xml.writeStartElement("HuberUnistat525w");
-  xml.writeAttribute("time", utime.toString(Qt::ISODate));
-  xml.writeAttribute("State", huberModel_->getDeviceState()==READY ? "1" : "0");
+  if (huberModel_) {
+  	xml.writeStartElement("HuberUnistat525w");
+  	xml.writeAttribute("time", utime.toString(Qt::ISODate));
+  	xml.writeAttribute("State", huberModel_->getDeviceState()==READY ? "1" : "0");
 
-  xml.writeStartElement("HuberUnistat525wControl");
-  xml.writeAttribute("SetPoint", QString::number(huberModel_->getTemperatureSetPoint(), 'f', 2));
-  xml.writeAttribute("ControlMode", QString::number(huberModel_->getTemperatureControlMode()));
-  xml.writeAttribute("ControlEnabled", QString::number(huberModel_->getTemperatureControlEnabled()));
-  xml.writeAttribute("CirculatorEnabled", QString::number(huberModel_->getCirculatorEnabled()));
-  xml.writeEndElement();
+  	xml.writeStartElement("HuberUnistat525wControl");
+  	xml.writeAttribute("SetPoint", QString::number(huberModel_->getTemperatureSetPoint(), 'f', 2));
+  	xml.writeAttribute("ControlMode", QString::number(huberModel_->getTemperatureControlMode()));
+  	xml.writeAttribute("ControlEnabled", QString::number(huberModel_->getTemperatureControlEnabled()));
+  	xml.writeAttribute("CirculatorEnabled", QString::number(huberModel_->getCirculatorEnabled()));
+  	xml.writeEndElement();
 
-  xml.writeStartElement("HuberUnistat525wInfo");
-  xml.writeAttribute("Bath", QString::number(huberModel_->getBathTemperature(), 'f', 2));
-  xml.writeAttribute("Return", QString::number(huberModel_->getReturnTemperature(), 'f', 2));
-  xml.writeAttribute("Pressure", QString::number(huberModel_->getPumpPressure(), 'f', 3));
-  xml.writeAttribute("Power", QString::number(huberModel_->getPower()));
-  xml.writeAttribute("CWI", QString::number(huberModel_->getCoolingWaterInletTemperature(), 'f', 2));
-  xml.writeAttribute("CWO", QString::number(huberModel_->getCoolingWaterOutletTemperature(), 'f', 2));
-  xml.writeEndElement();
+  	xml.writeStartElement("HuberUnistat525wInfo");
+  	xml.writeAttribute("Bath", QString::number(huberModel_->getBathTemperature(), 'f', 2));
+  	xml.writeAttribute("Return", QString::number(huberModel_->getReturnTemperature(), 'f', 2));
+  	xml.writeAttribute("Pressure", QString::number(huberModel_->getPumpPressure(), 'f', 3));
+  	xml.writeAttribute("Power", QString::number(huberModel_->getPower()));
+  	xml.writeAttribute("CWI", QString::number(huberModel_->getCoolingWaterInletTemperature(), 'f', 2));
+  	xml.writeAttribute("CWO", QString::number(huberModel_->getCoolingWaterOutletTemperature(), 'f', 2));
+  	xml.writeEndElement();
 
-  xml.writeEndElement();
+  	xml.writeEndElement();
+  }
   //
   // End of Huber Unistat 525w
   //
@@ -143,86 +153,88 @@ void Thermo2DAQModel::createDAQStatusMessage(QString &buffer, bool start)
   //
   // Start of Marta CO2 Chiller
   //
-  xml.writeStartElement("Marta");
-  xml.writeAttribute("time", utime.toString(Qt::ISODate));
-  xml.writeAttribute("State", martaModel_->getDeviceState()==READY ? "1" : "0");
+  if (huberModel_) {
+  	xml.writeStartElement("Marta");
+  	xml.writeAttribute("time", utime.toString(Qt::ISODate));
+  	xml.writeAttribute("State", martaModel_->getDeviceState()==READY ? "1" : "0");
 
-  xml.writeStartElement("MartaR507");
-  xml.writeAttribute("PT03", QString::number(martaModel_->getPT03(), 'f', 2));
-  xml.writeAttribute("PT05", QString::number(martaModel_->getPT05(), 'f', 2));
-  xml.writeAttribute("TT02", QString::number(martaModel_->getTT02(), 'f', 2));
-  xml.writeAttribute("SH05", QString::number(martaModel_->getSH05(), 'f', 2));
-  xml.writeEndElement();
+  	xml.writeStartElement("MartaR507");
+  	xml.writeAttribute("PT03", QString::number(martaModel_->getPT03(), 'f', 2));
+  	xml.writeAttribute("PT05", QString::number(martaModel_->getPT05(), 'f', 2));
+  	xml.writeAttribute("TT02", QString::number(martaModel_->getTT02(), 'f', 2));
+  	xml.writeAttribute("SH05", QString::number(martaModel_->getSH05(), 'f', 2));
+  	xml.writeEndElement();
 
-  xml.writeStartElement("MartaPTCO2");
-  xml.writeAttribute("PT01CO2", QString::number(martaModel_->getPT01CO2(), 'f', 2));
-  xml.writeAttribute("PT02CO2", QString::number(martaModel_->getPT02CO2(), 'f', 2));
-  xml.writeAttribute("PT03CO2", QString::number(martaModel_->getPT03CO2(), 'f', 2));
-  xml.writeAttribute("PT04CO2", QString::number(martaModel_->getPT04CO2(), 'f', 2));
-  xml.writeAttribute("PT05CO2", QString::number(martaModel_->getPT05CO2(), 'f', 2));
-  xml.writeAttribute("PT06CO2", QString::number(martaModel_->getPT06CO2(), 'f', 2));
-  xml.writeEndElement();
+  	xml.writeStartElement("MartaPTCO2");
+  	xml.writeAttribute("PT01CO2", QString::number(martaModel_->getPT01CO2(), 'f', 2));
+  	xml.writeAttribute("PT02CO2", QString::number(martaModel_->getPT02CO2(), 'f', 2));
+  	xml.writeAttribute("PT03CO2", QString::number(martaModel_->getPT03CO2(), 'f', 2));
+  	xml.writeAttribute("PT04CO2", QString::number(martaModel_->getPT04CO2(), 'f', 2));
+  	xml.writeAttribute("PT05CO2", QString::number(martaModel_->getPT05CO2(), 'f', 2));
+  	xml.writeAttribute("PT06CO2", QString::number(martaModel_->getPT06CO2(), 'f', 2));
+  	xml.writeEndElement();
 
-  xml.writeStartElement("MartaTTCO2");
-  xml.writeAttribute("TT01CO2", QString::number(martaModel_->getTT01CO2(), 'f', 2));
-  xml.writeAttribute("TT02CO2", QString::number(martaModel_->getTT02CO2(), 'f', 2));
-  xml.writeAttribute("TT03CO2", QString::number(martaModel_->getTT03CO2(), 'f', 2));
-  xml.writeAttribute("TT04CO2", QString::number(martaModel_->getTT04CO2(), 'f', 2));
-  xml.writeAttribute("TT05CO2", QString::number(martaModel_->getTT05CO2(), 'f', 2));
-  xml.writeAttribute("TT06CO2", QString::number(martaModel_->getTT06CO2(), 'f', 2));
-  xml.writeAttribute("TT07CO2", QString::number(martaModel_->getTT07CO2(), 'f', 2));
-  xml.writeEndElement();
+  	xml.writeStartElement("MartaTTCO2");
+  	xml.writeAttribute("TT01CO2", QString::number(martaModel_->getTT01CO2(), 'f', 2));
+  	xml.writeAttribute("TT02CO2", QString::number(martaModel_->getTT02CO2(), 'f', 2));
+  	xml.writeAttribute("TT03CO2", QString::number(martaModel_->getTT03CO2(), 'f', 2));
+  	xml.writeAttribute("TT04CO2", QString::number(martaModel_->getTT04CO2(), 'f', 2));
+  	xml.writeAttribute("TT05CO2", QString::number(martaModel_->getTT05CO2(), 'f', 2));
+  	xml.writeAttribute("TT06CO2", QString::number(martaModel_->getTT06CO2(), 'f', 2));
+  	xml.writeAttribute("TT07CO2", QString::number(martaModel_->getTT07CO2(), 'f', 2));
+  	xml.writeEndElement();
 
-  xml.writeStartElement("MartaSCCO2");
-  xml.writeAttribute("SC01CO2", QString::number(martaModel_->getSC01CO2(), 'f', 2));
-  xml.writeAttribute("SC02CO2", QString::number(martaModel_->getSC02CO2(), 'f', 2));
-  xml.writeAttribute("SC03CO2", QString::number(martaModel_->getSC03CO2(), 'f', 2));
-  xml.writeAttribute("SC05CO2", QString::number(martaModel_->getSC05CO2(), 'f', 2));
-  xml.writeAttribute("SC06CO2", QString::number(martaModel_->getSC06CO2(), 'f', 2));
-  xml.writeEndElement();
+  	xml.writeStartElement("MartaSCCO2");
+  	xml.writeAttribute("SC01CO2", QString::number(martaModel_->getSC01CO2(), 'f', 2));
+  	xml.writeAttribute("SC02CO2", QString::number(martaModel_->getSC02CO2(), 'f', 2));
+  	xml.writeAttribute("SC03CO2", QString::number(martaModel_->getSC03CO2(), 'f', 2));
+  	xml.writeAttribute("SC05CO2", QString::number(martaModel_->getSC05CO2(), 'f', 2));
+  	xml.writeAttribute("SC06CO2", QString::number(martaModel_->getSC06CO2(), 'f', 2));
+  	xml.writeEndElement();
 
-  xml.writeStartElement("MartaDPCO2");
-  xml.writeAttribute("DP01CO2", QString::number(martaModel_->getdP01CO2(), 'f', 2));
-  xml.writeAttribute("DP02CO2", QString::number(martaModel_->getdP02CO2(), 'f', 2));
-  xml.writeAttribute("DP03CO2", QString::number(martaModel_->getdP03CO2(), 'f', 2));
-  xml.writeAttribute("DP04CO2", QString::number(martaModel_->getdP04CO2(), 'f', 2));
-  xml.writeEndElement();
+  	xml.writeStartElement("MartaDPCO2");
+  	xml.writeAttribute("DP01CO2", QString::number(martaModel_->getdP01CO2(), 'f', 2));
+  	xml.writeAttribute("DP02CO2", QString::number(martaModel_->getdP02CO2(), 'f', 2));
+  	xml.writeAttribute("DP03CO2", QString::number(martaModel_->getdP03CO2(), 'f', 2));
+  	xml.writeAttribute("DP04CO2", QString::number(martaModel_->getdP04CO2(), 'f', 2));
+  	xml.writeEndElement();
 
-  xml.writeStartElement("MartaDTCO2");
-  xml.writeAttribute("DT02CO2", QString::number(martaModel_->getdT02CO2(), 'f', 2));
-  xml.writeAttribute("DT03CO2", QString::number(martaModel_->getdT03CO2(), 'f', 2));
-  xml.writeEndElement();
+  	xml.writeStartElement("MartaDTCO2");
+  	xml.writeAttribute("DT02CO2", QString::number(martaModel_->getdT02CO2(), 'f', 2));
+  	xml.writeAttribute("DT03CO2", QString::number(martaModel_->getdT03CO2(), 'f', 2));
+  	xml.writeEndElement();
 
-  xml.writeStartElement("MartaSTCO2");
-  xml.writeAttribute("ST01CO2", QString::number(martaModel_->getST01CO2(), 'f', 2));
-  xml.writeAttribute("ST02CO2", QString::number(martaModel_->getST02CO2(), 'f', 2));
-  xml.writeAttribute("ST03CO2", QString::number(martaModel_->getST03CO2(), 'f', 2));
-  xml.writeAttribute("ST04CO2", QString::number(martaModel_->getST04CO2(), 'f', 2));
-  xml.writeEndElement();
+  	xml.writeStartElement("MartaSTCO2");
+  	xml.writeAttribute("ST01CO2", QString::number(martaModel_->getST01CO2(), 'f', 2));
+  	xml.writeAttribute("ST02CO2", QString::number(martaModel_->getST02CO2(), 'f', 2));
+  	xml.writeAttribute("ST03CO2", QString::number(martaModel_->getST03CO2(), 'f', 2));
+  	xml.writeAttribute("ST04CO2", QString::number(martaModel_->getST04CO2(), 'f', 2));
+  	xml.writeEndElement();
 
-  xml.writeStartElement("MartaFlow");
-  xml.writeAttribute("FT01CO2", QString::number(martaModel_->getFT01CO2(), 'f', 3));
-  xml.writeEndElement();
+  	xml.writeStartElement("MartaFlow");
+  	xml.writeAttribute("FT01CO2", QString::number(martaModel_->getFT01CO2(), 'f', 3));
+  	xml.writeEndElement();
 
-  xml.writeStartElement("MartaSettings");
-  xml.writeAttribute("Speed", QString::number((int)martaModel_->getSpeedSetpoint()));
-  xml.writeAttribute("Flow", QString::number(martaModel_->getFlowSetpoint(), 'f', 1));
-  xml.writeAttribute("Temperature", QString::number(martaModel_->getTemperatureSetpoint(), 'f', 1));
-  xml.writeAttribute("Speed2", QString::number((int)martaModel_->getSpeedSetpoint2()));
-  xml.writeAttribute("Flow2", QString::number(martaModel_->getFlowSetpoint2(), 'f', 1));
-  xml.writeAttribute("Temperature2", QString::number(martaModel_->getTemperatureSetpoint2(), 'f', 1));
-  xml.writeAttribute("Status", QString("0x") + QStringLiteral("%1").arg(martaModel_->getStatus(), 4, 16, QLatin1Char('0')));
-  xml.writeEndElement();
+  	xml.writeStartElement("MartaSettings");
+  	xml.writeAttribute("Speed", QString::number((int)martaModel_->getSpeedSetpoint()));
+  	xml.writeAttribute("Flow", QString::number(martaModel_->getFlowSetpoint(), 'f', 1));
+  	xml.writeAttribute("Temperature", QString::number(martaModel_->getTemperatureSetpoint(), 'f', 1));
+  	xml.writeAttribute("Speed2", QString::number((int)martaModel_->getSpeedSetpoint2()));
+  	xml.writeAttribute("Flow2", QString::number(martaModel_->getFlowSetpoint2(), 'f', 1));
+  	xml.writeAttribute("Temperature2", QString::number(martaModel_->getTemperatureSetpoint2(), 'f', 1));
+  	xml.writeAttribute("Status", QString("0x") + QStringLiteral("%1").arg(martaModel_->getStatus(), 4, 16, QLatin1Char('0')));
+  	xml.writeEndElement();
 
-  xml.writeStartElement("MartaAlarms");
-  xml.writeAttribute("Status", QString::number(martaModel_->getAlarmStatus()));
-  for (int idx=0;idx<4;++idx) {
-  	xml.writeAttribute(QString("Alarm") + QString::number(idx),
-											 QString("0x") + QStringLiteral("%1").arg(martaModel_->getAlarms(idx), 4, 16, QLatin1Char('0')));
+  	xml.writeStartElement("MartaAlarms");
+  	xml.writeAttribute("Status", QString::number(martaModel_->getAlarmStatus()));
+  	for (int idx=0;idx<4;++idx) {
+  		xml.writeAttribute(QString("Alarm") + QString::number(idx),
+  				QString("0x") + QStringLiteral("%1").arg(martaModel_->getAlarms(idx), 4, 16, QLatin1Char('0')));
+  	}
+  	xml.writeEndElement();
+
+  	xml.writeEndElement();
   }
-  xml.writeEndElement();
-
-  xml.writeEndElement();
   //
   // End of Marta CO2 Chiller
   //
@@ -230,15 +242,15 @@ void Thermo2DAQModel::createDAQStatusMessage(QString &buffer, bool start)
   //
   // Start of Agilent TwisTorr 304
   //
-
-  xml.writeStartElement("AgilentTwisTorr304");
-  xml.writeAttribute("time", utime.toString(Qt::ISODate));
-  xml.writeAttribute("State", agilentModel_->getDeviceState()==READY ? "1" : "0");
-  xml.writeAttribute("PumpState", agilentModel_->getPumpState()==true ? "1" : "0");
-  xml.writeAttribute("PumpStatus", QString::number(agilentModel_->getPumpStatus()));
-  xml.writeAttribute("ErrorCode", QString::number(agilentModel_->getErrorCode()));
-  xml.writeEndElement();
-
+  if (huberModel_) {
+  	xml.writeStartElement("AgilentTwisTorr304");
+  	xml.writeAttribute("time", utime.toString(Qt::ISODate));
+  	xml.writeAttribute("State", agilentModel_->getDeviceState()==READY ? "1" : "0");
+  	xml.writeAttribute("PumpState", agilentModel_->getPumpState()==true ? "1" : "0");
+  	xml.writeAttribute("PumpStatus", QString::number(agilentModel_->getPumpStatus()));
+  	xml.writeAttribute("ErrorCode", QString::number(agilentModel_->getErrorCode()));
+  	xml.writeEndElement();
+  }
   //
   // End of Agilent TwisTorr 304
   //
@@ -246,13 +258,13 @@ void Thermo2DAQModel::createDAQStatusMessage(QString &buffer, bool start)
   //
   // Start of Leybold Graphix One
   //
-
-  xml.writeStartElement("LeyboldGraphixOne");
-  xml.writeAttribute("time", utime.toString(Qt::ISODate));
-  xml.writeAttribute("State", leyboldModel_->getDeviceState()==READY ? "1" : "0");
-  xml.writeAttribute("Pressure", QString::number(leyboldModel_->getPressure(), 'e', 3));
-  xml.writeEndElement();
-
+  if (leyboldModel_) {
+  	xml.writeStartElement("LeyboldGraphixOne");
+  	xml.writeAttribute("time", utime.toString(Qt::ISODate));
+  	xml.writeAttribute("State", leyboldModel_->getDeviceState()==READY ? "1" : "0");
+  	xml.writeAttribute("Pressure", QString::number(leyboldModel_->getPressure(), 'e', 3));
+  	xml.writeEndElement();
+  }
   //
   // End of Leybold Graphix One
   //

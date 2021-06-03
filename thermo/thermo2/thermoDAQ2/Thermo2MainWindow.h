@@ -48,6 +48,9 @@ protected:
 
   QTabWidget* tabWidget_;
 
+  bool chillerAndVacuumActive_;
+  bool martaActive_;
+
   HuberUnistat525wModel* huberModel_;
   MartaModel* martaModel_;
   AgilentTwisTorr304Model* agilentModel_;

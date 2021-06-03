@@ -9,6 +9,12 @@ RohdeSchwarzNGE103B                    /dev/ttyACM0
 KeithleyDAQ6510                        /dev/usbtmc0
 
 #
+# Active Devices
+#
+ChillerAndVacuumActive                 1
+MartaActive                            0
+
+#
 # Data Storage
 #
 DataPath                               /home/mussgill/development/cmstkmodlab/thermo/thermo2/thermoDAQ2/data

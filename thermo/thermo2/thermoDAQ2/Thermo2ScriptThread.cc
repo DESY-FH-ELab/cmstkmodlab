@@ -52,13 +52,17 @@ void Thermo2ScriptThread::executeScript(const QString & script)
   QScriptValue globalsValue = engine_->newQObject(globalsObj);
   engine_->globalObject().setProperty("thermo2", globalsValue);
 
-  ScriptableHuberUnistat525w* huberobj = new ScriptableHuberUnistat525w(huberModel_, this);
-  QScriptValue huberValue = engine_->newQObject(huberobj);
-  engine_->globalObject().setProperty("huber", huberValue);
+  if (huberModel_) {
+  	ScriptableHuberUnistat525w* huberobj = new ScriptableHuberUnistat525w(huberModel_, this);
+  	QScriptValue huberValue = engine_->newQObject(huberobj);
+  	engine_->globalObject().setProperty("huber", huberValue);
+  }
 
-  ScriptableMarta* martaobj = new ScriptableMarta(martaModel_, this);
-  QScriptValue martaValue = engine_->newQObject(martaobj);
-  engine_->globalObject().setProperty("marta", martaValue);
+  if (martaModel_) {
+  	ScriptableMarta* martaobj = new ScriptableMarta(martaModel_, this);
+  	QScriptValue martaValue = engine_->newQObject(martaobj);
+  	engine_->globalObject().setProperty("marta", martaValue);
+  }
 
   ScriptableRohdeSchwarzNGE103B *nge103BObj = new ScriptableRohdeSchwarzNGE103B(nge103BModel_, this);
   QScriptValue nge103BValue = engine_->newQObject(nge103BObj);
