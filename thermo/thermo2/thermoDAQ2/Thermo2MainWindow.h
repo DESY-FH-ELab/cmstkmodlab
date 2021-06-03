@@ -50,6 +50,7 @@ protected:
 
   bool chillerAndVacuumActive_;
   bool martaActive_;
+  bool throughPlaneActive_;
 
   HuberUnistat525wModel* huberModel_;
   MartaModel* martaModel_;
@@ -65,7 +66,6 @@ protected:
   Thermo2DAQServer* daqServer_;
   Thermo2ScriptModel* scriptModel_;
 
-  bool throughPlaneActive_;
   Thermo2ThroughPlaneModel* throughPlaneModel_;
 };
 
