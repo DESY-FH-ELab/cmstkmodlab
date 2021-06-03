@@ -82,7 +82,7 @@ Thermo2ScriptWidget::Thermo2ScriptWidget(const QString& title,
   scriptEditor_ = new Thermo2ScriptEdit(this);
   scriptEditor_->setSizePolicy(QSizePolicy::MinimumExpanding,
                                QSizePolicy::MinimumExpanding);
-  scriptEditor_->setMinimumWidth(600);
+  scriptEditor_->setMinimumWidth(800);
   scriptEditor_->setMinimumHeight(150);
   scriptEditor_->setDocument(scriptModel_->scriptDocument());
   scriptEditor_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -94,7 +94,7 @@ Thermo2ScriptWidget::Thermo2ScriptWidget(const QString& title,
 
   // message display
   messageDisplay_ = new Thermo2MessageDisplay(this);
-  messageDisplay_->setMinimumWidth(600);
+  messageDisplay_->setMinimumWidth(800);
   messageDisplay_->setMinimumHeight(100);
   messageDisplay_->setMaximumHeight(100);
   messageDisplay_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
