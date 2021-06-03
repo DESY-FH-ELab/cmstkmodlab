@@ -33,7 +33,8 @@ macx {
   QMAKE_CXXFLAGS += -I/opt/local/include
   LIBS += -L/opt/local/lib -lgsl -lblas
 } else {
-  LIBS += -lgsl -lblas
+  QMAKE_CXXFLAGS += `pkg-config --cflags gsl`
+  LIBS += `pkg-config --libs gsl`
 }
 
 DEFINES += @configdefines@
