@@ -9,10 +9,11 @@ RohdeSchwarzNGE103B                    /dev/ttyACM0
 KeithleyDAQ6510                        /dev/usbtmc0
 
 #
-# Active Devices
+# Active Devices and Measurement Setups
 #
 ChillerAndVacuumActive                 1
 MartaActive                            0
+ThroughPlaneSetupActive                1
 
 #
 # Data Storage

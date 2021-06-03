@@ -65,6 +65,7 @@ protected:
   Thermo2DAQServer* daqServer_;
   Thermo2ScriptModel* scriptModel_;
 
+  bool throughPlaneActive_;
   Thermo2ThroughPlaneModel* throughPlaneModel_;
 };
 

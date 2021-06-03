@@ -49,6 +49,7 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 
   chillerAndVacuumActive_ = config->getValue<int>("ChillerAndVacuumActive");
   martaActive_ = config->getValue<int>("MartaActive");
+  throughPlaneActive_ = config->getValue<int>("ThroughPlaneSetupActive");
 
   huberModel_ = 0;
   if (chillerAndVacuumActive_) {
@@ -142,7 +143,7 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   daqThread_->start();
   daqModel_->myMoveToThread(daqThread_);
 
-  if (chillerAndVacuumActive_) {
+  if (chillerAndVacuumActive_ && throughPlaneActive_) {
   	throughPlaneModel_ = new Thermo2ThroughPlaneModel(huberModel_,
   			nge103BModel_,
 				keithleyModel_,
@@ -211,7 +212,7 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   keithleyWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   tabWidget_->addTab(keithleyWidget, "Multimeter");
 
-  if (chillerAndVacuumActive_) {
+  if (chillerAndVacuumActive_ && throughPlaneActive_) {
   	// THROUGH PLANE MODEL
   	Thermo2ThroughPlaneWidget* throughPlaneWidget = new Thermo2ThroughPlaneWidget(throughPlaneModel_);
   	throughPlaneWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
