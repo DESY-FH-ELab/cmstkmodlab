@@ -51,10 +51,10 @@ Thermo2DAQModel::Thermo2DAQModel(HuberUnistat525wModel* huberModel,
           this, SLOT(leyboldInfoChanged()));
 
   connect(nge103BModel_, SIGNAL(informationChanged()),
-          this, SLOT(nge103BInfoChanged()));
+  		this, SLOT(nge103BInfoChanged()));
 
   connect(keithleyModel_, SIGNAL(informationChanged()),
-          this, SLOT(keithleyInfoChanged()));
+  		this, SLOT(keithleyInfoChanged()));
 }
 
 void Thermo2DAQModel::myMoveToThread(QThread *thread)

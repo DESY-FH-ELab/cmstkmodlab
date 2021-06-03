@@ -22,17 +22,17 @@
 #include "Thermo2ScriptModel.h"
 
 Thermo2ScriptModel::Thermo2ScriptModel(Thermo2DAQModel* daqModel,
-                                       HuberUnistat525wModel* huberModel,
-																			 MartaModel* martaModel,
-                                       RohdeSchwarzNGE103BModel* nge103BModel,
-                                       KeithleyDAQ6510Model* keithleyModel,
-                                       QObject *parent)
-  : QObject(parent),
-    daqModel_(daqModel),
-    huberModel_(huberModel),
-    martaModel_(martaModel),
-    nge103BModel_(nge103BModel),
-    keithleyModel_(keithleyModel)
+		HuberUnistat525wModel* huberModel,
+		MartaModel* martaModel,
+		RohdeSchwarzNGE103BModel* nge103BModel,
+		KeithleyDAQ6510Model* keithleyModel,
+		QObject *parent)
+: QObject(parent),
+	daqModel_(daqModel),
+	huberModel_(huberModel),
+	martaModel_(martaModel),
+	nge103BModel_(nge103BModel),
+	keithleyModel_(keithleyModel)
 {
   script_ = new QTextDocument(this);
   script_->setDocumentLayout(new QPlainTextDocumentLayout(script_));

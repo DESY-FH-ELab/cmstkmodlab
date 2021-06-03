@@ -26,17 +26,17 @@
 #include "ScriptableKeithleyDAQ6510.h"
 
 Thermo2ScriptThread::Thermo2ScriptThread(Thermo2ScriptModel* scriptModel,
-                                         HuberUnistat525wModel* huberModel,
-																				 MartaModel* martaModel,
-                                         RohdeSchwarzNGE103BModel* nge103BModel,
-                                         KeithleyDAQ6510Model* keithleyModel,
-                                         QObject *parent)
-  : QThread(parent),
-    scriptModel_(scriptModel),
-    huberModel_(huberModel),
-		martaModel_(martaModel),
-    nge103BModel_(nge103BModel),
-    keithleyModel_(keithleyModel)
+		HuberUnistat525wModel* huberModel,
+		MartaModel* martaModel,
+		RohdeSchwarzNGE103BModel* nge103BModel,
+		KeithleyDAQ6510Model* keithleyModel,
+		QObject *parent)
+: QThread(parent),
+	scriptModel_(scriptModel),
+	huberModel_(huberModel),
+	martaModel_(martaModel),
+	nge103BModel_(nge103BModel),
+	keithleyModel_(keithleyModel)
 {
 
 }

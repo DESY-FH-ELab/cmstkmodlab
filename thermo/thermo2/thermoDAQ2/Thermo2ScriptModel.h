@@ -27,15 +27,15 @@
 
 class Thermo2ScriptModel : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
 
-  explicit Thermo2ScriptModel(Thermo2DAQModel* daqModel,
-                              HuberUnistat525wModel* huberModel,
-                              MartaModel* martaModel,
-                              RohdeSchwarzNGE103BModel* nge103BModel,
-                              KeithleyDAQ6510Model* keithleyModel,
-                              QObject *parent = 0);
+	explicit Thermo2ScriptModel(Thermo2DAQModel* daqModel,
+			HuberUnistat525wModel* huberModel,
+			MartaModel* martaModel,
+			RohdeSchwarzNGE103BModel* nge103BModel,
+			KeithleyDAQ6510Model* keithleyModel,
+			QObject *parent = 0);
 
   QTextDocument* scriptDocument() { return script_; }
   const QString& currentScriptFilename() const { return currentScriptFilename_; }
