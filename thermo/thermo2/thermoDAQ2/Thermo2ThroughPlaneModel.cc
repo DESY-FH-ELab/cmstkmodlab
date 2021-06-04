@@ -223,49 +223,6 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
   	  gsl_vector_free(c);
   	  gsl_matrix_free(cov);
 
-  	  /*
-  		double xsum, x2sum, ysum, xysum;
-  		double a, b;
-
-  		xsum=0;
-  		x2sum=0;
-  		ysum=0;
-  		xysum=0;
-  		for (unsigned int i=0;i<countTop;i++) {
-  			if (keithleyTopChannelStates_[i]) {
-  				xsum += -1.0*keithleyTopPositions_[i]; //calculate sigma(xi)
-  				ysum += keithleyTopTemperatures_[i]; //calculate sigma(yi)
-  				x2sum += std::pow(-1.0*keithleyTopPositions_[i], 2); //calculate sigma(x^2i)
-  				xysum += -1.0*keithleyTopPositions_[i] * keithleyTopTemperatures_[i]; //calculate sigma(xi*yi)
-  			}
-  		}
-  		a = (countTop*xysum-xsum*ysum)/(countTop*x2sum-xsum*xsum); //slope
-  		b = (x2sum*ysum-xsum*xysum)/(x2sum*countTop-xsum*xsum); // offset
-
-  		gradientTop_ = a;
-  		powerTop_ = gradientTop_ * kBlock_ * ABlock_;
-  		sampleTTop_ = b;
-
-  		xsum=0;
-  		x2sum=0;
-  		ysum=0;
-  		xysum=0;
-  		for (unsigned int i=0;i<countBottom;i++) {
-  			if (keithleyBottomChannelStates_[i]) {
-  				xsum += -1.0*keithleyBottomPositions_[i]; //calculate sigma(xi)
-  				ysum += keithleyBottomTemperatures_[i]; //calculate sigma(yi)
-  				x2sum += std::pow(-1.0*keithleyBottomPositions_[i], 2); //calculate sigma(x^2i)
-  				xysum += -1.0*keithleyBottomPositions_[i] * keithleyBottomTemperatures_[i]; //calculate sigma(xi*yi)
-  			}
-  		}
-  		a = (countBottom*xysum-xsum*ysum)/(countBottom*x2sum-xsum*xsum); //slope
-  		b = (x2sum*ysum-xsum*xysum)/(x2sum*countBottom-xsum*xsum); // offset
-
-  		gradientBottom_ = a;
-  		powerBottom_ = gradientBottom_ * kBlock_ * ABlock_;
-  		sampleTBottom_ = b;
-			*/
-
   	  sampleTMiddle_ = 0.5*(sampleTTop_ + sampleTBottom_);
   	} else {
   		calculationState_ = false;
