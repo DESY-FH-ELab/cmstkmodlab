@@ -58,6 +58,20 @@ protected:
   bool martaActive_;
   bool throughPlaneActive_;
 
+  double resistance_;
+  double cableResistance_;
+  double kBlock_;
+  double ABlock_;
+  unsigned int nge103BChannel_;
+  std::array<unsigned int,6> keithleyTopSensors_;
+  std::array<unsigned int,6> keithleyTopCards_;
+  std::array<unsigned int,6> keithleyTopChannels_;
+  std::array<double,6> keithleyTopPositions_;
+  std::array<unsigned int,6> keithleyBottomSensors_;
+  std::array<unsigned int,6> keithleyBottomCards_;
+  std::array<unsigned int,6> keithleyBottomChannels_;
+  std::array<double,6> keithleyBottomPositions_;
+
   ThermoDisplay2ChartView *ChillerTSChartView_;
   ThermoDisplay2TemperatureStateChart *ChillerTSChart_;
   ThermoDisplay2LineSeries *ChillerTBathSeries_;
@@ -124,6 +138,11 @@ protected:
   ThermoDisplay2LineSeries *MartaST04CO2Series_;
   ThermoDisplay2LineSeries *MartaDT02CO2Series_;
   ThermoDisplay2LineSeries *MartaDT03CO2Series_;
+
+  ThermoDisplay2ChartView *ThroughPlaneTChartView_;
+  ThermoDisplay2TemperatureChart *ThroughPlaneTChart_;
+  ThermoDisplay2LineSeries *ThroughPlaneTopTSeries_[6];
+  ThermoDisplay2LineSeries *ThroughPlaneBottomTSeries_[6];
 };
 
 #endif // THERMODISPLAY2MAINWINDOW_H
