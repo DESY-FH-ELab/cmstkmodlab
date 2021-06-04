@@ -151,6 +151,7 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
   		} else {
   			p = 3;
   		}
+  		p = 2; // make linear fit the default
 
   		X = gsl_matrix_alloc(countTop, p);
   		x = gsl_vector_alloc(countTop);
@@ -190,6 +191,7 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
   		} else {
   			p = 3;
   		}
+  		p = 2; // make linear fit the default
 
   		X = gsl_matrix_alloc(countBottom, p);
   		x = gsl_vector_alloc(countBottom);
