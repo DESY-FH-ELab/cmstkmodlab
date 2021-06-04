@@ -428,6 +428,27 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
     ThroughPlaneTChart_->connectMarkers();
     ThroughPlaneTChart_->updateLegend();
 
+    ThroughPlanePChart_ = new ThermoDisplay2PowerChart();
+
+    ThroughPlanePSource_ = new ThermoDisplay2LineSeries();
+    ThroughPlanePSource_->setName(QString("Source"));
+    ThroughPlanePChart_->addSeries(ThroughPlanePSource_);
+
+    ThroughPlanePTop_ = new ThermoDisplay2LineSeries();
+    ThroughPlanePTop_->setName(QString("Top"));
+    ThroughPlanePChart_->addSeries(ThroughPlanePTop_);
+
+    ThroughPlanePBottom_ = new ThermoDisplay2LineSeries();
+    ThroughPlanePBottom_->setName(QString("Bottom"));
+    ThroughPlanePChart_->addSeries(ThroughPlanePBottom_);
+
+    ThroughPlanePChartView_ = new ThermoDisplay2TemperatureChartView(ThroughPlanePChart_);
+    ThroughPlanePChartView_->setRenderHint(QPainter::Antialiasing);
+    ThroughPlanePChartView_->setMinimumSize(800, 300);
+    layout->addWidget(ThroughPlanePChartView_);
+    ThroughPlanePChart_->connectMarkers();
+    ThroughPlanePChart_->updateLegend();
+
     tabWidget_->addTab(w, "Through-Plane Setup");
   }
 
@@ -479,6 +500,7 @@ void ThermoDisplay2MainWindow::clearData()
   }
   if (chillerAndVacuumActive_ && throughPlaneActive_) {
   	ThroughPlaneTChart_->clearData();
+  	ThroughPlanePChart_->clearData();
   }
 }
 
@@ -664,6 +686,21 @@ void ThermoDisplay2MainWindow::savePlots()
   	ThroughPlaneTChartView_->render(painter);
 
   	QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_throughplane1.png");
+  	file.open(QIODevice::WriteOnly);
+  	buffer.save(&file, "PNG");
+  }
+
+  if (chillerAndVacuumActive_ && throughPlaneActive_) {
+  	auto dpr = 2.0*ThroughPlanePChartView_->devicePixelRatioF();
+  	QPixmap buffer(ThroughPlanePChartView_->width() * dpr,
+  			ThroughPlanePChartView_->height() * dpr);
+  	buffer.fill(Qt::transparent);
+
+  	QPainter *painter = new QPainter(&buffer);
+  	painter->setPen(*(new QColor(255,34,255,255)));
+  	ThroughPlanePChartView_->render(painter);
+
+  	QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_throughplane2.png");
   	file.open(QIODevice::WriteOnly);
   	buffer.save(&file, "PNG");
   }
@@ -869,6 +906,11 @@ void ThermoDisplay2MainWindow::updateInfo()
   		ThroughPlaneBottomTSeries_[c]->append(m.dt.toMSecsSinceEpoch(), m.keithleyTemperature[card][channel]);
   	}
 
+  	if (m.nge103BState[nge103BChannel_-1]) {
+  		double sourcePower = resistance_ * std::pow(m.nge103BState[nge103BChannel_-1], 2);
+  		ThroughPlanePSource_->append(m.dt.toMSecsSinceEpoch(), sourcePower);
+  	}
+
   	if (countTop>=2 && countBottom>=2) {
 
   		gsl_matrix *X, *cov;
@@ -966,6 +1008,9 @@ void ThermoDisplay2MainWindow::updateInfo()
   		gsl_matrix_free(cov);
 
   		ThroughPlaneTSampleMiddle_->append(m.dt.toMSecsSinceEpoch(), 0.5*(sampleTTop+sampleTBottom));
+
+  		ThroughPlanePTop_->append(m.dt.toMSecsSinceEpoch(), powerTop);
+  		ThroughPlanePBottom_->append(m.dt.toMSecsSinceEpoch(), powerBottom);
   	}
 
   	if (updateLegend) {

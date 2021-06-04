@@ -147,6 +147,11 @@ protected:
   ThermoDisplay2LineSeries *ThroughPlaneBottomTSeries_[6];
   ThermoDisplay2LineSeries *ThroughPlaneTSampleBottom_;
   ThermoDisplay2LineSeries *ThroughPlaneTSampleMiddle_;
+  ThermoDisplay2ChartView *ThroughPlanePChartView_;
+  ThermoDisplay2PowerChart *ThroughPlanePChart_;
+  ThermoDisplay2LineSeries *ThroughPlanePSource_;
+  ThermoDisplay2LineSeries *ThroughPlanePTop_;
+  ThermoDisplay2LineSeries *ThroughPlanePBottom_;
 };
 
 #endif // THERMODISPLAY2MAINWINDOW_H
