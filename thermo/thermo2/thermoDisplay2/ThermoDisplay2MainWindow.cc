@@ -393,10 +393,6 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
 
     ThroughPlaneTChart_ = new ThermoDisplay2TemperatureChart();
 
-    ThroughPlaneTSink_ = new ThermoDisplay2LineSeries();
-    ThroughPlaneTSink_->setName(QString("Sink"));
-  	ThroughPlaneTChart_->addSeries(ThroughPlaneTSink_);
-
     for (unsigned int c = 0;c<6;++c) {
     	ThroughPlaneTopTSeries_[c] = new ThermoDisplay2LineSeries();
     	ThroughPlaneTopTSeries_[c]->setName(QString("Top%1 (%2)").arg(c+1).arg(keithleyTopSensors_[c]));
@@ -420,6 +416,10 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   	ThroughPlaneTSampleMiddle_ = new ThermoDisplay2LineSeries();
   	ThroughPlaneTSampleMiddle_->setName(QString("SampleMiddle"));
   	ThroughPlaneTChart_->addSeries(ThroughPlaneTSampleMiddle_);
+
+    ThroughPlaneTSink_ = new ThermoDisplay2LineSeries();
+    ThroughPlaneTSink_->setName(QString("Sink"));
+  	ThroughPlaneTChart_->addSeries(ThroughPlaneTSink_);
 
     ThroughPlaneTChartView_ = new ThermoDisplay2TemperatureChartView(ThroughPlaneTChart_);
     ThroughPlaneTChartView_->setRenderHint(QPainter::Antialiasing);
