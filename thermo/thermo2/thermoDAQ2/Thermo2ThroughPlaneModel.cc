@@ -159,7 +159,7 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
   		c = gsl_vector_alloc(p);
   		cov = gsl_matrix_alloc(p, p);
 
-  		for (unsigned int i=0;i<countTop;i++) {
+  		for (unsigned int i=0;i<6;i++) {
   			if (keithleyTopSensorStates_[i]) {
   				pos = keithleyTopPositions_[i];
   				gsl_vector_set(x, i, pos);
@@ -199,7 +199,7 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
   		c = gsl_vector_alloc(p);
   		cov = gsl_matrix_alloc(p, p);
 
-  		for (unsigned int i=0;i<countBottom;i++) {
+  		for (unsigned int i=0;i<6;i++) {
   			if (keithleyBottomSensorStates_[i]) {
   				pos = keithleyBottomPositions_[i];
   				gsl_vector_set(x, i, pos);
