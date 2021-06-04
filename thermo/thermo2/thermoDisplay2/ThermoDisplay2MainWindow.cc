@@ -13,6 +13,8 @@
 #include <iostream>
 #include <string>
 
+#include <gsl/gsl_multifit.h>
+
 #include <QApplication>
 #include <QGroupBox>
 #include <QToolBar>
@@ -402,6 +404,18 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
     	ThroughPlaneBottomTSeries_[c]->setName(QString("Bot%1 (%2)").arg(c+1).arg(keithleyBottomSensors_[c]));
     	ThroughPlaneTChart_->addSeries(ThroughPlaneBottomTSeries_[c]);
     }
+
+    ThroughPlaneTSampleTop_ = new ThermoDisplay2LineSeries();
+    ThroughPlaneTSampleTop_->setName(QString("SampleTop"));
+  	ThroughPlaneTChart_->addSeries(ThroughPlaneTSampleTop_);
+
+  	ThroughPlaneTSampleBottom_ = new ThermoDisplay2LineSeries();
+  	ThroughPlaneTSampleBottom_->setName(QString("SampleBottom"));
+  	ThroughPlaneTChart_->addSeries(ThroughPlaneTSampleBottom_);
+
+  	ThroughPlaneTSampleMiddle_ = new ThermoDisplay2LineSeries();
+  	ThroughPlaneTSampleMiddle_->setName(QString("SampleMiddle"));
+  	ThroughPlaneTChart_->addSeries(ThroughPlaneTSampleMiddle_);
 
     ThroughPlaneTChartView_ = new ThermoDisplay2TemperatureChartView(ThroughPlaneTChart_);
     ThroughPlaneTChartView_->setRenderHint(QPainter::Antialiasing);
@@ -825,12 +839,16 @@ void ThermoDisplay2MainWindow::updateInfo()
   	bool updateLegend = false;
 
   	unsigned int card, channel;
+    unsigned int countTop = 0;
+    unsigned int countBottom = 0;
+
   	for (unsigned int c = 0;c<6;++c) {
 
   		card = keithleyTopCards_[c];
   		channel = keithleyTopChannels_[c];
 
   		if (ThroughPlaneTopTSeries_[c]->isEnabled()!=m.keithleyState[card][channel]) updateLegend = true;
+  		if (m.keithleyState[card][channel]) countTop++;
   		ThroughPlaneTopTSeries_[c]->setEnabled(m.keithleyState[card][channel]);
   		ThroughPlaneTopTSeries_[c]->append(m.dt.toMSecsSinceEpoch(), m.keithleyTemperature[card][channel]);
 
@@ -838,8 +856,108 @@ void ThermoDisplay2MainWindow::updateInfo()
   		channel = keithleyBottomChannels_[c];
 
   		if (ThroughPlaneBottomTSeries_[c]->isEnabled()!=m.keithleyState[card][channel]) updateLegend = true;
+  		if (m.keithleyState[card][channel]) countBottom++;
   		ThroughPlaneBottomTSeries_[c]->setEnabled(m.keithleyState[card][channel]);
   		ThroughPlaneBottomTSeries_[c]->append(m.dt.toMSecsSinceEpoch(), m.keithleyTemperature[card][channel]);
+  	}
+
+  	if (countTop>=2 && countBottom>=2) {
+
+  		gsl_matrix *X, *cov;
+  		gsl_vector *x, *y, *c;
+  		gsl_multifit_robust_workspace * work;
+  		unsigned int p;
+  		double pos;
+
+  		if (countTop<4) {
+  			p = 2;
+  		} else {
+  			p = 3;
+  		}
+  		p = 2; // make linear fit the default
+
+  		X = gsl_matrix_alloc(countTop, p);
+  		x = gsl_vector_alloc(countTop);
+  		y = gsl_vector_alloc(countTop);
+  		c = gsl_vector_alloc(p);
+  		cov = gsl_matrix_alloc(p, p);
+
+  		for (unsigned int i=0;i<6;i++) {
+  			card = keithleyTopCards_[i];
+  			channel = keithleyTopChannels_[i];
+
+  			if (m.keithleyState[card][channel]) {
+  				pos = keithleyTopPositions_[i];
+  				gsl_vector_set(x, i, pos);
+  				gsl_vector_set(y, i, m.keithleyTemperature[card][channel]);
+
+  				gsl_matrix_set(X, i, 0, 1.0);
+  				gsl_matrix_set(X, i, 1, pos);
+  				if (p==3) gsl_matrix_set(X, i, 2, pos*pos);
+  			}
+  		}
+
+  		work = gsl_multifit_robust_alloc(gsl_multifit_robust_bisquare, X->size1, X->size2);
+  		gsl_multifit_robust(X, y, c, cov, work);
+  		gsl_multifit_robust_free(work);
+
+  		double sampleTTop = gsl_vector_get(c, 0);
+  		double gradientTop = -1.0*gsl_vector_get(c, 1);
+  		double powerTop = gradientTop * kBlock_ * ABlock_;
+
+  		ThroughPlaneTSampleTop_->append(m.dt.toMSecsSinceEpoch(), sampleTTop);
+
+  		gsl_matrix_free(X);
+  		gsl_vector_free(x);
+  		gsl_vector_free(y);
+  		gsl_vector_free(c);
+  		gsl_matrix_free(cov);
+
+  		if (countBottom<4) {
+  			p = 2;
+  		} else {
+  			p = 3;
+  		}
+  		p = 2; // make linear fit the default
+
+  		X = gsl_matrix_alloc(countTop, p);
+  		x = gsl_vector_alloc(countTop);
+  		y = gsl_vector_alloc(countTop);
+  		c = gsl_vector_alloc(p);
+  		cov = gsl_matrix_alloc(p, p);
+
+  		for (unsigned int i=0;i<6;i++) {
+  			card = keithleyBottomCards_[i];
+  			channel = keithleyBottomChannels_[i];
+
+  			if (m.keithleyState[card][channel]) {
+  				pos = keithleyBottomPositions_[i];
+  				gsl_vector_set(x, i, pos);
+  				gsl_vector_set(y, i, m.keithleyTemperature[card][channel]);
+
+  				gsl_matrix_set(X, i, 0, 1.0);
+  				gsl_matrix_set(X, i, 1, pos);
+  				if (p==3) gsl_matrix_set(X, i, 2, pos*pos);
+  			}
+  		}
+
+  		work = gsl_multifit_robust_alloc(gsl_multifit_robust_bisquare, X->size1, X->size2);
+  		gsl_multifit_robust(X, y, c, cov, work);
+  		gsl_multifit_robust_free(work);
+
+  		double sampleTBottom = gsl_vector_get(c, 0);
+  		double gradientBottom = 1.0*gsl_vector_get(c, 1);
+  		double powerBottom = gradientBottom * kBlock_ * ABlock_;
+
+  		ThroughPlaneTSampleBottom_->append(m.dt.toMSecsSinceEpoch(), sampleTBottom);
+
+  		gsl_matrix_free(X);
+  		gsl_vector_free(x);
+  		gsl_vector_free(y);
+  		gsl_vector_free(c);
+  		gsl_matrix_free(cov);
+
+  		ThroughPlaneTSampleMiddle_->append(m.dt.toMSecsSinceEpoch(), 0.5*(sampleTTop+sampleTBottom));
   	}
 
   	if (updateLegend) {
