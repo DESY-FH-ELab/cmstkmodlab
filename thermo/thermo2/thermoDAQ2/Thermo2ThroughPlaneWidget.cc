@@ -89,18 +89,18 @@ void Thermo2ThroughPlaneWidget::updateInfo()
   }
 
   for (unsigned int c=0;c<6;++c) {
-  	s = QString::number(model_->getKeithleyTopChannel(c));
+  	s = QString::number(model_->getKeithleyTopSensor(c));
   	p = "§CTop" + QString::number(c+1) + "§";
   	svg.replace(p, s);
 
-  	s = QString::number(model_->getKeithleyBottomChannel(c));
+  	s = QString::number(model_->getKeithleyBottomSensor(c));
   	p = "§CBot" + QString::number(c+1) + "§";
   	svg.replace(p, s);
   }
   if (model_->getKeithleyState()) {
   	for (unsigned int c=0;c<6;++c) {
   		p = "§TTop" + QString::number(c+1) + "§";
-  		if (model_->getKeithleyTopChannelState(c)) {
+  		if (model_->getKeithleyTopSensorState(c)) {
   			s = QString::number(model_->getKeithleyTopTemperature(c),'f', 2);
   			svg.replace(p, s);
   		} else {
@@ -108,7 +108,7 @@ void Thermo2ThroughPlaneWidget::updateInfo()
   		}
 
   		p = "§TBot" + QString::number(c+1) + "§";
-  		if (model_->getKeithleyBottomChannelState(c)) {
+  		if (model_->getKeithleyBottomSensorState(c)) {
   			s = QString::number(model_->getKeithleyBottomTemperature(c),'f', 2);
   			svg.replace(p, s);
   		} else {

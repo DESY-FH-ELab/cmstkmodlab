@@ -41,9 +41,9 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
   kBlock_ = config->getValue<double>("ThroughPlaneKBlock");
   ABlock_ = config->getValue<double>("ThroughPlaneABlock");
   nge103BChannel_ = config->getValue<unsigned int>("ThroughPlaneNGE103BChannel");
-  keithleyTopChannels_ = config->getValueArray<unsigned int,6>("ThroughPlaneKeithleyTopChannels");
+  keithleyTopSensors_ = config->getValueArray<unsigned int,6>("ThroughPlaneKeithleyTopSensors");
   keithleyTopPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopPositions");
-  keithleyBottomChannels_ = config->getValueArray<unsigned int,6>("ThroughPlaneKeithleyBottomChannels");
+  keithleyBottomSensors_ = config->getValueArray<unsigned int,6>("ThroughPlaneKeithleyBottomSensors");
   keithleyBottomPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomPositions");
 
   huberState_ = false;
@@ -56,8 +56,8 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
 
   keithleyState_ = false;
   for (unsigned int c=0;c<6;++c) {
-  	keithleyTopChannelStates_[c] = false;
-  	keithleyBottomChannelStates_[c] = false;
+  	keithleyTopSensorStates_[c] = false;
+  	keithleyBottomSensorStates_[c] = false;
   	keithleyTopTemperatures_[c] = 0;
   	keithleyBottomTemperatures_[c] = 0;
   }
@@ -126,13 +126,13 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
   unsigned int countBottom = 0;
   changed |= updateIfChanged<bool>(keithleyState_, keithleyModel_->getDeviceState()==READY ? true : false);
   for (unsigned int i=0;i<6;++i) {
-  	changed |= updateIfChanged<bool>(keithleyTopChannelStates_[i], keithleyModel_->getSensorState(keithleyTopChannels_[i])==READY ? true : false);
-  	changed |= updateIfChanged<double>(keithleyTopTemperatures_[i], keithleyModel_->getTemperature(keithleyTopChannels_[i]));
-  	if (keithleyTopChannelStates_[i]) countTop++;
+  	changed |= updateIfChanged<bool>(keithleyTopSensorStates_[i], keithleyModel_->getSensorState(keithleyTopSensors_[i])==READY ? true : false);
+  	changed |= updateIfChanged<double>(keithleyTopTemperatures_[i], keithleyModel_->getTemperature(keithleyTopSensors_[i]));
+  	if (keithleyTopSensorStates_[i]) countTop++;
 
-  	changed |= updateIfChanged<bool>(keithleyBottomChannelStates_[i], keithleyModel_->getSensorState(keithleyBottomChannels_[i])==READY ? true : false);
-  	changed |= updateIfChanged<double>(keithleyBottomTemperatures_[i], keithleyModel_->getTemperature(keithleyBottomChannels_[i]));
-  	if (keithleyBottomChannelStates_[i]) countBottom++;
+  	changed |= updateIfChanged<bool>(keithleyBottomSensorStates_[i], keithleyModel_->getSensorState(keithleyBottomSensors_[i])==READY ? true : false);
+  	changed |= updateIfChanged<double>(keithleyBottomTemperatures_[i], keithleyModel_->getTemperature(keithleyBottomSensors_[i]));
+  	if (keithleyBottomSensorStates_[i]) countBottom++;
   }
 
   if (changed) {
@@ -160,7 +160,7 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
   		cov = gsl_matrix_alloc(p, p);
 
   		for (unsigned int i=0;i<countTop;i++) {
-  			if (keithleyTopChannelStates_[i]) {
+  			if (keithleyTopSensorStates_[i]) {
   				pos = keithleyTopPositions_[i];
   				gsl_vector_set(x, i, pos);
   				gsl_vector_set(y, i, keithleyTopTemperatures_[i]);
@@ -200,7 +200,7 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
   		cov = gsl_matrix_alloc(p, p);
 
   		for (unsigned int i=0;i<countBottom;i++) {
-  			if (keithleyBottomChannelStates_[i]) {
+  			if (keithleyBottomSensorStates_[i]) {
   				pos = keithleyBottomPositions_[i];
   				gsl_vector_set(x, i, pos);
   				gsl_vector_set(y, i, keithleyBottomTemperatures_[i]);

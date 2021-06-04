@@ -44,13 +44,13 @@ public:
   bool getNGE103BChannelState() const { return nge103BChannelState_; }
   double getSourcePower() const { return sourcePower_; }
 
-  unsigned int getKeithleyTopChannel(unsigned int channel) const { return keithleyTopChannels_[channel]; }
-  unsigned int getKeithleyBottomChannel(unsigned int channel) const { return keithleyBottomChannels_[channel]; }
+  unsigned int getKeithleyTopSensor(unsigned int position) const { return keithleyTopSensors_[position]; }
+  unsigned int getKeithleyBottomSensor(unsigned int position) const { return keithleyBottomSensors_[position]; }
   bool getKeithleyState() const { return keithleyState_; }
-  bool getKeithleyTopChannelState(unsigned int channel) const { return keithleyTopChannelStates_[channel]; }
-  bool getKeithleyBottomChannelState(unsigned int channel) const { return keithleyBottomChannelStates_[channel]; }
-  double getKeithleyTopTemperature(unsigned int channel) const { return keithleyTopTemperatures_[channel]; }
-  double getKeithleyBottomTemperature(unsigned int channel) const { return keithleyBottomTemperatures_[channel]; }
+  bool getKeithleyTopSensorState(unsigned int position) const { return keithleyTopSensorStates_[position]; }
+  bool getKeithleyBottomSensorState(unsigned int position) const { return keithleyBottomSensorStates_[position]; }
+  double getKeithleyTopTemperature(unsigned int position) const { return keithleyTopTemperatures_[position]; }
+  double getKeithleyBottomTemperature(unsigned int position) const { return keithleyBottomTemperatures_[position]; }
 
   bool getCalculationState() const { return calculationState_; }
   double getGradientTop() const { return gradientTop_; }
@@ -98,13 +98,13 @@ protected:
   bool nge103BChannelState_;
   double nge103BCurrent_;
 
-  std::array<unsigned int,6> keithleyTopChannels_;
+  std::array<unsigned int,6> keithleyTopSensors_;
   std::array<double,6> keithleyTopPositions_;
-  std::array<unsigned int,6> keithleyBottomChannels_;
+  std::array<unsigned int,6> keithleyBottomSensors_;
   std::array<double,6> keithleyBottomPositions_;
   bool keithleyState_;
-  std::array<bool,6> keithleyTopChannelStates_;
-  std::array<bool,6> keithleyBottomChannelStates_;
+  std::array<bool,6> keithleyTopSensorStates_;
+  std::array<bool,6> keithleyBottomSensorStates_;
   std::array<double,6> keithleyTopTemperatures_;
   std::array<double,6> keithleyBottomTemperatures_;
 
