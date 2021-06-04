@@ -401,7 +401,7 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
 
     for (unsigned int c = 0;c<6;++c) {
     	ThroughPlaneBottomTSeries_[c] = new ThermoDisplay2LineSeries();
-    	ThroughPlaneBottomTSeries_[c]->setName(QString("Bot%1 (%2)").arg(c+1).arg(keithleyBottomSensors_[c]));
+    	ThroughPlaneBottomTSeries_[c]->setName(QString("Bottom%1 (%2)").arg(c+1).arg(keithleyBottomSensors_[c]));
     	ThroughPlaneTChart_->addSeries(ThroughPlaneBottomTSeries_[c]);
     }
 
