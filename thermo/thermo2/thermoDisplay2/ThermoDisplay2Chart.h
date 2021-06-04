@@ -144,6 +144,27 @@ protected:
   ThermoDisplay2ValueAxis *axisY_;
 };
 
+class ThermoDisplay2PowerChart : public ThermoDisplay2Chart
+{
+  Q_OBJECT
+public:
+
+  explicit ThermoDisplay2PowerChart();
+
+  void addSeries(QAbstractSeries *series);
+
+  void refreshAxes();
+
+public slots:
+
+  void leftYAxisDoubleClicked();
+  void refreshYAxis();
+
+protected:
+
+  ThermoDisplay2ValueAxis *axisY_;
+};
+
 class ThermoDisplay2PowerPressureChart : public ThermoDisplay2Chart
 {
   Q_OBJECT
