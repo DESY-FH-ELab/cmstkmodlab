@@ -141,6 +141,7 @@ protected:
 
   ThermoDisplay2ChartView *ThroughPlaneTChartView_;
   ThermoDisplay2TemperatureChart *ThroughPlaneTChart_;
+  ThermoDisplay2LineSeries *ThroughPlaneTSink_;
   ThermoDisplay2LineSeries *ThroughPlaneTopTSeries_[6];
   ThermoDisplay2LineSeries *ThroughPlaneTSampleTop_;
   ThermoDisplay2LineSeries *ThroughPlaneBottomTSeries_[6];

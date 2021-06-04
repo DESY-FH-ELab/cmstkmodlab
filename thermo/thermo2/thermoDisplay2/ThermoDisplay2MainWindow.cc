@@ -393,6 +393,10 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
 
     ThroughPlaneTChart_ = new ThermoDisplay2TemperatureChart();
 
+    ThroughPlaneTSink_ = new ThermoDisplay2LineSeries();
+    ThroughPlaneTSink_->setName(QString("Sink"));
+  	ThroughPlaneTChart_->addSeries(ThroughPlaneTSink_);
+
     for (unsigned int c = 0;c<6;++c) {
     	ThroughPlaneTopTSeries_[c] = new ThermoDisplay2LineSeries();
     	ThroughPlaneTopTSeries_[c]->setName(QString("Top%1 (%2)").arg(c+1).arg(keithleyTopSensors_[c]));
@@ -837,6 +841,10 @@ void ThermoDisplay2MainWindow::updateInfo()
 
   if (chillerAndVacuumActive_ && throughPlaneActive_) {
   	bool updateLegend = false;
+
+  	if (ThroughPlaneTSink_->isEnabled()!=m.u525wState_) updateLegend = true;
+  	ThroughPlaneTSink_->setEnabled(m.u525wState_);
+  	ThroughPlaneTSink_->append(m.dt.toMSecsSinceEpoch(), m.u525wBathTemperature_);
 
   	unsigned int card, channel;
     unsigned int countTop = 0;
