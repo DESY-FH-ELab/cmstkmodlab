@@ -84,7 +84,7 @@ typedef struct {
   unsigned int   agilentErrorCode_;
 
   bool           leyboldState_;
-  double         leyboldPressure_;
+  float          leyboldPressure_;
 
   bool           nge103BState[3];
   float          nge103BVoltage[3];

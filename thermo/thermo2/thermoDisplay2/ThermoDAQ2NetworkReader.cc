@@ -248,7 +248,7 @@ void ThermoDAQ2NetworkReader::processLeyboldGraphixOne(QXmlStreamReader& xml)
   QString time = xml.attributes().value("time").toString();
   measurement_.dt = QDateTime::fromString(time, Qt::ISODate);
   measurement_.leyboldState_ = xml.attributes().value("State").toString().toInt();
-  measurement_.leyboldPressure_ = xml.attributes().value("Pressure").toString().toDouble();
+  measurement_.leyboldPressure_ = xml.attributes().value("Pressure").toString().toFloat();
 }
 
 void ThermoDAQ2NetworkReader::processRohdeSchwarzNGE103B(QXmlStreamReader& xml)
