@@ -153,7 +153,7 @@ void Thermo2DAQModel::createDAQStatusMessage(QString &buffer, bool start)
   //
   // Start of Marta CO2 Chiller
   //
-  if (huberModel_) {
+  if (martaModel_) {
   	xml.writeStartElement("Marta");
   	xml.writeAttribute("time", utime.toString(Qt::ISODate));
   	xml.writeAttribute("State", martaModel_->getDeviceState()==READY ? "1" : "0");
@@ -242,7 +242,7 @@ void Thermo2DAQModel::createDAQStatusMessage(QString &buffer, bool start)
   //
   // Start of Agilent TwisTorr 304
   //
-  if (huberModel_) {
+  if (agilentModel_) {
   	xml.writeStartElement("AgilentTwisTorr304");
   	xml.writeAttribute("time", utime.toString(Qt::ISODate));
   	xml.writeAttribute("State", agilentModel_->getDeviceState()==READY ? "1" : "0");
