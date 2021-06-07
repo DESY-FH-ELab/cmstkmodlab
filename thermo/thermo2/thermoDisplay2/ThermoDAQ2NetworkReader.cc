@@ -229,6 +229,18 @@ void ThermoDAQ2NetworkReader::processMartaAlarms(QXmlStreamReader& xml)
   }
 }
 
+void ThermoDAQ2NetworkReader::processAgilentTwisTorr304(QXmlStreamReader& xml)
+{
+  // NQLogDebug("ThermoDAQ2NetworkReader") << "processAgilentTwisTorr304(QXmlStreamReader& xml)";
+
+  QString time = xml.attributes().value("time").toString();
+  measurement_.dt = QDateTime::fromString(time, Qt::ISODate);
+  measurement_.agilentState_ = xml.attributes().value("State").toString().toInt();
+  measurement_.agilentPumpState_ = xml.attributes().value("PumpState").toString().toInt();
+  measurement_.agilentPumpStatus_ = xml.attributes().value("PumpStatus").toString().toDouble();
+  measurement_.agilentErrorCode_ = xml.attributes().value("ErrorCode").toString().toDouble();
+}
+
 void ThermoDAQ2NetworkReader::processLeyboldGraphixOne(QXmlStreamReader& xml)
 {
   // NQLogDebug("ThermoDAQ2NetworkReader") << "processLeyboldGraphixOne(QXmlStreamReader& xml)";
@@ -332,6 +344,10 @@ void ThermoDAQ2NetworkReader::processLine(QString& line)
       }
       if (xml.name()=="MartaAlarms") {
         processMartaAlarms(xml);
+      }
+
+      if (xml.name()=="AgilentTwisTorr304") {
+      	processAgilentTwisTorr304(xml);
       }
 
       if (xml.name()=="LeyboldGraphixOne") {

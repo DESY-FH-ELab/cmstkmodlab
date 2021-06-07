@@ -78,6 +78,11 @@ typedef struct {
   float          martaFlowSetpoint2_;
   uint16_t       martaAlarms_[4];
 
+  bool           agilentState_;
+  bool           agilentPumpState_;
+  unsigned int   agilentPumpStatus_;
+  unsigned int   agilentErrorCode_;
+
   bool           leyboldState_;
   double         leyboldPressure_;
 
@@ -122,6 +127,8 @@ signals:
   void processMartaFlow(QXmlStreamReader& xml);
   void processMartaSettings(QXmlStreamReader& xml);
   void processMartaAlarms(QXmlStreamReader& xml);
+
+  void processAgilentTwisTorr304(QXmlStreamReader& xml);
 
   void processLeyboldGraphixOne(QXmlStreamReader& xml);
 
