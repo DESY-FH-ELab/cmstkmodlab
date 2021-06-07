@@ -17,10 +17,6 @@
 #include <stdio.h>
 
 #include "VellemanController.h"
-#include "VellemanCommunication_cpp.h"
-#include "VVellemanController_cpp.h"
-#include "VellemanController_cpp.h"
-#include "VellemanControllerFake_cpp.h"
 
 // NOTE: These two #ifndef statements are important (issue with --off if left out)
 #ifndef CMD_SWITCH_RELAY_ON
