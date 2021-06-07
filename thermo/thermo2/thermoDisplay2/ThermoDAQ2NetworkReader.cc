@@ -335,11 +335,11 @@ void ThermoDAQ2NetworkReader::processLine(QString& line)
       }
 
       if (xml.name()=="LeyboldGraphixOne") {
-        processLeyboldGraphixOne(xml);
+      	processLeyboldGraphixOne(xml);
       }
 
       if (xml.name()=="RohdeSchwarzNGE103B") {
-        processRohdeSchwarzNGE103B(xml);
+      	processRohdeSchwarzNGE103B(xml);
       }
       if (xml.name()=="RohdeSchwarzNGE103BChannel") {
         processRohdeSchwarzNGE103BChannel(xml);
