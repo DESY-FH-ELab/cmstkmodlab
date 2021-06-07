@@ -237,8 +237,8 @@ void ThermoDAQ2NetworkReader::processAgilentTwisTorr304(QXmlStreamReader& xml)
   measurement_.dt = QDateTime::fromString(time, Qt::ISODate);
   measurement_.agilentState_ = xml.attributes().value("State").toString().toInt();
   measurement_.agilentPumpState_ = xml.attributes().value("PumpState").toString().toInt();
-  measurement_.agilentPumpStatus_ = xml.attributes().value("PumpStatus").toString().toDouble();
-  measurement_.agilentErrorCode_ = xml.attributes().value("ErrorCode").toString().toDouble();
+  measurement_.agilentPumpStatus_ = xml.attributes().value("PumpStatus").toString().toInt();
+  measurement_.agilentErrorCode_ = xml.attributes().value("ErrorCode").toString().toInt();
 }
 
 void ThermoDAQ2NetworkReader::processLeyboldGraphixOne(QXmlStreamReader& xml)
