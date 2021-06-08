@@ -38,6 +38,15 @@ class VAgilentTwisTorr304
 		AgilentON     = 0x31
   };
 
+  enum Windows {
+  	StartStop    =   0,
+		SoftStart    = 100,
+		PumpStatus   = 205,
+		ErrorCode    = 206,
+		CRCEprom     = 400,
+		CRCParam     = 401,
+  };
+
   enum StatusCode {
     Stop             = 0,
     WaitingInterlock = 1,

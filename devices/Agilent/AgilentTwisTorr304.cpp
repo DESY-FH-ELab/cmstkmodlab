@@ -40,7 +40,7 @@ VAgilentTwisTorr304::StatusCode AgilentTwisTorr304::GetPumpStatus() const
 {
   std::string command, hexcommand;
 
-  MakeReadCommand(command, 205);
+  MakeReadCommand(command, VAgilentTwisTorr304::PumpStatus);
 
   GetCommandAsHex(hexcommand, command);
   std::cout << hexcommand << std::endl;
@@ -65,7 +65,7 @@ unsigned int AgilentTwisTorr304::GetErrorCode() const
 {
   std::string command, hexcommand;
 
-  MakeReadCommand(command, 206);
+  MakeReadCommand(command, VAgilentTwisTorr304::ErrorCode);
 
   GetCommandAsHex(hexcommand, command);
   std::cout << hexcommand << std::endl;
@@ -90,7 +90,7 @@ bool AgilentTwisTorr304::GetPumpState() const
 {
   std::string command, hexcommand;
 
-  MakeReadCommand(command, 0);
+  MakeReadCommand(command, VAgilentTwisTorr304::StartStop);
 
   GetCommandAsHex(hexcommand, command);
   std::cout << hexcommand << std::endl;
@@ -115,7 +115,7 @@ void AgilentTwisTorr304::SwitchPumpOn()
 {
   std::string command, hexcommand;
 
-  MakeWriteCommand(command, 0, true);
+  MakeWriteCommand(command, VAgilentTwisTorr304::StartStop, true);
 
   GetCommandAsHex(hexcommand, command);
   std::cout << hexcommand << std::endl;
@@ -138,7 +138,7 @@ void AgilentTwisTorr304::SwitchPumpOff()
 {
   std::string command, hexcommand;
 
-  MakeWriteCommand(command, 0, false);
+  MakeWriteCommand(command, VAgilentTwisTorr304::StartStop, false);
 
   GetCommandAsHex(hexcommand, command);
   std::cout << hexcommand << std::endl;
