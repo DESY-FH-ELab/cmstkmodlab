@@ -108,17 +108,81 @@ void VAgilentTwisTorr304::MakeWriteCommand(std::string& command, unsigned int wi
 
 void VAgilentTwisTorr304::MakeWriteCommand(std::string& command, unsigned int window, int data) const
 {
+  command = AgilentSTX;
+  command += 0x80;
 
+  char win[4];
+  sprintf(win, "%03d", window);
+  command += win;
+
+  command += AgilentWR;
+
+  char number[7];
+  sprintf(number, "%06d", data);
+  command += number;
+
+  command += AgilentETX;
+
+  char crc0, crc1;
+
+  GetChecksum(command, crc0, crc1);
+
+  command += crc1;
+  command += crc0;
 }
 
-void VAgilentTwisTorr304::MakeWriteCommand(std::string& command, unsigned int window, float data) const
+void VAgilentTwisTorr304::MakeWriteCommand(std::string& command, unsigned int window, float data, const char* format) const
 {
+  command = AgilentSTX;
+  command += 0x80;
 
+  char win[4];
+  sprintf(win, "%03d", window);
+  command += win;
+
+  command += AgilentWR;
+
+  char number[7];
+  sprintf(number, format, data);
+  command += number;
+
+  command += AgilentETX;
+
+  char crc0, crc1;
+
+  GetChecksum(command, crc0, crc1);
+
+  command += crc1;
+  command += crc0;
 }
 
 void VAgilentTwisTorr304::MakeWriteCommand(std::string& command, unsigned int window, std::string& data) const
 {
+  command = AgilentSTX;
+  command += 0x80;
 
+  char win[4];
+  sprintf(win, "%03d", window);
+  command += win;
+
+  command += AgilentWR;
+
+  char text[11];
+  if (data.length()>10) {
+  	sprintf(text, "%10s", data.substr(0, 10).c_str());
+  } else {
+  	sprintf(text, "%10s", data.c_str());
+  }
+  command += text;
+
+  command += AgilentETX;
+
+  char crc0, crc1;
+
+  GetChecksum(command, crc0, crc1);
+
+  command += crc1;
+  command += crc0;
 }
 
 bool VAgilentTwisTorr304::GetBooleanValue(std::string& reply) const

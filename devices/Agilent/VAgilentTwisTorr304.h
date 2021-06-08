@@ -85,7 +85,7 @@ class VAgilentTwisTorr304
   void MakeReadCommand(std::string& command, unsigned int window) const;
   void MakeWriteCommand(std::string& command, unsigned int window, bool data) const;
   void MakeWriteCommand(std::string& command, unsigned int window, int data) const;
-  void MakeWriteCommand(std::string& command, unsigned int window, float data) const;
+  void MakeWriteCommand(std::string& command, unsigned int window, float data, const char* format) const;
   void MakeWriteCommand(std::string& command, unsigned int window, std::string& data) const;
 
   bool GetBooleanValue(std::string& reply) const;
