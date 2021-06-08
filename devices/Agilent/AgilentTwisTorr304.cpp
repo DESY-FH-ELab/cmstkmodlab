@@ -189,21 +189,32 @@ void AgilentTwisTorr304::Device_Init()
 
   isCommunication_ = false;
 
-  char buffer[1000];
-  
-  comHandler_->SendCommand("#STr");
-  usleep( uDelay_ );
+  std::string command, hexcommand;
 
-  comHandler_->ReceiveString( buffer );
+  MakeReadCommand(command, VAgilentTwisTorr304::CRCEprom);
 
-  usleep( uDelay_ );
-  StripBuffer( buffer );
-  std::string temp(buffer);
-  // std::cout<<"status = "<<buffer<<std::endl;
+  GetCommandAsHex(hexcommand, command);
+  std::cout << hexcommand << std::endl;
+
+  comHandler_->SendCommand(command.c_str());
+
+  usleep(uDelay_);
+
+  char buf[1000];
+  comHandler_->ReceiveString(buf);
+  StripBuffer(buf);
+
+  std::string reply = buf;
+
+  GetCommandAsHex(hexcommand, reply);
+  std::cout << hexcommand << std::endl;
+
+  /*
   if (temp.compare(0, 2, "ST")!=0) {
     std::cerr << " [AgilentTwisTorr304::Device_Init] ** ERROR: Device communication problem." << std::endl;
     return;
   }
+  */
 
   isCommunication_ = true;
 }
