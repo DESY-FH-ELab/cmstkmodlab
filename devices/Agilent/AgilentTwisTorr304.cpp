@@ -29,7 +29,7 @@
 ///
 AgilentTwisTorr304::AgilentTwisTorr304( const ioport_t ioPort )
  : VAgilentTwisTorr304(ioPort),
-   uDelay_(100000)
+   uDelay_(100)
 {
   comHandler_ = new AgilentTwisTorr304ComHandler( ioPort );
   isCommunication_ = false;
@@ -47,11 +47,11 @@ VAgilentTwisTorr304::StatusCode AgilentTwisTorr304::GetPumpStatus() const
 
   comHandler_->SendCommand(command.c_str());
 
+  usleep(uDelay_);
+
   char buf[1000];
   comHandler_->ReceiveString(buf);
   StripBuffer(buf);
-
-  usleep(100);
 
   std::string reply = buf;
 
@@ -72,11 +72,11 @@ unsigned int AgilentTwisTorr304::GetErrorCode() const
 
   comHandler_->SendCommand(command.c_str());
 
+  usleep(uDelay_);
+
   char buf[1000];
   comHandler_->ReceiveString(buf);
   StripBuffer(buf);
-
-  usleep(100);
 
   std::string reply = buf;
 
@@ -97,11 +97,11 @@ bool AgilentTwisTorr304::GetPumpState() const
 
   comHandler_->SendCommand(command.c_str());
 
+  usleep(uDelay_);
+
   char buf[1000];
   comHandler_->ReceiveString(buf);
   StripBuffer(buf);
-
-  usleep(100);
 
   std::string reply = buf;
 
@@ -122,11 +122,11 @@ void AgilentTwisTorr304::SwitchPumpOn()
 
   comHandler_->SendCommand(command.c_str());
 
+  usleep(uDelay_);
+
   char buf[1000];
   comHandler_->ReceiveString(buf);
   StripBuffer(buf);
-
-  usleep(100);
 
   std::string reply = buf;
 
@@ -145,11 +145,11 @@ void AgilentTwisTorr304::SwitchPumpOff()
 
   comHandler_->SendCommand(command.c_str());
 
+  usleep(uDelay_);
+
   char buf[1000];
   comHandler_->ReceiveString(buf);
   StripBuffer(buf);
-
-  usleep(100);
 
   std::string reply = buf;
 
