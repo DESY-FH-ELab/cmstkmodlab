@@ -224,6 +224,19 @@ float VAgilentTwisTorr304::GetFloatValue(std::string& reply) const
   return std::stof(valuestring);
 }
 
+std::string VAgilentTwisTorr304::GetStringValue(std::string& reply) const
+{
+  std::string valuestring = reply.substr(5, 6);
+
+  std::string hexvalue;
+
+  GetCommandAsHex(hexvalue, valuestring);
+  std::cout << hexvalue << std::endl;
+  std::cout << valuestring << std::endl;
+
+  return valuestring;
+}
+
 void VAgilentTwisTorr304::GetChecksum(const std::string& buffer, char& crc0, char& crc1) const
 {
   unsigned int crc = 0;

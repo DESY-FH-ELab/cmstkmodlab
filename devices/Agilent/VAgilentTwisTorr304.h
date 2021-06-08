@@ -91,6 +91,7 @@ class VAgilentTwisTorr304
   bool GetBooleanValue(std::string& reply) const;
   int GetIntegerValue(std::string& reply) const;
   float GetFloatValue(std::string& reply) const;
+  std::string GetStringValue(std::string& reply) const;
 
   void GetChecksum(const std::string& buffer, char& crc0, char& crc1) const;
 
