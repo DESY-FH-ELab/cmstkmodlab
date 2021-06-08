@@ -44,8 +44,6 @@ class AgilentTwisTorr304 : public VAgilentTwisTorr304
 
   const int uDelay_;
   void StripBuffer(char*) const;
-  int ToInteger(const char*) const;
-  float ToFloat(const char*) const;
 
   void Device_Init();
   AgilentTwisTorr304ComHandler* comHandler_;

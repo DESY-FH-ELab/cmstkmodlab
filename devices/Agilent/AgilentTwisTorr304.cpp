@@ -177,22 +177,6 @@ void AgilentTwisTorr304::StripBuffer( char* buffer ) const
   }
 }
 
-int AgilentTwisTorr304::ToInteger(const char* buffer) const
-{
-  std::string temp(buffer);
-  temp.erase(0, 3);
-
-  return std::atoi( temp.c_str() );
-}
-
-float AgilentTwisTorr304::ToFloat(const char* buffer) const
-{
-  std::string temp(buffer);
-  temp.erase(0, 3);
-
-  return std::atof( temp.c_str() );// * 10;
-}
-
 ///
 /// read back software version
 /// to check communication with device
