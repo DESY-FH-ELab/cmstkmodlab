@@ -343,6 +343,10 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
       NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_HWCtrl;
     }
+
+    //FIXME OK ?
+    //-- Automatically restart the Motion Stage when the 'positions vector has invalid size' error appears
+    connect(motion_manager_, SIGNAL(restartMotionStage_request()), hwctr_view_->LStepExpress_Widget(), SLOT(restart()));
     // ---------------------------------------------------------
 
     // PARAMETERS VIEW -----------------------------------------
@@ -886,6 +890,9 @@ void AssemblyMainWindow::disconnect_otherSlots()
     disconnect(params_view_, SIGNAL(request_movetoabsrefposition(double,double,double,double)), motion_manager_, SLOT(moveAbsolute(double,double,double,double)));
     disconnect(params_view_, SIGNAL(request_moveByRelRefDistance(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
     disconnect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
+
+    //FIXME OK ?
+    disconnect(motion_manager_, SIGNAL(restartMotionStage_request()), hwctr_view_->LStepExpress_Widget(), SLOT(restart()));
 
     return;
 }
