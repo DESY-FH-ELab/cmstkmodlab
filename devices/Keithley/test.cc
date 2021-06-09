@@ -33,7 +33,7 @@ int main()
 
   std::cout << (int) daq.DeviceAvailable() << std::endl;
 
-  channels_t channels;
+  KeithleyDAQ6510_t::channels_t channels;
   channels[0] = true;
   channels[1] = true;
   channels[2] = true;
@@ -58,10 +58,10 @@ int main()
 
   std::this_thread::sleep_for(2s);
 
-  reading_t data;
+  KeithleyDAQ6510_t::reading_t data;
   daq.GetScanData(data);
 
-  for (reading_t::iterator it=data.begin();it!=data.end();++it) {
+  for (KeithleyDAQ6510_t::reading_t::iterator it=data.begin();it!=data.end();++it) {
     unsigned int sensor;
     double temperature;
     double relativeTime;

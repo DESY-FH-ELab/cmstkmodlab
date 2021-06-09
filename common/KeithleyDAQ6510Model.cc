@@ -27,6 +27,7 @@ KeithleyDAQ6510Model::KeithleyDAQ6510Model(const char* port,
   for (int card=0;card<2;++card) {
     for (int channel=0;channel<10;++channel) {
       sensorStates_[card][channel] = OFF;
+      sensorModes_[card][channel] = VKeithleyDAQ6510::FourWireRTD_PT100;
       temperatures_[card][channel] = 0.0;
     }
   }
@@ -134,6 +135,17 @@ void KeithleyDAQ6510Model::setSensorEnabled(unsigned int sensor, bool enabled)
   }
 }
 
+void KeithleyDAQ6510Model::setSensorMode(unsigned int sensor, KeithleyDAQ6510_t::ChannelMode_t mode)
+{
+  unsigned int card = sensor / 100 - 1;
+  unsigned int channel = sensor % 100 - 1;
+
+  // if (sensorStates_[card][channel] == READY) {
+    controller_->SetChannelMode(card+1, channel+1, mode);
+    emit sensorModeChanged(sensor, mode);
+  //}
+}
+
 void KeithleyDAQ6510Model::setControlsEnabled(bool enabled)
 {
   emit controlStateChanged(enabled);
@@ -153,6 +165,19 @@ const State & KeithleyDAQ6510Model::getSensorState(unsigned int sensor) const
   unsigned int channel = sensor % 100 - 1;
 
   return sensorStates_[card][channel];
+}
+
+VKeithleyDAQ6510::ChannelMode_t KeithleyDAQ6510Model::getSensorMode(unsigned int sensor) const
+{
+  unsigned int card = sensor / 100 - 1;
+  unsigned int channel = sensor % 100 - 1;
+
+  return sensorModes_[card][channel];
+}
+
+const std::map<VKeithleyDAQ6510::ChannelMode_t,std::string>& KeithleyDAQ6510Model::getSensorModeNames() const
+{
+  return controller_->GetChannelModeNames();
 }
 
 /// Returns the current cached temperature of the requested sensor.
@@ -182,14 +207,14 @@ void KeithleyDAQ6510Model::scanComplete()
 {
   NQLogDebug("KeithleyDAQ6510Model") << "scanComplete() " << controller_->GetScanStatus();
 
-  reading_t data;
+  VKeithleyDAQ6510::reading_t data;
   controller_->GetScanData(data);
 
   NQLogDebug("KeithleyDAQ6510Model") << "data size: " << data.size();
 
   bool changed = false;
 
-  for (reading_t::iterator it=data.begin();it!=data.end();++it) {
+  for (VKeithleyDAQ6510::reading_t::iterator it=data.begin();it!=data.end();++it) {
     unsigned int sensor;
     double temperature;
     double relativeTime;

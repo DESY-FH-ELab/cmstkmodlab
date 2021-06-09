@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -17,16 +17,46 @@
 #include <array>
 #include <vector>
 #include <tuple>
-
-typedef std::array<bool, 10> channels_t;
-typedef std::array<channels_t,2> cards_t;
-typedef std::vector<std::tuple<unsigned int,double,double>> reading_t;
+#include <map>
 
 typedef const char* ioport_t;
 
 class VKeithleyDAQ6510
 {
  public:
+
+	typedef std::array<bool, 10> channels_t;
+	typedef std::array<channels_t,2> cards_t;
+
+	typedef enum ChannelMode
+	{
+		UnknownMode          =  0,
+		FourWireRTD_PT100    = 10,
+		ThreeWireRTD_PT100   = 11,
+		TwoWireRTD_PT100     = 12,
+		FourWireRTD_PT385    = 20,
+		ThreeWireRTD_PT385   = 21,
+		TwoWireRTD_PT385     = 22,
+		FourWireRTD_PT3916   = 30,
+		ThreeWireRTD_PT3916  = 31,
+		TwoWireRTD_PT3916    = 32,
+		Thermistor_2252      = 40,
+		Thermistor_5000      = 41,
+		Thermistor_10000     = 42,
+		TCouple_B            = 50,
+		TCouple_E            = 51,
+		TCouple_J            = 52,
+		TCouple_K            = 53,
+		TCouple_N            = 54,
+		TCouple_R            = 55,
+		TCouple_S            = 56,
+		TCouple_T            = 57
+	} ChannelMode_t;
+	typedef std::array<std::array<ChannelMode_t, 10>,2> channelmodes_t;
+
+	typedef std::vector<std::tuple<unsigned int,double,double>> reading_t;
+
+
   VKeithleyDAQ6510( ioport_t );
   virtual ~VKeithleyDAQ6510();
     
@@ -36,14 +66,21 @@ class VKeithleyDAQ6510
   bool IsCardAvailable(unsigned int card) const;
 
   virtual void SetTime(int year, int month, int day,
-                       int hour, int minute, int second) = 0;
-  
+  		int hour, int minute, int second) = 0;
+
   const cards_t & GetAvailableChannels() const { return availableChannels_; }
   bool IsChannelAvailable(unsigned int card, unsigned int channel) const;
   bool IsChannelAvailable(unsigned int channel) const;
-  
+
+  virtual void SetChannelMode(unsigned int card, unsigned int channel,
+  		ChannelMode_t mode) = 0;
+  virtual ChannelMode_t GetChannelMode(unsigned int card, unsigned int channel);
+  const std::map<ChannelMode_t,std::string>& GetChannelModeNames() const {
+    return channelModeNames_;
+  }
+
   virtual void ActivateChannel(unsigned int card, unsigned int channel,
-                               bool active) = 0;
+  		bool active) = 0;
   unsigned int GetActiveChannelCount() const;
 
   virtual bool GetScanStatus() const = 0;
@@ -75,6 +112,8 @@ class VKeithleyDAQ6510
 
   std::array<bool,2> availableCards_;
   cards_t availableChannels_;
+  channelmodes_t channelModes_;
+  std::map<ChannelMode_t,std::string> channelModeNames_;
   cards_t activeChannels_;
 
   void Tokenize( const std::string&, std::vector<std::string>&,

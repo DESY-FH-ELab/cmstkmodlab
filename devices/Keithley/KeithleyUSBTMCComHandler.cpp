@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -53,6 +53,11 @@ void KeithleyUSBTMCComHandler::SendCommand( const char *commandString )
   theCommand += "\n";
   
   write( fIoPortFileDescriptor, theCommand.c_str(), theCommand.length());
+}
+
+void KeithleyUSBTMCComHandler::SendCommand( const std::string& commandString )
+{
+	SendCommand(commandString.c_str());
 }
 
 //! Read a string from device.

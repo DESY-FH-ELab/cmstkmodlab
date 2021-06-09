@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -45,6 +45,9 @@ public:
                                 QObject *parent = 0);
 
   const State& getSensorState(unsigned int sensor) const;
+  VKeithleyDAQ6510::ChannelMode_t getSensorMode(unsigned int sensor) const;
+  const std::map<VKeithleyDAQ6510::ChannelMode_t,std::string>& getSensorModeNames() const;
+
   double getTemperature(unsigned int sensor) const;
   int getUpdateInterval() const { return updateInterval_; }
 
@@ -54,6 +57,7 @@ public slots:
 
   void setDeviceEnabled(bool enabled);
   void setSensorEnabled(unsigned int sensor, bool enabled);
+  void setSensorMode(unsigned int sensor, VKeithleyDAQ6510::ChannelMode_t mode);
   void setControlsEnabled(bool enabled);
   void setUpdateInterval(int updateInterval);
 
@@ -69,6 +73,7 @@ protected:
 
   // cached config information
   std::array<std::array<State,10>,2> sensorStates_;
+  std::array<std::array<VKeithleyDAQ6510::ChannelMode_t,10>,2> sensorModes_;
   std::array<std::array<double,10>,2> temperatures_;
 
   void setDeviceState( State state );
@@ -85,6 +90,7 @@ signals:
 
   void deviceStateChanged(State newState);
   void sensorStateChanged(unsigned int sensor, State newState);
+  void sensorModeChanged(unsigned int sensor, VKeithleyDAQ6510::ChannelMode_t newMode);
   void temperatureChanged(unsigned int sensor, double temperature);
   void informationChanged();
   void temperatureGradientChanged(unsigned int sensor, double gradient);

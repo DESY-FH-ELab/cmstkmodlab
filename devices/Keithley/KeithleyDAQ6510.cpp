@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -56,6 +56,150 @@ void KeithleyDAQ6510::SetTime(int year, int month, int day,
   ss << second;
 
   comHandler_->SendCommand(ss.str().c_str());
+}
+
+void KeithleyDAQ6510::SetChannelMode(unsigned int card, unsigned int channel,
+		ChannelMode_t mode)
+{
+  if (card<1 || card>2) return;
+  if (channel<1 || channel>10) return;
+
+  std::stringstream ss;
+  ss << "(@";
+  ss << card * 100 + channel;
+  ss << ")";
+
+  if (mode==FourWireRTD_PT100) {
+    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN FRTD, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:RTD:FOUR PT100, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+
+  } else if (mode==ThreeWireRTD_PT100) {
+    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TRTD, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:RTD:THR PT100, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+
+  } else if (mode==TwoWireRTD_PT100) {
+    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN RTD, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:RTD:TWO PT100, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+
+  } else if (mode==FourWireRTD_PT385) {
+    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN FRTD, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:RTD:FOUR PT385, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+
+  } else if (mode==ThreeWireRTD_PT385) {
+    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TRTD, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:RTD:THR PT385, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+
+  } else if (mode==TwoWireRTD_PT385) {
+    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN RTD, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:RTD:TWO PT385, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+
+  } else if (mode==FourWireRTD_PT3916) {
+    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN FRTD, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:RTD:FOUR PT3916, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+
+  } else if (mode==ThreeWireRTD_PT3916) {
+    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TRTD, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:RTD:THR PT3916, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+
+  } else if (mode==TwoWireRTD_PT3916) {
+    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN RTD, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:RTD:TWO PT3916, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+
+  } else if (mode==Thermistor_2252) {
+    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN THER, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:THER 2252, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+
+  } else if (mode==Thermistor_5000) {
+    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN THER, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:THER 5000, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+
+  } else if (mode==Thermistor_10000) {
+    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN THER, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:THER 10000, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+
+  } else if (mode==TCouple_B) {
+    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TC, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TC:TYPE B, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+    comHandler_->SendCommand(std::string("TEMP:TC:RJUN:SIM 30, ") + ss.str());
+
+  } else if (mode==TCouple_E) {
+    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TC, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TC:TYPE E, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+    comHandler_->SendCommand(std::string("TEMP:TC:RJUN:SIM 30, ") + ss.str());
+
+  } else if (mode==TCouple_J) {
+    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TC, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TC:TYPE J, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+    comHandler_->SendCommand(std::string("TEMP:TC:RJUN:SIM 30, ") + ss.str());
+
+  } else if (mode==TCouple_K) {
+    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TC, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TC:TYPE K, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+    comHandler_->SendCommand(std::string("TEMP:TC:RJUN:SIM 30, ") + ss.str());
+
+  } else if (mode==TCouple_N) {
+    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TC, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TC:TYPE N, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+    comHandler_->SendCommand(std::string("TEMP:TC:RJUN:SIM 30, ") + ss.str());
+
+  } else if (mode==TCouple_R) {
+    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TC, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TC:TYPE R, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+    comHandler_->SendCommand(std::string("TEMP:TC:RJUN:SIM 30, ") + ss.str());
+
+  } else if (mode==TCouple_S) {
+    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TC, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TC:TYPE S, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+    comHandler_->SendCommand(std::string("TEMP:TC:RJUN:SIM 30, ") + ss.str());
+
+  } else if (mode==TCouple_T) {
+    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TC, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:TC:TYPE T, ") + ss.str());
+    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+    comHandler_->SendCommand(std::string("TEMP:TC:RJUN:SIM 30, ") + ss.str());
+
+  }
+
+  channelModes_[card-1][channel-1] = mode;
 }
 
 void KeithleyDAQ6510::ActivateChannel(unsigned int card, unsigned int channel,
@@ -225,14 +369,19 @@ void KeithleyDAQ6510::DeviceInit()
       for (unsigned int channel = 1;channel<=10;++channel) {
         availableChannels_[0][channel-1] = true;
         activeChannels_[0][channel-1] = false;
+        channelModes_[0][channel-1] = FourWireRTD_PT100;
       }
 
-      comHandler_->SendCommand("SENS:FUNC 'VOLT', (@101:120)");
-      //comHandler_->SendCommand("SENS:FUNC 'TEMP', (@101:110)");
-      //comHandler_->SendCommand("SENS:TEMP:TRAN FRTD, (@101:110)");
-      //comHandler_->SendCommand("SENS:TEMP:RTD:FOUR PT100, (@101:110)");
-      //comHandler_->SendCommand("SENS:TEMP:UNIT CELS, (@101:110)");
+      /*
+      comHandler_->SendCommand("SENS:FUNC 'TEMP', (@101:110)");
+      comHandler_->SendCommand("SENS:TEMP:TRAN FRTD, (@101:110)");
+      comHandler_->SendCommand("SENS:TEMP:RTD:FOUR PT100, (@101:110)");
+      comHandler_->SendCommand("SENS:TEMP:UNIT CELS, (@101:110)");
+			*/
 
+      comHandler_->SendCommand("SENS:FUNC 'VOLT', (@101:120)");
+
+      // set channel delay to 0.1 s
       comHandler_->SendCommand("ROUT:DEL 0.1, (@101:110)");
     }
 
@@ -246,14 +395,19 @@ void KeithleyDAQ6510::DeviceInit()
       for (unsigned int channel = 1;channel<=10;++channel) {
         availableChannels_[1][channel-1] = true;
         activeChannels_[1][channel-1] = false;
-      }
+        channelModes_[1][channel-1] = FourWireRTD_PT100;
+     }
+
+      /*
+      comHandler_->SendCommand("SENS:FUNC 'TEMP', (@201:220)");
+      comHandler_->SendCommand("SENS:TEMP:TRAN FRTD, (@201:220)");
+      comHandler_->SendCommand("SENS:TEMP:RTD:FOUR PT100, (@201:220)");
+      comHandler_->SendCommand("SENS:TEMP:UNIT CELS, (@201:220)");
+			*/
 
       comHandler_->SendCommand("SENS:FUNC 'VOLT', (@201:220)");
-      //comHandler_->SendCommand("SENS:FUNC 'TEMP', (@201:210)");
-      //comHandler_->SendCommand("SENS:TEMP:TRAN FRTD, (@201:210)");
-      //comHandler_->SendCommand("SENS:TEMP:RTD:FOUR PT100, (@201:210)");
-      //comHandler_->SendCommand("SENS:TEMP:UNIT CELS, (@201:210)");
 
+      // set channel delay to 0.1 s
       comHandler_->SendCommand("ROUT:DEL 0.1, (@201:210)");
     }
     

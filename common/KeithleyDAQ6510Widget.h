@@ -63,6 +63,31 @@ public slots:
   void controlStateChanged(bool);
 };
 
+class KeithleyDAQ6510SensorModeWidget : public QComboBox
+{
+  Q_OBJECT
+public:
+  explicit KeithleyDAQ6510SensorModeWidget(KeithleyDAQ6510Model* model,
+      unsigned int sensor,
+      QWidget *parent = 0);
+
+protected:
+
+  void updateWidgets();
+
+  KeithleyDAQ6510Model* model_;
+  unsigned int sensor_;
+
+protected slots:
+
+  void keithleyStateChanged(State state);
+  void sensorStateChanged(uint sensor, State state );
+  void indexChanged(int);
+  void updateDeviceState( State newState );
+  void controlStateChanged(bool);
+  void updateInfo();
+};
+
 class KeithleyDAQ6510TemperatureWidget : public QWidget
 {
   Q_OBJECT
@@ -81,6 +106,7 @@ protected:
 
   QFormLayout* layout_;
   QCheckBox* enabledCheckBox_;
+  KeithleyDAQ6510SensorModeWidget* sensorMode_;
   QLabel* currentTempLabel_;
   QLCDNumber* currentTempDisplay_;
   // QLabel* currentGradientLabel_;

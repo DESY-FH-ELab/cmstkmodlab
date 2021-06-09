@@ -113,6 +113,98 @@ void KeithleyDAQ6510Widget::controlStateChanged(bool enabled)
   }
 }
 
+KeithleyDAQ6510SensorModeWidget::KeithleyDAQ6510SensorModeWidget(KeithleyDAQ6510Model* model,
+		unsigned int sensor,
+		QWidget *parent)
+ : QComboBox(parent),
+	 model_(model),
+	 sensor_(sensor)
+{
+  // No user editable text
+  setEditable(false);
+
+  for (const auto& kv : model_->getSensorModeNames()) {
+    addItem(kv.second.c_str(), QVariant(kv.first));
+  }
+
+  // Connect all the signals
+  connect(model_, SIGNAL(deviceStateChanged(State)),
+          this, SLOT(keithleyStateChanged(State)));
+
+  connect(model_, SIGNAL(sensorStateChanged(uint,State)),
+          this, SLOT(sensorStateChanged(uint,State)));
+
+  connect(model_, SIGNAL(controlStateChanged(bool)),
+          this, SLOT(controlStateChanged(bool)));
+
+  connect(model_, SIGNAL(informationChanged()),
+          this, SLOT(updateInfo()));
+
+  connect(this, SIGNAL(currentIndexChanged(int)),
+          this, SLOT(indexChanged(int)));
+
+  updateDeviceState(model_->getDeviceState());
+  updateInfo();
+}
+
+/// Convenience method to set all the widgets correctly.
+void KeithleyDAQ6510SensorModeWidget::updateWidgets()
+{
+  State sensorState = model_->getSensorState(sensor_);
+
+  setEnabled(sensorState == READY || sensorState == INITIALIZING);
+}
+
+/// Updates the GUI according to the current device state.
+void KeithleyDAQ6510SensorModeWidget::keithleyStateChanged(State newState)
+{
+  setEnabled(newState == READY || newState == INITIALIZING);
+
+  updateWidgets();
+}
+
+void KeithleyDAQ6510SensorModeWidget::indexChanged(int index)
+{
+  // NQLog("KeithleyDAQ6510SensorModeWidget", NQLog::Debug) << "indexChanged()";
+
+  int userValue = itemData(index).toInt();
+
+  if (model_->getSensorMode(sensor_)!=userValue) {
+    model_->setSensorMode(sensor_, static_cast<VKeithleyDAQ6510::ChannelMode_t>(userValue));
+  }
+}
+
+void KeithleyDAQ6510SensorModeWidget::updateDeviceState( State newState )
+{
+	bool ready = (newState == READY);
+
+	controlStateChanged(ready);
+}
+
+void KeithleyDAQ6510SensorModeWidget::controlStateChanged(bool enabled)
+{
+  setEnabled(enabled);
+}
+
+/// Updates the GUI according to the current sensor state.
+void KeithleyDAQ6510SensorModeWidget::sensorStateChanged(unsigned int sensor,
+                                                          State /* state */)
+{
+  if ( sensor_ == sensor )
+      updateWidgets();
+}
+
+void KeithleyDAQ6510SensorModeWidget::updateInfo()
+{
+  // NQLog("KeithleyDAQ6510SensorModeWidget", NQLog::Debug) << "updateInfo()";
+
+  int mode = model_->getSensorMode(sensor_);
+  int index = findData(mode);
+  if (index!=currentIndex()) {
+    setCurrentIndex(index);
+  }
+}
+
 const unsigned int KeithleyDAQ6510TemperatureWidget::LCD_SIZE = 5;
 const QString KeithleyDAQ6510TemperatureWidget::LABEL_FORMAT = QString("Sensor %1");
 
@@ -127,6 +219,8 @@ KeithleyDAQ6510TemperatureWidget::KeithleyDAQ6510TemperatureWidget(KeithleyDAQ65
   setLayout(layout_);
 
   enabledCheckBox_ = new QCheckBox(LABEL_FORMAT.arg(sensor), this);
+
+  sensorMode_ = new KeithleyDAQ6510SensorModeWidget(model_, sensor_, this);
 
   currentTempDisplay_ = new QLCDNumber(LCD_SIZE, this);
   currentTempDisplay_->setSegmentStyle(QLCDNumber::Flat);
@@ -187,8 +281,7 @@ void KeithleyDAQ6510TemperatureWidget::controlStateChanged(bool enabled)
 {
   if (enabled) {
     State state = model_->getDeviceState();
-    enabledCheckBox_->setEnabled(state == READY
-			      || state == INITIALIZING);
+    enabledCheckBox_->setEnabled(state == READY || state == INITIALIZING);
     updateWidgets();
   } else {
     enabledCheckBox_->setEnabled(false);
