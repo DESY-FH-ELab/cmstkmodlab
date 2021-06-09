@@ -17,6 +17,8 @@
 #include <QDir>
 #include <QStringList>
 
+#include <QMessageBox>
+
 LStepExpressModel::LStepExpressModel(
   const std::string& port,
   const std::string& lstep_ver,
@@ -760,6 +762,18 @@ void LStepExpressModel::calibrate()
          << ": null pointer to controller, no action taken";
 
       return;
+    }
+
+    QMessageBox* msgBox = new QMessageBox;
+    msgBox->setInformativeText("Recalibrate the motion stage ?");
+    msgBox->setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+    msgBox->setDefaultButton(QMessageBox::No);
+    int ret = msgBox->exec();
+    switch(ret)
+    {
+      case QMessageBox::No: return; //Exit
+      case QMessageBox::Yes: break; //Continue function execution
+      default: return; //Exit
     }
 
     NQLog("LStepExpressModel", NQLog::Spam) << "calibrate";

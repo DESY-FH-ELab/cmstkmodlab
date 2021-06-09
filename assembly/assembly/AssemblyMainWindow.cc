@@ -344,7 +344,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
       NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_HWCtrl;
     }
 
-    //FIXME OK ?
     //-- Automatically restart the Motion Stage when the 'positions vector has invalid size' error appears
     connect(motion_manager_, SIGNAL(restartMotionStage_request()), hwctr_view_->LStepExpress_Widget(), SLOT(restart()));
     // ---------------------------------------------------------
@@ -662,6 +661,7 @@ void AssemblyMainWindow::connect_images()
 
   connect(image_view_->autofocus_emergencyStop_button(), SIGNAL(clicked()), zfocus_finder_, SLOT(emergencyStop()));
   connect(image_view_->autofocus_emergencyStop_button(), SIGNAL(clicked()), image_ctr_    , SLOT(restore_autofocus_settings()));
+  // connect(image_view_->autofocus_emergencyStop_button(), SIGNAL(clicked()), image_ctr_    , SLOT(disable_autofocus())); //Added explicit call to disable_autofocus() when clicking 'Stop Auto-Focus' (to mitigate rare issues where the ZFocusFinder does not get disconnected, and gets triggered when clicking 'Snapshot') //NB: not needed, can simply tick/untick the 'Auto-focusing' button (?)
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "connect_images"
      << ": enabled images in application view(s)";
@@ -682,6 +682,10 @@ void AssemblyMainWindow::disconnect_images()
   disconnect(image_view_, SIGNAL(image_loaded(cv::Mat)), image_ctr_, SLOT(retrieve_image(cv::Mat)));
 
   disconnect(image_view_->autofocus_button(), SIGNAL(clicked()), image_ctr_, SLOT(acquire_autofocused_image()));
+
+  disconnect(image_view_->autofocus_emergencyStop_button(), SIGNAL(clicked()), zfocus_finder_, SLOT(emergencyStop()));
+  disconnect(image_view_->autofocus_emergencyStop_button(), SIGNAL(clicked()), image_ctr_    , SLOT(restore_autofocus_settings()));
+  // disconnect(image_view_->autofocus_emergencyStop_button(), SIGNAL(clicked()), image_ctr_    , SLOT(disable_autofocus()));
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "disconnect_images"
      << ": disabled images in application view(s)";
@@ -884,14 +888,12 @@ void AssemblyMainWindow::disconnect_multiPickupTest()
      << ": multi-pickup test completed";
 }
 
-//Disconnect remaining signal/slots, which did not get disconnected via specific functions
+//Disconnect remaining signal/slots, which did not get disconnected via specific functions //Actually miss several, not needed ?
 void AssemblyMainWindow::disconnect_otherSlots()
 {
     disconnect(params_view_, SIGNAL(request_movetoabsrefposition(double,double,double,double)), motion_manager_, SLOT(moveAbsolute(double,double,double,double)));
     disconnect(params_view_, SIGNAL(request_moveByRelRefDistance(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
     disconnect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
-
-    //FIXME OK ?
     disconnect(motion_manager_, SIGNAL(restartMotionStage_request()), hwctr_view_->LStepExpress_Widget(), SLOT(restart()));
 
     return;
