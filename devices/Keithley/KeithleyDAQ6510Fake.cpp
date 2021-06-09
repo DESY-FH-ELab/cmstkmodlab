@@ -29,6 +29,7 @@ KeithleyDAQ6510Fake::KeithleyDAQ6510Fake( ioport_t port )
       activeChannels_[card-1][channel-1] = false;
     }
   }
+}
 
 void KeithleyDAQ6510Fake::SetChannelMode(unsigned int card, unsigned int channel,
 		ChannelMode_t mode)
