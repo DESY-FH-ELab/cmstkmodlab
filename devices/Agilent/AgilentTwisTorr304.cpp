@@ -209,12 +209,13 @@ void AgilentTwisTorr304::Device_Init()
   GetCommandAsHex(hexcommand, reply);
   std::cout << hexcommand << std::endl;
 
-  /*
-  if (temp.compare(0, 2, "ST")!=0) {
+  std::cout << GetStringValue(reply) << std::endl;
+
+  reply = GetStringValue(reply);
+  if (reply.compare(0, 3, "QE8")!=0) {
     std::cerr << " [AgilentTwisTorr304::Device_Init] ** ERROR: Device communication problem." << std::endl;
     return;
   }
-  */
 
   isCommunication_ = true;
 }
