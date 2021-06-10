@@ -21,7 +21,7 @@ ALLDEPEND = $(addsuffix .d,$(MODULES))
 
 EXISTDEPEND = $(shell find . -name \*.d -type f -print)
 
-all: depend lib test
+all: depend lib test ttmc
 
 depend: $(ALLDEPEND)
 
@@ -45,6 +45,9 @@ $(LIBDIR)/lib$(LIB).so: $(addsuffix .o,$(MODULES))
 
 test: test.cc $(LIBDIR)/lib$(LIB).so
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) test.cc -o test -L../lib -lTkModLabKeithley
+
+ttmc: ttmc.c
+	$(CC) $(CPPFLAGS) ttmc.c -o ttmc
 
 install:
 	install -m 755 -p $(LIBDIR)/lib$(LIB).so /usr/lib
