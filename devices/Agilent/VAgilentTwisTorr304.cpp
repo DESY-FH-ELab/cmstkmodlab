@@ -187,7 +187,7 @@ void VAgilentTwisTorr304::MakeWriteCommand(std::string& command, unsigned int wi
 
 bool VAgilentTwisTorr304::GetBooleanValue(std::string& reply) const
 {
-  std::string valuestring = reply.substr(5, 1);
+  std::string valuestring = reply.substr(6, 1);
 
   std::string hexvalue;
 
@@ -200,7 +200,7 @@ bool VAgilentTwisTorr304::GetBooleanValue(std::string& reply) const
 
 int VAgilentTwisTorr304::GetIntegerValue(std::string& reply) const
 {
-  std::string valuestring = reply.substr(5, 6);
+  std::string valuestring = reply.substr(6, 6);
 
   std::string hexvalue;
 
@@ -213,7 +213,7 @@ int VAgilentTwisTorr304::GetIntegerValue(std::string& reply) const
 
 float VAgilentTwisTorr304::GetFloatValue(std::string& reply) const
 {
-  std::string valuestring = reply.substr(5, 6);
+  std::string valuestring = reply.substr(6, 6);
 
   std::string hexvalue;
 
@@ -226,7 +226,7 @@ float VAgilentTwisTorr304::GetFloatValue(std::string& reply) const
 
 std::string VAgilentTwisTorr304::GetStringValue(std::string& reply) const
 {
-  std::string valuestring = reply.substr(5, 6);
+  std::string valuestring = reply.substr(6, 10);
 
   std::string hexvalue;
 
