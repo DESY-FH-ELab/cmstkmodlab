@@ -205,19 +205,21 @@ int main () {
 
   getTS(); /* initialise time stamp */
   // sscope("*RST\n");
+
+  /*
   sscope(":WGEN:FUNC SIN;OUTP 1;FREQ 1000;VOLT 0.5\n");
   sscope(":RUN\n");
   sscope(":AUTOSCALE\n");
 
 tstb:
 
-  /* Test read STB ioctl */
+  // Test read STB ioctl
   printf("\n\nTesting stb ioctl\n\n\n");
-//  wait_for_user();
+	//  wait_for_user();
 
   tmp1 = get_stb();
 
-  /* Use IEEE 488.2 *STB? command query to compare */
+  // Use IEEE 488.2 *STB? command query to compare
   sscope("*STB?\n");
   rscope(buf,MAX_BL);
   tmp = atoi(buf);
@@ -230,13 +232,13 @@ tstb:
   }
   show_stb(tmp1);
 
-  sscope("*CLS\n");  /* Clear status */
-  sscope("*TST?\n"); /* Initiate long operation: self test */
+  sscope("*CLS\n");  // Clear status
+  sscope("*TST?\n"); // Initiate long operation: self test
 
-/* Poll  STB until MAV bit is set */
+  // Poll  STB until MAV bit is set
   while (1) {
 	  tmp = get_stb();
-	  if (tmp & STB_MAV) { /* Test for MAV */
+	  if (tmp & STB_MAV) { // Test for MAV
 		  show_stb(tmp);
 		  rscope(buf,MAX_BL);
 		  printf("stb test success. Scope returned %s\n",buf);
@@ -282,15 +284,15 @@ tren:
   sscope("*CLS\n");
 
 tsel:
-  memset(fdsel,0,sizeof(fdsel)); /* zero out select mask */
+  memset(fdsel,0,sizeof(fdsel)); // zero out select mask
   printf("\n\nTesting select\n\n\n");
-/* Set Mav mask and clear status */
+  // Set Mav mask and clear status
   setSRE(SRE_MessageAvailable);
   sscope("*CLS\n");
   sscope(":MEAS:FREQ?;VRMS?;VPP? CHAN1\n");
   show_stb(get_stb()); // clear srq
 
-  /* wait here for MAV */
+  // wait here for MAV
 
   FD_SET(fd,&fdsel[0]);
   n = select(fd+1,
@@ -313,7 +315,7 @@ tsel:
 async:
   printf("\n\nTesting fcntl FASYNC notification\n\n\n");
   sscope(":TRIG:SOURCE CHAN1\n");
-  signal(SIGIO, &srq_handler); /* dummy sample; sigaction( ) is better */
+  signal(SIGIO, &srq_handler); // dummy sample; sigaction( ) is better
   fcntl(fd, F_SETOWN, getpid( ));
   oflags = fcntl(fd, F_GETFL);
   if (0 > fcntl(fd, F_SETFL, oflags | FASYNC)) {
@@ -323,7 +325,7 @@ async:
   sscope(":WAV:POINTS MAX");
   sscope(":TIM:MODE MAIN\n");
   sscope(":WAV:SOURCE CHAN1\n");
-  /* enable OPC */
+  // enable OPC
   sscope("*ESE 1\n"); // set operation complete in the event status enable reg
   setSRE(SRE_Event_Status); // enable srq on event status reg
   show_stb(get_stb()); // clear srq
@@ -357,6 +359,8 @@ trigger:
   stb = get_stb();
   show_stb(stb);
   printf("trigger ioctl %s\n", (stb & STB_TRG) ? "success" : "failure");
+  */
+
   printf("ttmc: /done\n");
   close(fd);
   exit(0);
