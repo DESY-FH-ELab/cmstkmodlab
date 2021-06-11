@@ -69,135 +69,139 @@ void KeithleyDAQ6510::SetChannelMode(unsigned int card, unsigned int channel,
   ss << card * 100 + channel;
   ss << ")";
 
+  std::stringstream ssc;
+
   if (mode==FourWireRTD_PT100) {
-    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN FRTD, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:RTD:FOUR PT100, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+    ssc << ":SENS:FUNC 'TEMP', " << ss.str();
+    ssc << ";:SENS:TEMP:TRAN FRTD, " << ss.str();
+    ssc << ";:SENS:TEMP:RTD:FOUR PT100, " << ss.str();
+    ssc << ";:SENS:TEMP:UNIT CELS, " << ss.str();
 
   } else if (mode==ThreeWireRTD_PT100) {
-    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TRTD, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:RTD:THR PT100, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+    ssc << ":SENS:FUNC 'TEMP', " << ss.str();
+    ssc << ";:SENS:TEMP:TRAN TRTD, " << ss.str();
+    ssc << ";:SENS:TEMP:RTD:THR PT100, " << ss.str();
+    ssc << ";:SENS:TEMP:UNIT CELS, " << ss.str();
 
   } else if (mode==TwoWireRTD_PT100) {
-    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN RTD, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:RTD:TWO PT100, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+    ssc << ":SENS:FUNC 'TEMP', " << ss.str();
+    ssc << ";:SENS:TEMP:TRAN RTD, " << ss.str();
+    ssc << ";:SENS:TEMP:RTD:TWO PT100, " << ss.str();
+    ssc << ";:SENS:TEMP:UNIT CELS, " << ss.str();
 
   } else if (mode==FourWireRTD_PT385) {
-    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN FRTD, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:RTD:FOUR PT385, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+    ssc << ":SENS:FUNC 'TEMP', " << ss.str();
+    ssc << ";:SENS:TEMP:TRAN FRTD, " << ss.str();
+    ssc << ";:SENS:TEMP:RTD:FOUR PT385, " << ss.str();
+    ssc << ";:SENS:TEMP:UNIT CELS, " << ss.str();
 
   } else if (mode==ThreeWireRTD_PT385) {
-    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TRTD, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:RTD:THR PT385, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+    ssc << ":SENS:FUNC 'TEMP', " << ss.str();
+    ssc << ";:SENS:TEMP:TRAN TRTD, " << ss.str();
+    ssc << ";:SENS:TEMP:RTD:THR PT385, " << ss.str();
+    ssc << ";:SENS:TEMP:UNIT CELS, " << ss.str();
 
   } else if (mode==TwoWireRTD_PT385) {
-    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN RTD, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:RTD:TWO PT385, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+    ssc << ":SENS:FUNC 'TEMP', " << ss.str();
+    ssc << ";:SENS:TEMP:TRAN RTD, " << ss.str();
+    ssc << ";:SENS:TEMP:RTD:TWO PT385, " << ss.str();
+    ssc << ";:SENS:TEMP:UNIT CELS, " << ss.str();
 
   } else if (mode==FourWireRTD_PT3916) {
-    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN FRTD, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:RTD:FOUR PT3916, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+    ssc << ":SENS:FUNC 'TEMP', " << ss.str();
+    ssc << ";:SENS:TEMP:TRAN FRTD, " << ss.str();
+    ssc << ";:SENS:TEMP:RTD:FOUR PT3916, " << ss.str();
+    ssc << ";:SENS:TEMP:UNIT CELS, " << ss.str();
 
   } else if (mode==ThreeWireRTD_PT3916) {
-    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TRTD, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:RTD:THR PT3916, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+    ssc << ":SENS:FUNC 'TEMP', " << ss.str();
+    ssc << ";:SENS:TEMP:TRAN TRTD, " << ss.str();
+    ssc << ";:SENS:TEMP:RTD:THR PT3916, " << ss.str();
+    ssc << ";:SENS:TEMP:UNIT CELS, " << ss.str();
 
   } else if (mode==TwoWireRTD_PT3916) {
-    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN RTD, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:RTD:TWO PT3916, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+    ssc << ":SENS:FUNC 'TEMP', " << ss.str();
+    ssc << ";:SENS:TEMP:TRAN RTD, " << ss.str();
+    ssc << ";:SENS:TEMP:RTD:TWO PT3916, " << ss.str();
+    ssc << ";:SENS:TEMP:UNIT CELS, " << ss.str();
 
   } else if (mode==Thermistor_2252) {
-    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN THER, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:THER 2252, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+    ssc << ":SENS:FUNC 'TEMP', " << ss.str();
+    ssc << ";:SENS:TEMP:TRAN THER, " << ss.str();
+    ssc << ";:SENS:TEMP:THER 2252, " << ss.str();
+    ssc << ";:SENS:TEMP:UNIT CELS, " << ss.str();
 
   } else if (mode==Thermistor_5000) {
-    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN THER, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:THER 5000, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+    ssc << ":SENS:FUNC 'TEMP', " << ss.str();
+    ssc << ";:SENS:TEMP:TRAN THER, " << ss.str();
+    ssc << ";:SENS:TEMP:THER 5000, " << ss.str();
+    ssc << ";:SENS:TEMP:UNIT CELS, " << ss.str();
 
   } else if (mode==Thermistor_10000) {
-    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN THER, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:THER 10000, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
+    ssc << ":SENS:FUNC 'TEMP', " << ss.str();
+    ssc << ";:SENS:TEMP:TRAN THER, " << ss.str();
+    ssc << ";:SENS:TEMP:THER 10000, " << ss.str();
+    ssc << ";:SENS:TEMP:UNIT CELS, " << ss.str();
 
   } else if (mode==TCouple_B) {
-    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TC, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TC:TYPE B, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
-    comHandler_->SendCommand(std::string("TEMP:TC:RJUN:SIM 30, ") + ss.str());
+    ssc << ":SENS:FUNC 'TEMP', " << ss.str();
+    ssc << ";:SENS:TEMP:TRAN TC, " << ss.str();
+    ssc << ";:SENS:TEMP:TC:TYPE B, " << ss.str();
+    ssc << ";:SENS:TEMP:TC:RJUN:SIM 30, " << ss.str();
+    ssc << ";:SENS:TEMP:UNIT CELS, " << ss.str();
 
   } else if (mode==TCouple_E) {
-    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TC, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TC:TYPE E, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
-    comHandler_->SendCommand(std::string("TEMP:TC:RJUN:SIM 30, ") + ss.str());
+    ssc << ":SENS:FUNC 'TEMP', " << ss.str();
+    ssc << ";:SENS:TEMP:TRAN TC, " << ss.str();
+    ssc << ";:SENS:TEMP:TC:TYPE E, " << ss.str();
+    ssc << ";:SENS:TEMP:TC:RJUN:SIM 30, " << ss.str();
+    ssc << ";:SENS:TEMP:UNIT CELS, " << ss.str();
 
   } else if (mode==TCouple_J) {
-    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TC, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TC:TYPE J, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
-    comHandler_->SendCommand(std::string("TEMP:TC:RJUN:SIM 30, ") + ss.str());
+    ssc << ":SENS:FUNC 'TEMP', " << ss.str();
+    ssc << ";:SENS:TEMP:TRAN TC, " << ss.str();
+    ssc << ";:SENS:TEMP:TC:TYPE J, " << ss.str();
+    ssc << ";:SENS:TEMP:TC:RJUN:SIM 30, " << ss.str();
+    ssc << ";:SENS:TEMP:UNIT CELS, " << ss.str();
 
   } else if (mode==TCouple_K) {
-    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TC, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TC:TYPE K, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
-    comHandler_->SendCommand(std::string("TEMP:TC:RJUN:SIM 30, ") + ss.str());
+    ssc << ":SENS:FUNC 'TEMP', " << ss.str();
+    ssc << ";:SENS:TEMP:TRAN TC, " << ss.str();
+    ssc << ";:SENS:TEMP:TC:TYPE K, " << ss.str();
+    ssc << ";:SENS:TEMP:TC:RJUN:SIM 30, " << ss.str();
+    ssc << ";:SENS:TEMP:UNIT CELS, " << ss.str();
 
   } else if (mode==TCouple_N) {
-    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TC, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TC:TYPE N, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
-    comHandler_->SendCommand(std::string("TEMP:TC:RJUN:SIM 30, ") + ss.str());
+    ssc << ":SENS:FUNC 'TEMP', " << ss.str();
+    ssc << ";:SENS:TEMP:TRAN TC, " << ss.str();
+    ssc << ";:SENS:TEMP:TC:TYPE N, " << ss.str();
+    ssc << ";:SENS:TEMP:TC:RJUN:SIM 30, " << ss.str();
+    ssc << ";:SENS:TEMP:UNIT CELS, " << ss.str();
 
   } else if (mode==TCouple_R) {
-    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TC, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TC:TYPE R, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
-    comHandler_->SendCommand(std::string("TEMP:TC:RJUN:SIM 30, ") + ss.str());
+    ssc << ":SENS:FUNC 'TEMP', " << ss.str();
+    ssc << ";:SENS:TEMP:TRAN TC, " << ss.str();
+    ssc << ";:SENS:TEMP:TC:TYPE R, " << ss.str();
+    ssc << ";:SENS:TEMP:TC:RJUN:SIM 30, " << ss.str();
+    ssc << ";:SENS:TEMP:UNIT CELS, " << ss.str();
 
   } else if (mode==TCouple_S) {
-    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TC, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TC:TYPE S, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
-    comHandler_->SendCommand(std::string("TEMP:TC:RJUN:SIM 30, ") + ss.str());
+    ssc << ":SENS:FUNC 'TEMP', " << ss.str();
+    ssc << ";:SENS:TEMP:TRAN TC, " << ss.str();
+    ssc << ";:SENS:TEMP:TC:TYPE S, " << ss.str();
+    ssc << ";:SENS:TEMP:TC:RJUN:SIM 30, " << ss.str();
+    ssc << ";:SENS:TEMP:UNIT CELS, " << ss.str();
 
   } else if (mode==TCouple_T) {
-    comHandler_->SendCommand(std::string("SENS:FUNC 'TEMP', ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TRAN TC, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:TC:TYPE T, ") + ss.str());
-    comHandler_->SendCommand(std::string("SENS:TEMP:UNIT CELS, ") + ss.str());
-    comHandler_->SendCommand(std::string("TEMP:TC:RJUN:SIM 30, ") + ss.str());
+    ssc << ":SENS:FUNC 'TEMP', " << ss.str();
+    ssc << ";:SENS:TEMP:TRAN TC, " << ss.str();
+    ssc << ";:SENS:TEMP:TC:TYPE T, " << ss.str();
+    ssc << ";:SENS:TEMP:TC:RJUN:SIM 30, " << ss.str();
+    ssc << ";:SENS:TEMP:UNIT CELS, " << ss.str();
 
   }
+
+  comHandler_->SendCommand(ssc.str());
 
   channelModes_[card-1][channel-1] = mode;
 }
