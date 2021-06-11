@@ -574,12 +574,6 @@ double LStepExpressMotionManager::get_position(const int axis) const
         //     std::cout<<"this->model()->getPositions().at("<<i<<") = "<<this->model()->getPositions().at(i)<<std::endl;
         // }
 
-        //-- Display informative pop-up before restarting the MS
-        QMessageBox::information(NULL, tr("Motion Stage Error -- Restarting"),
-                tr("<p>The motion stage returned a position vector with invalid size, and will be automatically restarted."
-                "<p>If it still does not respond, you may try to restart it again by clicking 'Restart Motion Stage' in the tab 'HW Controllers'.</p>"
-            ));
-
         //-- Whenever the "positions vector has invalid size" error appears and the MS stops responding, the MS should be restarted (manually via the 'Restart Motion Stage' button in the 'HW Controllers' tab, or done automatically here)
         emit restartMotionStage_request();
       }
