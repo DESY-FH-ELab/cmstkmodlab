@@ -102,6 +102,8 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
   layout->addWidget(w_lStep_);
 
   connect(w_lStep_, SIGNAL(clearQueue_request()), manager_, SLOT(clear_motion_queue()));
+
+  connect(w_lStep_, SIGNAL(moveToOrigin_request()), manager_, SLOT(moveAbsolute())); //New signal/slot to connect the Origin button with the manager (where XYA/Z priorities are implemented) rather than directly via the model
   //// ------------------
 
   //// LStepExpressJoystickWidget

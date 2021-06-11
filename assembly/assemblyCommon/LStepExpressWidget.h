@@ -94,6 +94,8 @@ class LStepExpressWidget : public QWidget
   void MotionControllers_enabled();
 
   void restart_completed();
+
+  void moveToOrigin_request();
 };
 
 class LStepExpressAxisWidget : public QWidget

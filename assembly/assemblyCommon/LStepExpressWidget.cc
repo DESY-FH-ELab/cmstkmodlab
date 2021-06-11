@@ -122,7 +122,8 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     connect(model_, SIGNAL(motionStarted())          , this, SLOT(motionStarted()));
     connect(model_, SIGNAL(motionFinished())         , this, SLOT(motionFinished()));
 
-    connect(buttonOrigin_       , SIGNAL(clicked()), model_, SLOT(moveAbsolute()));
+    //connect(buttonOrigin_       , SIGNAL(clicked()), model_, SLOT(moveAbsolute()));
+    connect(buttonOrigin_       , SIGNAL(clicked()), this  , SIGNAL(moveToOrigin_request())); //New signal/slot to connect the Origin button with the manager (where XYA/Z priorities are implemented) rather than directly via the model
     connect(buttonCalibrate_    , SIGNAL(clicked()), model_, SLOT(calibrate()));
     connect(buttonEmergencyStop_, SIGNAL(clicked()), model_, SLOT(emergencyStop()));
     connect(buttonClearQueue_   , SIGNAL(clicked()), this  , SIGNAL(clearQueue_request()));
