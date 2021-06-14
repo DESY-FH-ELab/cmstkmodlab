@@ -28,6 +28,8 @@
 KeithleyDAQ6510::KeithleyDAQ6510(ioport_t port)
     : VKeithleyDAQ6510(port)
 {
+  std::cout << "KeithleyDAQ6510::KeithleyDAQ6510(ioport_t port)" << std::endl;
+
   comHandler_ = new KeithleyUSBTMCComHandler(port);
 
 
@@ -231,7 +233,7 @@ bool KeithleyDAQ6510::GetScanStatus() const
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
   buf = buffer;
-  std::cout << buf << std::endl;
+  // std::cout << buf << std::endl;
 
   return true;
 }
@@ -310,7 +312,7 @@ void KeithleyDAQ6510::DeviceSetChannels()
 
   ss << ")";
 
-  std::cout << ss.str() << std::endl;
+  // std::cout << ss.str() << std::endl;
 
   comHandler_->SendCommand(ss.str().c_str());
 }
@@ -330,12 +332,12 @@ void KeithleyDAQ6510::DeviceInit()
 {
   isDeviceAvailable_ = false;
 
-  std::cout << "void KeithleyDAQ6510::DeviceInit()" << std::endl;
-  
+  // std::cout << "void KeithleyDAQ6510::DeviceInit()" << std::endl;
+
   if (comHandler_->DeviceAvailable()) {
- 
-  std::cout << "void KeithleyDAQ6510::DeviceInit()" << std::endl;
-    
+
+    std::cout << "void KeithleyDAQ6510::DeviceInit()" << std::endl;
+
     char buffer[1000];
     std::string buf;
 
