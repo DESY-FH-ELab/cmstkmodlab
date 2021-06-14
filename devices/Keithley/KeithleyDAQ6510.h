@@ -42,22 +42,6 @@ class KeithleyDAQ6510 : public VKeithleyDAQ6510
   void Scan();
   void GetScanData(reading_t & data);
 
-  /*
-  void SetActiveChannels( std::string );
-  void SetActiveChannels( channels_t );
-  void AddActiveChannels( std::string );
-  void DisableActiveChannels( std::string );
-  const reading_t Scan( void );
-  void Dump( void ) const;
-  bool IsScanOk( void ) { return isScanOk_; }
-  void Reset();
-
-  // delay time constants (usec)
-  // delay for 1 channel scan -- delay for 10 channel scan
-  static constexpr int DelayMin = 1700000;
-  static constexpr int DelayMax = 7000000;
-  */
-
   void ShutDown();
   
   float GetScanDuration() const;
@@ -71,13 +55,6 @@ class KeithleyDAQ6510 : public VKeithleyDAQ6510
   void DeviceInit();
   void DeviceSetChannels();
 
-  /*
-  bool isDebug_;
-  bool isScanOk_;
-  unsigned int uSecDelay_;
-  
-  void CalculateDelay( void );
-  */
 };
 
 #endif

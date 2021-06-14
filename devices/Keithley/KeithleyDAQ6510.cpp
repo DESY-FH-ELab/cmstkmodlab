@@ -30,15 +30,7 @@ KeithleyDAQ6510::KeithleyDAQ6510(ioport_t port)
 {
   comHandler_ = new KeithleyUSBTMCComHandler(port);
 
-  /*
-  isDebug_ = false;
-  isScanOk_ = false;
 
-  #ifdef __DEBUG
-  isDebug_ = true;
-  #endif
-  */
-  
   DeviceInit();
 }
 
