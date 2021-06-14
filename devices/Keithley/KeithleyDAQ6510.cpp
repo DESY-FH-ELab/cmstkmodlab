@@ -321,7 +321,7 @@ float KeithleyDAQ6510::GetScanDuration() const
 {
   unsigned int channelCount = GetActiveChannelCount();
 
-  return channelCount * (0.1 + 0.1 + 0.1);
+  return (channelCount+1) * 0.5;
 }
 
 void KeithleyDAQ6510::DeviceSetChannels()
