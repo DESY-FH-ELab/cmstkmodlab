@@ -250,7 +250,7 @@ void KeithleyDAQ6510::Scan()
 
 void KeithleyDAQ6510::GetScanData(reading_t & data)
 {
-  char buffer[1000];
+  char buffer[2048];
   std::string buf;
 
   std::stringstream ss;
