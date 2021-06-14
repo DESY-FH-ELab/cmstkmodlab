@@ -421,17 +421,13 @@ void KeithleyDAQ6510::DeviceInit()
         channelModes_[0][channel-1] = FourWireRTD_PT100;
       }
 
-      /*
-      comHandler_->SendCommand("SENS:FUNC 'TEMP', (@101:110)");
-      comHandler_->SendCommand("SENS:TEMP:TRAN FRTD, (@101:110)");
-      comHandler_->SendCommand("SENS:TEMP:RTD:FOUR PT100, (@101:110)");
-      comHandler_->SendCommand("SENS:TEMP:UNIT CELS, (@101:110)");
-			*/
-
-      comHandler_->SendCommand("SENS:FUNC 'VOLT', (@101:120)");
-
-      // set channel delay to 0.1 s
-      comHandler_->SendCommand("ROUT:DEL 0.1, (@101:110)");
+      std::stringstream ss;
+      ss << ":SENS:FUNC 'TEMP', (@101:110)";
+      ss << ";:SENS:TEMP:TRAN FRTD, (@101:110)";
+      ss << ";:SENS:TEMP:RTD:FOUR PT100, (@101:110)";
+      ss << ";:SENS:TEMP:UNIT CELS, (@101:110)";
+      ss << ";:ROUT:CHAN:DEL 0.1, (@101:110)"; // set channel delay to 0.1 s
+      comHandler_->SendCommand(ss.str());
     }
 
     comHandler_->SendCommand(":SYST:CARD2:IDN?");
@@ -445,19 +441,15 @@ void KeithleyDAQ6510::DeviceInit()
         availableChannels_[1][channel-1] = true;
         activeChannels_[1][channel-1] = false;
         channelModes_[1][channel-1] = FourWireRTD_PT100;
-     }
+      }
 
-      /*
-      comHandler_->SendCommand("SENS:FUNC 'TEMP', (@201:220)");
-      comHandler_->SendCommand("SENS:TEMP:TRAN FRTD, (@201:220)");
-      comHandler_->SendCommand("SENS:TEMP:RTD:FOUR PT100, (@201:220)");
-      comHandler_->SendCommand("SENS:TEMP:UNIT CELS, (@201:220)");
-			*/
-
-      comHandler_->SendCommand("SENS:FUNC 'VOLT', (@201:220)");
-
-      // set channel delay to 0.1 s
-      comHandler_->SendCommand("ROUT:DEL 0.1, (@201:210)");
+      std::stringstream ss;
+      ss << ":SENS:FUNC 'TEMP', (@201:210)";
+      ss << ";:SENS:TEMP:TRAN FRTD, (@201:210)";
+      ss << ";:SENS:TEMP:RTD:FOUR PT100, (@201:210)";
+      ss << ";:SENS:TEMP:UNIT CELS, (@201:210)";
+      ss << ";:ROUT:CHAN:DEL 0.1, (@201:210)"; // set channel delay to 0.1 s
+      comHandler_->SendCommand(ss.str());
     }
     
     isDeviceAvailable_ = true;
