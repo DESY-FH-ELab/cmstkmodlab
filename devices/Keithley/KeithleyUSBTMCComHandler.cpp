@@ -59,7 +59,7 @@ void KeithleyUSBTMCComHandler::SendCommand( const char *commandString )
 
 void KeithleyUSBTMCComHandler::SendCommand( const std::string& commandString )
 {
-	SendCommand(commandString.c_str());
+  SendCommand(commandString.c_str());
 }
 
 //! Read a string from device.
