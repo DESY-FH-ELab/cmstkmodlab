@@ -257,14 +257,25 @@ bool KeithleyDAQ6510::GetScanStatus() const
 
 void KeithleyDAQ6510::Scan()
 {
+  /*
   char buffer[1000];
   std::string buf;
-
-  comHandler_->SendCommand("TRAC:CLE");
-
-  comHandler_->SendCommand("INIT");
+    
+  // get device identifyer
+  comHandler_->SendCommand("*IDN?");
+  comHandler_->ReceiveString(buffer);
+  StripBuffer(buffer);
+  buf = buffer;
+  std::cout << buf << std::endl;
+  */
+  
   if (!deviceChannelsSet_) DeviceSetChannels();
     
+  comHandler_->SendCommand(":ROUT:SCAN:MODE ALL");
+  //comHandler_->SendCommand(":TRACe:FILL:MODE ONCE");
+  comHandler_->SendCommand(":TRAC:CLE");
+  //comHandler_->SendCommand(":ABOR");
+  comHandler_->SendCommand(":INIT:IMM");
 }
 
 void KeithleyDAQ6510::GetScanData(reading_t & data)
