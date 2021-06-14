@@ -59,7 +59,7 @@ void KeithleyDAQ6510::SetTime(int year, int month, int day,
 {
   std::stringstream ss;
 
-  ss << "SYST:TIME ";
+  ss << ":SYST:TIME ";
   ss << year << ", ";
   ss << month << ", ";
   ss << day << ", ";
@@ -229,7 +229,7 @@ bool KeithleyDAQ6510::GetScanStatus() const
   char buffer[1000];
   std::string buf;
 
-  comHandler_->SendCommand("ROUT:SCAN:STAT?");
+  comHandler_->SendCommand(":ROUT:SCAN:STAT?");
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
   buf = buffer;
@@ -254,7 +254,7 @@ void KeithleyDAQ6510::GetScanData(reading_t & data)
   std::string buf;
 
   std::stringstream ss;
-  ss << "TRAC:DATA? 1, ";
+  ss << ":TRAC:DATA? 1, ";
   ss << GetActiveChannelCount();
   ss << ", 'defbuffer1', CHAN, READ, REL";
 
@@ -291,8 +291,8 @@ void KeithleyDAQ6510::DeviceSetChannels()
   unsigned int count;
 
   // build rout:scan command
-  ss << "ROUT:SCAN (@";
-  
+  ss << ":ROUT:SCAN:CRE (@";
+
   count = 0;
   for (unsigned int channel = 1;channel<=10;++channel) {
     if (activeChannels_[0][channel-1]) count++;
@@ -371,7 +371,7 @@ void KeithleyDAQ6510::DeviceInit()
     // set ascii format precision
     comHandler_->SendCommand("FORM:ASC:PREC 9");
 
-    comHandler_->SendCommand("SYST:CARD1:IDN?");
+    comHandler_->SendCommand(":SYST:CARD1:IDN?");
     comHandler_->ReceiveString(buffer);
     StripBuffer(buffer);
     buf = buffer;
@@ -397,7 +397,7 @@ void KeithleyDAQ6510::DeviceInit()
       comHandler_->SendCommand("ROUT:DEL 0.1, (@101:110)");
     }
 
-    comHandler_->SendCommand("SYST:CARD2:IDN?");
+    comHandler_->SendCommand(":SYST:CARD2:IDN?");
     comHandler_->ReceiveString(buffer);
     StripBuffer(buffer);
     buf = buffer;
