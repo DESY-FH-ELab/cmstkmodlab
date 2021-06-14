@@ -380,6 +380,11 @@ void KeithleyDAQ6510::DeviceInit()
     // reset the device
     comHandler_->SendCommand("*RST");
 
+    // clear event registers and queues
+    comHandler_->SendCommand("*CLS");
+
+    // setting the time seems to mess up communication over usbtmc
+    /*
     std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
     time_t tt = std::chrono::system_clock::to_time_t(now);
     tm local_tm = *localtime(&tt);
@@ -390,14 +395,18 @@ void KeithleyDAQ6510::DeviceInit()
             local_tm.tm_min,
             local_tm.tm_sec);
 
-    // abort a possibly running scan
-    //comHandler_->SendCommand("TRAC:ABOR"); //check
+    comHandler_->SendCommand(":SYST:TIME? 1\n");
+    comHandler_->ReceiveString(buffer);
+    StripBuffer(buffer);
+    buf = buffer;
+    std::cout << buf << std::endl;
+    */
 
     // open all routings
-    comHandler_->SendCommand("ROUT:OPEN:ALL");
+    // comHandler_->SendCommand("ROUT:OPEN:ALL");
 
     // set ascii format precision
-    comHandler_->SendCommand("FORM:ASC:PREC 9");
+    // comHandler_->SendCommand(":FORM:ASC:PREC 6");
 
     comHandler_->SendCommand(":SYST:CARD1:IDN?");
     comHandler_->ReceiveString(buffer);
