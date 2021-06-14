@@ -10,8 +10,10 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+#ifndef USE_FAKEIO
 #include <linux/usb/tmc.h>
 #include <sys/ioctl.h>
+#endif
 
 #include <string.h>
 
@@ -127,10 +129,12 @@ void KeithleyUSBTMCComHandler::OpenIoPort( void )
     // configure port with no delay
     // fcntl(fIoPortFileDescriptor, F_SETFL, FNDELAY);
 
+#ifndef USE_FAKEIO
     int rv = ioctl(fIoPortFileDescriptor, USBTMC_IOCTL_CLEAR);
     if(rv==-1) {
       printf("Error: ioctl returned %d.\n",rv);
     }
+#endif
   }
 
   fDeviceAvailable = true;
@@ -170,10 +174,12 @@ void KeithleyUSBTMCComHandler::CloseIoPort( void )
 
   std::cout << "void KeithleyUSBTMCComHandler::CloseIoPort( void )" << std::endl;
 
+#ifndef USE_FAKEIO
   int rv = ioctl(fIoPortFileDescriptor, USBTMC_IOCTL_CLEAR);
   if(rv==-1) {
     printf("Error: ioctl returned %d.\n",rv);
   }
+#endif
 
   close( fIoPortFileDescriptor );
 }
