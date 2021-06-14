@@ -342,7 +342,7 @@ void KeithleyDAQ6510::DeviceSetChannels()
 
   count = 0;
   for (unsigned int channel = 1;channel<=10;++channel) {
-    if (activeChannels_[0][channel-1]) count++;
+    if (activeChannels_[1][channel-1]) count++;
   }
   if (count) {
     ss << ",";
