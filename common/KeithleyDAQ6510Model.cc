@@ -227,7 +227,8 @@ void KeithleyDAQ6510Model::scanTemperatures()
 
 void KeithleyDAQ6510Model::scanComplete()
 {
-  NQLogDebug("KeithleyDAQ6510Model") << "scanComplete() " << controller_->GetScanStatus();
+  NQLogDebug("KeithleyDAQ6510Model") << "scanComplete()";
+  //NQLogDebug("KeithleyDAQ6510Model") << "scanComplete() " << controller_->GetScanStatus();
 
   VKeithleyDAQ6510::reading_t data;
   controller_->GetScanData(data);
