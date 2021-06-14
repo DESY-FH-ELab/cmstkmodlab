@@ -32,6 +32,7 @@ KeithleyDAQ6510::KeithleyDAQ6510(ioport_t port)
 
   comHandler_ = new KeithleyUSBTMCComHandler(port);
 
+  deviceChannelsSet_ = false;
 
   DeviceInit();
 }
@@ -221,7 +222,23 @@ void KeithleyDAQ6510::ActivateChannel(unsigned int card, unsigned int channel,
   if (channel<1 || channel>10) return;
   activeChannels_[card-1][channel-1] = active;
 
-  DeviceSetChannels();
+  sensorScanCountMap_.clear();
+
+  unsigned int scanCount = 0;
+  for (unsigned int channel = 1;channel<=10;++channel) {
+    if (activeChannels_[0][channel-1]) {
+      sensorScanCountMap_[scanCount] = 100 + channel;
+      scanCount++;
+    }
+  }
+  for (unsigned int channel = 1;channel<=10;++channel) {
+    if (activeChannels_[1][channel-1]) {
+      sensorScanCountMap_[scanCount] = 200 + channel;
+      scanCount++;
+    }
+  }
+  
+  deviceChannelsSet_ = false;
 }
 
 bool KeithleyDAQ6510::GetScanStatus() const
@@ -246,6 +263,8 @@ void KeithleyDAQ6510::Scan()
   comHandler_->SendCommand("TRAC:CLE");
 
   comHandler_->SendCommand("INIT");
+  if (!deviceChannelsSet_) DeviceSetChannels();
+    
 }
 
 void KeithleyDAQ6510::GetScanData(reading_t & data)
@@ -315,6 +334,8 @@ void KeithleyDAQ6510::DeviceSetChannels()
   // std::cout << ss.str() << std::endl;
 
   comHandler_->SendCommand(ss.str().c_str());
+
+  deviceChannelsSet_ = true;
 }
 
 /*

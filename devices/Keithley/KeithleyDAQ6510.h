@@ -53,8 +53,12 @@ class KeithleyDAQ6510 : public VKeithleyDAQ6510
   
   void StripBuffer(char*) const;
   void DeviceInit();
+
+  bool deviceChannelsSet_;
   void DeviceSetChannels();
 
+  std::map<unsigned int, unsigned int> sensorScanCountMap_;
+  unsigned int GetSensorFromScanCount(unsigned int scanCount);
 };
 
 #endif
