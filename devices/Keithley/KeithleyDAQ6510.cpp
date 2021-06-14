@@ -362,8 +362,6 @@ void KeithleyDAQ6510::DeviceInit()
 {
   isDeviceAvailable_ = false;
 
-  // std::cout << "void KeithleyDAQ6510::DeviceInit()" << std::endl;
-
   if (comHandler_->DeviceAvailable()) {
 
     std::cout << "void KeithleyDAQ6510::DeviceInit()" << std::endl;
