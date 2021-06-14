@@ -34,10 +34,10 @@ KeithleyUSBTMCComHandler::KeithleyUSBTMCComHandler(ioport_t ioPort)
 KeithleyUSBTMCComHandler::~KeithleyUSBTMCComHandler( void )
 {
   // restore ioport options as they were
-  RestoreIoPort();
+  // RestoreIoPort();
   
   // close device file
-  CloseIoPort();
+  // CloseIoPort();
 }
 
 //! Send the command string &lt;commandString&gt; to device.

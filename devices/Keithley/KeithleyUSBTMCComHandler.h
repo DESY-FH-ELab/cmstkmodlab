@@ -26,6 +26,8 @@ typedef struct termios termios_t;
 
 class KeithleyUSBTMCComHandler {
 
+  friend class KeithleyDAQ6510;
+
  public:
   
   //! Constructor.
@@ -43,12 +45,15 @@ class KeithleyUSBTMCComHandler {
 
   bool DeviceAvailable();
 
+ protected:
+  
+  void CloseIoPort( void );
+
  private:
 
   void OpenIoPort( void );
   void InitializeIoPort( void );
   void RestoreIoPort( void );
-  void CloseIoPort( void );
 
   bool fDeviceAvailable;
   int fIoPortFileDescriptor;

@@ -25,6 +25,7 @@ class KeithleyDAQ6510 : public VKeithleyDAQ6510
 {
  public:
   KeithleyDAQ6510( ioport_t );
+  ~KeithleyDAQ6510( );
 
   bool DeviceAvailable() const { return isDeviceAvailable_; }
 
@@ -57,6 +58,8 @@ class KeithleyDAQ6510 : public VKeithleyDAQ6510
   static constexpr int DelayMax = 7000000;
   */
 
+  void ShutDown();
+  
   float GetScanDuration() const;
 
  private:

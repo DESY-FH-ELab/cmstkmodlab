@@ -42,6 +42,24 @@ KeithleyDAQ6510::KeithleyDAQ6510(ioport_t port)
   DeviceInit();
 }
 
+KeithleyDAQ6510::~KeithleyDAQ6510( )
+{
+  std::cout << "KeithleyDAQ6510::~KeithleyDAQ6510()" << std::endl;
+
+  delete comHandler_;
+}
+
+void KeithleyDAQ6510::ShutDown()
+{
+  // reset the device
+  comHandler_->SendCommand("*RST");
+
+  // clear event registers and queues
+  comHandler_->SendCommand("*CLS");
+
+  comHandler_->CloseIoPort();
+}
+
 void KeithleyDAQ6510::SetTime(int year, int month, int day,
                               int hour, int minute, int second)
 {
