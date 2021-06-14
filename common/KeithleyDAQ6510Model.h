@@ -45,6 +45,7 @@ public:
                                 QObject *parent = 0);
 
   const State& getSensorState(unsigned int sensor) const;
+  bool getScanState() const { return scanState_; }
   VKeithleyDAQ6510::ChannelMode_t getSensorMode(unsigned int sensor) const;
   const std::map<VKeithleyDAQ6510::ChannelMode_t,std::string>& getSensorModeNames() const;
 
@@ -56,6 +57,7 @@ public:
 public slots:
 
   void setDeviceEnabled(bool enabled);
+  void setScanEnabled(bool enabled);
   void setSensorEnabled(unsigned int sensor, bool enabled);
   void setSensorMode(unsigned int sensor, VKeithleyDAQ6510::ChannelMode_t mode);
   void setControlsEnabled(bool enabled);
@@ -69,6 +71,7 @@ protected:
   QString port_;
   int updateInterval_;
   QTimer* timer_;
+  bool scanState_;
   unsigned int scanDuration_;
 
   // cached config information
@@ -89,6 +92,7 @@ protected slots:
 signals:
 
   void deviceStateChanged(State newState);
+  void scanStateChanged(bool enabled);
   void sensorStateChanged(unsigned int sensor, State newState);
   void sensorModeChanged(unsigned int sensor, VKeithleyDAQ6510::ChannelMode_t newMode);
   void temperatureChanged(unsigned int sensor, double temperature);

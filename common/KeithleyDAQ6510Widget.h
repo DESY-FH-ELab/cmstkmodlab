@@ -55,6 +55,7 @@ public:
 protected:
   KeithleyDAQ6510Model* model_;
   QCheckBox* keithleyCheckBox_;
+  QCheckBox* scanCheckBox_;
   KeithleyDAQ6510UpdateIntervalBox* updateIntervalBox_;
   QWidget* sensorControlWidget_;
 
@@ -81,6 +82,7 @@ protected:
 protected slots:
 
   void keithleyStateChanged(State state);
+  void scanStateChanged(bool enabled);
   void sensorStateChanged(uint sensor, State state );
   void indexChanged(int);
   void updateDeviceState( State newState );
@@ -117,6 +119,7 @@ protected:
 public slots:
 
   void keithleyStateChanged(State state);
+  void scanStateChanged(bool enabled);
   void controlStateChanged(bool);
   void sensorStateChanged(uint sensor, State state );
   void sensorTemperatureChanged(uint sensor, double temperature);

@@ -60,6 +60,9 @@ KeithleyDAQ6510Widget::KeithleyDAQ6510Widget(KeithleyDAQ6510Model* model,
   keithleyCheckBox_ = new QCheckBox("Enable Multimeter", this);
   layout->addWidget(keithleyCheckBox_);
 
+  scanCheckBox_ = new QCheckBox("Enable Scaning", this);
+  layout->addWidget(scanCheckBox_);
+
   updateIntervalBox_ = new KeithleyDAQ6510UpdateIntervalBox(model_, this);
   layout->addWidget(updateIntervalBox_);
 
@@ -83,6 +86,9 @@ KeithleyDAQ6510Widget::KeithleyDAQ6510Widget(KeithleyDAQ6510Model* model,
   connect(keithleyCheckBox_, SIGNAL(toggled(bool)),
           model_, SLOT(setDeviceEnabled(bool)));
 
+  connect(scanCheckBox_, SIGNAL(toggled(bool)),
+          model_, SLOT(setScanEnabled(bool)));
+
   connect(model_, SIGNAL(deviceStateChanged(State)),
           this, SLOT(keithleyStateChanged(State)));
 
@@ -96,6 +102,7 @@ KeithleyDAQ6510Widget::KeithleyDAQ6510Widget(KeithleyDAQ6510Model* model,
 void KeithleyDAQ6510Widget::keithleyStateChanged(State newState)
 {
   keithleyCheckBox_->setChecked(newState == READY || newState == INITIALIZING);
+  scanCheckBox_->setEnabled(newState == READY);
   updateIntervalBox_->setEnabled(newState == READY);
   sensorControlWidget_->setEnabled(newState == READY);
 }
@@ -108,6 +115,7 @@ void KeithleyDAQ6510Widget::controlStateChanged(bool enabled)
     keithleyStateChanged(model_->getDeviceState());
   } else {
     keithleyCheckBox_->setEnabled(false);
+    scanCheckBox_->setEnabled(false);
     updateIntervalBox_->setEnabled(false);
     sensorControlWidget_->setEnabled(false);
   }
@@ -131,6 +139,9 @@ KeithleyDAQ6510SensorModeWidget::KeithleyDAQ6510SensorModeWidget(KeithleyDAQ6510
   connect(model_, SIGNAL(deviceStateChanged(State)),
           this, SLOT(keithleyStateChanged(State)));
 
+  connect(model_, SIGNAL(scanStateChanged(bool)),
+          this, SLOT(scanStateChanged(bool)));
+
   connect(model_, SIGNAL(sensorStateChanged(uint,State)),
           this, SLOT(sensorStateChanged(uint,State)));
 
@@ -151,15 +162,20 @@ KeithleyDAQ6510SensorModeWidget::KeithleyDAQ6510SensorModeWidget(KeithleyDAQ6510
 void KeithleyDAQ6510SensorModeWidget::updateWidgets()
 {
   State sensorState = model_->getSensorState(sensor_);
-
-  setEnabled(sensorState == READY || sensorState == INITIALIZING);
+  bool scanState = model_->getScanState();
+  
+  setEnabled((sensorState == READY || sensorState == INITIALIZING) && !scanState);
 }
 
 /// Updates the GUI according to the current device state.
-void KeithleyDAQ6510SensorModeWidget::keithleyStateChanged(State newState)
+void KeithleyDAQ6510SensorModeWidget::keithleyStateChanged(State /* newState */)
 {
-  setEnabled(newState == READY || newState == INITIALIZING);
+  updateWidgets();
+}
 
+/// Updates the GUI according to the current device state.
+void KeithleyDAQ6510SensorModeWidget::scanStateChanged(bool /* enabled */)
+{
   updateWidgets();
 }
 
@@ -176,9 +192,9 @@ void KeithleyDAQ6510SensorModeWidget::indexChanged(int index)
 
 void KeithleyDAQ6510SensorModeWidget::updateDeviceState( State newState )
 {
-	bool ready = (newState == READY);
-
-	controlStateChanged(ready);
+  bool ready = (newState == READY);
+  
+  controlStateChanged(ready);
 }
 
 void KeithleyDAQ6510SensorModeWidget::controlStateChanged(bool enabled)
@@ -239,6 +255,9 @@ KeithleyDAQ6510TemperatureWidget::KeithleyDAQ6510TemperatureWidget(KeithleyDAQ65
   connect(model_, SIGNAL(deviceStateChanged(State)),
           this, SLOT(keithleyStateChanged(State)));
 
+  connect(model_, SIGNAL(scanStateChanged(bool)),
+          this, SLOT(scanStateChanged(bool)));
+
   connect(model_, SIGNAL(controlStateChanged(bool)),
           this, SLOT(controlStateChanged(bool)));
 
@@ -256,9 +275,12 @@ KeithleyDAQ6510TemperatureWidget::KeithleyDAQ6510TemperatureWidget(KeithleyDAQ65
 void KeithleyDAQ6510TemperatureWidget::updateWidgets()
 {
   State sensorState = model_->getSensorState(sensor_);
+  bool scanState = model_->getScanState();
 
   enabledCheckBox_->setChecked(sensorState == READY || sensorState == INITIALIZING);
 
+  enabledCheckBox_->setEnabled(!scanState);
+  
   if (sensorState == READY) {
     currentTempLabel_->setEnabled( true );
     currentTempDisplay_->setEnabled( true );
@@ -269,10 +291,14 @@ void KeithleyDAQ6510TemperatureWidget::updateWidgets()
 }
 
 /// Updates the GUI according to the current device state.
-void KeithleyDAQ6510TemperatureWidget::keithleyStateChanged(State newState)
+void KeithleyDAQ6510TemperatureWidget::keithleyStateChanged(State /* newState */)
 {
-  enabledCheckBox_->setEnabled(newState == READY || newState == INITIALIZING);
+  updateWidgets();
+}
 
+/// Updates the GUI according to the current device state.
+void KeithleyDAQ6510TemperatureWidget::scanStateChanged(bool /* enabled */)
+{
   updateWidgets();
 }
 
@@ -281,7 +307,8 @@ void KeithleyDAQ6510TemperatureWidget::controlStateChanged(bool enabled)
 {
   if (enabled) {
     State state = model_->getDeviceState();
-    enabledCheckBox_->setEnabled(state == READY || state == INITIALIZING);
+    bool scanState = model_->getScanState();
+    enabledCheckBox_->setEnabled((state == READY || state == INITIALIZING) && !scanState);
     updateWidgets();
   } else {
     enabledCheckBox_->setEnabled(false);

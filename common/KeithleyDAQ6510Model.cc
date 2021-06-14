@@ -32,6 +32,8 @@ KeithleyDAQ6510Model::KeithleyDAQ6510Model(const char* port,
     }
   }
 
+  scanState_ = false;
+  
   timer_ = new QTimer(this);
   timer_->setInterval(updateInterval_ * 1000);
   connect( timer_, SIGNAL(timeout()), this, SLOT(scanTemperatures()) );
@@ -84,15 +86,35 @@ void KeithleyDAQ6510Model::setDeviceEnabled(bool enabled)
   // scanTemperatures();
 }
 
+void KeithleyDAQ6510Model::setScanEnabled(bool enabled)
+{
+  if ( state_ == READY ) {
+    if (scanState_==enabled) return;
+
+    if (enabled) {
+      timer_->start();
+    } else {
+      timer_->stop();
+    }
+    
+    scanState_ = enabled;
+
+    emit scanStateChanged(enabled);
+
+    if (scanState_) scanTemperatures();
+  }
+}
+
 void KeithleyDAQ6510Model::setDeviceState(State state)
 {
   if (state_ != state) {
     state_ = state;
 
-    if ( state == READY )
-      timer_->start();
-    else
+    if ( state != READY && scanState_) {
       timer_->stop();
+      scanState_ = false;
+      emit scanStateChanged(scanState_);
+    }
 
     emit deviceStateChanged(state);
   }
