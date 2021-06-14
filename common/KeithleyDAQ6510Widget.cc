@@ -132,6 +132,7 @@ KeithleyDAQ6510SensorModeWidget::KeithleyDAQ6510SensorModeWidget(KeithleyDAQ6510
   setEditable(false);
 
   for (const auto& kv : model_->getSensorModeNames()) {
+    if (kv.first==VKeithleyDAQ6510::UnknownMode) continue;
     addItem(kv.second.c_str(), QVariant(kv.first));
   }
 
@@ -262,6 +263,7 @@ KeithleyDAQ6510TemperatureWidget::KeithleyDAQ6510TemperatureWidget(KeithleyDAQ65
           this, SLOT(controlStateChanged(bool)));
 
   layout_->addRow(enabledCheckBox_);
+  layout_->addRow(sensorMode_);
   currentTempLabel_ = new QLabel(QString::fromUtf8("T"));
   layout_->addRow(currentTempLabel_, currentTempDisplay_);
 
