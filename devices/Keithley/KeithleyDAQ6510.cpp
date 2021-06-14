@@ -351,7 +351,7 @@ void KeithleyDAQ6510::DeviceSetChannels()
 
   ss << ")";
 
-  // std::cout << ss.str() << std::endl;
+  std::cout << ss.str() << std::endl;
 
   comHandler_->SendCommand(ss.str().c_str());
 
