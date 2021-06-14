@@ -36,11 +36,6 @@ KeithleyUSBTMCComHandler::KeithleyUSBTMCComHandler(ioport_t ioPort)
 
 KeithleyUSBTMCComHandler::~KeithleyUSBTMCComHandler( void )
 {
-  // restore ioport options as they were
-  // RestoreIoPort();
-  
-  // close device file
-  // CloseIoPort();
 }
 
 //! Send the command string &lt;commandString&gt; to device.
@@ -140,7 +135,7 @@ void KeithleyUSBTMCComHandler::InitializeIoPort( void )
   if (!fDeviceAvailable) return;
 
   // get and save current ioport settings for later restoring
-  tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );
+  // tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );
 }
 
 //! Restore former I/O port settings.
@@ -152,7 +147,7 @@ void KeithleyUSBTMCComHandler::RestoreIoPort( void )
   if (!fDeviceAvailable) return;
 
   // restore old com port settings
-  tcsetattr( fIoPortFileDescriptor, TCSANOW, &fCurrentTermios );
+  // tcsetattr( fIoPortFileDescriptor, TCSANOW, &fCurrentTermios );
 }
 
 //! Close I/O port.
