@@ -51,6 +51,8 @@ void KeithleyUSBTMCComHandler::SendCommand( const char *commandString )
   theCommand += "\n";
   
   write( fIoPortFileDescriptor, theCommand.c_str(), strlen(theCommand.c_str()));
+  
+  usleep(10);
 }
 
 void KeithleyUSBTMCComHandler::SendCommand( const std::string& commandString )
@@ -77,8 +79,7 @@ void KeithleyUSBTMCComHandler::ReceiveString( char *receiveString )
 
   std::cout << "void KeithleyUSBTMCComHandler::ReceiveString( char *receiveString )" << std::endl;
   
-  usleep(10000);
-
+ 
   int timeout = 0, readResult = 0;
 
   /*
@@ -98,6 +99,8 @@ void KeithleyUSBTMCComHandler::ReceiveString( char *receiveString )
   */
   
   readResult = read( fIoPortFileDescriptor, receiveString, 1024 );
+  
+  usleep(10);
 }
 
 //! Open I/O port.
