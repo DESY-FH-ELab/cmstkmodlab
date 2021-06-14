@@ -358,17 +358,6 @@ void KeithleyDAQ6510::DeviceSetChannels()
   deviceChannelsSet_ = true;
 }
 
-/*
-void KeithleyDAQ6510::Reset()
-{
-  comHandler_->SendCommand( "ROUT:SCAN:LSEL NONE" );
-  comHandler_->SendCommand( "TRAC:CLE" );
-  comHandler_->SendCommand( "ROUT:OPEN:ALL" );
-
-  Device_Init();
-}
-*/
-
 void KeithleyDAQ6510::DeviceInit()
 {
   isDeviceAvailable_ = false;
