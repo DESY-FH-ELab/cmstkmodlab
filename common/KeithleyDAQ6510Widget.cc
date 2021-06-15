@@ -10,6 +10,8 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+#include <nqlogger.h>
+
 #include "KeithleyDAQ6510Widget.h"
 
 KeithleyDAQ6510UpdateIntervalBox::KeithleyDAQ6510UpdateIntervalBox(KeithleyDAQ6510Model* model,
@@ -141,8 +143,8 @@ KeithleyDAQ6510SensorModeWidget::KeithleyDAQ6510SensorModeWidget(KeithleyDAQ6510
 		unsigned int sensor,
 		QWidget *parent)
  : QComboBox(parent),
-	 model_(model),
-	 sensor_(sensor)
+   model_(model),
+   sensor_(sensor)
 {
   // No user editable text
   setEditable(false);
