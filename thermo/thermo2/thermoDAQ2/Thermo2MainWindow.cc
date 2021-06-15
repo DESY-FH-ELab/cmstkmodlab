@@ -148,10 +148,10 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   daqModel_->myMoveToThread(daqThread_);
 
   if (chillerAndVacuumActive_ && throughPlaneActive_) {
-  	throughPlaneModel_ = new Thermo2ThroughPlaneModel(huberModel_,
-  			nge103BModel_,
-				keithleyModel_,
-				this);
+    throughPlaneModel_ = new Thermo2ThroughPlaneModel(huberModel_,
+        nge103BModel_,
+        keithleyModel_,
+        this);
   }
 
   tabWidget_ = new QTabWidget(this);
