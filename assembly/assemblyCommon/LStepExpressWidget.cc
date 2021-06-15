@@ -124,7 +124,8 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
 
     //connect(buttonOrigin_       , SIGNAL(clicked()), model_, SLOT(moveAbsolute()));
     connect(buttonOrigin_       , SIGNAL(clicked()), this  , SIGNAL(moveToOrigin_request())); //New signal/slot to connect the Origin button with the manager (where XYA/Z priorities are implemented) rather than directly via the model
-    connect(buttonCalibrate_    , SIGNAL(clicked()), model_, SLOT(calibrate()));
+    connect(buttonCalibrate_    , SIGNAL(clicked()), model_, SLOT(confirmCalibrate())); //Changed: clicking 'Calibrate' pops-up a GUI message, and the calibration is only performed upon confirmation from the user
+    connect(this, SIGNAL(startCalibrate()), model_, SLOT(calibrate()));
     connect(buttonEmergencyStop_, SIGNAL(clicked()), model_, SLOT(emergencyStop()));
     connect(buttonClearQueue_   , SIGNAL(clicked()), this  , SIGNAL(clearQueue_request()));
     connect(buttonRestart_      , SIGNAL(clicked()), this  , SLOT(restart()));
@@ -506,6 +507,26 @@ void LStepExpressWidget::enableMotionTools(const bool enable)
 void LStepExpressWidget::disableMotionTools(const bool disable)
 {
   this->enableMotionTools(!disable);
+}
+
+//-- Changed: clicking 'Calibrate' pops-up a GUI message, and the calibration is only performed upon confirmation from the user
+void LStepExpressWidget::confirmCalibrate()
+{
+    QMessageBox* msgBox = new QMessageBox;
+    msgBox->setInformativeText("Recalibrate the motion stage ?");
+    msgBox->setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+    msgBox->setDefaultButton(QMessageBox::No);
+    int ret = msgBox->exec();
+    switch(ret)
+    {
+      case QMessageBox::No: return; //Exit
+      case QMessageBox::Yes: break; //Continue function execution
+      default: return; //Exit
+    }
+
+    emit startCalibrate(); //Emit signal to start the actual MS calibration
+
+    return;
 }
 // ============================================================================
 
