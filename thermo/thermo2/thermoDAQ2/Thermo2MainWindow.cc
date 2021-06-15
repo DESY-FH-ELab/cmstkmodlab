@@ -22,6 +22,8 @@
 
 #include "ApplicationConfig.h"
 
+#include <nqlogger.h>
+
 #include "HuberUnistat525wWidget.h"
 #include "MartaWidget.h"
 #include "AgilentTwisTorr304Widget.h"
@@ -39,6 +41,8 @@
 Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   : QMainWindow(parent)
 {
+  NQLog("Thermo2MainWindow", NQLog::Debug) << "Thermo2MainWindow(QWidget *parent)";
+
   ApplicationConfig* config = ApplicationConfig::instance();
 
   QWidget * widget;
@@ -245,6 +249,8 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 
 void Thermo2MainWindow::quit()
 {
+  NQLog("Thermo2MainWindow", NQLog::Debug) << "quit()";
+
   if (daqThread_) {
     daqThread_->quit();
     daqThread_->wait();

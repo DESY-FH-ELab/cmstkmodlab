@@ -46,6 +46,8 @@ KeithleyDAQ6510::~KeithleyDAQ6510( )
 
 void KeithleyDAQ6510::ShutDown()
 {
+  std::cout << "KeithleyDAQ6510::ShutDown()" << std::endl;
+
   // reset the device
   comHandler_->SendCommand("*RST");
 
