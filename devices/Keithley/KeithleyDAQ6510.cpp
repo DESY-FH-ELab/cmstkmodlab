@@ -325,6 +325,11 @@ void KeithleyDAQ6510::GetScanData(reading_t & data)
 
     scanCount++;
   }
+
+  // open all routings
+  comHandler_->SendCommand(":ROUT:OPEN:ALL");
+
+  comHandler_->SendCommand(":TRAC:CLE");
 }
 
 unsigned int KeithleyDAQ6510::GetSensorFromScanCount(unsigned int scanCount)
