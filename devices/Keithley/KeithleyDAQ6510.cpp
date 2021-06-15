@@ -79,6 +79,8 @@ void KeithleyDAQ6510::SetChannelMode(unsigned int card, unsigned int channel,
   if (card<1 || card>2) return;
   if (channel<1 || channel>10) return;
 
+  if (channelModes_[card-1][channel-1]==mode) return;
+
   std::stringstream ss;
   ss << "(@";
   ss << card * 100 + channel;
