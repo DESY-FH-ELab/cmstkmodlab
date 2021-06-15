@@ -155,6 +155,7 @@ void KeithleyDAQ6510Model::setSensorEnabled(unsigned int sensor, bool enabled)
     setSensorState(sensor, OFF);
     scanDuration_ = controller_->GetScanDuration();
   }
+  emit activeSensorCountChanged(controller_->GetActiveChannelCount());
 }
 
 void KeithleyDAQ6510Model::setSensorMode(unsigned int sensor, KeithleyDAQ6510_t::ChannelMode_t mode)
@@ -217,6 +218,8 @@ double KeithleyDAQ6510Model::getTemperature(unsigned int sensor) const
   */
 void KeithleyDAQ6510Model::scanTemperatures()
 {
+  if (controller_->GetActiveChannelCount()==0) return;
+    
   NQLogDebug("KeithleyDAQ6510Model") << "scanTemperatures()";
 
   controller_->Scan();

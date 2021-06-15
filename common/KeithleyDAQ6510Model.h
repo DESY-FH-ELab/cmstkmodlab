@@ -95,6 +95,7 @@ signals:
   void scanStateChanged(bool enabled);
   void sensorStateChanged(unsigned int sensor, State newState);
   void sensorModeChanged(unsigned int sensor, VKeithleyDAQ6510::ChannelMode_t newMode);
+  void activeSensorCountChanged(unsigned int sensors);
   void temperatureChanged(unsigned int sensor, double temperature);
   void informationChanged();
   void temperatureGradientChanged(unsigned int sensor, double gradient);

@@ -52,7 +52,8 @@ void KeithleyDAQ6510UpdateIntervalBox::currentItemChanged(int idx)
 KeithleyDAQ6510Widget::KeithleyDAQ6510Widget(KeithleyDAQ6510Model* model,
                                              QWidget *parent)
  : QWidget(parent),
-   model_(model)
+   model_(model),
+   activeSensorCount_(0)
 {
   QVBoxLayout* layout = new QVBoxLayout(this);
   setLayout(layout);
@@ -92,6 +93,9 @@ KeithleyDAQ6510Widget::KeithleyDAQ6510Widget(KeithleyDAQ6510Model* model,
   connect(model_, SIGNAL(deviceStateChanged(State)),
           this, SLOT(keithleyStateChanged(State)));
 
+  connect(model_, SIGNAL(activeSensorCountChanged(unsigned int)),
+          this, SLOT(activeSensorCountChanged(unsigned int)));
+
   connect(model_, SIGNAL(controlStateChanged(bool)),
           this, SLOT(controlStateChanged(bool)));
 
@@ -102,9 +106,21 @@ KeithleyDAQ6510Widget::KeithleyDAQ6510Widget(KeithleyDAQ6510Model* model,
 void KeithleyDAQ6510Widget::keithleyStateChanged(State newState)
 {
   keithleyCheckBox_->setChecked(newState == READY || newState == INITIALIZING);
-  scanCheckBox_->setEnabled(newState == READY);
+
+  if (activeSensorCount_>0) {
+    scanCheckBox_->setEnabled(newState == READY);
+  } else {
+    scanCheckBox_->setEnabled(false);
+  }
   updateIntervalBox_->setEnabled(newState == READY);
   sensorControlWidget_->setEnabled(newState == READY);
+}
+
+void KeithleyDAQ6510Widget::activeSensorCountChanged(unsigned int sensors)
+{
+  activeSensorCount_ = sensors;
+
+  keithleyStateChanged(model_->getDeviceState());
 }
 
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.

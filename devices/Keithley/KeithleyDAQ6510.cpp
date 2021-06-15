@@ -274,6 +274,8 @@ void KeithleyDAQ6510::Scan()
   buf = buffer;
   std::cout << buf << std::endl;
   */
+
+  if (GetActiveChannelCount()==0) return;
   
   if (!deviceChannelsSet_) DeviceSetChannels();
     
@@ -288,6 +290,8 @@ void KeithleyDAQ6510::GetScanData(reading_t & data)
 {
   char buffer[2048];
   std::string buf;
+
+  if (GetActiveChannelCount()==0) return;
 
   std::stringstream ss;
   ss << ":TRAC:DATA? 1, ";

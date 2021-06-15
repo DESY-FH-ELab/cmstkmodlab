@@ -58,9 +58,11 @@ protected:
   QCheckBox* scanCheckBox_;
   KeithleyDAQ6510UpdateIntervalBox* updateIntervalBox_;
   QWidget* sensorControlWidget_;
+  unsigned int activeSensorCount_;
 
 public slots:
   void keithleyStateChanged(State newState);
+  void activeSensorCountChanged(unsigned int sensors);
   void controlStateChanged(bool);
 };
 
