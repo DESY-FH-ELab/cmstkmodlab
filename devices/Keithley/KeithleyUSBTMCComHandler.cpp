@@ -170,11 +170,13 @@ void KeithleyUSBTMCComHandler::CloseIoPort( void )
 
   std::cout << "void KeithleyUSBTMCComHandler::CloseIoPort( void )" << std::endl;
 
+  /*
   int rv = ioctl(fIoPortFileDescriptor, USBTMC_IOCTL_CLEAR);
   if(rv==-1) {
     printf("Error: ioctl returned %d.\n",rv);
   }
 
+  */
   close( fIoPortFileDescriptor );
 }
 
