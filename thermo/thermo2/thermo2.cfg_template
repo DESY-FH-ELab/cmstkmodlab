@@ -30,8 +30,8 @@ ServerPort                             55555
 # Mattermost
 #
 mattermostwebhook                      https://mattermost.web.cern.ch/hooks/d5tpf87e63ntmroe54peebo7eo
-mattermostusername                     thermoDAQ2
-mattermostchannel                      daf
+mattermostusername                     thermodaq2
+mattermostchannel                      thermodaq2
 
 #
 # Through-Plane Thermal Measurement Setup
