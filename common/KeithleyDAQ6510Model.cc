@@ -163,6 +163,8 @@ void KeithleyDAQ6510Model::setSensorMode(unsigned int sensor, KeithleyDAQ6510_t:
   unsigned int card = sensor / 100 - 1;
   unsigned int channel = sensor % 100 - 1;
 
+  if (controller_->GetChannelMode(card, channel)==mode) return;
+
   // if (sensorStates_[card][channel] == READY) {
     controller_->SetChannelMode(card+1, channel+1, mode);
     emit sensorModeChanged(sensor, mode);
