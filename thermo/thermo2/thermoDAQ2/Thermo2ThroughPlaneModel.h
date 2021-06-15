@@ -99,8 +99,10 @@ protected:
   double nge103BCurrent_;
 
   std::array<unsigned int,6> keithleyTopSensors_;
+  VKeithleyDAQ6510::ChannelMode_t keithleyTopSensorTypes_;
   std::array<double,6> keithleyTopPositions_;
   std::array<unsigned int,6> keithleyBottomSensors_;
+  VKeithleyDAQ6510::ChannelMode_t keithleyBottomSensorTypes_;
   std::array<double,6> keithleyBottomPositions_;
   bool keithleyState_;
   std::array<bool,6> keithleyTopSensorStates_;

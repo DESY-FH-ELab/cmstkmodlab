@@ -46,6 +46,37 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
   keithleyBottomSensors_ = config->getValueArray<unsigned int,6>("ThroughPlaneKeithleyBottomSensors");
   keithleyBottomPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomPositions");
 
+  std::string sensorType;
+
+  sensorType = config->getValue("ThroughPlaneKeithleyTopSensorTypes");
+  if (sensorType=="4WirePT100") {
+    keithleyTopSensorTypes_ = VKeithleyDAQ6510::FourWireRTD_PT100;
+  } else if (sensorType=="Therm10k") {
+    keithleyTopSensorTypes_ = VKeithleyDAQ6510::Thermistor_10000;
+  } else {
+    keithleyTopSensorTypes_ = VKeithleyDAQ6510::FourWireRTD_PT100;
+  }
+
+  sensorType = config->getValue("ThroughPlaneKeithleyBottomSensorTypes");
+  if (sensorType=="4WirePT100") {
+    keithleyBottomSensorTypes_ = VKeithleyDAQ6510::FourWireRTD_PT100;
+  } else if (sensorType=="Therm10k") {
+    keithleyBottomSensorTypes_ = VKeithleyDAQ6510::Thermistor_10000;
+  } else {
+    keithleyBottomSensorTypes_ = VKeithleyDAQ6510::FourWireRTD_PT100;
+  }
+
+  bool throughPlaneAutoConfig = config->getValue<int>("ThroughPlaneAutoConfig");
+  if (throughPlaneAutoConfig) {
+    for (unsigned int i=0;i<6;++i) {
+      keithleyModel_->setSensorMode(keithleyTopSensors_[i], keithleyTopSensorTypes_);
+      keithleyModel_->setSensorEnabled(keithleyTopSensors_[i], true);
+
+      keithleyModel_->setSensorMode(keithleyBottomSensors_[i], keithleyBottomSensorTypes_);
+      keithleyModel_->setSensorEnabled(keithleyBottomSensors_[i], true);
+    }
+  }
+
   huberState_ = false;
   huberTemperatureSetPoint_ = 0;
 
