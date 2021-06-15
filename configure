@@ -86,7 +86,7 @@ if test $ARCHITECTURE = "Darwin"; then
     QWTDEFINES=""
     QWTINCLUDES="/usr/local/lib/qwt.framework/Headers"
     QWTLIBS="-F/usr/local/lib -framework qwt"
-    QMAKE="~/Qt/5.14.0/clang_64/bin/qmake"
+    QMAKE=`which qmake`
 fi
 if test $ARCHITECTURE = "Linux" && test $KERNELMAJOR -lt 2 && test $KERNELMINOR -lt 6; then
     echo "Linux kernel minor version < 6: fake device support forced"
