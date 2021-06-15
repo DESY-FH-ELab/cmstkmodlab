@@ -86,6 +86,7 @@ protected slots:
   void keithleyStateChanged(State state);
   void scanStateChanged(bool enabled);
   void sensorStateChanged(uint sensor, State state );
+  void sensorModeChanged(uint sensor, VKeithleyDAQ6510::ChannelMode_t mode);
   void indexChanged(int);
   void updateDeviceState( State newState );
   void controlStateChanged(bool);

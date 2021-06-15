@@ -164,6 +164,9 @@ KeithleyDAQ6510SensorModeWidget::KeithleyDAQ6510SensorModeWidget(KeithleyDAQ6510
   connect(model_, SIGNAL(sensorStateChanged(uint,State)),
           this, SLOT(sensorStateChanged(uint,State)));
 
+  connect(model_, SIGNAL(sensorModeChanged(uint,VKeithleyDAQ6510::ChannelMode_t)),
+          this, SLOT(sensorModeChanged(uint,VKeithleyDAQ6510::ChannelMode_t)));
+
   connect(model_, SIGNAL(controlStateChanged(bool)),
           this, SLOT(controlStateChanged(bool)));
 
@@ -196,6 +199,16 @@ void KeithleyDAQ6510SensorModeWidget::keithleyStateChanged(State /* newState */)
 void KeithleyDAQ6510SensorModeWidget::scanStateChanged(bool /* enabled */)
 {
   updateWidgets();
+}
+
+void KeithleyDAQ6510SensorModeWidget::sensorModeChanged(uint /* sensor */, VKeithleyDAQ6510::ChannelMode_t /* mode */)
+{
+  int userValue = itemData(currentIndex()).toInt();
+
+  if (model_->getSensorMode(sensor_)!=userValue) {
+    int index = findData(userValue);
+    setCurrentIndex(index);
+  }
 }
 
 void KeithleyDAQ6510SensorModeWidget::indexChanged(int index)
