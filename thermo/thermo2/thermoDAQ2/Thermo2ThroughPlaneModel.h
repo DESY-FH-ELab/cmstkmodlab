@@ -19,6 +19,7 @@
 #include <QObject>
 #include <QVector>
 #include <QDateTime>
+#include <QTimer>
 #include <QThread>
 #include <QMutex>
 #include <QMutexLocker>
@@ -68,6 +69,7 @@ protected slots:
   void huberInfoChanged();
   void nge103BInfoChanged();
   void keithleyInfoChanged();
+  void sendMattermostStatus();
 
 protected:
 
@@ -84,6 +86,11 @@ protected:
     variable = newValue;
     return true;
   }
+
+  bool mattermostStatus_;
+  int mattermostInterval_;
+  QTimer *mattermostTimer_;
+  QDateTime mattermostStatusTime_;
 
   double resistance_;
   double cableResistance_;

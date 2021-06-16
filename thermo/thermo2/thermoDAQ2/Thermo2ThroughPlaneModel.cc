@@ -20,6 +20,7 @@
 #include <QXmlStreamWriter>
 
 #include <nqlogger.h>
+#include <MattermostBot.h>
 
 #include <ApplicationConfig.h>
 
@@ -35,6 +36,17 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
    keithleyModel_(keithleyModel)
 {
   ApplicationConfig* config = ApplicationConfig::instance();
+
+  mattermostStatus_ = config->getValue<int>("ThroughPlaneMattermostStatus");
+  mattermostInterval_ = config->getValue<int>("ThroughPlaneMattermostInterval");
+
+  mattermostStatusTime_ = QDateTime::currentDateTime();
+  QTime time = mattermostStatusTime_.time();
+  time = time.addMSecs(-time.msec());
+  time = time.addSecs(-time.second());
+  time = time.addSecs(-60*time.minute());
+  time = time.addSecs(mattermostInterval_*60);
+  mattermostStatusTime_.setTime(time);
 
   resistance_ = config->getValue<double>("ThroughPlaneResistance");
   cableResistance_ = config->getValue<double>("ThroughPlaneCableResistance");
@@ -110,6 +122,11 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
 
   connect(keithleyModel_, SIGNAL(informationChanged()),
           this, SLOT(keithleyInfoChanged()));
+
+  mattermostTimer_ = new QTimer(this);
+  connect(mattermostTimer_, SIGNAL(timeout()),
+      this, SLOT(sendMattermostStatus()));
+  mattermostTimer_->start(60);
 }
 
 void Thermo2ThroughPlaneModel::huberInfoChanged()
@@ -258,9 +275,111 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
 
   	  sampleTMiddle_ = 0.5*(sampleTTop_ + sampleTBottom_);
   	} else {
-  		calculationState_ = false;
+  	  calculationState_ = false;
   	}
 
   	emit informationChanged();
   }
+}
+
+void Thermo2ThroughPlaneModel::sendMattermostStatus()
+{
+  if (!mattermostStatus_) return;
+
+  auto currentDateTime = QDateTime::currentDateTime();
+  if (currentDateTime<mattermostStatusTime_) return;
+
+  QString msg;
+
+  msg += "#### Through-Plane Status (";
+  msg += mattermostStatusTime_.toString("dd.MM.yyyy hh:mm");
+  msg += ")\n";
+
+  msg += "| #        |    1     |    2     |    3     |    4     |    5     |    6     |\n";
+  msg += "|:---------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|\n";
+
+  msg += "| T_top    |";
+  for (unsigned int i=0;i<6;++i) {
+    if (keithleyTopSensorStates_[i]) {
+      msg += QString::number(keithleyTopTemperatures_[i], 'f', 2);
+      msg += "°C |";
+    } else {
+      msg += " |";
+    }
+  }
+  msg += "\n";
+  msg += "| T_bottom    |";
+  for (unsigned int i=0;i<6;++i) {
+    if (keithleyBottomSensorStates_[i]) {
+      msg += QString::number(keithleyBottomTemperatures_[i], 'f', 2);
+      msg += "°C |";
+    } else {
+      msg += " |";
+    }
+  }
+  msg += "\n";
+
+  msg += "|  Variable      | Value    |\n";
+  msg += "|:--------------:|:--------:|\n";
+
+  msg += "| Sample top |";
+  if (calculationState_) {
+    msg += QString::number(sampleTTop_, 'f', 2);
+    msg += "°C |\n";
+  } else {
+    msg += " |\n";
+  }
+
+  msg += "| Sample middle |";
+  if (calculationState_) {
+    msg += QString::number(sampleTMiddle_, 'f', 2);
+    msg += "°C |\n";
+  } else {
+    msg += " |\n";
+  }
+
+  msg += "| Sample bottom |";
+  if (calculationState_) {
+    msg += QString::number(sampleTBottom_, 'f', 2);
+    msg += "°C |\n";
+  } else {
+    msg += " |\n";
+  }
+
+  msg += "| Power source |";
+  if (calculationState_) {
+    msg += QString::number(sourcePower_, 'f', 2);
+    msg += "W |\n";
+  } else {
+    msg += " |\n";
+  }
+
+  msg += "| Power top |";
+  if (calculationState_) {
+    msg += QString::number(powerTop_, 'f', 2);
+    msg += "W |\n";
+  } else {
+    msg += " |\n";
+  }
+
+  msg += "| Power bottom |";
+  if (calculationState_) {
+    msg += QString::number(powerBottom_, 'f', 2);
+    msg += "W |\n";
+  } else {
+    msg += " |\n";
+  }
+
+  msg += "| Sink |";
+  if (calculationState_) {
+    msg += QString::number(huberTemperatureSetPoint_, 'f', 2);
+    msg += "°C |\n";
+  } else {
+    msg += " |\n";
+  }
+
+  MattermostBot bot;
+  bot.postMessage(msg);
+
+  mattermostStatusTime_ = mattermostStatusTime_.addSecs(mattermostInterval_*60);
 }

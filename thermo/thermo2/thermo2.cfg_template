@@ -37,6 +37,8 @@ mattermostchannel                      thermodaq2
 # Through-Plane Thermal Measurement Setup
 #
 ThroughPlaneAutoConfig                 1
+ThroughPlaneMattermostStatus           1
+ThroughPlaneMattermostInterval         10 # interval between mattermost status updates in minutes
 ThroughPlaneResistance                 100.0
 ThroughPlaneCableResistance            1.1
 ThroughPlaneKBlock                     394.0 # Thermal conductivity of blocks in W/m/K
