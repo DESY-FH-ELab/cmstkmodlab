@@ -28,7 +28,7 @@
 #include "Thermo2MainWindow.h"
 #include "TestWindow.h"
 
-static const char* thermoDAQ2GUID = "{2F9BC7D7-44A2-4625-A7C6-2EBE3C27C7F5}";
+//static const char* thermoDAQ2GUID = "{2F9BC7D7-44A2-4625-A7C6-2EBE3C27C7F5}";
 //#define SINGLETON 1
 //#define AUTOSTARTTHERMODISPLAY 1
 

@@ -18,10 +18,9 @@
 
 #include "ConradModel.h"
 
-ConradModel::ConradModel(const std::string& port, QObject* /* parent */)
- : QObject()
+ConradModel::ConradModel(const std::string& port, QObject* parent)
+ : VRelayCardModel(port, parent)
  , AbstractDeviceModel()
- , port_(port.c_str())
  , switchStates_(8, OFF)
 {
   setDeviceEnabled(true);

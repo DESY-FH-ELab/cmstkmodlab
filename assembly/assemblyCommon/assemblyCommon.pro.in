@@ -76,7 +76,9 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 }
 
 # Input
-HEADERS += AssemblyVUEyeCamera.h \
+HEADERS += AlignmentCheck.h \
+           AlignmentCheckView.h \
+           AssemblyVUEyeCamera.h \
            AssemblyVUEyeModel.h \
            AssemblyUEyeWidget.h \
            AssemblyUEyeCameraWidget.h \
@@ -112,8 +114,7 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyHardwareControlView.h \
            AssemblyLogFileController.h \
            AssemblyLogFileView.h \
-           ConradManager.h \
-           VellemanManager.h \
+           RelayCardManager.h \
            LStepExpressModel.h \
            LStepExpressMotion.h \
            LStepExpressMotionManager.h \
@@ -148,7 +149,9 @@ HEADERS += AssemblyUEyeFakeCamera.h \
            AssemblyUEyeFakeModel.h
 }
 
-SOURCES += AssemblyVUEyeCamera.cc \
+SOURCES += AlignmentCheck.cc \
+           AlignmentCheckView.cc \
+           AssemblyVUEyeCamera.cc \
            AssemblyVUEyeModel.cc \
            AssemblyUEyeWidget.cc \
            AssemblyUEyeCameraWidget.cc \
@@ -184,8 +187,7 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyHardwareControlView.cc \
            AssemblyLogFileController.cc \
            AssemblyLogFileView.cc \
-           ConradManager.cc \
-           VellemanManager.cc \
+           RelayCardManager.cc \
            LStepExpressModel.cc \
            LStepExpressMotion.cc \
            LStepExpressMotionManager.cc \

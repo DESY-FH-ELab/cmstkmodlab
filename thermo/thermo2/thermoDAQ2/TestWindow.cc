@@ -22,7 +22,7 @@ TestWindow::TestWindow(QWidget *parent) :
   QWidget *central = new QWidget();
   central->setLayout(layout);
 
-  ApplicationConfig* config = ApplicationConfig::instance();
+  // ApplicationConfig* config = ApplicationConfig::instance();
 
   // RohdeSchwarzNGE103B Model
   nge103BModel_ = new RohdeSchwarzNGE103BModel("/dev/ttyACM1", 5, this);

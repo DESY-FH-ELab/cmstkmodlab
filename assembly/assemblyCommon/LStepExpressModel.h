@@ -45,7 +45,7 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
     void pauseUpdate();
     void continueUpdate();
 
-    void initialize();
+    void initialize() override;
 
     QString getAxisName(unsigned int axis);
     QString getAxisDimensionShortName(unsigned int axis);
@@ -86,7 +86,7 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
 
   public slots:
 
-    void setDeviceEnabled(bool enabled=true);
+    void setDeviceEnabled(bool enabled=true) override;
     void setControlsEnabled(bool enabled);
     void setAxisEnabled(unsigned int axis, bool enabled);
     void setJoystickEnabled(bool enabled);
@@ -145,7 +145,7 @@ class LStepExpressModel : public QObject, public AbstractDeviceModel<LStepExpres
     QTimer* timer_;
     int updateCount_;
 
-    void setDeviceState( State state );
+    void setDeviceState( State state ) override;
 
     std::vector<int> axis_;
     std::vector<int> axisDirection_;

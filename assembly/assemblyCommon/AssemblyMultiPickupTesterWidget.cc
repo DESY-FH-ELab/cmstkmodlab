@@ -37,13 +37,17 @@ AssemblyMultiPickupTesterWidget::AssemblyMultiPickupTesterWidget(const LStepExpr
   QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
 
+  QLabel *label = new QLabel(this);
+  label->setText("<p style=color:orange><b>WARNING: you must activate the baseplate vacuum before starting !</p></b>");
+  layout->addWidget(label);
+
   exe_button_ = new QPushButton(tr("Run Multi-Pickup Test"));
   layout->addWidget(exe_button_);
 
   QGridLayout* g2 = new QGridLayout;
   layout->addLayout(g2);
 
-  measur_label_  = new QLabel("Measurement Position (x,y,z)");
+  measur_label_  = new QLabel("PatRec Measurement Position (x,y,z)");
   measur_lineed_ = new QLineEdit("0,0,0");
   measur_button_ = new QPushButton("Update");
   g2->addWidget(measur_label_ , 0, 0);
@@ -58,7 +62,7 @@ AssemblyMultiPickupTesterWidget::AssemblyMultiPickupTesterWidget(const LStepExpr
   g2->addWidget(pickup_button_, 1, 2);
 
   iteraN_label_  = new QLabel("N Iterations (int)");
-  iteraN_lineed_ = new QLineEdit("10");
+  iteraN_lineed_ = new QLineEdit("5");
   g2->addWidget(iteraN_label_ , 2, 0);
   g2->addWidget(iteraN_lineed_, 2, 1);
 

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -10,7 +10,8 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <unistd.h>
+#include <iostream>
+#include <chrono>
 #include <thread>
 
 #include <QApplication>
@@ -45,6 +46,8 @@ KeithleyModel::KeithleyModel(const char* port,
 /// Sets up the communication with the multimeter.
 void KeithleyModel::initialize() {
 
+  using namespace std::chrono_literals;
+
   setDeviceState(INITIALIZING);
 
   try {
@@ -53,7 +56,7 @@ void KeithleyModel::initialize() {
 
     // Give the device some time to process befor spamming it with upcoming
     // commands
-    sleep(1);
+    std::this_thread::sleep_for(1s);
 
     setDeviceState(READY);
 

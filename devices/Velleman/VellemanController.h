@@ -15,11 +15,13 @@
 
 #include <vector>
 
-#include "IVellemanController.h"
+
+#include "VVellemanController.h"
 
 class VellemanCommunication;
 
-class VellemanController : public IVellemanController {
+class VellemanController : public VVellemanController {
+
 
 public:
 

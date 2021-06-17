@@ -11,7 +11,7 @@ LIB           = TkModLabVelleman
 VELLEMAN = $(BASEPATH)/devices/Velleman
 
 MODULES       = VellemanCommunication \
-                IVellemanController \
+                VVellemanController \
                 VellemanController \
                 VellemanControllerFake \
 
@@ -21,7 +21,9 @@ NEWHEADERS    = $(addsuffix _cpp.h,$(MODULES))
 
 EXISTDEPEND   = $(shell find . -name \*.d -type f -print)
 
+
 all: vellemanTest lib
+
 
 depend: $(ALLDEPEND)
 

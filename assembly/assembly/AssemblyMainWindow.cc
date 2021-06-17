@@ -13,6 +13,9 @@
 #include <nqlogger.h>
 #include <ApplicationConfig.h>
 
+#include <ConradModel.h>
+#include <VellemanModel.h>
+
 #include <AssemblyMainWindow.h>
 #include <AssemblyLogFileController.h>
 #include <AssemblyLogFileView.h>
@@ -28,10 +31,10 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   QMainWindow(parent),
 
   // Low-Level Controllers (Motion, Camera, Vacuum)
-  // conradModel_(nullptr),   // CONRAD 
-  // conradManager_(nullptr), // CONRAD 
-  vellemanModel_(nullptr),      // VELLEMAN
-  vellemanManager_(nullptr),    // VELLEMAN
+
+	relayCardModel_(nullptr),
+	relayCardManager_(nullptr),
+
 
   motion_model_(nullptr),
   motion_manager_(nullptr),
@@ -55,6 +58,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   assemblyV2_(nullptr),
   multipickup_tester_(nullptr),
   alignmentCheck_(nullptr),
+
   finder_(nullptr),
   finder_thread_(nullptr),
 
@@ -85,6 +89,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
   button_mainEmergencyStop_(nullptr),
   button_info_(nullptr),
+  alignmentCheck_view_(nullptr),
   autofocus_checkbox_(nullptr),
   alignmentCheck_view_(nullptr),
   // flags
@@ -150,11 +155,18 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     }
     /// -------------------
 
-    /// Vacuum Manager (use Conrad lines OR Velleman lines depending on relay card used)
-    // conradModel_   = new ConradModel(config->getValue<std::string>("ConradDevice"));    // CONRAD
-    // conradManager_ = new ConradManager(conradModel_);                                   // CONRAD
-    vellemanModel_   = new VellemanModel(config->getValue<std::string>("VellemanDevice")); // VELLEMAN
-    vellemanManager_ = new VellemanManager(vellemanModel_);                                // VELLEMAN
+
+    /// Vacuum Manager
+    std::string relayCardDevice = config->getValue<std::string>("RelayCardDevice");
+    if (relayCardDevice=="Velleman")
+    {
+    	relayCardModel_ = new VellemanModel(config->getValue<std::string>("VellemanDevice"));
+    } else {
+    	relayCardModel_ = new ConradModel(config->getValue<std::string>("ConradDevice"));
+    }
+
+    relayCardManager_ = new RelayCardManager(relayCardModel_);
+
     /// -------------------
 
     /// TAB: ASSEMBLY FUNCTIONALITIES --------------------------
@@ -252,7 +264,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     if(assembly_sequence == 1)
     {
-      assembly_ = new AssemblyAssembly(motion_manager_, vellemanManager_, smart_motion_);
+
+      assembly_ = new AssemblyAssembly(motion_manager_, relayCardManager_, smart_motion_);
+
 
       assembly_view_ = new AssemblyAssemblyView(assembly_, assembly_tab);
       assembly_tab->addTab(assembly_view_, tabname_Assembly);
@@ -264,7 +278,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     }
     else if(assembly_sequence == 2)
     {
-      assemblyV2_ = new AssemblyAssemblyV2(motion_manager_, vellemanManager_, smart_motion_);
+
+      assemblyV2_ = new AssemblyAssemblyV2(motion_manager_, relayCardManager_, smart_motion_);
+
 
       assemblyV2_view_ = new AssemblyAssemblyV2View(assemblyV2_, assembly_tab);
       assembly_tab->addTab(assemblyV2_view_, tabname_Assembly);
@@ -284,10 +300,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
          << assembly_sequence << ") -> GUI Tab " << tabname_Assembly << " will not be created";
     }
 
-    connect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_model_, SLOT(moveRelative(double,double,double,double)));
+    connect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
     connect(motion_manager_, SIGNAL(motion_finished()), image_view_, SLOT(InfoMotionFinished()));
     // ---------------------------------------------------------
-
 
 
     // Alignment Check
@@ -305,7 +320,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     alignmentCheck_view_->PatRecTwo_Image()->connectImageProducer(alignmentCheck_, SIGNAL(image_PatRecTwo(cv::Mat)));
     alignmentCheck_view_->PatRecThree_Image()->connectImageProducer(alignmentCheck_, SIGNAL(image_PatRecThree(cv::Mat)));
     alignmentCheck_view_->PatRecFour_Image()->connectImageProducer(alignmentCheck_, SIGNAL(image_PatRecFour(cv::Mat)));
-
 
     
     /// TAB: MANUAL CONTROLLERS AND PARAMETERS -----------------
@@ -342,21 +356,15 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     hwctr_view_ = new AssemblyHardwareControlView(motion_manager_, controls_tab);
     controls_tab->addTab(hwctr_view_, tabname_HWCtrl);
 
-    /// *****LEAVE BLOCK (5 lines of code) UNCOMMENTED IF USING CONRAD RELAY CARD***** ///
-    /*
-    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))              , conradManager_, SLOT(toggleVacuum(int)));
-    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), conradManager_, SLOT(transmit_vacuumChannelState(int)));
+    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))              , relayCardManager_, SLOT(toggleVacuum(int)));
+    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), relayCardManager_, SLOT(transmit_vacuumChannelState(int)));
 
-    connect(conradManager_, SIGNAL(vacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
 
-    connect(conradManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
-    connect(conradManager_, SIGNAL(disableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(disableVacuumButton()));
-    */
+    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
 
-    /// *****LEAVE BLOCK (5 lines of code) UNCOMMENTED IF USING VELLEMAN RELAY CARD***** ///
-    /**/
-    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))              , vellemanManager_, SLOT(toggleVacuum(int)));
-    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), vellemanManager_, SLOT(transmit_vacuumChannelState(int)));
+    connect(relayCardManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
+    connect(relayCardManager_, SIGNAL(disableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(disableVacuumButton()));
+
 
     connect(vellemanManager_, SIGNAL(vacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
 
@@ -393,8 +401,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Parameters;
 
-    connect(params_view_, SIGNAL(request_moveToAbsRefPosition(double,double,double,double)), motion_model_, SLOT(moveAbsolute(double,double,double,double)));
-    connect(params_view_, SIGNAL(request_moveByRelRefDistance(double,double,double,double)), motion_model_, SLOT(moveRelative(double,double,double,double)));
+    connect(params_view_, SIGNAL(request_moveToAbsRefPosition(double,double,double,double)), motion_manager_, SLOT(moveAbsolute(double,double,double,double)));
+    connect(params_view_, SIGNAL(request_moveByRelRefDistance(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
     // ---------------------------------------------------------
 
     // MOTION-SETTINGS VIEW ------------------------------------
@@ -955,6 +963,123 @@ void AssemblyMainWindow::disconnect_alignmentCheck()
 
 //################################
 
+
+//################################
+
+void AssemblyMainWindow::start_alignmentCheck(const AlignmentCheck::Configuration& conf)
+{
+  if(image_ctr_ == nullptr)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "start_objectAligner"
+       << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+
+    return;
+  }
+
+  if(params_ != nullptr)
+  {
+    const bool valid_params = params_->update();
+
+    if(valid_params == false)
+    {
+      NQLog("AssemblyMainWindow", NQLog::Warning) << "start_objectAligner"
+         << ": failed to update AssemblyParameters, no action taken";
+
+      return;
+    }
+  }
+
+  // acquire image
+  connect(alignmentCheck_, SIGNAL(image_request()), image_ctr_, SLOT(acquire_image()));
+  connect(alignmentCheck_, SIGNAL(autofocused_image_request()), image_ctr_, SLOT(acquire_autofocused_image()));
+
+  // master-image updated, go to next step (PatRec)
+  connect(finder_, SIGNAL(updated_image_master()), alignmentCheck_, SLOT(launch_next_alignment_step()));
+
+  // launch PatRec
+  connect(alignmentCheck_, SIGNAL(PatRec_request(AssemblyObjectFinderPatRec::Configuration)), finder_, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
+
+  // show PatRec-edited image in Aligner widget
+  connect(finder_, SIGNAL(PatRec_res_image_master_edited(cv::Mat)), alignmentCheck_, SLOT(redirect_image(cv::Mat)));
+
+  // use PatRec results for next alignment step
+  connect(finder_, SIGNAL(PatRec_results(double, double, double)), alignmentCheck_, SLOT(run_alignment(double, double, double)));
+
+  // show measured angle
+  connect(alignmentCheck_, SIGNAL(measured_angle(double)), alignmentCheck_view_, SLOT(show_measured_angle(double)));
+
+  // show fiducial positions
+  connect(alignmentCheck_, SIGNAL(pspbl_pos(double, double)), alignmentCheck_view_, SLOT(show_pspbl_pos(double,double)));
+  connect(alignmentCheck_, SIGNAL(pssbl_pos(double, double)), alignmentCheck_view_, SLOT(show_pssbl_pos(double,double)));
+  connect(alignmentCheck_, SIGNAL(psstl_pos(double, double)), alignmentCheck_view_, SLOT(show_psstl_pos(double,double)));
+  connect(alignmentCheck_, SIGNAL(psptl_pos(double, double)), alignmentCheck_view_, SLOT(show_psptl_pos(double,double)));
+
+  
+  connect(alignmentCheck_, SIGNAL(offs_pos(double, double)), alignmentCheck_view_, SLOT(show_offs_pos(double,double)));
+  
+  // once completed, disable connections between controllers used for alignment
+  connect(alignmentCheck_, SIGNAL(execution_completed()), this, SLOT(disconnect_alignmentCheck()));
+
+  // kick-start alignment
+  connect(alignmentCheck_, SIGNAL(configuration_updated()), alignmentCheck_, SLOT(execute()));
+
+  alignmentCheck_view_->Configuration_Widget()->setEnabled(false);
+
+  // if successful, emits signal "configuration_updated()"
+  alignmentCheck_->update_configuration(conf);
+
+  return;
+}
+
+void AssemblyMainWindow::disconnect_alignmentCheck()
+{
+  if(image_ctr_ == nullptr)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "disconnect_objectAligner"
+       << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+
+    return;
+  }
+
+  // acquire image
+  disconnect(alignmentCheck_, SIGNAL(image_request()), image_ctr_, SLOT(acquire_image()));
+  disconnect(alignmentCheck_, SIGNAL(autofocused_image_request()), image_ctr_, SLOT(acquire_autofocused_image()));
+
+  // master-image updated, go to next step (PatRec)
+  disconnect(finder_, SIGNAL(updated_image_master()), alignmentCheck_, SLOT(launch_next_alignment_step()));
+
+  // launch PatRec
+  disconnect(alignmentCheck_, SIGNAL(PatRec_request(AssemblyObjectFinderPatRec::Configuration)), finder_, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
+
+  // show PatRec-edited image in Aligner widget
+  disconnect(finder_, SIGNAL(PatRec_res_image_master_edited(cv::Mat)), alignmentCheck_, SLOT(redirect_image(cv::Mat)));
+
+  // use PatRec results for next alignment step
+  disconnect(finder_, SIGNAL(PatRec_results(double, double, double)), alignmentCheck_, SLOT(run_alignment(double, double, double)));
+
+  // show measured angle
+  disconnect(alignmentCheck_, SIGNAL(measured_angle(double)), alignmentCheck_view_, SLOT(show_measured_angle(double)));
+
+  // show fiducial positions
+
+  disconnect(alignmentCheck_, SIGNAL(pspbl_pos(double, double)), alignmentCheck_view_, SLOT(show_pspbl_pos(double,double)));
+  disconnect(alignmentCheck_, SIGNAL(pssbl_pos(double, double)), alignmentCheck_view_, SLOT(show_pssbl_pos(double,double)));
+  disconnect(alignmentCheck_, SIGNAL(psstl_pos(double, double)), alignmentCheck_view_, SLOT(show_psstl_pos(double,double)));
+  disconnect(alignmentCheck_, SIGNAL(psptl_pos(double, double)), alignmentCheck_view_, SLOT(show_psptl_pos(double,double)));
+
+  disconnect(alignmentCheck_, SIGNAL(offs_pos(double, double)), alignmentCheck_view_, SLOT(show_offs_pos(double,double)));
+ 
+  // once completed, disable connections between controllers used for alignment
+  disconnect(alignmentCheck_, SIGNAL(execution_completed()), this, SLOT(disconnect_alignmentCheck()));
+
+  // kick-start alignment
+  disconnect(alignmentCheck_, SIGNAL(configuration_updated()), alignmentCheck_, SLOT(execute()));
+
+  alignmentCheck_view_->Configuration_Widget()->setEnabled(true);
+
+  return;
+}
+
 void AssemblyMainWindow::start_multiPickupTest(const AssemblyMultiPickupTester::Configuration& conf)
 {
   if(image_ctr_ == nullptr)
@@ -992,11 +1117,12 @@ void AssemblyMainWindow::start_multiPickupTest(const AssemblyMultiPickupTester::
   // ---
 
   // pickup (vacuum)
-  // connect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), conradManager_, SLOT(toggleVacuum(int))); // CONRAD
-  // connect(conradManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));   // CONRAD
 
-  connect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), vellemanManager_, SLOT(toggleVacuum(int)));  // VELLEMAN
-  connect(vellemanManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));    // VELLEMAN
+  connect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), relayCardManager_, SLOT(toggleVacuum(int)));
+
+  connect(relayCardManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));
+
+
   // ---
 
   multipickup_tester_->set_configuration(conf);
@@ -1020,10 +1146,12 @@ void AssemblyMainWindow::disconnect_multiPickupTest()
   // ---
 
   // pickup (vacuum)
-  // disconnect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), conradManager_, SLOT(toggleVacuum(int))); // CONRAD
-  // disconnect(conradManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));   // CONRAD
-  disconnect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), vellemanManager_, SLOT(toggleVacuum(int)));  // VELLEMAN
-  disconnect(vellemanManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));    // VELLEMAN
+
+  disconnect(multipickup_tester_, SIGNAL(vacuum_toggle(int)), relayCardManager_, SLOT(toggleVacuum(int)));
+
+  disconnect(relayCardManager_, SIGNAL(vacuum_toggled()), multipickup_tester_, SLOT(setup_next_step()));
+
+
   // ---
 
   toolbox_view_->MultiPickupTester_Widget()->enable(true);
@@ -1040,9 +1168,9 @@ void AssemblyMainWindow::disconnect_multiPickupTest()
 //Disconnect remaining signal/slots, which did not get disconnected via specific functions
 void AssemblyMainWindow::disconnect_otherSlots()
 {
-    disconnect(params_view_, SIGNAL(request_moveToAbsRefPosition(double,double,double,double)), motion_model_, SLOT(moveAbsolute(double,double,double,double)));
-    disconnect(params_view_, SIGNAL(request_moveByRelRefDistance(double,double,double,double)), motion_model_, SLOT(moveRelative(double,double,double,double)));
-    disconnect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_model_, SLOT(moveRelative(double,double,double,double)));
+    disconnect(params_view_, SIGNAL(request_movetoabsrefposition(double,double,double,double)), motion_manager_, SLOT(moveAbsolute(double,double,double,double)));
+    disconnect(params_view_, SIGNAL(request_moveByRelRefDistance(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
+    disconnect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
 
     return;
 }
@@ -1062,7 +1190,9 @@ void AssemblyMainWindow::connect_DBLogger()
     connect(this, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
     connect(aligner_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
     connect(finder_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
-    connect(vellemanManager_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
+
+    connect(relayCardManager_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
+
     if(assembly_ != nullptr) {connect(assembly_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));}
     else if(assemblyV2_ != nullptr) {connect(assemblyV2_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));}
 

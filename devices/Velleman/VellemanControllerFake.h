@@ -15,10 +15,13 @@
 
 #include <vector>
 
-#include "IVellemanController.h"
+
+#include "VVellemanController.h"
 
 /// \brief class dealing with use of software without relay card
-class VellemanControllerFake : public IVellemanController {
+class VellemanControllerFake : public VVellemanController {
+
+
 
  public:
 

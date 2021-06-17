@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -20,6 +20,7 @@
 class Thermo2ScriptModel;
 
 #include "HuberUnistat525wModel.h"
+#include "MartaModel.h"
 #include "RohdeSchwarzNGE103BModel.h"
 #include "KeithleyDAQ6510Model.h"
 
@@ -28,6 +29,7 @@ class Thermo2ScriptThread : public QThread
 public:
   explicit Thermo2ScriptThread(Thermo2ScriptModel* scriptModel,
                                HuberUnistat525wModel* huberModel,
+															 MartaModel* martaModel,
                                RohdeSchwarzNGE103BModel* nge103BModel,
                                KeithleyDAQ6510Model* keithleyModel,
                                QObject *parent = 0);
@@ -43,6 +45,7 @@ protected:
 
   Thermo2ScriptModel* scriptModel_;
   HuberUnistat525wModel* huberModel_;
+  MartaModel* martaModel_;
   RohdeSchwarzNGE103BModel* nge103BModel_;
   KeithleyDAQ6510Model* keithleyModel_;
 };

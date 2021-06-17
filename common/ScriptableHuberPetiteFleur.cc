@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -10,9 +10,9 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <unistd.h>
-
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 #include <QMutexLocker>
 
@@ -65,40 +65,55 @@ QScriptValue ScriptableHuberPetiteFleur::getBathTemperature() {
 void ScriptableHuberPetiteFleur::waitForTemperatureAbove(float temperature,
                                                          int timeout) {
 
+  using namespace std::chrono_literals;
+
   for (int m=0;m<=timeout;++m) {
+
     QMutexLocker locker(&mutex_);
     double temp = huberPetiteFleurModel_->getBathTemperature();
     locker.unlock();
+
     if (temp>temperature) break;
-    sleep(60);
+
+    std::this_thread::sleep_for(60s);
   }
 }
 
 void ScriptableHuberPetiteFleur::waitForTemperatureBelow(float temperature,
                                                          int timeout) {
 
+  using namespace std::chrono_literals;
+
   for (int m=0;m<=timeout;++m) {
+
     QMutexLocker locker(&mutex_);
     double temp = huberPetiteFleurModel_->getBathTemperature();
     locker.unlock();
+
     if (temp<temperature) break;
-    sleep(60);
+
+    std::this_thread::sleep_for(60s);
   }
 }
 
 void ScriptableHuberPetiteFleur::waitForStableTemperature(float deltaT,
                                                           int delay,
                                                           int timeout) {
+  using namespace std::chrono_literals;
+
   int count = 0;
   double oldTemp = -999;
   for (int m=0;m<=timeout;++m) {
+
     QMutexLocker locker(&mutex_);
     double temp = huberPetiteFleurModel_->getBathTemperature();
     locker.unlock();
+
     if (fabs(oldTemp-temp)<=deltaT) count++;
     oldTemp = temp;
     if (count>=delay) break;
-    sleep(60);
+
+    std::this_thread::sleep_for(60s);
   }
 }
 

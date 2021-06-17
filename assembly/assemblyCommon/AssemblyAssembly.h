@@ -23,8 +23,8 @@
 #include <QObject>
 
 #include <LStepExpressMotionManager.h>
-// #include <ConradManager.h> // CONRAD
-#include <VellemanManager.h> // VELLEMAN
+
+#include <RelayCardManager.h>
 
 #include <AssemblySmartMotionManager.h>
 #include <AssemblyParameters.h>
@@ -36,8 +36,8 @@ class AssemblyAssembly : public QObject
  Q_OBJECT
 
  public:
-  // explicit AssemblyAssembly(const LStepExpressMotionManager* const, const ConradManager* const, const AssemblySmartMotionManager* const smart_motion=nullptr, QObject* parent=nullptr); // CONRAD 
-  explicit AssemblyAssembly(const LStepExpressMotionManager* const, const VellemanManager* const, const AssemblySmartMotionManager* const smart_motion=nullptr, QObject* parent=nullptr);  // VELLEMAN
+
+  explicit AssemblyAssembly(const LStepExpressMotionManager* const, const RelayCardManager* const, const AssemblySmartMotionManager* const smart_motion=nullptr, QObject* parent=nullptr);
 
   virtual ~AssemblyAssembly() {}
 
@@ -45,8 +45,7 @@ class AssemblyAssembly : public QObject
 
   const LStepExpressMotionManager* motion() const;
 
-  // const ConradManager*             vacuum() const; // CONRAD
-  const VellemanManager*           vacuum() const;    // VELLEMAN
+  const RelayCardManager* vacuum() const;
 
 
   const AssemblySmartMotionManager* smart_motion() const;
@@ -55,8 +54,7 @@ class AssemblyAssembly : public QObject
 
   const LStepExpressMotionManager* const motion_;
 
-  // const ConradManager*             const vacuum_; // CONRAD
-  const VellemanManager*           const vacuum_;    // VELLEMAN
+  const RelayCardManager* const vacuum_;
   
   const AssemblySmartMotionManager* const smart_motion_;
 

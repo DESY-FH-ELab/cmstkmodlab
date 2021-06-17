@@ -10,7 +10,7 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <unistd.h>
+#include <chrono>
 #include <thread>
 
 #include <QApplication>
@@ -50,9 +50,9 @@ void AgilentTwisTorr304Model::initialize()
 
     renewController(port_);
 
-    // Give the device some time to process befor spamming it with upcoming
+    // Give the device some time to process before spamming it with upcoming
     // commands
-    sleep(1);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
 
     setDeviceState(READY);
   }

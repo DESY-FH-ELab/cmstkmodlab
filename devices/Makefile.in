@@ -13,6 +13,7 @@ subdirs	      = Julabo \
                 Hameg \
                 Canon \
                 Conrad \
+                Velleman \
                 Pfeiffer \
                 Iota \
                 Cori \
@@ -23,7 +24,7 @@ subdirs	      = Julabo \
                 Leybold \
                 RohdeSchwarz \
                 Agilent \
-		Velleman 
+                Marta
 
 all:
 	@for dir in $(subdirs); do (cd $$dir; make); done

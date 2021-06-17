@@ -13,8 +13,6 @@
 #ifndef ASSEMBLYOBJECTFINDERPATRECWIDGET_H
 #define ASSEMBLYOBJECTFINDERPATRECWIDGET_H
 
-// #include <ConradModel.h> // CONRAD
-#include <VellemanModel.h> // VELLEMAN
 #include <LStepExpressMotionManager.h>
 #include <AssemblyVUEyeCamera.h>
 #include <AssemblyUEyeView.h>

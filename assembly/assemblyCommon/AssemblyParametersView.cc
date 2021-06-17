@@ -266,8 +266,8 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
   posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
 
-  button_moveAbsRefPos5_  = new QPushButton(tr("Move To Abs. Position"));
-  posi_lay->addWidget(button_moveAbsRefPos5_, row_index, 9, Qt::AlignRight);
+  //button_moveAbsRefPos5_  = new QPushButton(tr("Move To Abs. Position")); //Removed this abs. movement button: there is no priority of XY over Z enforced, so depending on the initial MS position, applying this movement may cause a crash 
+  //posi_lay->addWidget(button_moveAbsRefPos5_, row_index, 9, Qt::AlignRight);
 
   //// ---------------------
 
@@ -323,7 +323,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_dZ"] = new QLineEdit(tr(""));
-  
+
   dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
   dist_lay->addWidget(new QLabel(tr("dX"))    , row_index, 1, Qt::AlignRight);
   dist_lay->addWidget(this->get(tmp_tag+"_dX"), row_index, 2, Qt::AlignRight);
@@ -331,6 +331,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 4, Qt::AlignRight);
   dist_lay->addWidget(new QLabel(tr("dZ"))    , row_index, 5, Qt::AlignRight);
   dist_lay->addWidget(this->get(tmp_tag+"_dZ"), row_index, 6, Qt::AlignRight);
+
 
   // distance: shift from PSs Ref-Point to PSSTL Ref-Point
   ++row_index;
@@ -369,9 +370,8 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dist_lay->addWidget(new QLabel(tr("dZ"))    , row_index, 5, Qt::AlignRight);
   dist_lay->addWidget(this->get(tmp_tag+"_dZ"), row_index, 6, Qt::AlignRight);
 
+
   
-
-
   button_moveRelRefDist3_  = new QPushButton(tr("Apply Relative Movement"));
   dist_lay->addWidget(button_moveRelRefDist3_, row_index, 9, Qt::AlignLeft);
 
@@ -448,7 +448,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   ++row_index;
 
   tmp_tag = "FromPlatformRefPointCalibrationSpacersToSpacerEdge";
-  tmp_des = "From Platform Ref-Point for Spacers-Calibration to Spacer's Edge :";
+  tmp_des = "From Platform Ref-Point to Spacer's Edge :"; //Was: 'From Platform Ref-Point for Spacers-Calibration to Spacer's Edge'
 
   map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
@@ -466,7 +466,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   ++row_index;
 
   tmp_tag = "FromPlatformRefPointCalibrationBaseplateToPSPEdge";
-  tmp_des = "From Platform Ref-Point for Baseplate-Calibration to PS-p Edge :";
+  tmp_des = "From Platform Ref-Point to PS-p Edge :"; //Was: 'From Platform Ref-Point for Baseplate-Calibration to PS-p Edge'
 
   map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
@@ -480,8 +480,33 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   button_moveRelRefDist9_  = new QPushButton(tr("Apply Relative Movement"));
   dist_lay->addWidget(button_moveRelRefDist9_, row_index, 9, Qt::AlignLeft);
 
+
+  // distance: from ref-point on assembly platform (for baseplate's calibration) to edge of PS-p sensor
+
+  ++row_index;
+
+  tmp_tag = "FromPSSRefPointToPSSTLRefPoint";
+  tmp_des = "From PSs Ref-Point to PSs Top Left Corner :";
+
+  map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_dZ"] = new QLineEdit(tr(""));
+
+  dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("dX"))    , row_index, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dX"), row_index, 2, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 3, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 4, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dZ"))    , row_index, 5, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dZ"), row_index, 6, Qt::AlignRight);
+
+  button_moveRelRefDist10_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist10_, row_index, 9, Qt::AlignLeft);
+
   //// ---------------------
 
+
+  
   layout->addStretch(1);
 
   QHBoxLayout* paramIO_lay = new QHBoxLayout;
@@ -503,7 +528,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   connect(button_moveAbsRefPos2_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos2()));
   connect(button_moveAbsRefPos3_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos3()));
   connect(button_moveAbsRefPos4_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos4()));
-  connect(button_moveAbsRefPos5_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos5()));
+  //connect(button_moveAbsRefPos5_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos5()));
   connect(this , SIGNAL(click_moveToAbsRefPos(int)), this, SLOT(askConfirmMoveToAbsRefPoint(int)));
 
   connect(button_moveRelRefDist1_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist1()));
@@ -515,6 +540,8 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   connect(button_moveRelRefDist7_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist7()));
   connect(button_moveRelRefDist8_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist8()));
   connect(button_moveRelRefDist9_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist9()));
+  connect(button_moveRelRefDist10_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist10()));
+
   connect(this , SIGNAL(click_moveByRelRefDist(int)), this, SLOT(askConfirmMoveByRelRefDist(int)));
 }
 
@@ -529,7 +556,7 @@ AssemblyParametersView::~AssemblyParametersView()
     disconnect(button_moveAbsRefPos2_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos2()));
     disconnect(button_moveAbsRefPos3_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos3()));
     disconnect(button_moveAbsRefPos4_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos4()));
-    disconnect(button_moveAbsRefPos5_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos5()));
+    //disconnect(button_moveAbsRefPos5_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos5()));
     disconnect(this , SIGNAL(click_moveToAbsRefPos(int)), this, SLOT(askConfirmMoveToAbsRefPoint(int)));
 
     disconnect(button_moveRelRefDist1_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist1()));
@@ -541,6 +568,7 @@ AssemblyParametersView::~AssemblyParametersView()
     disconnect(button_moveRelRefDist7_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist7()));
     disconnect(button_moveRelRefDist8_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist8()));
     disconnect(button_moveRelRefDist9_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist9()));
+    disconnect(button_moveRelRefDist10_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist10()));
     disconnect(this , SIGNAL(click_moveByRelRefDist(int)), this, SLOT(askConfirmMoveByRelRefDist(int)));
 }
 
@@ -773,14 +801,14 @@ void AssemblyParametersView::display_infoTab()
     messageBox.setWindowTitle(tr("Information - Parameters"));
 
     messageBox.setText(tr("<p>This tab stores reference values (dimensions, distances, etc.) necessary to the assembly procedure.<br>"
-    "The values are read from a config file (whose path is hardcoded as option <i>[AssemblyParameters_file_path]</i> in the file <i>[assembly/assembly.cfg])</i>, and may be edited interactively and non-permanently by the user.</p>"
-    "<p style=color:orange>NB: make sure to read the proper config file, which differs for glass or silicon assembly !</p>"
+    "The values are read from a config file (whose path is hardcoded as option <i>AssemblyParameters_file_path</i> in the file <i>assembly/assembly.cfg)</i>, and may be edited interactively by the user in this interface (non-permanent changes).</p>"
+    "<p style=color:orange>NB: make sure to read the proper config file, which differs for glass/silicon and different spacer thicknesses !</p>"
     "<p>[<b>Dimensions of Assembly Components</b>] -- Reference thickness values of assembly components, used to compute distances along the Z-axis and apply the corresponding movements during assembly.</p>"
     "<p>[<b>Reference Positions</b>] -- Absolute positions of several reference points <i>(related to assembly platform, spacer slots, gluing stage, ec.)</i> expressed in the reference frame of the motion stage (MS). These values must be determined manually as part of a periodic calibration procedure."
     "<ul>"
     "<li> <u>Sensor Marker-1 Ref Point</u>: position of the top-left fiducial marker of a sensor. This position is arbitrary and only used as a starting point for PatRec, which ultimately determines the exact marker position. The purpose of this constant is solely to provide a good starting point for the PatRec to run as fast as possible.</li>"
-    "<li> <u>Baseplate Ref Point</u>: position of the inner edge of the black right angle engraved on the bottom-left corner of the platform. This point provides all the necessary information about the positions of the platform in the MS reference frame, since all point-to-point distances on the platform are assumed to be known exactly.</li>"
-    "<li> <u>Spacers Ref Point</u>: position of the same platform edge mentioned above, after a -90degrees rotation has been applied to the platform. The XYZ coordinates must be determined independently, while the angle is assumed to be shifted by exactly -90deg w.r.t. its initial value. <i>NB: the axis of rotation of the platform is not assumed to be known exactly, hence this position is measured rather than deduced from other quantities.</i></li>"
+    "<li> <u>Baseplate Ref Point</u>: position of the inner edge of the right angle engraved on the bottom-left corner of the platform. This point provides all the necessary information about the positions of the platform in the MS reference frame, since all point-to-point distances on the platform are assumed to be known exactly.</li>"
+    "<li> <u>Spacers Ref Point</u>: position of the same platform edge mentioned above, after a -90degrees rotation has been applied to the platform. The XYZ coordinates must be determined independently, while the angle is assumed to be shifted by exactly -90deg w.r.t. its initial value. <i>NB: the axis of rotation of the platform is not assumed to be known exactly, hence this position is measured rather than deduced from other quantities. [OBSOLETE with new assembly platform -- now identical to above]</i></li>"
     "</ul></p>"
     "<p>[<b>Reference Distances</b>] -- Distances between reference points.</p>"
     ));

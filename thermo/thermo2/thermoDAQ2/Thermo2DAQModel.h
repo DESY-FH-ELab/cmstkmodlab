@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2019 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -23,6 +23,7 @@
 #include <QMutexLocker>
 
 #include "HuberUnistat525wModel.h"
+#include "MartaModel.h"
 #include "AgilentTwisTorr304Model.h"
 #include "LeyboldGraphixOneModel.h"
 #include "RohdeSchwarzNGE103BModel.h"
@@ -34,6 +35,7 @@ class Thermo2DAQModel : public QObject
 public:
 
   explicit Thermo2DAQModel(HuberUnistat525wModel* huberModel,
+													 MartaModel* martaModel,
                            AgilentTwisTorr304Model* agilentModel,
                            LeyboldGraphixOneModel* leyboldModel,
                            RohdeSchwarzNGE103BModel* nge103BModel,
@@ -57,6 +59,7 @@ public slots:
 protected slots:
 
   void huberInfoChanged();
+  void martaInfoChanged();
   void agilentInfoChanged();
   void leyboldInfoChanged();
   void nge103BInfoChanged();
@@ -69,6 +72,7 @@ protected:
   bool daqState_;
 
   HuberUnistat525wModel* huberModel_;
+	MartaModel* martaModel_;
   AgilentTwisTorr304Model* agilentModel_;
   LeyboldGraphixOneModel* leyboldModel_;
   RohdeSchwarzNGE103BModel* nge103BModel_;
@@ -96,6 +100,51 @@ protected:
   int u525wPower_;
   float u525wCWInletTemperature_;
   float u525wCWOutletTemperature_;
+
+  // Marta CO2 Chiller Data
+  bool martaState_;
+  float martaPT03_;
+  float martaPT05_;
+  float martaPT01CO2_;
+  float martaPT02CO2_;
+  float martaPT03CO2_;
+  float martaPT04CO2_;
+  float martaPT05CO2_;
+  float martaPT06CO2_;
+  float martaTT02_;
+  float martaTT01CO2_;
+  float martaTT02CO2_;
+  float martaTT03CO2_;
+  float martaTT04CO2_;
+  float martaTT05CO2_;
+  float martaTT06CO2_;
+  float martaTT07CO2_;
+  float martaSH05_;
+  float martaSC01CO2_;
+  float martaSC02CO2_;
+  float martaSC03CO2_;
+  float martaSC05CO2_;
+  float martaSC06CO2_;
+  float martaDP01CO2_;
+  float martaDP02CO2_;
+  float martaDP03CO2_;
+  float martaDP04CO2_;
+  float martaDT02CO2_;
+  float martaDT03CO2_;
+  float martaST01CO2_;
+  float martaST02CO2_;
+  float martaST03CO2_;
+  float martaST04CO2_;
+  float martaFT01CO2_;
+  float martaSpeedSetpoint_;
+  float martaFlowSetpoint_;
+  float martaTemperatureSetpoint_;
+  std::array<uint16_t,4> martaAlarms_;
+  uint16_t martaAlarmStatus_;
+  uint16_t martaStatus_;
+  float martaTemperatureSetpoint2_;
+  float martaSpeedSetpoint2_;
+  float martaFlowSetpoint2_;
 
   // Agilent TwisTorr 304 Data
   bool agilentState_;

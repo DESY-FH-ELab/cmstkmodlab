@@ -76,7 +76,8 @@ void AssemblyToolboxView::display_infoTab()
     "<ul>"
     "<li> <u>Record positions</u>: Save the current absolute position of the Motion Stage, and comment it if desired. It is possible to determine the relative distance between 2 registered positions.</li>"
     "<br>"
-    "<li> <u>Multi-Pickup Tester</u>: advanced functionality, for calibrating the relative distance along the Z axis to pickup an object, when the camera is focused on the platform surface. The basic procedure is: a) take snapshot; b) lower pickup tool; c) pickup object; d) lift up; e) put back down; f) take new snapshot; g) repeat for several relative distances dZ. Each time, PatRec is run before/after pickup to verify whether the object was displaced in XY, which indicates that excessive or insufficient pressure was applied to the object.</li>"
+    "<li> <u>Multi-Pickup Tester</u>: advanced functionality. Used to calibrate the relative movement required along the z-axis to pickup an object, when the camera is focused on that object. The basic procedure is: a) PatRec on sensor ref. marker; b) lower pickup tool; c) pickup object; d) lift up; e) put back down; f) rerun PatRec; g) repeat. At each repetition, can monitor in the PatRec tab whether the object was displaced in XY by the pickup, which indicates that excessive/insufficient pressure was applied to the object. Repeat this test until you are satisfied with the z-axis movement, and store its value in the cfg file.</li>"
+    "<p style=color:orange><b>WARNING: you must activate the baseplate vacuum before starting !</p></b>"
     "</ul></p>"
     ));
 

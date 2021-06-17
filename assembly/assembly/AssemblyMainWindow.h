@@ -62,13 +62,13 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <LStepExpressMeasurementWidget.h>
 #include <LStepExpressPositionWidget.h>
 #include <LStepExpressStatusWindow.h>
+
+#include <VRelayCardModel.h>
+#include <RelayCardManager.h>
+
 #include <AssemblyDBLoggerModel.h>
 #include <AssemblyDBLoggerController.h>
 #include <AssemblyDBLoggerView.h>
-// #include <ConradModel.h>   // CONRAD
-// #include <ConradManager.h> // CONRAD
-#include <VellemanModel.h>    // VELLEMAN
-#include <VellemanManager.h>  // VELLEMAN
 
 
 #include <QMainWindow>
@@ -109,6 +109,7 @@ class AssemblyMainWindow : public QMainWindow
 
   void start_alignmentCheck(const AlignmentCheck::Configuration&);
   void disconnect_alignmentCheck();
+
   void start_multiPickupTest(const AssemblyMultiPickupTester::Configuration&);
 
   void disconnect_multiPickupTest();
@@ -155,10 +156,10 @@ class AssemblyMainWindow : public QMainWindow
  protected:
 
   // Low-Level Controllers (Motion, Camera, Vacuum)
-  //  ConradModel*   conradModel_;   // CONRAD
-  //  ConradManager* conradManager_; // CONRAD
-  VellemanModel*   vellemanModel_;   // VELLEMAN
-  VellemanManager* vellemanManager_; // VELLEMAN
+
+  VRelayCardModel* relayCardModel_;
+  RelayCardManager* relayCardManager_;
+
 
   LStepExpressModel*          motion_model_;
   LStepExpressMotionManager*  motion_manager_;
@@ -217,6 +218,7 @@ class AssemblyMainWindow : public QMainWindow
   AlignmentCheckView* alignmentCheck_view_;
 
   QCheckBox* autofocus_checkbox_;
+  AlignmentCheckView* alignmentCheck_view_;
 
   // flags
   bool images_enabled_;

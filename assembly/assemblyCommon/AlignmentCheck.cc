@@ -250,8 +250,9 @@ void AlignmentCheck::run_alignment(const double patrec_dX, const double patrec_d
       emit image_request();
     }
   }
-  // Step #1: PatRec on marker-1                                                                                                    \
-                                                                                                                                     
+
+ // Step #1: PatRec on marker-1                                                                                                    
+
   else if(alignment_step_ == 1)
     {
     NQLog("AlignmentCheck", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
@@ -317,12 +318,15 @@ void AlignmentCheck::run_alignment(const double patrec_dX, const double patrec_d
                                            << ": emitting signal \"PatRec_request\"";
 
       ++alignment_step_;
+
       emit PatRec_request(this->configuration().PatRecTwo_configuration);
+
   }
 
   else if(alignment_step_ == 5)
     {
-    // marker-2: position of PatRec best-match                                                                                      \
+
+    // marker-2: position of PatRec best-match                                                                                      
                                                                                                                                     
       posi_x2_ = motion_manager_->get_position_X() + patrec_dX;
       posi_y2_ = motion_manager_->get_position_Y() + patrec_dY;
@@ -453,6 +457,7 @@ void AlignmentCheck::run_alignment(const double patrec_dX, const double patrec_d
       
       NQLog("AlignmentCheck", NQLog::Message) << "Angle measured from the PS-S to the PS-P: step [" << meas_angle << "]";
 
+
       if (this->configuration().complete_at_position1)
       {
         NQLog("AlignmentCheck", NQLog::Message) << "Angle measurment completed, moving back to position 1";
@@ -460,8 +465,8 @@ void AlignmentCheck::run_alignment(const double patrec_dX, const double patrec_d
         const double dZ = (params->get("FromPSPRefPointToPSSRefPoint_dZ") + params->get("FromPSSRefPointToPSSTLRefPoint_dZ") + params->get("FromPSSTLToPSPTL_dZ"));
 
         this->move_relative(-dX, 0.0, -dZ, 0.0);
-        
       }
+
       this->reset();
 
       emit execution_completed();

@@ -30,10 +30,10 @@
 /* 
    Constructor
 */
-VellemanModel::VellemanModel(const std::string& port, QObject* /* parent */)
-  : QObject()
+
+VellemanModel::VellemanModel(const std::string& port, QObject* parent)
+  : VRelayCardModel(port, parent)
   , AbstractDeviceModel()
-  , port_(port.c_str())
   , channelStates_(8, OFF)
 {
   setDeviceEnabled(true); // public slot
