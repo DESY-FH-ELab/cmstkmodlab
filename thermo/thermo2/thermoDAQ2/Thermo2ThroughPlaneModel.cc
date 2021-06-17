@@ -44,7 +44,6 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
   QTime time = mattermostStatusTime_.time();
   time = time.addMSecs(-time.msec());
   time = time.addSecs(-time.second());
-  time = time.addSecs(-60*time.minute());
   time = time.addSecs(mattermostInterval_*60);
   mattermostStatusTime_.setTime(time);
 
@@ -99,10 +98,10 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
 
   keithleyState_ = false;
   for (unsigned int c=0;c<6;++c) {
-  	keithleyTopSensorStates_[c] = false;
-  	keithleyBottomSensorStates_[c] = false;
-  	keithleyTopTemperatures_[c] = 0;
-  	keithleyBottomTemperatures_[c] = 0;
+    keithleyTopSensorStates_[c] = false;
+    keithleyBottomSensorStates_[c] = false;
+    keithleyTopTemperatures_[c] = 0;
+    keithleyBottomTemperatures_[c] = 0;
   }
 
   calculationState_ = false;
@@ -140,7 +139,7 @@ void Thermo2ThroughPlaneModel::huberInfoChanged()
   changed |= updateIfChanged<double>(huberTemperatureSetPoint_, huberModel_->getTemperatureSetPoint());
 
   if (changed) {
-  	emit informationChanged();
+    emit informationChanged();
   }
 }
 
@@ -157,9 +156,9 @@ void Thermo2ThroughPlaneModel::nge103BInfoChanged()
 
   if (changed) {
 
-  	sourcePower_ = resistance_ * std::pow(nge103BCurrent_, 2);
+    sourcePower_ = resistance_ * std::pow(nge103BCurrent_, 2);
 
-  	emit informationChanged();
+    emit informationChanged();
   }
 }
 
@@ -185,100 +184,100 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
 
   if (changed) {
 
-  	if (countTop>=2 && countBottom>=2) {
-  		calculationState_ = true;
+    if (countTop>=2 && countBottom>=2) {
+      calculationState_ = true;
 
-  		gsl_matrix *X, *cov;
-  		gsl_vector *x, *y, *c;
-  		gsl_multifit_robust_workspace * work;
-  		unsigned int p;
-  		double pos;
+      gsl_matrix *X, *cov;
+      gsl_vector *x, *y, *c;
+      gsl_multifit_robust_workspace * work;
+      unsigned int p;
+      double pos;
 
-  		if (countTop<4) {
-  			p = 2;
-  		} else {
-  			p = 3;
-  		}
-  		p = 2; // make linear fit the default
+      if (countTop<4) {
+	p = 2;
+      } else {
+	p = 3;
+      }
+      p = 2; // make linear fit the default
 
-  		X = gsl_matrix_alloc(countTop, p);
-  		x = gsl_vector_alloc(countTop);
-  		y = gsl_vector_alloc(countTop);
-  		c = gsl_vector_alloc(p);
-  		cov = gsl_matrix_alloc(p, p);
+      X = gsl_matrix_alloc(countTop, p);
+      x = gsl_vector_alloc(countTop);
+      y = gsl_vector_alloc(countTop);
+      c = gsl_vector_alloc(p);
+      cov = gsl_matrix_alloc(p, p);
 
-  		for (unsigned int i=0;i<6;i++) {
-  			if (keithleyTopSensorStates_[i]) {
-  				pos = keithleyTopPositions_[i];
-  				gsl_vector_set(x, i, pos);
-  				gsl_vector_set(y, i, keithleyTopTemperatures_[i]);
+      for (unsigned int i=0;i<6;i++) {
+	if (keithleyTopSensorStates_[i]) {
+	  pos = keithleyTopPositions_[i];
+	  gsl_vector_set(x, i, pos);
+	  gsl_vector_set(y, i, keithleyTopTemperatures_[i]);
 
-  				gsl_matrix_set(X, i, 0, 1.0);
-  				gsl_matrix_set(X, i, 1, pos);
-  				if (p==3) gsl_matrix_set(X, i, 2, pos*pos);
-  			}
-  		}
+	  gsl_matrix_set(X, i, 0, 1.0);
+	  gsl_matrix_set(X, i, 1, pos);
+	  if (p==3) gsl_matrix_set(X, i, 2, pos*pos);
+	}
+      }
 
-  	  work = gsl_multifit_robust_alloc(gsl_multifit_robust_bisquare, X->size1, X->size2);
-  	  gsl_multifit_robust(X, y, c, cov, work);
-  	  gsl_multifit_robust_free(work);
+      work = gsl_multifit_robust_alloc(gsl_multifit_robust_bisquare, X->size1, X->size2);
+      gsl_multifit_robust(X, y, c, cov, work);
+      gsl_multifit_robust_free(work);
 
-  	  sampleTTop_ = gsl_vector_get(c, 0);
-  	  gradientTop_ = -1.0*gsl_vector_get(c, 1);
-  	  powerTop_ = gradientTop_ * kBlock_ * ABlock_;
+      sampleTTop_ = gsl_vector_get(c, 0);
+      gradientTop_ = -1.0*gsl_vector_get(c, 1);
+      powerTop_ = gradientTop_ * kBlock_ * ABlock_;
 
-  	  gsl_matrix_free(X);
-  	  gsl_vector_free(x);
-  	  gsl_vector_free(y);
-  	  gsl_vector_free(c);
-  	  gsl_matrix_free(cov);
+      gsl_matrix_free(X);
+      gsl_vector_free(x);
+      gsl_vector_free(y);
+      gsl_vector_free(c);
+      gsl_matrix_free(cov);
 
 
-  		if (countBottom<4) {
-  			p = 2;
-  		} else {
-  			p = 3;
-  		}
-  		p = 2; // make linear fit the default
+      if (countBottom<4) {
+	p = 2;
+      } else {
+	p = 3;
+      }
+      p = 2; // make linear fit the default
 
-  		X = gsl_matrix_alloc(countBottom, p);
-  		x = gsl_vector_alloc(countBottom);
-  		y = gsl_vector_alloc(countBottom);
-  		c = gsl_vector_alloc(p);
-  		cov = gsl_matrix_alloc(p, p);
+      X = gsl_matrix_alloc(countBottom, p);
+      x = gsl_vector_alloc(countBottom);
+      y = gsl_vector_alloc(countBottom);
+      c = gsl_vector_alloc(p);
+      cov = gsl_matrix_alloc(p, p);
 
-  		for (unsigned int i=0;i<6;i++) {
-  			if (keithleyBottomSensorStates_[i]) {
-  				pos = keithleyBottomPositions_[i];
-  				gsl_vector_set(x, i, pos);
-  				gsl_vector_set(y, i, keithleyBottomTemperatures_[i]);
+      for (unsigned int i=0;i<6;i++) {
+	if (keithleyBottomSensorStates_[i]) {
+	  pos = keithleyBottomPositions_[i];
+	  gsl_vector_set(x, i, pos);
+	  gsl_vector_set(y, i, keithleyBottomTemperatures_[i]);
 
-  				gsl_matrix_set(X, i, 0, 1.0);
-  				gsl_matrix_set(X, i, 1, pos);
-  				if (p==3) gsl_matrix_set(X, i, 2, pos*pos);
-  			}
-  		}
+	  gsl_matrix_set(X, i, 0, 1.0);
+	  gsl_matrix_set(X, i, 1, pos);
+	  if (p==3) gsl_matrix_set(X, i, 2, pos*pos);
+	}
+      }
 
-  	  work = gsl_multifit_robust_alloc(gsl_multifit_robust_bisquare, X->size1, X->size2);
-  	  gsl_multifit_robust(X, y, c, cov, work);
-  	  gsl_multifit_robust_free(work);
+      work = gsl_multifit_robust_alloc(gsl_multifit_robust_bisquare, X->size1, X->size2);
+      gsl_multifit_robust(X, y, c, cov, work);
+      gsl_multifit_robust_free(work);
 
-  	  sampleTBottom_ = gsl_vector_get(c, 0);
-  	  gradientBottom_ = gsl_vector_get(c, 1);
-  	  powerBottom_ = gradientBottom_ * kBlock_ * ABlock_;
+      sampleTBottom_ = gsl_vector_get(c, 0);
+      gradientBottom_ = gsl_vector_get(c, 1);
+      powerBottom_ = gradientBottom_ * kBlock_ * ABlock_;
 
-  	  gsl_matrix_free(X);
-  	  gsl_vector_free(x);
-  	  gsl_vector_free(y);
-  	  gsl_vector_free(c);
-  	  gsl_matrix_free(cov);
+      gsl_matrix_free(X);
+      gsl_vector_free(x);
+      gsl_vector_free(y);
+      gsl_vector_free(c);
+      gsl_matrix_free(cov);
 
-  	  sampleTMiddle_ = 0.5*(sampleTTop_ + sampleTBottom_);
-  	} else {
-  	  calculationState_ = false;
-  	}
+      sampleTMiddle_ = 0.5*(sampleTTop_ + sampleTBottom_);
+    } else {
+      calculationState_ = false;
+    }
 
-  	emit informationChanged();
+    emit informationChanged();
   }
 }
 
