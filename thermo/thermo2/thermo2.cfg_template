@@ -36,7 +36,7 @@ mattermostchannel                      thermodaq2
 #
 # Through-Plane Thermal Measurement Setup
 #
-ThroughPlaneAutoConfig                 1
+ThroughPlaneAutoConfig                 0
 ThroughPlaneMattermostStatus           1
 ThroughPlaneMattermostInterval         10 # interval between mattermost status updates in minutes
 ThroughPlaneResistance                 100.0
