@@ -123,7 +123,7 @@ void AssemblyUEyeCamera::open()
         setColorMode(sensorInfo->nColorMode);
         setMaxWidth(sensorInfo->nMaxWidth);
         setMaxHeight(sensorInfo->nMaxHeight);
-        setMasterGain(sensorInfo->bMasterGain);
+        setMasterGain(sensorInfo->bMasterGain); 
         setRedGain(sensorInfo->bRGain);
         setGreenGain(sensorInfo->bGGain);
         setBlueGain(sensorInfo->bBGain);
@@ -264,7 +264,7 @@ void AssemblyUEyeCamera::updateInformation()
         setColorMode(sensorInfo->nColorMode);
         setMaxWidth(sensorInfo->nMaxWidth);
         setMaxHeight(sensorInfo->nMaxHeight);
-        setMasterGain(sensorInfo->bMasterGain);
+        setMasterGain(sensorInfo->bMasterGain); 
         setRedGain(sensorInfo->bRGain);
         setGreenGain(sensorInfo->bGGain);
         setBlueGain(sensorInfo->bBGain);

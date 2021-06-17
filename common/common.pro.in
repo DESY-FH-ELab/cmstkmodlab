@@ -148,6 +148,7 @@ HEADERS += nqlogger.h \
            MartaSVG.h \
            ScriptableMarta.h
 
+
 SOURCES += nqlogger.cc \
            npoint2D.cc \
            npoint3D.cc \
@@ -212,3 +213,4 @@ SOURCES += nqlogger.cc \
            MartaModel.cc \
            MartaWidget.cc \
            ScriptableMarta.cc
+

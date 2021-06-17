@@ -10,6 +10,7 @@ LIBS += -L@basepath@/devices/lib -lTkModLabGreisinger
 LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
 LIBS += -L@basepath@/devices/lib -lTkModLabHameg
 LIBS += -L@basepath@/devices/lib -lTkModLabConrad
+LIBS += -L@basepath@/devices/lib -lTkModLabVelleman
 LIBS += -L@basepath@/devices/lib -lTkModLabCanon
 LIBS += -L@basepath@/devices/lib -lTkModLabMarta
 LIBS += -L@basepath@/external/ddierckx -lddierckx

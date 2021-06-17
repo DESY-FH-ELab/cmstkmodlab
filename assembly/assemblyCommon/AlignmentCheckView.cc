@@ -187,9 +187,7 @@ AlignmentCheckView::AlignmentCheckView(QWidget* parent)
     const std::string fpath = config->getValue<std::string>("AssemblyObjectAlignerView_PatRec1_template_fpath", "");
     if(fpath != ""){ patrecOne_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+fpath)); }
 
-
     assembly::QLineEdit_setText(patrecOne_wid_->threshold_lineEdit()        , config->getValue<int>("AlignmentCheckView_PatRec1_threshold"        , 10));
-
 
     assembly::QLineEdit_setText(patrecOne_wid_->adaptiveThreshold_lineEdit(), config->getValue<int>("AlignmentCheckView_PatRec1_adaptiveThreshold", 587));
     assembly::QLineEdit_setText(patrecOne_wid_->angles_prescan_lineEdit()   , config->getValue<double>("AssemblyObjectAlignerView_Pa\
@@ -246,8 +244,6 @@ QGroupBox* patrecThree_cfg_box = new QGroupBox(tr("PatRec Marker #3  [TL PS-S]")
 
 
     assembly::QLineEdit_setText(patrecThree_wid_->threshold_lineEdit()        , config->getValue<int>("AlignmentCheckView_PatRec2_threshold"        , 17));
-
-
     assembly::QLineEdit_setText(patrecThree_wid_->adaptiveThreshold_lineEdit(), config->getValue<int>("AlignmentCheckView_PatRec2_adaptiveThreshold", 587));
     assembly::QLineEdit_setText(patrecThree_wid_->angles_prescan_lineEdit()   , config->getValue<double>("AssemblyObjectAlignerView_Pa\
 tRec1_angles_prescan" , 0));
@@ -276,7 +272,6 @@ QGroupBox* patrecFour_cfg_box = new QGroupBox(tr("PatRec Marker #4  [TL PS-P]"))
 
 
     assembly::QLineEdit_setText(patrecFour_wid_->threshold_lineEdit()        , config->getValue<int>("AlignmentCheckView_PatRec2_threshold"        , 10));
-
     assembly::QLineEdit_setText(patrecFour_wid_->adaptiveThreshold_lineEdit(), config->getValue<int>("AlignmentCheckView_PatRec2_adaptiveThreshold", 587));
     assembly::QLineEdit_setText(patrecFour_wid_->angles_prescan_lineEdit()   , config->getValue<double>("AssemblyObjectAlignerView_Pa\
 tRec1_angles_prescan" , 0));

@@ -136,7 +136,10 @@ HEADERS += AlignmentCheck.h \
            AssemblyUtilities.h \
            AssemblyDBLoggerController.h \
            AssemblyDBLoggerModel.h \
-           AssemblyDBLoggerView.h
+           AssemblyDBLoggerView.h \
+           AlignmentCheckView.h \
+           AlignmentCheck.h \
+           
 
 equals(NOUEYE,"X0") {
 HEADERS += AssemblyUEyeCamera.h \
@@ -206,8 +209,12 @@ SOURCES += AlignmentCheck.cc \
            AssemblyUtilities.cc \
            AssemblyDBLoggerController.cc \
            AssemblyDBLoggerModel.cc \
-           AssemblyDBLoggerView.cc
+           AssemblyDBLoggerView.cc \
+           AlignmentCheckView.cc \
+           AlignmentCheck.cc \
 
+
+           
 equals(NOUEYE,"X0") {
 SOURCES += AssemblyUEyeCamera.cc \
            AssemblyUEyeModel.cc

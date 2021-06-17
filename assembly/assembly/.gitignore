@@ -6,6 +6,7 @@ Makefile
 *.d
 *.o
 *~
+#*
 moc_*
 assembly
 assembly.app

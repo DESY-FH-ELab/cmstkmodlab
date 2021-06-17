@@ -23,13 +23,16 @@ typedef AssemblyUEyeFakeModel AssemblyUEyeModel_t;
 typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #endif
 #include <AssemblyUEyeWidget.h>
+#include <AssemblyUEyeCameraWidget.h>
 #include <AssemblyUEyeView.h>
 #include <AssemblyUEyeSnapShooter.h>
 #include <AssemblyZFocusFinder.h>
 #include <AssemblyImageController.h>
 #include <AssemblyImageView.h>
+
 #include <AlignmentCheck.h>
 #include <AlignmentCheckView.h>
+
 #include <AssemblyThresholder.h>
 #include <AssemblyThresholderView.h>
 #include <AssemblyObjectFinderPatRec.h>
@@ -59,11 +62,14 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <LStepExpressMeasurementWidget.h>
 #include <LStepExpressPositionWidget.h>
 #include <LStepExpressStatusWindow.h>
+
 #include <VRelayCardModel.h>
 #include <RelayCardManager.h>
+
 #include <AssemblyDBLoggerModel.h>
 #include <AssemblyDBLoggerController.h>
 #include <AssemblyDBLoggerView.h>
+
 
 #include <QMainWindow>
 #include <QString>
@@ -79,11 +85,13 @@ class AssemblyMainWindow : public QMainWindow
 
  public:
 
-  explicit AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const QString& DBlogfile_path, const unsigned int camera_ID=10, QWidget* parent=nullptr);
+
+  explicit AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const QString& DBlogfile_path, const unsigned int camera_ID=1, QWidget* parent=nullptr);
   virtual ~AssemblyMainWindow()
   {
       disconnect_otherSlots();
   }
+
 
  public slots:
 
@@ -103,6 +111,7 @@ class AssemblyMainWindow : public QMainWindow
   void disconnect_alignmentCheck();
 
   void start_multiPickupTest(const AssemblyMultiPickupTester::Configuration&);
+
   void disconnect_multiPickupTest();
 
   void disconnect_otherSlots();
@@ -134,9 +143,11 @@ class AssemblyMainWindow : public QMainWindow
 
   void multiPickupTest_disconnected();
 
+
   void DBLogMessage(const QString);
 
   void display_info();
+
 
  protected slots:
 
@@ -145,8 +156,10 @@ class AssemblyMainWindow : public QMainWindow
  protected:
 
   // Low-Level Controllers (Motion, Camera, Vacuum)
+
   VRelayCardModel* relayCardModel_;
   RelayCardManager* relayCardManager_;
+
 
   LStepExpressModel*          motion_model_;
   LStepExpressMotionManager*  motion_manager_;
@@ -157,7 +170,7 @@ class AssemblyMainWindow : public QMainWindow
 
   AssemblyUEyeModel_t*      camera_model_;
   AssemblyUEyeCameraThread* camera_thread_;
-//  AssemblyUEyeWidget*      camera_widget_;
+  AssemblyUEyeWidget*      camera_widget_;
   AssemblyVUEyeCamera*      camera_;
   unsigned int              camera_ID_;
 
@@ -183,9 +196,9 @@ class AssemblyMainWindow : public QMainWindow
   QTabWidget* main_tab;
   QTabWidget* tabWidget_;
 
-//  AssemblyUEyeSnapShooter* finderView_;
-//  AssemblyUEyeSnapShooter* edgeView_;
-//  AssemblyUEyeSnapShooter* rawView_;
+  AssemblyUEyeSnapShooter* finderView_;
+  AssemblyUEyeSnapShooter* edgeView_;
+  AssemblyUEyeSnapShooter* rawView_;
   AssemblyImageView* image_view_;
   AssemblyThresholderView* thresholder_view_;
   AssemblyObjectFinderPatRecView* finder_view_;
@@ -195,13 +208,15 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyToolboxView* toolbox_view_;
   AssemblyParametersView* params_view_;
   AssemblyHardwareControlView* hwctr_view_;
-
   AssemblyDBLoggerModel* DBLog_model_;
   AssemblyDBLoggerController* DBLog_ctrl_;
   AssemblyDBLoggerView* DBLog_view_;
 
   QPushButton* button_mainEmergencyStop_;
   QPushButton* button_info_;
+
+  AlignmentCheckView* alignmentCheck_view_;
+
   QCheckBox* autofocus_checkbox_;
   AlignmentCheckView* alignmentCheck_view_;
 

@@ -112,7 +112,8 @@ cv::Mat AssemblyThresholder::get_image_binary_threshold(const cv::Mat& img, cons
     img_gs = img.clone();
   }
 
-  // binary image
+  // binary and filtered images
+  //cv::Mat img_filtered(img_gs.size(), img_gs.type()); // CHANGED
   cv::Mat img_bin(img_gs.size(), img_gs.type());
 
   if(threshold < 0)
@@ -131,7 +132,8 @@ cv::Mat AssemblyThresholder::get_image_binary_threshold(const cv::Mat& img, cons
   }
   else
   {
-    cv::threshold(img_gs, img_bin, threshold, 255, cv::THRESH_BINARY);
+    //cv::bilateralFilter(img_gs, img_filtered, 5, 90, 30); //CHANGED
+    cv::threshold(img_gs, img_bin, threshold, 255, cv::THRESH_BINARY);//+cv::THRESH_OTSU); //CHANGED
   }
 
   return img_bin;

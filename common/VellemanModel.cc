@@ -30,6 +30,7 @@
 /* 
    Constructor
 */
+
 VellemanModel::VellemanModel(const std::string& port, QObject* parent)
   : VRelayCardModel(port, parent)
   , AbstractDeviceModel()

@@ -469,7 +469,9 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
     {
       const double target_angle_deg = this->configuration().target_angle; //Angle between the line (between 2 markers) and the MS, in the MS ref. frame
 
+
       const double delta_angle_deg = (target_angle_deg - obj_angle_deg_); //Difference between current measured angle, and 'target angle' parameter
+
 
       NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
       NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: mode = ALIGNMENT";
