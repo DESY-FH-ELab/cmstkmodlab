@@ -288,6 +288,8 @@ void Thermo2ThroughPlaneModel::sendMattermostStatus()
   auto currentDateTime = QDateTime::currentDateTime();
   if (currentDateTime<mattermostStatusTime_) return;
 
+  NQLogDebug("Thermo2ThroughPlaneModel") << "sendMattermostStatus()";
+
   QString msg;
 
   msg += "#### Through-Plane Status (";
