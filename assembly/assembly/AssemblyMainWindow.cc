@@ -56,6 +56,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   assembly_(nullptr),
   assemblyV2_(nullptr),
   multipickup_tester_(nullptr),
+  alignmentCheck_(nullptr),
 
   finder_(nullptr),
   finder_thread_(nullptr),
@@ -87,6 +88,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
   button_mainEmergencyStop_(nullptr),
   button_info_(nullptr),
+  alignmentCheck_view_(nullptr),
   autofocus_checkbox_(nullptr),
 
   // flags
@@ -289,6 +291,22 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(motion_manager_, SIGNAL(motion_finished()), image_view_, SLOT(InfoMotionFinished()));
     // ---------------------------------------------------------
 
+    // Alignment Check
+
+    const QString tabname_AlignmentCheck("AlignmentCheck");
+
+    alignmentCheck_view_ = new AlignmentCheckView(assembly_tab);
+    assembly_tab->addTab(alignmentCheck_view_, tabname_AlignmentCheck);
+
+    alignmentCheck_ = new AlignmentCheck(motion_manager_);
+
+    connect(alignmentCheck_view_, SIGNAL(configuration(AlignmentCheck::Configuration)), this, SLOT(start_alignmentCheck(AlignmentCheck::Configuration)));
+
+    alignmentCheck_view_->PatRecOne_Image()->connectImageProducer(alignmentCheck_, SIGNAL(image_PatRecOne(cv::Mat)));
+    alignmentCheck_view_->PatRecTwo_Image()->connectImageProducer(alignmentCheck_, SIGNAL(image_PatRecTwo(cv::Mat)));
+    alignmentCheck_view_->PatRecThree_Image()->connectImageProducer(alignmentCheck_, SIGNAL(image_PatRecThree(cv::Mat)));
+    alignmentCheck_view_->PatRecFour_Image()->connectImageProducer(alignmentCheck_, SIGNAL(image_PatRecFour(cv::Mat)));
+    
     /// TAB: MANUAL CONTROLLERS AND PARAMETERS -----------------
     QTabWidget* controls_tab = new QTabWidget;
 
@@ -797,6 +815,123 @@ void AssemblyMainWindow::disconnect_objectAligner()
   aligner_view_->Configuration_Widget()->setEnabled(true);
 
   aligner_connected_ = false;
+
+  return;
+}
+
+
+//################################
+
+void AssemblyMainWindow::start_alignmentCheck(const AlignmentCheck::Configuration& conf)
+{
+  if(image_ctr_ == nullptr)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "start_objectAligner"
+       << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+
+    return;
+  }
+
+  if(params_ != nullptr)
+  {
+    const bool valid_params = params_->update();
+
+    if(valid_params == false)
+    {
+      NQLog("AssemblyMainWindow", NQLog::Warning) << "start_objectAligner"
+         << ": failed to update AssemblyParameters, no action taken";
+
+      return;
+    }
+  }
+
+  // acquire image
+  connect(alignmentCheck_, SIGNAL(image_request()), image_ctr_, SLOT(acquire_image()));
+  connect(alignmentCheck_, SIGNAL(autofocused_image_request()), image_ctr_, SLOT(acquire_autofocused_image()));
+
+  // master-image updated, go to next step (PatRec)
+  connect(finder_, SIGNAL(updated_image_master()), alignmentCheck_, SLOT(launch_next_alignment_step()));
+
+  // launch PatRec
+  connect(alignmentCheck_, SIGNAL(PatRec_request(AssemblyObjectFinderPatRec::Configuration)), finder_, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
+
+  // show PatRec-edited image in Aligner widget
+  connect(finder_, SIGNAL(PatRec_res_image_master_edited(cv::Mat)), alignmentCheck_, SLOT(redirect_image(cv::Mat)));
+
+  // use PatRec results for next alignment step
+  connect(finder_, SIGNAL(PatRec_results(double, double, double)), alignmentCheck_, SLOT(run_alignment(double, double, double)));
+
+  // show measured angle
+  connect(alignmentCheck_, SIGNAL(measured_angle(double)), alignmentCheck_view_, SLOT(show_measured_angle(double)));
+
+  // show fiducial positions
+  connect(alignmentCheck_, SIGNAL(pspbl_pos(double, double)), alignmentCheck_view_, SLOT(show_pspbl_pos(double,double)));
+  connect(alignmentCheck_, SIGNAL(pssbl_pos(double, double)), alignmentCheck_view_, SLOT(show_pssbl_pos(double,double)));
+  connect(alignmentCheck_, SIGNAL(psstl_pos(double, double)), alignmentCheck_view_, SLOT(show_psstl_pos(double,double)));
+  connect(alignmentCheck_, SIGNAL(psptl_pos(double, double)), alignmentCheck_view_, SLOT(show_psptl_pos(double,double)));
+
+  
+  connect(alignmentCheck_, SIGNAL(offs_pos(double, double)), alignmentCheck_view_, SLOT(show_offs_pos(double,double)));
+  
+  // once completed, disable connections between controllers used for alignment
+  connect(alignmentCheck_, SIGNAL(execution_completed()), this, SLOT(disconnect_alignmentCheck()));
+
+  // kick-start alignment
+  connect(alignmentCheck_, SIGNAL(configuration_updated()), alignmentCheck_, SLOT(execute()));
+
+  alignmentCheck_view_->Configuration_Widget()->setEnabled(false);
+
+  // if successful, emits signal "configuration_updated()"
+  alignmentCheck_->update_configuration(conf);
+
+  return;
+}
+
+void AssemblyMainWindow::disconnect_alignmentCheck()
+{
+  if(image_ctr_ == nullptr)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "disconnect_objectAligner"
+       << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+
+    return;
+  }
+
+  // acquire image
+  disconnect(alignmentCheck_, SIGNAL(image_request()), image_ctr_, SLOT(acquire_image()));
+  disconnect(alignmentCheck_, SIGNAL(autofocused_image_request()), image_ctr_, SLOT(acquire_autofocused_image()));
+
+  // master-image updated, go to next step (PatRec)
+  disconnect(finder_, SIGNAL(updated_image_master()), alignmentCheck_, SLOT(launch_next_alignment_step()));
+
+  // launch PatRec
+  disconnect(alignmentCheck_, SIGNAL(PatRec_request(AssemblyObjectFinderPatRec::Configuration)), finder_, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
+
+  // show PatRec-edited image in Aligner widget
+  disconnect(finder_, SIGNAL(PatRec_res_image_master_edited(cv::Mat)), alignmentCheck_, SLOT(redirect_image(cv::Mat)));
+
+  // use PatRec results for next alignment step
+  disconnect(finder_, SIGNAL(PatRec_results(double, double, double)), alignmentCheck_, SLOT(run_alignment(double, double, double)));
+
+  // show measured angle
+  disconnect(alignmentCheck_, SIGNAL(measured_angle(double)), alignmentCheck_view_, SLOT(show_measured_angle(double)));
+
+  // show fiducial positions
+
+  disconnect(alignmentCheck_, SIGNAL(pspbl_pos(double, double)), alignmentCheck_view_, SLOT(show_pspbl_pos(double,double)));
+  disconnect(alignmentCheck_, SIGNAL(pssbl_pos(double, double)), alignmentCheck_view_, SLOT(show_pssbl_pos(double,double)));
+  disconnect(alignmentCheck_, SIGNAL(psstl_pos(double, double)), alignmentCheck_view_, SLOT(show_psstl_pos(double,double)));
+  disconnect(alignmentCheck_, SIGNAL(psptl_pos(double, double)), alignmentCheck_view_, SLOT(show_psptl_pos(double,double)));
+
+  disconnect(alignmentCheck_, SIGNAL(offs_pos(double, double)), alignmentCheck_view_, SLOT(show_offs_pos(double,double)));
+ 
+  // once completed, disable connections between controllers used for alignment
+  disconnect(alignmentCheck_, SIGNAL(execution_completed()), this, SLOT(disconnect_alignmentCheck()));
+
+  // kick-start alignment
+  disconnect(alignmentCheck_, SIGNAL(configuration_updated()), alignmentCheck_, SLOT(execute()));
+
+  alignmentCheck_view_->Configuration_Widget()->setEnabled(true);
 
   return;
 }

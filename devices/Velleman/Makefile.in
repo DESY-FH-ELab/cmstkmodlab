@@ -21,7 +21,7 @@ NEWHEADERS    = $(addsuffix _cpp.h,$(MODULES))
 
 EXISTDEPEND   = $(shell find . -name \*.d -type f -print)
 
-all: vellemanTest lib
+all: depend lib vellemanTest
 
 depend: $(ALLDEPEND)
 
@@ -43,15 +43,8 @@ $(LIBDIR)/lib$(LIB).so: $(addsuffix .o, $(MODULES))
 	@echo "Compiling $<"
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
-utils: $(NEWHEADERS)
-
-%_cpp.h: %.cpp
-	@/bin/cp -rf $< ./utils/$*_cpp.h
-
-vellemanTest: depend utils $(VELLEMAN)/utils/vellemanTest.cpp
-	cd $(VELLEMAN)/utils;
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) \
-	-I$(VELLEMAN) -o $(VELLEMAN)/utils/$@ $(VELLEMAN)/utils/vellemanTest.cpp
+vellemanTest: vellemanTest.cpp $(LIBDIR)/lib$(LIB).so
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) vellemanTest.cpp -o vellemanTest -L$(LIBDIR) -lTkModLabVelleman
 
 install:
 	install -m 755 -p $(LIBDIR)/lib$(LIB).so /usr/lib

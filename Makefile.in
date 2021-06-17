@@ -5,6 +5,7 @@ NODEFO        = @nodefo@
 NOASSEMBLY    = @noassembly@
 NOPLASMA      = @noplasma@
 NOPUMPSTATION = @nopumpstation@
+NOMARTA       = @nomarta@
 
 USEFAKEDEVICES= @usefakedevices@
 

@@ -28,6 +28,8 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyZFocusFinder.h>
 #include <AssemblyImageController.h>
 #include <AssemblyImageView.h>
+#include <AlignmentCheck.h>
+#include <AlignmentCheckView.h>
 #include <AssemblyThresholder.h>
 #include <AssemblyThresholderView.h>
 #include <AssemblyObjectFinderPatRec.h>
@@ -97,6 +99,9 @@ class AssemblyMainWindow : public QMainWindow
   void start_objectAligner(const AssemblyObjectAligner::Configuration&);
   void disconnect_objectAligner();
 
+  void start_alignmentCheck(const AlignmentCheck::Configuration&);
+  void disconnect_alignmentCheck();
+
   void start_multiPickupTest(const AssemblyMultiPickupTester::Configuration&);
   void disconnect_multiPickupTest();
 
@@ -164,6 +169,7 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyAssembly*           assembly_;
   AssemblyAssemblyV2*         assemblyV2_;
   AssemblyMultiPickupTester*  multipickup_tester_;
+  AlignmentCheck* alignmentCheck_;
 
   AssemblyObjectFinderPatRec*       finder_;
   AssemblyObjectFinderPatRecThread* finder_thread_;
@@ -197,6 +203,7 @@ class AssemblyMainWindow : public QMainWindow
   QPushButton* button_mainEmergencyStop_;
   QPushButton* button_info_;
   QCheckBox* autofocus_checkbox_;
+  AlignmentCheckView* alignmentCheck_view_;
 
   // flags
   bool images_enabled_;

@@ -5,8 +5,14 @@ LIBS += -L@basepath@/devices/lib -lTkModLabHameg
 LIBS += -L@basepath@/devices/lib -lTkModLabPfeiffer
 LIBS += -L@basepath@/devices/lib -lTkModLabHuber
 LIBS += -L@basepath@/devices/lib -lTkModLabRohdeSchwarz
+LIBS += -L@basepath@/devices/lib -lTkModLabMarta
 LIBS += -L@basepath@/common -lCommon
-LIBS += `pkg-config --libs libmodbus`
+
+USEFAKEDEVICES = @usefakedevices@
+NOMARTA        = @nomarta@
+equals(USEFAKEDEVICES, "1") {
+  NOMARTA = 1
+}
 
 QMAKE = @qmake@
 
@@ -27,7 +33,12 @@ macx {
   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
 }
 
-QMAKE_CXXFLAGS += `pkg-config --cflags libmodbus`
+equals(NOMARTA, "0") {
+  QMAKE_CXXFLAGS += `pkg-config --cflags libmodbus`
+  LIBS += `pkg-config --libs libmodbus`
+} else {
+  QMAKE_CXXFLAGS += -DNOMARTA
+}
 
 DEFINES += @configdefines@
 
