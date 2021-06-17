@@ -124,8 +124,8 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
 
   mattermostTimer_ = new QTimer(this);
   connect(mattermostTimer_, SIGNAL(timeout()),
-      this, SLOT(sendMattermostStatus()));
-  mattermostTimer_->start(60);
+	  this, SLOT(sendMattermostStatus()));
+  mattermostTimer_->start(60*1000);
 }
 
 void Thermo2ThroughPlaneModel::huberInfoChanged()
@@ -318,7 +318,7 @@ void Thermo2ThroughPlaneModel::sendMattermostStatus()
       msg += " |";
     }
   }
-  msg += "\n";
+  msg += "\n\n";
 
   msg += "|  Variable      | Value    |\n";
   msg += "|:--------------:|:--------:|\n";
