@@ -19,6 +19,10 @@
 
 #include <iostream>
 
+#ifndef __DEBUG
+// #define __DEBUG 1
+#endif
+
 #include "KeithleyUSBTMCComHandler.h"
 
 /*!
@@ -28,8 +32,10 @@
 */
 KeithleyUSBTMCComHandler::KeithleyUSBTMCComHandler(ioport_t ioPort)
 {
+#ifdef __DEBUG
   std::cout << "KeithleyUSBTMCComHandler::KeithleyUSBTMCComHandler(ioport_t ioPort)" << std::endl;
-
+#endif
+  
   // save ioport 
   fIoPort = ioPort;
 
@@ -40,7 +46,9 @@ KeithleyUSBTMCComHandler::KeithleyUSBTMCComHandler(ioport_t ioPort)
 
 KeithleyUSBTMCComHandler::~KeithleyUSBTMCComHandler( void )
 {
+#ifdef __DEBUG
   std::cout << "KeithleyUSBTMCComHandler::~KeithleyUSBTMCComHandler( void )" << std::endl;
+#endif
 }
 
 //! Send the command string &lt;commandString&gt; to device.
@@ -48,8 +56,10 @@ void KeithleyUSBTMCComHandler::SendCommand( const char *commandString )
 {
   if (!fDeviceAvailable) return;
 
+#ifdef __DEBUG
   std::cout << "void KeithleyUSBTMCComHandler::SendCommand( const char *commandString ) "
 	    << commandString << std::endl;
+#endif
 
   std::string theCommand = commandString;
   theCommand += "\n";
@@ -101,8 +111,10 @@ void KeithleyUSBTMCComHandler::ReceiveString( char *receiveString )
   
   readResult = read( fIoPortFileDescriptor, receiveString, 1024 );
 
+#ifdef __DEBUG
   std::cout << "receiveString: " << readResult << " " << receiveString << std::endl;
-  
+#endif
+
   usleep(10);
 }
 
@@ -112,7 +124,9 @@ void KeithleyUSBTMCComHandler::ReceiveString( char *receiveString )
 */
 void KeithleyUSBTMCComHandler::OpenIoPort( void )
 {
+#ifdef __DEBUG
   std::cout << "void KeithleyUSBTMCComHandler::OpenIoPort( void )" << std::endl;
+#endif
   
   // open io port ( read/write | no term control | no DCD line check )
   fIoPortFileDescriptor = open( fIoPort, O_RDWR);
@@ -172,7 +186,9 @@ void KeithleyUSBTMCComHandler::CloseIoPort( void )
 {
   if (!fDeviceAvailable) return;
 
+#ifndef USE_FAKEIO
   std::cout << "void KeithleyUSBTMCComHandler::CloseIoPort( void )" << std::endl;
+#endif
 
   /*
 #ifndef USE_FAKEIO

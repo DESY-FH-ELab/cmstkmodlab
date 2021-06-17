@@ -20,6 +20,10 @@
 #include <sstream>
 #include <chrono>
 
+#ifndef __DEBUG
+// #define __DEBUG 1
+#endif
+
 #include "KeithleyDAQ6510.h"
 
 ///
@@ -28,7 +32,9 @@
 KeithleyDAQ6510::KeithleyDAQ6510(ioport_t port)
     : VKeithleyDAQ6510(port)
 {
+#ifdef __DEBUG
   std::cout << "KeithleyDAQ6510::KeithleyDAQ6510(ioport_t port)" << std::endl;
+#endif
 
   comHandler_ = new KeithleyUSBTMCComHandler(port);
 
@@ -39,14 +45,18 @@ KeithleyDAQ6510::KeithleyDAQ6510(ioport_t port)
 
 KeithleyDAQ6510::~KeithleyDAQ6510( )
 {
+#ifdef __DEBUG
   std::cout << "KeithleyDAQ6510::~KeithleyDAQ6510()" << std::endl;
+#endif
 
   delete comHandler_;
 }
 
 void KeithleyDAQ6510::ShutDown()
 {
+#ifdef __DEBUG
   std::cout << "KeithleyDAQ6510::ShutDown()" << std::endl;
+#endif
 
   // reset the device
   comHandler_->SendCommand("*RST");
@@ -258,7 +268,9 @@ bool KeithleyDAQ6510::GetScanStatus() const
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
   buf = buffer;
-  // std::cout << buf << std::endl;
+#ifdef __DEBUG
+  std::cout << "void KeithleyDAQ6510::GetScanStatus() const " << buf << std::endl;
+#endif
 
   return true;
 }
@@ -304,7 +316,9 @@ void KeithleyDAQ6510::GetScanData(reading_t & data)
   comHandler_->ReceiveString(buffer);
   StripBuffer(buffer);
   buf = buffer;
-  std::cout << buf << std::endl;
+#ifdef __DEBUG
+  std::cout << "void KeithleyDAQ6510::GetScanData(reading_t & data) " << buf << std::endl;
+#endif
 
   std::vector<std::string> tokens(0);
   Tokenize(buf, tokens, ",");
@@ -379,7 +393,9 @@ void KeithleyDAQ6510::DeviceSetChannels()
 
   ss << ")";
 
-  std::cout << ss.str() << std::endl;
+#ifdef __DEBUG
+  std::cout << "void KeithleyDAQ6510::DeviceSetChannels() " << ss.str() << std::endl;
+#endif
 
   comHandler_->SendCommand(ss.str().c_str());
 
@@ -392,7 +408,9 @@ void KeithleyDAQ6510::DeviceInit()
 
   if (comHandler_->DeviceAvailable()) {
 
+#ifdef __DEBUG
     std::cout << "void KeithleyDAQ6510::DeviceInit()" << std::endl;
+#endif
 
     char buffer[1000];
     std::string buf;
@@ -402,7 +420,11 @@ void KeithleyDAQ6510::DeviceInit()
     comHandler_->ReceiveString(buffer);
     StripBuffer(buffer);
     buf = buffer;
-    std::cout << buf << std::endl;
+
+#ifdef __DEBUG
+    std::cout << "*IDN? " << buf << std::endl;
+#endif
+
     if (buf.find("KEITHLEY INSTRUMENTS,MODEL DAQ6510", 0)!=0) return;
 
     // reset the device
@@ -440,7 +462,11 @@ void KeithleyDAQ6510::DeviceInit()
     comHandler_->ReceiveString(buffer);
     StripBuffer(buffer);
     buf = buffer;
-    std::cout << buf << std::endl;
+
+#ifdef __DEBUG
+    std::cout << ":SYST:CARD1:IDN? " << buf << std::endl;
+#endif
+
     if (buf.find("7700,20Ch Mux w/CJC", 0)==0) {
       availableCards_[0] = true;
       for (unsigned int channel = 1;channel<=10;++channel) {
@@ -462,7 +488,11 @@ void KeithleyDAQ6510::DeviceInit()
     comHandler_->ReceiveString(buffer);
     StripBuffer(buffer);
     buf = buffer;
-    std::cout << buf << std::endl;
+
+#ifdef __DEBUG
+    std::cout << ":SYST:CARD2:IDN? " << buf << std::endl;
+#endif
+
     if (buf.find("7700,20Ch Mux w/CJC", 0)==0) {
       availableCards_[1] = true;
       for (unsigned int channel = 1;channel<=10;++channel) {
