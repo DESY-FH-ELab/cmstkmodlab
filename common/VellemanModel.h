@@ -14,8 +14,8 @@
 #define VELLEMANMODEL_H
 
 #include <string>
-
 #include "VRelayCardModel.h"
+
 #include "DeviceState.h"
 
 #ifdef USE_FAKEIO
@@ -50,7 +50,9 @@ typedef VellemanController VellemanController_t;
     controlled by one relay in the relay card.
 ***/
 
+
 class VellemanModel : public VRelayCardModel, public AbstractDeviceModel<VellemanController_t>
+
 {
   Q_OBJECT
 
@@ -61,7 +63,9 @@ public:
 
   // Methods for power control and querying statuses of devices connected to relay
   const State& getChannelState(int channel) const;
+
   const State& getSwitchState( int device ) const { return getChannelState(device); }
+
 
 public slots:
   // Methods for control and querying statuses of device itself (as specified
@@ -71,12 +75,12 @@ public slots:
   void disableChannel(int channel);
   void setControlsEnabled(bool enabled);
   void setChannelEnabled(int channel, bool enabled);
-
   void enableSwitch( int device ) { enableChannel(device); }
   void disableSwitch( int device ) { disableChannel(device); }
   void setSwitchEnabled(int device, bool enabled) { setChannelEnabled(device, enabled); }
 
 protected:
+
 
   void initialize();
   void close();

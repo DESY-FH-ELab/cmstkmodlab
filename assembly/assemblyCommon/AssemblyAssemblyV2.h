@@ -16,7 +16,9 @@
 #include <QObject>
 
 #include <LStepExpressMotionManager.h>
+
 #include <RelayCardManager.h>
+
 
 #include <AssemblySmartMotionManager.h>
 #include <AssemblyParameters.h>
@@ -26,13 +28,17 @@ class AssemblyAssemblyV2 : public QObject
  Q_OBJECT
 
  public:
+
   explicit AssemblyAssemblyV2(const LStepExpressMotionManager* const, const RelayCardManager* const, const AssemblySmartMotionManager* const smart_motion=nullptr, QObject* parent=nullptr);
+
   virtual ~AssemblyAssemblyV2() {}
 
   AssemblyParameters* parameters() const;
 
   const LStepExpressMotionManager* motion() const;
+
   const RelayCardManager* vacuum() const;
+
 
   const AssemblySmartMotionManager* smart_motion() const;
 

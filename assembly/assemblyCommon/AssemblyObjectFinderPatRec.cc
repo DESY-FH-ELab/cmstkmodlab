@@ -636,7 +636,6 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
      << ": best matching position in pixels x = " << best_matchLoc.x << ", y = " << best_matchLoc.y << "\"";
-
   double patrec_dX, patrec_dY;
   assembly::rotation2D_deg(patrec_dX, patrec_dY, angle_FromCameraXYtoRefFrameXY_deg, dX_0, dY_0);
 

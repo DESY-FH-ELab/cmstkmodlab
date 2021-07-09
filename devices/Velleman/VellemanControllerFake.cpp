@@ -21,7 +21,9 @@
 
 //! Default constructor
 VellemanControllerFake::VellemanControllerFake(const std::string& ioPort)
+
   : VVellemanController(ioPort)
+
 {
   for (int c=0; c<8; ++c) status_[c] = false;
 }

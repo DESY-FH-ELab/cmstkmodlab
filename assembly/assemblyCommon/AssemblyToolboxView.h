@@ -42,8 +42,9 @@ class AssemblyToolboxView : public QWidget
   void display_infoTab();
 
  signals:
-
+  
   void multipickup_request(const AssemblyMultiPickupTester::Configuration&);
+
 };
 // ===========================================================================
 

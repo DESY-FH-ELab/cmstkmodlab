@@ -76,7 +76,9 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 }
 
 # Input
-HEADERS += AssemblyVUEyeCamera.h \
+HEADERS += AlignmentCheck.h \
+           AlignmentCheckView.h \
+           AssemblyVUEyeCamera.h \
            AssemblyVUEyeModel.h \
            AssemblyUEyeWidget.h \
            AssemblyUEyeCameraWidget.h \
@@ -134,7 +136,10 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyUtilities.h \
            AssemblyDBLoggerController.h \
            AssemblyDBLoggerModel.h \
-           AssemblyDBLoggerView.h
+           AssemblyDBLoggerView.h \
+           AlignmentCheckView.h \
+           AlignmentCheck.h \
+           
 
 equals(NOUEYE,"X0") {
 HEADERS += AssemblyUEyeCamera.h \
@@ -144,7 +149,9 @@ HEADERS += AssemblyUEyeFakeCamera.h \
            AssemblyUEyeFakeModel.h
 }
 
-SOURCES += AssemblyVUEyeCamera.cc \
+SOURCES += AlignmentCheck.cc \
+           AlignmentCheckView.cc \
+           AssemblyVUEyeCamera.cc \
            AssemblyVUEyeModel.cc \
            AssemblyUEyeWidget.cc \
            AssemblyUEyeCameraWidget.cc \
@@ -202,8 +209,12 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyUtilities.cc \
            AssemblyDBLoggerController.cc \
            AssemblyDBLoggerModel.cc \
-           AssemblyDBLoggerView.cc
+           AssemblyDBLoggerView.cc \
+           AlignmentCheckView.cc \
+           AlignmentCheck.cc \
 
+
+           
 equals(NOUEYE,"X0") {
 SOURCES += AssemblyUEyeCamera.cc \
            AssemblyUEyeModel.cc

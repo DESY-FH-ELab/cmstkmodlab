@@ -83,7 +83,7 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
   box_vacuum->setStyleSheet("QGroupBox { font-weight: bold; } ");
 
   w_vacuum_ = new AssemblyVacuumWidget("Toggle Vacuum");
-  w_vacuum_->setToolTip("(3) Controls vacuum valves");
+  w_vacuum_->setToolTip("(4) Controls vacuum valves"); // Changed from 3 to 4 vacuum lines
 
   box_vacuum->setLayout(w_vacuum_->layout());
 

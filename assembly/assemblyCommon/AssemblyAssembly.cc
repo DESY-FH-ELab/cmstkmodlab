@@ -10,6 +10,13 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//            Fourth Vacuum Line Capability Added by Elise Hinkle              //
+//                       Last Modified October 7, 2019                         //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 #include <nqlogger.h>
 #include <ApplicationConfig.h>
 
@@ -19,6 +26,7 @@
 #include <string>
 
 #include <QMessageBox>
+
 
 AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion, const RelayCardManager* const vacuum, const AssemblySmartMotionManager* const smart_motion, QObject* parent)
  : QObject(parent)
@@ -30,6 +38,7 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
  , vacuum_pickup_(0)
  , vacuum_spacer_(0)
  , vacuum_basepl_(0)
+ , vacuum_stage_(0)
 
  , pickup1_Z_(0.)
  , pickup2_Z_(0.)
@@ -60,6 +69,7 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
   vacuum_pickup_ = config->getValue<int>("Vacuum_PickupTool");
   vacuum_spacer_ = config->getValue<int>("Vacuum_Spacers");
   vacuum_basepl_ = config->getValue<int>("Vacuum_Baseplate");
+  vacuum_stage_ = config->getValue<int>("Vacuum_Stage");
 
   // absolute Z-position of motion stage for pickup of object after gluing
   // (1: PSs to Spacers, 2: PSs+Spacers to MaPSA)
@@ -80,9 +90,11 @@ const LStepExpressMotionManager* AssemblyAssembly::motion() const
   return motion_;
 }
 
+
 const RelayCardManager* AssemblyAssembly::vacuum() const
+
 {
-  if(motion_ == nullptr)
+  if(motion_ == nullptr) 
   {
     NQLog("AssemblyAssembly", NQLog::Fatal) << "vacuum"
        << ": pointer to RelayCardManager is NULL, exiting constructor";
@@ -92,6 +104,7 @@ const RelayCardManager* AssemblyAssembly::vacuum() const
 
   return vacuum_;
 }
+*/
 
 AssemblyParameters* AssemblyAssembly::parameters() const
 {
@@ -502,6 +515,77 @@ void AssemblyAssembly::DisableVacuumBaseplate_finish()
 // ----------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------
+// EnableVacuumStage ------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::EnableVacuumStage_start()
+{
+  connect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
+
+  connect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumStage_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumStage_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumStage_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "EnableVacuumStage_start"
+     << ": emitting signal \"vacuum_ON_request(" << vacuum_stage_ << ")\"";
+
+  emit vacuum_ON_request(vacuum_stage_);
+}
+
+void AssemblyAssembly::EnableVacuumStage_finish()
+{
+  disconnect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
+
+  disconnect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumStage_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumStage_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumStage_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "EnableVacuumStage_finish"
+     << ": emitting signal \"EnableVacuumStage_finished\"";
+
+  emit EnableVacuumStage_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "EnableVacuumStage_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// DisableVacuumStage -----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::DisableVacuumStage_start()
+{
+  connect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
+
+  connect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumStage_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumStage_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumStage_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "DisableVacuumStage_start"
+     << ": emitting signal \"vacuum_OFF_request(" << vacuum_stage_ << ")\"";
+
+  emit vacuum_OFF_request(vacuum_stage_);
+}
+
+void AssemblyAssembly::DisableVacuumStage_finish()
+{
+  disconnect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
+
+  disconnect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumStage_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumStage_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumStage_finish()));
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "DisableVacuumStage_finish"
+     << ": emitting signal \"DisableVacuumStage_finished\"";
+
+  emit DisableVacuumStage_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "DisableVacuumStage_finish"
+     << ": assembly-step completed";
+}
+// ----------------------------------------------------------------------------------------------------
+
+
+// ----------------------------------------------------------------------------------------------------
 // GoFromSensorMarkerToPickupXY -----------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssembly::GoFromSensorMarkerToPickupXY_start()
@@ -664,6 +748,7 @@ void AssemblyAssembly::PickupPSS_start()
   const double dz0 = (pickup1_Z_ - motion_->get_position_Z());
   const double da0 = 0.0;
 
+
   if(dz0 <= 0.)
   {
     NQLog("AssemblyAssembly", NQLog::Critical) << "PickupPSS_start"
@@ -741,19 +826,21 @@ void AssemblyAssembly::GoToXYAPositionToGluePSSToSpacers_start()
    + this->parameters()->get("FromSpacerEdgeToPSSRefPoint_dX")
    + this->parameters()->get("FromSensorRefPointToSensorPickup_dX")
    - motion_->get_position_X();
-
+  
   const double dy0 =
      this->parameters()->get("PlatformRefPointCalibrationSpacers_Y")
    + this->parameters()->get("FromPlatformRefPointCalibrationSpacersToSpacerEdge_dY")
    + this->parameters()->get("FromSpacerEdgeToPSSRefPoint_dY")
    + this->parameters()->get("FromSensorRefPointToSensorPickup_dY")
+    //- 1.16
+    //- 1.88 
    - motion_->get_position_Y();
-
+  // What is the -1.16 doing here? Michael Added +1.88 in an attempt to recenter the spacers on 9/10/2020
   const double dz0 = 0.0;
 
   const double da0 =
-     this->parameters()->get("PlatformRefPointCalibrationSpacers_A")
-   - motion_->get_position_A();
+          this->parameters()->get("PlatformRefPointCalibrationSpacers_A")
+	- motion_->get_position_A();
 
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToXYAPositionToGluePSSToSpacers_finish()));
@@ -1201,7 +1288,8 @@ void AssemblyAssembly::ReturnToPSSPlusSpacersToMaPSAPosition_start()
     const double dz0 = PSSPlusSpacersToMaPSAPosition_Z_ - motion_->get_position_Z();
     const double da0 = 0.;
 
-    if(dz0 <= 0.)
+
+    if(dz0 <= 0.) 
     {
       NQLog("AssemblyAssembly", NQLog::Critical) << "ReturnToPSSPlusSpacersToMaPSAPosition_start"
          << ": invalid (non-positive) value for vertical upward movement (dz=" << dz0 << "), no action taken";
@@ -1369,6 +1457,7 @@ void AssemblyAssembly::PickupPSSPlusSpacers_start()
   const double dz0 = (pickup1_Z_ - motion_->get_position_Z());
   const double da0 = 0.0;
 
+
   if(dz0 <= 0.)
   {
     NQLog("AssemblyAssembly", NQLog::Critical) << "PickupPSSPlusSpacers_start"
@@ -1430,11 +1519,13 @@ void AssemblyAssembly::LiftUpPickupTool_start()
   const double dz0 = (pickup2_Z_ - motion_->get_position_Z());
   const double da0 = 0.0;
 
+
   if(dz0 <= 0.)
   {
     NQLog("AssemblyAssembly", NQLog::Critical) << "LiftUpPickupTool_start"
-       << ": invalid (non-positive) value for vertical upward movement for pickup #2 (dz=" << dz0 << "), no action taken";
+       << ": invalid (non-positive) value for vertical upward movement for pickup #1 (dz=" << dz0 << "), no action taken";
 
+    
     NQLog("AssemblyAssembly", NQLog::Spam) << "LiftUpPickupTool_finish"
        << ": emitting signal \"LiftUpPickupTool_finished\"";
 
@@ -1491,13 +1582,17 @@ void AssemblyAssembly::PickupSensorAssembly_start()
   const double dz0 = (pickup1_Z_ - motion_->get_position_Z());
   const double da0 = 0.0;
 
+
   if(dz0 <= 0.)
   {
     NQLog("AssemblyAssembly", NQLog::Critical) << "PickupSensorAssembly_start"
        << ": invalid (non-positive) value for vertical upward movement for pickup #1 (dz=" << dz0 << "), no action taken";
 
+
     NQLog("AssemblyAssembly", NQLog::Spam) << "PickupSensorAssembly_finish"
        << ": emitting signal \"PickupSensorAssembly_finished\"";
+
+
 
     emit PickupSensorAssembly_finished();
 

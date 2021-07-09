@@ -99,13 +99,17 @@ bool VellemanCommunication::initialize()
 
   int modeLines = 0;
 
+
   /*
+
   // put Velleman into exclusive mode
   if (ioctl(m_ioPort, TIOCGEXCL, &modeLines) == -1) {
     fprintf(stderr, "[Velleman] ERROR (port: %s): Failure to put card port into exclusive mode, ERRNO %i \n", comPort().c_str(), errno);
     return false;
   }
+
   */
+
 
   return true;
 }

@@ -5,6 +5,7 @@ NODEFO        = @nodefo@
 NOASSEMBLY    = @noassembly@
 NOPLASMA      = @noplasma@
 NOPUMPSTATION = @nopumpstation@
+NOMARTA       = @nomarta@
 
 USEFAKEDEVICES= @usefakedevices@
 
@@ -26,9 +27,7 @@ endif
 ifeq ($(NOPUMPSTATION),0)
 subdirs      += pumpstation
 endif
-
 qtsubdirs     = common common_test
-
 ifeq ($(NOTHERMAL),0)
 ifeq ($(NOTHERMAL2),0)
 qtsubdirs    += thermo/thermoDAQ2Root

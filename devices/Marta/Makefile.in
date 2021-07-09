@@ -18,10 +18,16 @@ ifeq ($(USEFAKEDEVICES),1)
 NOMARTA       = 1
 endif
 
+ifeq ($(NOMARTA),1)
+CXXFLAGS     += -DNOMARTA
+endif
+
 CXXFLAGS     += -D__@architecture@__
 
+MODBUSLIBS    =
 ifeq ($(NOMARTA),0)
 CXXFLAGS     += `pkg-config --cflags libmodbus`
+MODBUSLIBS   += `pkg-config --libs libmodbus`
 endif
 
 ALLDEPEND = $(addsuffix .d,$(MODULES))
@@ -51,7 +57,7 @@ $(LIBDIR)/lib$(LIB).so: $(addsuffix .o,$(MODULES))
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 test: test.cc $(LIBDIR)/lib$(LIB).so
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) test.cc -o test -L../lib -lTkModLabMarta `pkg-config --libs libmodbus`
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) test.cc -o test -L../lib -lTkModLabMarta $(MODBUSLIBS)
 
 install:
 	install -m 755 -p $(LIBDIR)/lib$(LIB).so /usr/lib

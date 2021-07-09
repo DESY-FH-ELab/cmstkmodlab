@@ -20,6 +20,7 @@
 #include <QString>
 #include <QStringList>
 #include <QTimer>
+#include <map>
 
 #include "DeviceState.h"
 

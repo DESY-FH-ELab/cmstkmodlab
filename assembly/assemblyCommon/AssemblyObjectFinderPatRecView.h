@@ -39,7 +39,10 @@ class AssemblyObjectFinderPatRecView : public QWidget
   AssemblyObjectFinderPatRecWidget* PatRec_Widget() const { return patrec_wid_; }
 
   QPushButton* PatRec_exe_button() const { return patrec_exe_button_; }
+  QPushButton* PatRec_exe_button_2() const { return patrec_exe_button_2_; }
 
+
+  
   void connect_to_finder(const AssemblyObjectFinderPatRec* const);
 
  private:
@@ -64,8 +67,13 @@ class AssemblyObjectFinderPatRecView : public QWidget
   QPushButton* patrec_exe_button_;
   QLabel*      patrec_exe_label_;
 
+  QPushButton* patrec_exe_button_2_;
+  QLabel*      patrec_exe_label_2_;
+  
   AssemblyObjectFinderPatRecWidget* patrec_wid_;
+  AssemblyObjectFinderPatRecWidget* patrec_wid_2_;
 
+  
   QLineEdit* patrec_res_dX_linee_;
   QLineEdit* patrec_res_dY_linee_;
   QLineEdit* patrec_res_ang_linee_;

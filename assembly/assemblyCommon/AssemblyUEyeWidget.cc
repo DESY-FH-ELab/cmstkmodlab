@@ -23,8 +23,8 @@ AssemblyUEyeWidget::AssemblyUEyeWidget(AssemblyVUEyeModel *model,
       model_(model)
 {
     // Connect all the signals
-    connect(model_, SIGNAL(cameraCountChanged(unsigned int)),
-            this, SLOT(cameraCountChanged(unsigned int)));
+    connect(model_, SIGNAL(cameraCountChanged(2)),
+            this, SLOT(cameraCountChanged(2)));
 }
 
 void AssemblyUEyeWidget::cameraCountChanged(unsigned int cameraCount)

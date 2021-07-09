@@ -18,6 +18,7 @@ LStepExpressFake::LStepExpressFake(const std::string& ioPort, const std::string&
  : VLStepExpress(ioPort)
  , ioPort_(ioPort)
  , autoStatus_(1)
+ , port_(ioPort)
 {
   axisStatus_ = std::vector<int>{
     VLStepExpress::AXISSTANDSANDREADY,

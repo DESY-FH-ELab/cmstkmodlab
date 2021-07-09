@@ -21,7 +21,7 @@
 
 #include <string>
 
-#ifndef USE_FAKEIO
+#if !defined(USE_FAKEIO) && !defined(NOMARTA)
 #include <modbus.h>
 #endif
 
@@ -65,11 +65,11 @@ class MartaComHandler {
   std::string fIPAddress;
   port_t fPort;
 
-#ifndef USE_FAKEIO
+#if !defined(USE_FAKEIO) && !defined(NOMARTA)
   modbus_t *fMB;
 #endif
 };
- 
+
 /** @} */
 
 /** @} */

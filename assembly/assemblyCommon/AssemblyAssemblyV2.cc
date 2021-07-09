@@ -20,7 +20,9 @@
 
 #include <QMessageBox>
 
+
 AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const motion, const RelayCardManager* const vacuum, const AssemblySmartMotionManager* const smart_motion, QObject* parent)
+
  : QObject(parent)
 
  , motion_(motion)
@@ -82,14 +84,18 @@ const LStepExpressMotionManager* AssemblyAssemblyV2::motion() const
   return motion_;
 }
 
+
 const RelayCardManager* AssemblyAssemblyV2::vacuum() const
+
 {
   if(motion_ == nullptr)
   {
     NQLog("AssemblyAssemblyV2", NQLog::Fatal) << "vacuum"
+
        << ": pointer to RelayCardManager is NULL, exiting constructor";
 
     assembly::kill_application(tr("[AssemblyAssemblyV2]"), tr("pointer to RelayCardManager is NULL, aborting"));
+
   }
 
   return vacuum_;

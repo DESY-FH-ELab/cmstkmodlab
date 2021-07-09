@@ -1,0 +1,206 @@
+diff --git a/common/common.pro.in b/common/common.pro.in
+index 6137e4c9..85519b0b 100644
+--- a/common/common.pro.in
++++ b/common/common.pro.in
+@@ -22,7 +22,12 @@ LIBS += -L@basepath@/devices/lib -lTkModLabAgilent
+ LIBS += -L@basepath@/devices/lib -lTkModLabMarta
+ LIBS += -L@basepath@/external/ddierckx -lddierckx
+ LIBS += -lcurl
+-LIBS += `pkg-config --libs libmodbus`
++
++USEFAKEDEVICES = @usefakedevices@
++NOMARTA        = @nomarta@
++equals(USEFAKEDEVICES, "1") {
++  NOMARTA = 1
++}
+ 
+ QMAKE = @qmake@
+ 
+@@ -42,7 +47,12 @@ else {
+   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+ }
+ 
+-QMAKE_CXXFLAGS += `pkg-config --cflags libmodbus`
++equals(NOMARTA, "0") {
++  QMAKE_CXXFLAGS += `pkg-config --cflags libmodbus`
++  LIBS += `pkg-config --libs libmodbus`
++} else {
++  QMAKE_CXXFLAGS += -DNOMARTA
++}
+ 
+ DEFINES += @configdefines@
+ QT += core gui widgets opengl script xml svg
+diff --git a/common_test/common_test.pro.in b/common_test/common_test.pro.in
+index a7b71e27..1194f846 100644
+--- a/common_test/common_test.pro.in
++++ b/common_test/common_test.pro.in
+@@ -14,7 +14,12 @@ LIBS += -L@basepath@/devices/lib -lTkModLabCanon
+ LIBS += -L@basepath@/devices/lib -lTkModLabMarta
+ LIBS += -L@basepath@/external/ddierckx -lddierckx
+ LIBS += -L@basepath@/common -lCommon
+-LIBS += -lmodbus
++
++USEFAKEDEVICES = @usefakedevices@
++NOMARTA        = @nomarta@
++equals(USEFAKEDEVICES, "1") {
++  NOMARTA = 1
++}
+ 
+ QMAKE = @qmake@
+ 
+@@ -33,6 +38,15 @@ macx {
+   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+ }
+ 
++equals(NOMARTA, "0") {
++  QMAKE_CXXFLAGS += `pkg-config --cflags libmodbus`
++  LIBS += `pkg-config --libs libmodbus`
++} else {
++  QMAKE_CXXFLAGS += -DNOMARTA
++}
++
++DEFINES += @configdefines@
++
+ CONFIG += link_pkgconfig
+ PKGCONFIG += libgphoto2
+ PKGCONFIG += opencv
+diff --git a/devices/Marta/Makefile.in b/devices/Marta/Makefile.in
+index 4b286645..bc0ca7e4 100644
+--- a/devices/Marta/Makefile.in
++++ b/devices/Marta/Makefile.in
+@@ -18,10 +18,16 @@ ifeq ($(USEFAKEDEVICES),1)
+ NOMARTA       = 1
+ endif
+ 
++ifeq ($(NOMARTA),1)
++CXXFLAGS     += -DNOMARTA
++endif
++
+ CXXFLAGS     += -D__@architecture@__
+ 
++MODBUSLIBS    =
+ ifeq ($(NOMARTA),0)
+ CXXFLAGS     += `pkg-config --cflags libmodbus`
++MODBUSLIBS   += `pkg-config --libs libmodbus`
+ endif
+ 
+ ALLDEPEND = $(addsuffix .d,$(MODULES))
+@@ -51,7 +57,7 @@ $(LIBDIR)/lib$(LIB).so: $(addsuffix .o,$(MODULES))
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+ 
+ test: test.cc $(LIBDIR)/lib$(LIB).so
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) test.cc -o test -L../lib -lTkModLabMarta `pkg-config --libs libmodbus`
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS) test.cc -o test -L../lib -lTkModLabMarta $(MODBUSLIBS)
+ 
+ install:
+ 	install -m 755 -p $(LIBDIR)/lib$(LIB).so /usr/lib
+diff --git a/devices/Marta/MartaComHandler.cpp b/devices/Marta/MartaComHandler.cpp
+index 39f93899..5ff76920 100644
+--- a/devices/Marta/MartaComHandler.cpp
++++ b/devices/Marta/MartaComHandler.cpp
+@@ -23,7 +23,7 @@
+ MartaComHandler::MartaComHandler( ipaddress_t IPAddress, port_t Port)
+   : fDeviceAvailable(false)
+ {
+-#ifndef USE_FAKEIO
++#if !defined(USE_FAKEIO) && !defined(NOMARTA)
+   fMB = 0;
+ #endif
+   // save IPAddress and port 
+@@ -43,7 +43,7 @@ void MartaComHandler::ReadRegisters(int addr, int nb, uint16_t *dest)
+ {
+   Connect();
+ 
+-#ifndef USE_FAKEIO
++#if !defined(USE_FAKEIO) && !defined(NOMARTA)
+   if (fMB) {
+     modbus_read_registers(fMB, addr, nb, dest);
+   }
+@@ -54,7 +54,7 @@ void MartaComHandler::WriteRegisters(int addr, int nb, const uint16_t *src)
+ {
+   Connect();
+ 
+-#ifndef USE_FAKEIO
++#if !defined(USE_FAKEIO) && !defined(NOMARTA)
+   if (fMB) {
+     modbus_write_registers(fMB, addr, nb, src);
+   }
+@@ -63,7 +63,7 @@ void MartaComHandler::WriteRegisters(int addr, int nb, const uint16_t *src)
+ 
+ void MartaComHandler::Connect()
+ {
+-#ifndef USE_FAKEIO
++#if !defined(USE_FAKEIO) && !defined(NOMARTA)
+   fMB = modbus_new_tcp(fIPAddress.c_str(), fPort);
+ 
+   if (modbus_connect(fMB) == -1) {
+@@ -80,7 +80,7 @@ void MartaComHandler::Connect()
+ 
+ void MartaComHandler::Disconnect()
+ {
+-#ifndef USE_FAKEIO
++#if !defined(USE_FAKEIO) && !defined(NOMARTA)
+   if (fMB) {
+     modbus_close(fMB);
+     modbus_free(fMB);
+diff --git a/devices/Marta/MartaComHandler.h b/devices/Marta/MartaComHandler.h
+index 584f041c..d4a41dc8 100644
+--- a/devices/Marta/MartaComHandler.h
++++ b/devices/Marta/MartaComHandler.h
+@@ -21,7 +21,7 @@
+ 
+ #include <string>
+ 
+-#ifndef USE_FAKEIO
++#if !defined(USE_FAKEIO) && !defined(NOMARTA)
+ #include <modbus.h>
+ #endif
+ 
+@@ -65,11 +65,11 @@ class MartaComHandler {
+   std::string fIPAddress;
+   port_t fPort;
+ 
+-#ifndef USE_FAKEIO
++#if !defined(USE_FAKEIO) && !defined(NOMARTA)
+   modbus_t *fMB;
+ #endif
+ };
+- 
++
+ /** @} */
+ 
+ /** @} */
+diff --git a/thermo/thermo2/thermoDAQ2/thermoDAQ2.pro.in b/thermo/thermo2/thermoDAQ2/thermoDAQ2.pro.in
+index b51d329c..b1f66f6e 100644
+--- a/thermo/thermo2/thermoDAQ2/thermoDAQ2.pro.in
++++ b/thermo/thermo2/thermoDAQ2/thermoDAQ2.pro.in
+@@ -5,8 +5,14 @@ LIBS += -L@basepath@/devices/lib -lTkModLabHameg
+ LIBS += -L@basepath@/devices/lib -lTkModLabPfeiffer
+ LIBS += -L@basepath@/devices/lib -lTkModLabHuber
+ LIBS += -L@basepath@/devices/lib -lTkModLabRohdeSchwarz
++LIBS += -L@basepath@/devices/lib -lTkModLabMarta
+ LIBS += -L@basepath@/common -lCommon
+-LIBS += `pkg-config --libs libmodbus`
++
++USEFAKEDEVICES = @usefakedevices@
++NOMARTA        = @nomarta@
++equals(USEFAKEDEVICES, "1") {
++  NOMARTA = 1
++}
+ 
+ QMAKE = @qmake@
+ 
+@@ -27,7 +33,12 @@ macx {
+   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+ }
+ 
+-QMAKE_CXXFLAGS += `pkg-config --cflags libmodbus`
++equals(NOMARTA, "0") {
++  QMAKE_CXXFLAGS += `pkg-config --cflags libmodbus`
++  LIBS += `pkg-config --libs libmodbus`
++} else {
++  QMAKE_CXXFLAGS += -DNOMARTA
++}
+ 
+ DEFINES += @configdefines@
+ 

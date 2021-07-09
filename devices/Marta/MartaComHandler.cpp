@@ -23,7 +23,7 @@
 MartaComHandler::MartaComHandler( ipaddress_t IPAddress, port_t Port)
   : fDeviceAvailable(false)
 {
-#ifndef USE_FAKEIO
+#if !defined(USE_FAKEIO) && !defined(NOMARTA)
   fMB = 0;
 #endif
   // save IPAddress and port 
@@ -43,7 +43,7 @@ void MartaComHandler::ReadRegisters(int addr, int nb, uint16_t *dest)
 {
   Connect();
 
-#ifndef USE_FAKEIO
+#if !defined(USE_FAKEIO) && !defined(NOMARTA)
   if (fMB) {
     modbus_read_registers(fMB, addr, nb, dest);
   }
@@ -54,7 +54,7 @@ void MartaComHandler::WriteRegisters(int addr, int nb, const uint16_t *src)
 {
   Connect();
 
-#ifndef USE_FAKEIO
+#if !defined(USE_FAKEIO) && !defined(NOMARTA)
   if (fMB) {
     modbus_write_registers(fMB, addr, nb, src);
   }
@@ -63,7 +63,7 @@ void MartaComHandler::WriteRegisters(int addr, int nb, const uint16_t *src)
 
 void MartaComHandler::Connect()
 {
-#ifndef USE_FAKEIO
+#if !defined(USE_FAKEIO) && !defined(NOMARTA)
   fMB = modbus_new_tcp(fIPAddress.c_str(), fPort);
 
   if (modbus_connect(fMB) == -1) {
@@ -80,7 +80,7 @@ void MartaComHandler::Connect()
 
 void MartaComHandler::Disconnect()
 {
-#ifndef USE_FAKEIO
+#if !defined(USE_FAKEIO) && !defined(NOMARTA)
   if (fMB) {
     modbus_close(fMB);
     modbus_free(fMB);

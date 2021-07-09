@@ -71,7 +71,7 @@ AssemblySmartMotionManager::AssemblySmartMotionManager(const LStepExpressMotionM
     if(step_val <= 0.)
     {
       NQLog("AssemblySmartMotionManager", NQLog::Fatal)
-         << ": invalid (non-positive) value for smartMove step (" << step_qstr << "), closing application";
+        << ": invalid (non-positive) value for smartMove step (" << step_qstr << "), closing application"; 
 
       assembly::kill_application(tr("[AssemblySmartMotionManager]"), "Invalid (non-positive) value for smartMove step (\""+step_qstr+"\"). Closing Application.");
     }
@@ -242,6 +242,7 @@ QQueue<LStepExpressMotion> AssemblySmartMotionManager::smartMotions_relative(con
 
   const bool move_xya = ((dx != 0.) || (dy != 0.) || (da != 0.));
 
+
   if(dz > 0.)
   {
     motions.enqueue(LStepExpressMotion(0, 0, dz, 0, false));
@@ -265,7 +266,7 @@ QQueue<LStepExpressMotion> AssemblySmartMotionManager::smartMotions_relative(con
           ++smart_motions_N;
 
           abs_dz_resid +=  -istep_val;
-          dz_vec.push_back(-istep_val);
+	  dz_vec.push_back(-istep_val);
         }
       }
 

@@ -148,6 +148,7 @@ class LStepExpressFake : public VLStepExpress
   std::vector<double> velocity_;
   std::vector<double> position_;
   std::vector<double> moverel_;
+  std::string port_;
 
   bool joystickEnabled_;
   std::vector<int> joystickAxisEnabled_;

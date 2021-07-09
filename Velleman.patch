@@ -1,0 +1,66 @@
+diff --git a/devices/Velleman/.gitignore b/devices/Velleman/.gitignore
+index 31dc3078..2dfc87c5 100644
+--- a/devices/Velleman/.gitignore
++++ b/devices/Velleman/.gitignore
+@@ -1,2 +1,4 @@
+ *.d
+ *.o
++
++vellemanTest
+diff --git a/devices/Velleman/Makefile.in b/devices/Velleman/Makefile.in
+index af2e37ee..e4a69607 100644
+--- a/devices/Velleman/Makefile.in
++++ b/devices/Velleman/Makefile.in
+@@ -21,7 +21,7 @@ NEWHEADERS    = $(addsuffix _cpp.h,$(MODULES))
+ 
+ EXISTDEPEND   = $(shell find . -name \*.d -type f -print)
+ 
+-all: vellemanTest lib
++all: depend lib vellemanTest
+ 
+ depend: $(ALLDEPEND)
+ 
+@@ -43,15 +43,8 @@ $(LIBDIR)/lib$(LIB).so: $(addsuffix .o, $(MODULES))
+ 	@echo "Compiling $<"
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+ 
+-utils: $(NEWHEADERS)
+-
+-%_cpp.h: %.cpp
+-	@/bin/cp -rf $< ./utils/$*_cpp.h
+-
+-vellemanTest: depend utils $(VELLEMAN)/utils/vellemanTest.cpp
+-	cd $(VELLEMAN)/utils;
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) \
+-	-I$(VELLEMAN) -o $(VELLEMAN)/utils/$@ $(VELLEMAN)/utils/vellemanTest.cpp
++vellemanTest: vellemanTest.cpp $(LIBDIR)/lib$(LIB).so
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS) vellemanTest.cpp -o vellemanTest -L$(LIBDIR) -lTkModLabVelleman
+ 
+ install:
+ 	install -m 755 -p $(LIBDIR)/lib$(LIB).so /usr/lib
+diff --git a/devices/Velleman/utils/.gitignore b/devices/Velleman/utils/.gitignore
+deleted file mode 100644
+index 6d75bcd9..00000000
+--- a/devices/Velleman/utils/.gitignore
++++ /dev/null
+@@ -1,2 +0,0 @@
+-*_cpp.h
+-vellemanTest
+diff --git a/devices/Velleman/utils/vellemanTest.cpp b/devices/Velleman/vellemanTest.cpp
+similarity index 96%
+rename from devices/Velleman/utils/vellemanTest.cpp
+rename to devices/Velleman/vellemanTest.cpp
+index d6c47de3..ffd06832 100644
+--- a/devices/Velleman/utils/vellemanTest.cpp
++++ b/devices/Velleman/vellemanTest.cpp
+@@ -17,10 +17,6 @@
+ #include <stdio.h>
+ 
+ #include "VellemanController.h"
+-#include "VellemanCommunication_cpp.h"
+-#include "VVellemanController_cpp.h"
+-#include "VellemanController_cpp.h"
+-#include "VellemanControllerFake_cpp.h"
+ 
+ // NOTE: These two #ifndef statements are important (issue with --off if left out)
+ #ifndef CMD_SWITCH_RELAY_ON

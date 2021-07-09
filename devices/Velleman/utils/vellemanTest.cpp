@@ -18,7 +18,7 @@
 
 #include "VellemanController.h"
 #include "VellemanCommunication_cpp.h"
-#include "VVellemanController_cpp.h"
+#include "IVellemanController_cpp.h"
 #include "VellemanController_cpp.h"
 #include "VellemanControllerFake_cpp.h"
 
