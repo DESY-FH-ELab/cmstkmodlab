@@ -294,9 +294,9 @@ void KeithleyDAQ6510::Scan()
   if (!deviceChannelsSet_) DeviceSetChannels();
     
   comHandler_->SendCommand(":ROUT:SCAN:MODE ALL");
-  //comHandler_->SendCommand(":TRACe:FILL:MODE ONCE");
-  comHandler_->SendCommand(":TRAC:CLE");
   //comHandler_->SendCommand(":ABOR");
+  //comHandler_->SendCommand(":TRAC:FILL:MODE ONCE");
+  comHandler_->SendCommand(":TRAC:CLE 'defbuffer1'");
   comHandler_->SendCommand(":INIT:IMM");
 }
 
@@ -350,10 +350,11 @@ void KeithleyDAQ6510::GetScanData(reading_t & data)
     scanCount++;
   }
 
+  // clear buffer
+  comHandler_->SendCommand(":TRAC:CLE 'defbuffer1'");
+
   // open all routings
   comHandler_->SendCommand(":ROUT:OPEN:ALL");
-
-  comHandler_->SendCommand(":TRAC:CLE");
 }
 
 unsigned int KeithleyDAQ6510::GetSensorFromScanCount(unsigned int scanCount)
