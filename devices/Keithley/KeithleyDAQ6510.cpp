@@ -336,7 +336,6 @@ void KeithleyDAQ6510::GetScanData(reading_t & data)
       sensor = std::atoi(it->c_str()); ++it;
     }
 
-    // unsigned int sensor = GetSensorFromScanCount(scanCount);
 
     double temperature = std::atof(it->c_str()); ++it;
     double relTime = std::atof(it->c_str());
