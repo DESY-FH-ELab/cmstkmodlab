@@ -22,7 +22,12 @@ LIBS += -L@basepath@/devices/lib -lTkModLabAgilent
 LIBS += -L@basepath@/devices/lib -lTkModLabMarta
 LIBS += -L@basepath@/external/ddierckx -lddierckx
 LIBS += -lcurl
-LIBS += `pkg-config --libs libmodbus`
+
+USEFAKEDEVICES = @usefakedevices@
+NOMARTA        = @nomarta@
+equals(USEFAKEDEVICES, "1") {
+  NOMARTA = 1
+}
 
 QMAKE = @qmake@
 
@@ -30,7 +35,7 @@ macx {
   CONFIG+=x86_64
   QMAKE_CXXFLAGS += -stdlib=libc++
   QMAKE_CXXFLAGS += -D__Darwin__
-  QMAKE_MACOSX_DEPLOYMENT_TARGET = 11.1
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 11.3
 }
 
 CONFIG+=c++17
@@ -42,7 +47,12 @@ else {
   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
 }
 
-QMAKE_CXXFLAGS += `pkg-config --cflags libmodbus`
+equals(NOMARTA, "0") {
+  QMAKE_CXXFLAGS += `pkg-config --cflags libmodbus`
+  LIBS += `pkg-config --libs libmodbus`
+} else {
+  QMAKE_CXXFLAGS += -DNOMARTA
+}
 
 DEFINES += @configdefines@
 QT += core gui widgets opengl script xml svg
