@@ -310,7 +310,8 @@ void KeithleyDAQ6510::GetScanData(reading_t & data)
   std::stringstream ss;
   ss << ":TRAC:DATA? 1, ";
   ss << GetActiveChannelCount();
-  ss << ", 'defbuffer1', CHAN, READ, REL";
+  // ss << ", 'defbuffer1', CHAN, READ, REL";
+  ss << ", 'defbuffer1', CHAN, READ";
 
   comHandler_->SendCommand(ss.str().c_str());
   comHandler_->ReceiveString(buffer);
@@ -336,12 +337,16 @@ void KeithleyDAQ6510::GetScanData(reading_t & data)
       sensor = std::atoi(it->c_str()); ++it;
     }
 
+    double temperature = std::atof(it->c_str());
 
-    double temperature = std::atof(it->c_str()); ++it;
+    /*
+    ++it;
     double relTime = std::atof(it->c_str());
-
-    data.push_back(std::tuple<unsigned int,double,double>(sensor,temperature,relTime));
-
+    */
+    
+    //data.push_back(std::tuple<unsigned int,double,double>(sensor,temperature,relTime));
+    data.push_back(std::tuple<unsigned int,double,double>(sensor,temperature,0.0));
+    
     scanCount++;
   }
 
