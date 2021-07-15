@@ -373,28 +373,30 @@ float KeithleyDAQ6510::GetScanDuration() const
 void KeithleyDAQ6510::DeviceSetChannels()
 {
   std::stringstream ss;
-  unsigned int count;
+  unsigned int count1, count2;
 
   // build rout:scan command
   ss << ":ROUT:SCAN:CRE (@";
 
-  count = 0;
+  count1 = 0;
   for (unsigned int channel = 1;channel<=10;++channel) {
-    if (activeChannels_[0][channel-1]) count++;
+    if (activeChannels_[0][channel-1]) count1++;
   }
-  if (count) {
+  if (count1) {
     ss << CreateChannelString(1, activeChannels_[0]);
   }
 
-  count = 0;
+  count2 = 0;
   for (unsigned int channel = 1;channel<=10;++channel) {
-    if (activeChannels_[1][channel-1]) count++;
+    if (activeChannels_[1][channel-1]) count2++;
   }
-  if (count) {
-    ss << ",";
+  if (count2) {
+    if (count1) {
+      ss << ",";
+    }
     ss << CreateChannelString(2, activeChannels_[1]);
   }
-
+  
   ss << ")";
 
 #ifdef __DEBUG
