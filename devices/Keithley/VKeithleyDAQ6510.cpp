@@ -205,7 +205,18 @@ std::string VKeithleyDAQ6510::CreateChannelString(unsigned int card, channels_t&
   for (int i=0;i<10;++i) {
     
     // std::cout << card*100+i+1 << ": " << channels[i] << std::endl;
+
+    // test version using individual channels.
+    /*
+    if (channels[i]) {
+      if (hasPrevious) ss << ",";
+      ss << card * 100 + i+1;
+      
+      hasPrevious = true;
+    }
+    */
     
+    // original version using channel ranges.
     if (channels[i]) {
       if (!inRange) {
         rangeStart = i;
