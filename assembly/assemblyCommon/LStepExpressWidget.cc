@@ -124,7 +124,7 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
 
     //connect(buttonOrigin_       , SIGNAL(clicked()), model_, SLOT(moveAbsolute()));
     connect(buttonOrigin_       , SIGNAL(clicked()), this  , SIGNAL(moveToOrigin_request())); //New signal/slot to connect the Origin button with the manager (where XYA/Z priorities are implemented) rather than directly via the model
-    connect(buttonCalibrate_    , SIGNAL(clicked()), model_, SLOT(confirmCalibrate())); //Changed: clicking 'Calibrate' pops-up a GUI message, and the calibration is only performed upon confirmation from the user
+    connect(buttonCalibrate_    , SIGNAL(clicked()), this, SLOT(confirmCalibrate())); //Changed: clicking 'Calibrate' pops-up a GUI message, and the calibration is only performed upon confirmation from the user
     connect(this, SIGNAL(startCalibrate()), model_, SLOT(calibrate()));
     connect(buttonEmergencyStop_, SIGNAL(clicked()), model_, SLOT(emergencyStop()));
     connect(buttonClearQueue_   , SIGNAL(clicked()), this  , SIGNAL(clearQueue_request()));
@@ -523,6 +523,9 @@ void LStepExpressWidget::confirmCalibrate()
       case QMessageBox::Yes: break; //Continue function execution
       default: return; //Exit
     }
+
+	NQLog("LStepExpressWidget", NQLog::Spam) << "confirmCalibrate"
+     << ": emitting signal \"startCalibrate\"";
 
     emit startCalibrate(); //Emit signal to start the actual MS calibration
 
