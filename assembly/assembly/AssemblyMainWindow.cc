@@ -32,8 +32,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   QMainWindow(parent),
 
   // Low-Level Controllers (Motion, Camera, Vacuum)
-	relayCardModel_(nullptr),
-	relayCardManager_(nullptr),
+  relayCardModel_(nullptr),
+  relayCardManager_(nullptr),
 
   motion_model_(nullptr),
   motion_manager_(nullptr),
@@ -134,6 +134,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     motion_thread_  = new LStepExpressMotionThread(motion_manager_, this);
     motion_thread_->start();
+
+    connect(motion_manager_, SIGNAL(restartMotionStage_request), this, SLOT(messageBox_restartMotionStage())); //Display a pop-up GUI message whenever the MS gets automatically restarted
     /// -------------------
 
     /// Camera
@@ -511,6 +513,20 @@ void AssemblyMainWindow::liveUpdate()
     emit image_request();
 }
 
+//-- Slot function to display a GUI message whenever the Motion Stage gets automatically restarted
+void AssemblyMainWindow::messageBox_restartMotionStage()
+{
+    NQLog("AssemblyMainWindow", NQLog::Debug) << "messageBox_restartMotionStage: displaying pop-up message box";
+
+    //-- Display informative pop-up before restarting the MS
+    QMessageBox::information(this, tr("Motion Stage Error -- Restarting"),
+            tr("<p>The motion stage returned a position vector with invalid size, and will be automatically restarted."
+            "<p>If it still does not respond, you may try to restart it again by clicking 'Restart Motion Stage' in the tab 'HW Controllers'.</p>"
+        ));
+
+    return;
+}
+
 void AssemblyMainWindow::enable_images()
 {
   if(images_enabled_)
@@ -661,7 +677,7 @@ void AssemblyMainWindow::connect_images()
 
   connect(image_view_->autofocus_emergencyStop_button(), SIGNAL(clicked()), zfocus_finder_, SLOT(emergencyStop()));
   connect(image_view_->autofocus_emergencyStop_button(), SIGNAL(clicked()), image_ctr_    , SLOT(restore_autofocus_settings()));
-  // connect(image_view_->autofocus_emergencyStop_button(), SIGNAL(clicked()), image_ctr_    , SLOT(disable_autofocus())); //Added explicit call to disable_autofocus() when clicking 'Stop Auto-Focus' (to mitigate rare issues where the ZFocusFinder does not get disconnected, and gets triggered when clicking 'Snapshot') //NB: not needed, can simply tick/untick the 'Auto-focusing' button (?)
+  connect(image_view_->autofocus_emergencyStop_button(), SIGNAL(clicked()), image_ctr_    , SLOT(disable_autofocus())); //Added explicit call to disable_autofocus() when clicking 'Stop Auto-Focus' (to mitigate rare issues where the ZFocusFinder does not get disconnected, and gets triggered when clicking 'Snapshot') //NB: if needed, can also simply tick/untick the 'Auto-focusing' button to force-disable the autofocus module
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "connect_images"
      << ": enabled images in application view(s)";
@@ -685,7 +701,7 @@ void AssemblyMainWindow::disconnect_images()
 
   disconnect(image_view_->autofocus_emergencyStop_button(), SIGNAL(clicked()), zfocus_finder_, SLOT(emergencyStop()));
   disconnect(image_view_->autofocus_emergencyStop_button(), SIGNAL(clicked()), image_ctr_    , SLOT(restore_autofocus_settings()));
-  // disconnect(image_view_->autofocus_emergencyStop_button(), SIGNAL(clicked()), image_ctr_    , SLOT(disable_autofocus()));
+  disconnect(image_view_->autofocus_emergencyStop_button(), SIGNAL(clicked()), image_ctr_    , SLOT(disable_autofocus()));
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "disconnect_images"
      << ": disabled images in application view(s)";
@@ -895,6 +911,7 @@ void AssemblyMainWindow::disconnect_otherSlots()
     disconnect(params_view_, SIGNAL(request_moveByRelRefDistance(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
     disconnect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
     disconnect(motion_manager_, SIGNAL(restartMotionStage_request()), hwctr_view_->LStepExpress_Widget(), SLOT(restart()));
+    disconnect(motion_manager_, SIGNAL(restartMotionStage_request), this, SLOT(messageBox_restartMotionStage()));
 
     return;
 }
