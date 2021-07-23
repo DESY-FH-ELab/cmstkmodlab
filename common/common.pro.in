@@ -19,15 +19,23 @@ LIBS += -L@basepath@/devices/lib -lTkModLabVelleman
 LIBS += -L@basepath@/devices/lib -lTkModLabLeybold
 LIBS += -L@basepath@/devices/lib -lTkModLabRohdeSchwarz
 LIBS += -L@basepath@/devices/lib -lTkModLabAgilent
+LIBS += -L@basepath@/devices/lib -lTkModLabMarta
 LIBS += -L@basepath@/external/ddierckx -lddierckx
 LIBS += -lcurl
+
+USEFAKEDEVICES = @usefakedevices@
+NOMARTA        = @nomarta@
+equals(USEFAKEDEVICES, "1") {
+  NOMARTA = 1
+}
 
 QMAKE = @qmake@
 
 macx {
   CONFIG+=x86_64
   QMAKE_CXXFLAGS += -stdlib=libc++
-  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
+  QMAKE_CXXFLAGS += -D__Darwin__
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 11.3
 }
 
 CONFIG+=c++17
@@ -39,8 +47,15 @@ else {
   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
 }
 
+equals(NOMARTA, "0") {
+  QMAKE_CXXFLAGS += `pkg-config --cflags libmodbus`
+  LIBS += `pkg-config --libs libmodbus`
+} else {
+  QMAKE_CXXFLAGS += -DNOMARTA
+}
+
 DEFINES += @configdefines@
-QT += core gui widgets opengl script xml
+QT += core gui widgets opengl script xml svg
 TARGET = Common
 TEMPLATE = lib
 
@@ -127,7 +142,11 @@ HEADERS += nqlogger.h \
            HuberUnistat525wWidget.h \
            ScriptableHuberUnistat525w.h \
            AgilentTwisTorr304Model.h \
-           AgilentTwisTorr304Widget.h
+           AgilentTwisTorr304Widget.h \
+           MartaModel.h \
+           MartaWidget.h \
+           MartaSVG.h \
+           ScriptableMarta.h
 
 SOURCES += nqlogger.cc \
            npoint2D.cc \
@@ -189,4 +208,7 @@ SOURCES += nqlogger.cc \
            HuberUnistat525wWidget.cc \
            ScriptableHuberUnistat525w.cc \
            AgilentTwisTorr304Model.cc \
-           AgilentTwisTorr304Widget.cc
+           AgilentTwisTorr304Widget.cc \
+           MartaModel.cc \
+           MartaWidget.cc \
+           ScriptableMarta.cc

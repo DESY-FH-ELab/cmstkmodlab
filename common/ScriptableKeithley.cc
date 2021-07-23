@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -10,9 +10,9 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <unistd.h>
-
 #include <iostream>
+#include <chrono>
+#include <thread>
 #include <sstream>
 #include <vector>
 #include <cmath>
@@ -60,7 +60,9 @@ QScriptValue ScriptableKeithley::temperatureAsString(unsigned int channel)
 }
 
 void ScriptableKeithley::waitForStableTemperature(const QString & channels,
-						  int timeout) {
+                                                  int timeout) {
+
+  using namespace std::chrono_literals;
 
   std::vector<unsigned int> activeChannels;
   std::istringstream iss(channels.toStdString().c_str());
@@ -88,26 +90,25 @@ void ScriptableKeithley::waitForStableTemperature(const QString & channels,
   }
 
   float current[10];
-
   int t = 0;
+
   while (t<=timeout) {
 
     bool stable = true;
-    for (std::vector<unsigned int>::iterator it = activeChannels.begin();
-	 it!=activeChannels.end();
-	 ++it) {
-      current[*it] = keithleyModel_->getTemperature(*it);
-      buffer[*it].push_back(current[*it]);
+    for (unsigned int channel : activeChannels) {
+      current[channel] = keithleyModel_->getTemperature(channel);
+      buffer[channel].push_back(current[channel]);
 
-      float delta = current[*it]-buffer[*it].get();
-      NQLog("keithley") << QString("dT(%1) = %2").arg(*it).arg(delta);
+      float delta = current[channel]-buffer[channel].get();
+      NQLog("keithley") << QString("dT(%1) = %2").arg(channel).arg(delta);
 
       if (std::fabs(delta)>=0.01) stable = false;
     }
     if (stable) break;
 
-    sleep(60);
-    t += 60;
+    std::this_thread::sleep_for(60s);
+
+    t++;
   }
 
   keithleyModel_->statusMessage("done");
@@ -118,15 +119,18 @@ void ScriptableKeithley::waitForTemperatureAbove(unsigned int channel,
                                                  float temperature,
                                                  int timeout) {
 
+  using namespace std::chrono_literals;
+
   keithleyModel_->statusMessage(QString("wait for T(%1) > %2 deg C ...").arg(channel).arg(temperature));
   NQLog("keithley") << QString("wait for T(%1) > %2 deg C ...").arg(channel).arg(temperature);
 
-  for (int m=0;m<=timeout;m+=60) {
+  for (int m=0;m<=timeout;++m) {
     QMutexLocker locker(&mutex_);
     double temp = keithleyModel_->getTemperature(channel);
     locker.unlock();
     if (temp>temperature) break;
-    sleep(60);
+
+    std::this_thread::sleep_for(60s);
   }
 
   keithleyModel_->statusMessage("done");
@@ -137,15 +141,18 @@ void ScriptableKeithley::waitForTemperatureBelow(unsigned int channel,
                                                  float temperature,
                                                  int timeout) {
 
+  using namespace std::chrono_literals;
+
   keithleyModel_->statusMessage(QString("wait for T(%1) < %2 deg C ...").arg(channel).arg(temperature));
   NQLog("keithley") << QString("wait for T(%1) < %2 deg C ...").arg(channel).arg(temperature);
 
-  for (int m=0;m<=timeout;m+=60) {
+  for (int m=0;m<=timeout;++m) {
     QMutexLocker locker(&mutex_);
     double temp = keithleyModel_->getTemperature(channel);
     locker.unlock();
     if (temp<temperature) break;
-    sleep(60);
+
+    std::this_thread::sleep_for(60s);
   }
 
   keithleyModel_->statusMessage("done");

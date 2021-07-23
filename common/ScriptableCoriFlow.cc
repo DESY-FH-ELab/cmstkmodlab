@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -10,9 +10,9 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <unistd.h>
-
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 #include <QMutexLocker>
 
@@ -33,15 +33,20 @@ QScriptValue ScriptableCoriFlow::getTemp() {
 }
 
 
-void ScriptableCoriFlow::waitForTempBelow(float /* temperature */,
-                                                  int timeout) {
+void ScriptableCoriFlow::waitForTempBelow(float temperature,
+                                          int timeout) {
+
+  using namespace std::chrono_literals;
 
   for (int m=0;m<=timeout;++m) {
+
     QMutexLocker locker(&mutex_);
     double temp = CoriFlowModel_->getTemp();
     locker.unlock();
-    if (temp<temp) break;
-    sleep(60);
+
+    if (temp<temperature) break;
+
+    std::this_thread::sleep_for(60s);
   }
 }
 

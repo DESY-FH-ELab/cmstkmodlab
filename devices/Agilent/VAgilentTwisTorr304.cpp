@@ -61,15 +61,15 @@ const std::string VAgilentTwisTorr304::GetPumpStatusText() const
 
 void VAgilentTwisTorr304::MakeReadCommand(std::string& command, unsigned int window) const
 {
-  command = STX;
+  command = AgilentSTX;
   command += 0x80;
 
   char win[4];
   sprintf(win, "%03d", window);
   command += win;
 
-  command += RD;
-  command += ETX;
+  command += AgilentRD;
+  command += AgilentETX;
 
   char crc0, crc1;
 
@@ -81,22 +81,22 @@ void VAgilentTwisTorr304::MakeReadCommand(std::string& command, unsigned int win
 
 void VAgilentTwisTorr304::MakeWriteCommand(std::string& command, unsigned int window, bool data) const
 {
-  command = STX;
+  command = AgilentSTX;
   command += 0x80;
 
   char win[4];
   sprintf(win, "%03d", window);
   command += win;
 
-  command += WR;
+  command += AgilentWR;
 
   if (data) {
-    command += ON;
+    command += AgilentON;
   } else {
-    command += OFF;
+    command += AgilentOFF;
   }
 
-  command += ETX;
+  command += AgilentETX;
 
   char crc0, crc1;
 

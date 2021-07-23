@@ -28,7 +28,8 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 macx {
-  QMAKE_MACOSX_DEPLOYMENT_TARGET=10.9
+  QMAKE_MACOSX_DEPLOYMENT_TARGET=11.1
+  CONFIG+=sdk_no_version_check
 }
 
 greaterThan(QT_MAJOR_VERSION, 4) {

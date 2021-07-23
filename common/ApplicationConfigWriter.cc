@@ -90,24 +90,20 @@ void ApplicationConfigWriter::writeMerge(std::multimap<std::string,std::string> 
 		}
 	}
 
-	for (std::map<std::string,std::string>::iterator it = keyMap.begin();
-		   it!=keyMap.end();
-	     ++it) {
-		tmap.erase(it->first);
+	for (auto & kv : keyMap) {
+		tmap.erase(kv.first);
 	}
 
-	for (auto v = tmap.begin();
-	   	 v!=tmap.end();
-			 ++v) {
+	for (auto & kv : tmap) {
 
-		std::map<std::string,std::string>::iterator itFind = keyMap.find(v->first);
+		std::map<std::string,std::string>::iterator itFind = keyMap.find(kv.first);
 		if (itFind==keyMap.end()) {
 			ostream.fill(' ');
 			ostream.width(25);
-			ostream << std::left << v->first;
+			ostream << std::left << kv.first;
 
 			count = 0;
-			auto range = tmap.equal_range(v->first);
+			auto range = tmap.equal_range(kv.first);
 			for (auto i = range.first; i != range.second; ++i) {
 				if (count>0) ostream << " ";
 				ostream << i->second;
@@ -115,7 +111,7 @@ void ApplicationConfigWriter::writeMerge(std::multimap<std::string,std::string> 
 			}
 			ostream << "\n";
 
-			keyMap.insert(std::make_pair(v->first, v->first));
+			keyMap.insert(std::make_pair(kv.first, kv.first));
 		}
 	}
 
@@ -130,22 +126,20 @@ void ApplicationConfigWriter::writeNew(std::multimap<std::string,std::string> &k
 {
 	std::map<std::string,std::string> keyMap;
   std::ofstream file(outputFileName_.c_str(), std::ios::out);
-  for (auto v = keyvalueMap.begin();
-  		 v!=keyvalueMap.end();
-  		 ++v) {
+  for (auto & kv : keyvalueMap) {
 
-  	std::map<std::string,std::string>::iterator itFind = keyMap.find(v->first);
+  	std::map<std::string,std::string>::iterator itFind = keyMap.find(kv.first);
   	if (itFind==keyMap.end()) {
   		file.fill(' ');
   		file.width(25);
-  		file << std::left << v->first;
+  		file << std::left << kv.first;
 
-  		auto range = keyvalueMap.equal_range(v->first);
+  		auto range = keyvalueMap.equal_range(kv.first);
   		for (auto i = range.first; i != range.second; ++i) {
   			file << i->second << " ";
   		}
 
-  		keyMap.insert(std::make_pair(v->first, v->first));
+  		keyMap.insert(std::make_pair(kv.first, kv.first));
   	}
   }
 }

@@ -23,12 +23,14 @@
 
 Thermo2ScriptModel::Thermo2ScriptModel(Thermo2DAQModel* daqModel,
                                        HuberUnistat525wModel* huberModel,
+																			 MartaModel* martaModel,
                                        RohdeSchwarzNGE103BModel* nge103BModel,
                                        KeithleyDAQ6510Model* keithleyModel,
                                        QObject *parent)
   : QObject(parent),
     daqModel_(daqModel),
     huberModel_(huberModel),
+    martaModel_(martaModel),
     nge103BModel_(nge103BModel),
     keithleyModel_(keithleyModel)
 {
@@ -40,6 +42,7 @@ Thermo2ScriptModel::Thermo2ScriptModel(Thermo2DAQModel* daqModel,
 
   scriptThread_ = new Thermo2ScriptThread(this,
                                           huberModel_,
+																					martaModel_,
                                           nge103BModel_,
                                           keithleyModel_,
                                           this);
@@ -47,6 +50,9 @@ Thermo2ScriptModel::Thermo2ScriptModel(Thermo2DAQModel* daqModel,
   connect(scriptThread_, SIGNAL(finished()), this, SLOT(executionFinished()));
 
   connect(huberModel_, SIGNAL(message(const QString &)),
+          this, SLOT(doAppendMessageText(const QString &)));
+
+  connect(martaModel_, SIGNAL(message(const QString &)),
           this, SLOT(doAppendMessageText(const QString &)));
 
   connect(nge103BModel_, SIGNAL(message(const QString &)),

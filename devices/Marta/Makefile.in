@@ -1,0 +1,77 @@
+ARCHITECTURE=@architecture@
+USEFAKEDEVICES=@usefakedevices@
+NOMARTA       = @nomarta@
+
+BASEPATH      = @basepath@
+include $(BASEPATH)/devices/Makefile.common
+
+LIBDIR        = $(BASEPATH)/devices/lib
+
+LIB           = TkModLabMarta
+
+MODULES       = MartaComHandler \
+                VMarta \
+                MartaFake \
+                Marta
+
+ifeq ($(USEFAKEDEVICES),1)
+NOMARTA       = 1
+endif
+
+ifeq ($(NOMARTA),1)
+CXXFLAGS     += -DNOMARTA
+endif
+
+CXXFLAGS     += -D__@architecture@__
+
+MODBUSLIBS    =
+ifeq ($(NOMARTA),0)
+CXXFLAGS     += `pkg-config --cflags libmodbus`
+MODBUSLIBS   += `pkg-config --libs libmodbus`
+endif
+
+ALLDEPEND = $(addsuffix .d,$(MODULES))
+
+EXISTDEPEND = $(shell find . -name \*.d -type f -print)
+
+all: depend lib test
+
+depend: $(ALLDEPEND)
+
+lib: $(LIBDIR)/lib$(LIB).so
+
+$(LIBDIR)/lib$(LIB).so: $(addsuffix .o,$(MODULES))
+	@(test -e $(LIBDIR) || mkdir $(LIBDIR))
+	@echo "Linking shared library $@"
+	$(LD) $(SOFLAGS) $^ -o $@
+
+%.d: %.cpp
+	@echo Making dependency for file $< ...
+	@set -e;\
+	$(CXX) -M $(CPPFLAGS) $(CXXFLAGS)  $< |\
+	sed 's!$*\.o!& $@!' >$@;\
+	[ -s $@ ] || rm -f $@
+
+%.o: %.cpp
+	@echo "Compiling $<"
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+test: test.cc $(LIBDIR)/lib$(LIB).so
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) test.cc -o test -L../lib -lTkModLabMarta $(MODBUSLIBS)
+
+install:
+	install -m 755 -p $(LIBDIR)/lib$(LIB).so /usr/lib
+	strip /usr/lib/lib$(LIB).so
+
+clean:
+	@rm -f $(LIBDIR)/lib$(LIB).so
+	@rm -f $(addsuffix .o,$(MODULES))
+	@rm -f *.d
+	@rm -f *~
+	@rm -f test
+
+ifeq ($(findstring clean,$(MAKECMDGOALS)),)
+ifneq ($(EXISTDEPEND),)
+-include $(EXISTDEPEND)
+endif
+endif
