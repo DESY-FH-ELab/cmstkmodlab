@@ -137,6 +137,8 @@ class AssemblyMainWindow : public QMainWindow
 
   void liveUpdate();
 
+  void messageBox_restartMotionStage();
+
  protected:
 
   // Low-Level Controllers (Motion, Camera, Vacuum)

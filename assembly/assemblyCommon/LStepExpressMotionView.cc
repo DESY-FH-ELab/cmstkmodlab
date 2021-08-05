@@ -17,6 +17,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
+//-- Obsolete class, not used anymore
 LStepExpressMotionView::LStepExpressMotionView(LStepExpressModel* model, LStepExpressMotionManager* manager, QWidget* parent) :
   QWidget(parent),
   model_(model),

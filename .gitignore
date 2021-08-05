@@ -9,3 +9,4 @@ share/assembly/*png
 *~
 html/
 .DS_Store
+.orig

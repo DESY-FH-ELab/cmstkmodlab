@@ -139,7 +139,7 @@ void LStepExpressMotionManager::run()
     this->AxisIsReady(3);
     // ------------------
 
-    LStepExpressMotion motion = motions_.dequeue();
+    LStepExpressMotion motion = motions_.dequeue(); //Returns first (head) movement from the queue
 
     inMotion_ = true;
 
@@ -227,8 +227,12 @@ void LStepExpressMotionManager::moveRelative(const std::vector<double>& values)
       return;
     }
 
-    //Queue movement
-    motions_.enqueue(LStepExpressMotion(values, false));
+    //Queue movement //Changed
+    //motions_.enqueue(LStepExpressMotion(values, false));
+
+    //-- Set priorities for XYA and Z movements
+    motions_ = this->set_movements_priorities_XYZA(values[0], values[1], values[2], values[3], false);
+
     this->run();
 }
 
@@ -259,8 +263,12 @@ void LStepExpressMotionManager::moveRelative(const double dx, const double dy, c
       return;
     }
 
-    //Queue movement
-    motions_.enqueue(LStepExpressMotion(dx, dy, dz, da, false));
+    //Queue movement //Changed
+    //motions_.enqueue(LStepExpressMotion(dx, dy, dz, da, false));
+
+    //-- Set priorities for XYA and Z movements
+    motions_ = this->set_movements_priorities_XYZA(dx, dy, dz, da, false);
+
     this->run();
 }
 
@@ -337,8 +345,12 @@ void LStepExpressMotionManager::moveAbsolute(const std::vector<double>& values)
       return;
     }
 
-    //Queue movement
-    motions_.enqueue(LStepExpressMotion(values, true));
+    //Queue movement //Changed
+    //motions_.enqueue(LStepExpressMotion(values, true));
+
+    //-- Set priorities for XYA and Z movements
+    motions_ = this->set_movements_priorities_XYZA(values[0], values[1], values[2], values[3], true);
+
     this->run();
 }
 
@@ -365,8 +377,12 @@ void LStepExpressMotionManager::moveAbsolute(const double x, const double y, con
       return;
     }
 
-    //Queue movement
-    motions_.enqueue(LStepExpressMotion(x, y, z, a, true));
+    //Queue movement //Changed
+    //motions_.enqueue(LStepExpressMotion(x, y, z, a, true));
+
+    //-- Set priorities for XYA and Z movements
+    motions_ = this->set_movements_priorities_XYZA(x, y, z, a, true);
+
     this->run();
 }
 
@@ -541,35 +557,25 @@ double LStepExpressMotionManager::get_position(const int axis) const
       }
       else if(this->model()->getPositions().size() != 4)
       {
-    	//FIXME -- debugging recurrent MS instability (returning incorrect pos vector) //Related to angle... ?
-    	std::cout<<"this->model()->getPositions().size() = "<<this->model()->getPositions().size()<<std::endl;
-    	for(int i=0; i<this->model()->getPositions().size(); i++)
-    	{
-            std::cout<<"this->model()->getPositions().at("<<i<<") = "<<this->model()->getPositions().at(i)<<std::endl;
-        }
-        //Additional debug messages -- other vectors still have correct size ?
-        for(int i=0; i<4; i++)
-    	{
-            // check axes status
-            if(this->AxisIsReady(i)) {continue;}
-
-            std::cout<<"this->model()->getVelocity("<<i<<") = "<<this->model()->getVelocity(i)<<std::endl;
-            std::cout<<"this->model()->getAccelerationJerk("<<i<<") = "<<this->model()->getAccelerationJerk(i)<<std::endl;
-            std::cout<<"this->model()->getDecelerationJerk("<<i<<") = "<<this->model()->getDecelerationJerk(i)<<std::endl;
-            std::cout<<"this->model()->getAcceleration("<<i<<") = "<<this->model()->getAcceleration(i)<<std::endl;
-            std::cout<<"this->model()->getDeceleration("<<i<<") = "<<this->model()->getDeceleration(i)<<std::endl;
-            std::cout<<"this->model()->getPosition("<<i<<") = "<<this->model()->getPosition(i)<<std::endl;
-        }
-
         NQLog("LStepExpressMotionManager", NQLog::Warning) << "get_position(" << axis << ")"
            << ": cannot return motion stage position [try #" << tries << "] because positions vector has invalid size ("
            << this->model()->getPositions().size() << ")";
 
-        for(int iaxis=0; iaxis<this->model()->getPositions().size(); iaxis++) //Additional printout info: list all available/correct positions
+        for(unsigned int iaxis=0; iaxis<this->model()->getPositions().size(); iaxis++) //Additional printout info: list all available/correct positions
         {
             NQLog("LStepExpressMotionManager", NQLog::Warning) << "Pos: " << this->model()->getPosition(iaxis);
         }
 
+        //-- Recurrent MS instability (returning incorrect pos vector) //Seems like the angle does not get returned, why and can it be fixed ?
+        //-- Debug printouts:
+    	// std::cout<<"this->model()->getPositions().size() = "<<this->model()->getPositions().size()<<std::endl;
+    	// for(unsigned int i=0; i<this->model()->getPositions().size(); i++)
+    	// {
+        //     std::cout<<"this->model()->getPositions().at("<<i<<") = "<<this->model()->getPositions().at(i)<<std::endl;
+        // }
+
+        //-- Whenever the "positions vector has invalid size" error appears and the MS stops responding, the MS should be restarted (manually via the 'Restart Motion Stage' button in the 'HW Controllers' tab, or done automatically here)
+        emit restartMotionStage_request();
       }
     }
 
@@ -577,4 +583,45 @@ double LStepExpressMotionManager::get_position(const int axis) const
   }
 
   return this->model()->getPosition(axis);
+}
+
+
+//-- Function inspired from AssemblySmartMotionManager::smartMotions_relative()
+//-- Prioritize XYA and Z movements depending on their directions, to avoid crashes of the motion stage
+QQueue<LStepExpressMotion> LStepExpressMotionManager::set_movements_priorities_XYZA(const double x, const double y, const double z, const double a, const bool is_absolute_movements)
+{
+    QQueue<LStepExpressMotion> motions; //List of movements to perform in order
+
+    double dx = x;
+    double dy = y;
+    double dz = z;
+    double da = a;
+
+    //-- Convert absolute to relative movements //Simpler to use a single convention (because e.g. moving to "0" has different meaning in abs/rel)
+    if(is_absolute_movements)
+    {
+        dx = (x - this->get_position_X());
+        dy = (y - this->get_position_Y());
+        dz = (z - this->get_position_Z());
+        da = (a - this->get_position_A());
+    }
+
+    const bool move_xya = ((dx != 0.) || (dy != 0.) || (da != 0.));
+    const bool move_z = ((dz != 0.));
+
+    if(!move_xya && !move_z) {return motions;} //No movement
+    else if(move_xya && !move_z) {motions.enqueue(LStepExpressMotion(dx, dy, 0, da, false));} //Only XYA movement
+    else if(!move_xya && move_z) {motions.enqueue(LStepExpressMotion(0, 0, dz, 0, false));} //Only Z movement
+    else if(dz > 0.) //Positive z-movement <-> apply first
+    {
+      motions.enqueue(LStepExpressMotion(0, 0, dz, 0, false));
+      motions.enqueue(LStepExpressMotion(dx, dy, 0, da, false));
+    }
+    else if(dz < 0.) //Negative z-movement <-> apply second
+    {
+      motions.enqueue(LStepExpressMotion(dx, dy, 0, da, false));
+      motions.enqueue(LStepExpressMotion(0, 0, dz, 0, false));
+    }
+
+    return motions;
 }
