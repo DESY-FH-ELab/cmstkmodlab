@@ -1,0 +1,5 @@
+--- devices/Velleman/utils/.gitignore
++++ devices/Velleman/utils/.gitignore
+@@ -1 +1,2 @@
+-vellemanTest+*_cpp.h
++vellemanTest

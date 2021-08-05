@@ -25,6 +25,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QTimer>
+#include <QMessageBox>
 
 class LStepExpressAxisWidget;
 
@@ -87,6 +88,8 @@ class LStepExpressWidget : public QWidget
   void  enableMotionTools(const bool  enable=true);
   void disableMotionTools(const bool disable=true);
 
+  void confirmCalibrate();
+
  signals:
 
   void clearQueue_request();
@@ -94,6 +97,10 @@ class LStepExpressWidget : public QWidget
   void MotionControllers_enabled();
 
   void restart_completed();
+
+  void moveToOrigin_request();
+
+  void startCalibrate();
 };
 
 class LStepExpressAxisWidget : public QWidget

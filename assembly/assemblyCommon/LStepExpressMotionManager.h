@@ -19,6 +19,7 @@
 #include <vector>
 
 #include <QQueue>
+#include <QMessageBox>
 
 class LStepExpressMotionManager : public QObject
 {
@@ -89,6 +90,8 @@ class LStepExpressMotionManager : public QObject
 
     void emergency_stop();
 
+    QQueue<LStepExpressMotion> set_movements_priorities_XYZA(const double x, const double y, const double z, const double a, const bool is_absolute_movements);
+
   protected slots:
 
     void motionStarted();
@@ -97,6 +100,7 @@ class LStepExpressMotionManager : public QObject
   signals:
 
     void emergencyStop_request() const;
+    void restartMotionStage_request() const;
 
     void motion_finished();
 
