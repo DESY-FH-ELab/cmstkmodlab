@@ -167,6 +167,13 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
 
   autofocus_stop_button_ = new QPushButton("Stop Auto-Focus", this);
   autofocus_lay->addWidget(autofocus_stop_button_);
+
+  progBar_ = new QProgressBar(this);
+  autofocus_lay->addWidget(progBar_, Qt::AlignCenter);
+  progBar_->setValue(0); //Set initial value
+  progBar_->setVisible(false); //Invisible by default
+  connect(autofocus_exe_button_, SIGNAL(clicked()), this, SLOT(makeProgBarVisible()));
+  connect(autofocus_stop_button_, SIGNAL(clicked()), this, SLOT(makeProgBarInvisible()));
   // -----
 
   autofocus_lay->addSpacing(20);
@@ -661,6 +668,30 @@ void AssemblyImageView::display_infoTab()
 void AssemblyImageView::InfoMotionFinished()
 {
     emit cameraMotionIsFinished();
+
+    return;
+}
+
+void AssemblyImageView::makeProgBarVisible()
+{
+    progBar_->setVisible(true);
+    return;
+}
+void AssemblyImageView::makeProgBarInvisible()
+{
+    progBar_->setVisible(false);
+    return;
+}
+
+//Update the value of the progress bar
+void AssemblyImageView::update_progBar(int prog)
+{
+    progBar_->setValue(prog);
+    // progBar_->setStyleSheet("QProgressBar::chunk {background: orange;}");
+
+    // progBar_->setProperty("defaultStyleSheet", progBar_->styleSheet());
+    // progBar_->setStyleSheet(progBar_->property("defaultStyleSheet").toString() +
+    // " QProgressBar::chunk { background: green; }");
 
     return;
 }

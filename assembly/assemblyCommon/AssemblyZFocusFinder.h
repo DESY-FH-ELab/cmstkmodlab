@@ -104,6 +104,8 @@ class AssemblyZFocusFinder : public QObject
     void text_update_request(const double);
 
     void emergencyStopped();
+
+    void sig_update_progBar(int);
 };
 
 #endif // ASSEMBLYZFOCUSFINDER_H

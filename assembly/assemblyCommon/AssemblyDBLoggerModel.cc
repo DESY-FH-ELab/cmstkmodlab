@@ -94,7 +94,7 @@ void AssemblyDBLoggerModel::writeMessage(QString message)
         stream << message << endl; //Print message
         file.close();
     }
-    else if(!this->appendToEnd_) //Message will be appenbded at beginning of file
+    else if(!this->appendToEnd_) //Message will be appended at beginning of file
     {
         if(!file.open(QFile::ReadOnly | QFile::Text) ) {return;} //Open file in read mode
         QByteArray buffer = file.readAll(); //Get file's content

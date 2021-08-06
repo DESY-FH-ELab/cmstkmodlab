@@ -25,9 +25,10 @@
 
 AssemblyParameters* AssemblyParameters::instance_ = nullptr;
 
-AssemblyParameters::AssemblyParameters(const std::string& file_path, QObject* parent)
+AssemblyParameters::AssemblyParameters(const std::string& file_path, const QString& dblogfilepath, QObject* parent)
  : QObject(parent)
  , view_(nullptr)
+ , DBlogfile_path(dblogfilepath) //New: need this path to update DBlogfile from this class
 {
   NQLog("AssemblyParameters", NQLog::Debug) << "constructed";
 
@@ -39,9 +40,9 @@ AssemblyParameters::~AssemblyParameters()
   NQLog("AssemblyParameters", NQLog::Debug) << "destructed";
 }
 
-AssemblyParameters* AssemblyParameters::instance(const std::string& file_path, QObject* parent)
+AssemblyParameters* AssemblyParameters::instance(const std::string& file_path, const QString& dblogfilepath, QObject* parent)
 {
-  instance_ = new AssemblyParameters(file_path, parent);
+  instance_ = new AssemblyParameters(file_path, dblogfilepath, parent);
 
   return instance_;
 }
@@ -96,21 +97,35 @@ void AssemblyParameters::set_view(const AssemblyParametersView* const view)
   {
     disconnect(view_, SIGNAL(read_from_file_request(QString)), this, SLOT(read_from_file(QString)));
     disconnect(view_, SIGNAL( write_to_file_request(QString)), this, SLOT( write_to_file(QString)));
+    disconnect(view_, SIGNAL(append_to_file_request(QString)), this, SLOT(append_to_file(QString)));
+
+    for(const auto& key : view_->entries_map())
+    {
+      disconnect(view_->get(key.first), SIGNAL(textChanged(const QString&)), this, SLOT(replace_assemblyParameter_value_inDBLogfile(const QString&)));
+    }
   }
 
   view_ = view;
 
   connect(view_, SIGNAL(read_from_file_request(QString)), this, SLOT(read_from_file(QString)));
-  connect(view_, SIGNAL( write_to_file_request(QString)), this, SLOT( write_to_file(QString)));
+  connect(view_, SIGNAL(write_to_file_request(QString)), this, SLOT(write_to_file(QString)));
+  connect(view_, SIGNAL(append_to_file_request(QString)), this, SLOT(append_to_file(QString)));
+
+  //For all QLineEdits in the 'Parameters' tab, connect sig/slot such that the DBLogfile will automatically get updated everytime some parameter gets changed in the GUI
+  for(const auto& key : view_->entries_map())
+  {
+    connect(view_->get(key.first), SIGNAL(textChanged(const QString&)), this, SLOT(replace_assemblyParameter_value_inDBLogfile(const QString&)));
+  }
 
   return;
 }
 
-void AssemblyParameters::write_to_file(const QString& f_path)
+//Write all assembly parameters to file (overwriting by default, otherwise appending)
+void AssemblyParameters::update_file(const QString& f_path, bool overwrite/*=true*/)
 {
   QFile data(f_path);
 
-  if(data.open(QFile::WriteOnly | QFile::Truncate))
+  if((overwrite && data.open(QFile::WriteOnly | QFile::Truncate)) || (!overwrite && data.open(QFile::Append))) //Overwrite or append
   {
     QTextStream out(&data);
 
@@ -118,13 +133,37 @@ void AssemblyParameters::write_to_file(const QString& f_path)
     {
       std::stringstream strs;
       strs << i_pair.second;
-
-      out
-        << qSetFieldWidth(40) << left  << QString::fromStdString(i_pair.first)
-        << qSetFieldWidth(20) << right << QString::fromStdString(strs.str())
-        << "\n";
+      out<<QString::fromStdString(i_pair.first)<<" "<<QString::fromStdString(strs.str())<< "\n"; //NB: Leave only one space between keyword-value, for easier regexp parsing
     }
   }
+
+  return;
+}
+
+//Update the assembly parameter block in the DBLogfile with updated value(s)
+void AssemblyParameters::Update_AssemblyParameter_Value_inDBLogfile(const QString& f_path, const QRegExp& expr, const QString& newText)
+{
+  QMutexLocker ml(&mutex_); //Lock thread <-> avoid multiple concurrent edits to same file
+
+  //Read and save the entire current DBLogfile content into buffer
+  QFile data(f_path);
+  data.open(QIODevice::Text | QIODevice::ReadOnly);
+  QString dataText = data.readAll();
+  data.close();
+
+  // std::cout<<"-- Regexp"<<(dataText.contains(QRegExp(expr))? " ":" NOT ")<<"matched"<<std::endl;
+
+  //Replace old --> new QString
+  dataText.replace(QRegExp(expr), QString(newText));
+
+  //Dump modified text to terminal (for debugging)
+  // std::cout<<dataText.toUtf8().constData()<<std::endl;
+
+  //Overwrite DBLogfile with updated text
+  data.open(QIODevice::WriteOnly | QIODevice::Truncate);
+  QTextStream out(&data);
+  out << dataText;
+  data.close();
 
   return;
 }
@@ -132,6 +171,16 @@ void AssemblyParameters::write_to_file(const QString& f_path)
 void AssemblyParameters::write_to_file(const std::string& f_path)
 {
   this->write_to_file(QString::fromStdString(f_path));
+}
+
+void AssemblyParameters::write_to_file(const QString& f_path)
+{
+  this->update_file(f_path);
+}
+
+void AssemblyParameters::append_to_file(const QString& f_path)
+{
+  this->update_file(f_path, false); //Append (instead of overwriting)
 }
 
 void AssemblyParameters::read_from_file(const QString& f_path)
@@ -263,4 +312,29 @@ bool AssemblyParameters::isValidConfig()
     }
 
     return true;
+}
+
+//Whenever the user updates some assembly parameter value interactively in the GUI --> automatically update the DBLogfile with new value(s)
+void AssemblyParameters::replace_assemblyParameter_value_inDBLogfile(const QString& newVal)
+{
+    QLineEdit* ptr_qedit = qobject_cast<QLineEdit*>(sender()); //Get pointer address of QLineEdit that triggered the SIGNAL(textChanged)
+    // std::cout<<"Ptr to QLineEdit sender = "<<ptr_qedit<<std::endl;
+
+    for(const auto& key : view_->entries_map()) //Loop on all QLineEdits
+    {
+        if(ptr_qedit == view_->get(key.first)) //Found relevant QLineEdit
+        {
+            // std::cout<<"MATCHED: address="<<view_->get(key.first)<<" / key="<<key.first<<std::endl;
+
+            QRegExp regexp(QString("("+QString::fromStdString(key.first)+"\\s\\-?\\d*.?\\d*.\\n)")); //Define regexp to be matched = keyword + whitespace <-> [\\s] + potentially a minus sign in front <-> [\\-?] + any decimal number <-> [\\d*.?\\d*] + potentially some invalid character at the end <-> [.] + newline <-> [\\n]
+
+            // std::cout<<"newVal="<<newVal.toUtf8().constData()<<std::endl;
+            QString newText = QString::fromStdString(key.first) + QString(" ") + newVal + QString("\n"); //New text = Keyword + new value + newline
+            // QString newText = QString::fromStdString(key.first) + QString(" ") + newVal; //New text = Keyword + new value + newline
+
+            this->Update_AssemblyParameter_Value_inDBLogfile(DBlogfile_path, regexp, newText); //Update DBLogfile
+        }
+    }
+
+    return;
 }

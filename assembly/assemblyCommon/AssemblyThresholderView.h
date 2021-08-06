@@ -21,6 +21,7 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QLabel>
+#include <QSlider>
 
 #include <opencv2/opencv.hpp>
 
@@ -64,6 +65,7 @@ class AssemblyThresholderView : public QWidget
   QPushButton* imgbin_thresh_button_;
   QLabel*      imgbin_thresh_label_;
   QLineEdit*   imgbin_thresh_linee_;
+  QSlider* threshold_slider_;
 
   QPushButton* imgbin_adathr_button_;
   QLabel*      imgbin_adathr_label_;
@@ -83,6 +85,8 @@ class AssemblyThresholderView : public QWidget
   void apply_adaptiveThreshold();
 
   void display_infoTab();
+
+  void set_bw_threshold_slider(int);
 
  signals:
 

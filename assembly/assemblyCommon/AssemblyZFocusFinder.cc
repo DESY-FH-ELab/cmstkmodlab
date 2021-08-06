@@ -298,6 +298,8 @@ void AssemblyZFocusFinder::test_focus()
        << ": emitting signal \"focus(0, 0, " << dz << ", 0)\"";
 
     emit focus(0., 0., dz, 0.);
+
+    emit sig_update_progBar(int(zrelm_index_*100./v_zrelm_vals_.size())); //Update progress bar display
   }
   else
   {
@@ -382,6 +384,8 @@ void AssemblyZFocusFinder::test_focus()
        << ": emitting signal \"focus(0, 0, " << dz << ", 0)\"";
 
     emit focus(0., 0., dz, 0.);
+
+    emit sig_update_progBar(int(100)); //Update progress bar display
     // ------------------
   }
 

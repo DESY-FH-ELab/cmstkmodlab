@@ -1975,3 +1975,55 @@ void AssemblyAssemblyV2::LiftUpPickupTool_finish()
   emit DBLogMessage("== Assembly step completed : [Lift up pickup tool]");
 }
 // ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// switchToAlignmentTab_PSP ------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssemblyV2::switchToAlignmentTab_PSP()
+{
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "switchToAlignmentTab_PSP"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
+
+  in_action_ = true;
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "switchToAlignmentTab_PSP"
+    << ": emitting signal \"switchToAlignmentTab_PSP_request\"";
+
+  emit switchToAlignmentTab_PSP_request(); //Will auto-switch to 'Alignment' sub-tab, and select PSP mode
+
+  in_action_ = false;
+
+  return;
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// switchToAlignmentTab_PSS ------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssemblyV2::switchToAlignmentTab_PSS()
+{
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "switchToAlignmentTab_PSS"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
+
+  in_action_ = true;
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "switchToAlignmentTab_PSS"
+    << ": emitting signal \"switchToAlignmentTab_PSS_request\"";
+
+  emit switchToAlignmentTab_PSS_request(); //Will auto-switch to 'Alignment' sub-tab, and select PSS mode
+
+  in_action_ = false;
+
+  return;
+}
+// ----------------------------------------------------------------------------------------------------
