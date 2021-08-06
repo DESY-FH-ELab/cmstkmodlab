@@ -108,9 +108,11 @@ protected:
   std::array<unsigned int,6> keithleyTopSensors_;
   VKeithleyDAQ6510::ChannelMode_t keithleyTopSensorTypes_;
   std::array<double,6> keithleyTopPositions_;
+  std::array<double,6> keithleyTopOffsets_;
   std::array<unsigned int,6> keithleyBottomSensors_;
   VKeithleyDAQ6510::ChannelMode_t keithleyBottomSensorTypes_;
   std::array<double,6> keithleyBottomPositions_;
+  std::array<double,6> keithleyBottomOffsets_;
   bool keithleyState_;
   std::array<bool,6> keithleyTopSensorStates_;
   std::array<bool,6> keithleyBottomSensorStates_;

@@ -54,8 +54,10 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
   nge103BChannel_ = config->getValue<unsigned int>("ThroughPlaneNGE103BChannel");
   keithleyTopSensors_ = config->getValueArray<unsigned int,6>("ThroughPlaneKeithleyTopSensors");
   keithleyTopPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopPositions");
+  keithleyTopOffsets_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopOffsets");
   keithleyBottomSensors_ = config->getValueArray<unsigned int,6>("ThroughPlaneKeithleyBottomSensors");
   keithleyBottomPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomPositions");
+  keithleyBottomOffsets_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomOffsets");
 
   std::string sensorType;
 
@@ -173,13 +175,15 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
   unsigned int countBottom = 0;
   changed |= updateIfChanged<bool>(keithleyState_, keithleyModel_->getDeviceState()==READY ? true : false);
   for (unsigned int i=0;i<6;++i) {
-  	changed |= updateIfChanged<bool>(keithleyTopSensorStates_[i], keithleyModel_->getSensorState(keithleyTopSensors_[i])==READY ? true : false);
-  	changed |= updateIfChanged<double>(keithleyTopTemperatures_[i], keithleyModel_->getTemperature(keithleyTopSensors_[i]));
-  	if (keithleyTopSensorStates_[i]) countTop++;
+    changed |= updateIfChanged<bool>(keithleyTopSensorStates_[i], keithleyModel_->getSensorState(keithleyTopSensors_[i])==READY ? true : false);
+    changed |= updateIfChanged<double>(keithleyTopTemperatures_[i],
+        keithleyModel_->getTemperature(keithleyTopSensors_[i]) - keithleyTopOffsets_[i]);
+    if (keithleyTopSensorStates_[i]) countTop++;
 
-  	changed |= updateIfChanged<bool>(keithleyBottomSensorStates_[i], keithleyModel_->getSensorState(keithleyBottomSensors_[i])==READY ? true : false);
-  	changed |= updateIfChanged<double>(keithleyBottomTemperatures_[i], keithleyModel_->getTemperature(keithleyBottomSensors_[i]));
-  	if (keithleyBottomSensorStates_[i]) countBottom++;
+    changed |= updateIfChanged<bool>(keithleyBottomSensorStates_[i], keithleyModel_->getSensorState(keithleyBottomSensors_[i])==READY ? true : false);
+    changed |= updateIfChanged<double>(keithleyBottomTemperatures_[i],
+        keithleyModel_->getTemperature(keithleyBottomSensors_[i]) - keithleyBottomOffsets_[i]);
+    if (keithleyBottomSensorStates_[i]) countBottom++;
   }
 
   if (changed) {
