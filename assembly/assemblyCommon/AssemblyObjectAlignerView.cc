@@ -875,7 +875,39 @@ AssemblyObjectAligner::Configuration AssemblyObjectAlignerView::get_configuratio
 void AssemblyObjectAlignerView::display_infoTab()
 {
     QMessageBox::information(this, tr("Information - Alignment"),
-            tr("<p>There is no available information about the content of this tab yet.</p>"));
+            tr("<p>Click 'Align object' to run the sensor alignment routine.</p>"
+            "<p>Make sure to select the relevant sensor type, template images for PatRec, and B/W thresholds.</p>"
+    ));
+
+    return;
+}
+
+//-- Set the mode to PSP
+void AssemblyObjectAlignerView::set_alignmentMode_PSP()
+{
+    alignm_PSS_radbu_->setEnabled(false);
+    alignm_PSS_radbu_->setChecked(false);
+    alignm_PSP_radbu_->setEnabled(true);
+    alignm_PSP_radbu_->setChecked(true);
+
+    QMessageBox::information(this, tr("Setting alignment mode to [PS-P]"),
+            tr("<p>Make sure to select the correct PS-P template images, and to define relevant B/W thresholds.</p>"
+    ));
+
+    return;
+}
+
+//-- Set the mode to PSS
+void AssemblyObjectAlignerView::set_alignmentMode_PSS()
+{
+    alignm_PSP_radbu_->setEnabled(false);
+    alignm_PSP_radbu_->setChecked(false);
+    alignm_PSS_radbu_->setEnabled(true);
+    alignm_PSS_radbu_->setChecked(true);
+
+    QMessageBox::information(this, tr("Setting alignment mode to [PS-S]"),
+            tr("<p>Make sure to select the correct PS-S template images, and to define relevant B/W thresholds.</p>"
+    ));
 
     return;
 }

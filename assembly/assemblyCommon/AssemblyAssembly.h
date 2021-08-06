@@ -90,9 +90,6 @@ class AssemblyAssembly : public QObject
   void ApplyPSPToPSSXYOffset_start();
   void ApplyPSPToPSSXYOffset_finish();
 
-  void RegisterPSSPlusSpacersToMaPSAPosition_start();
-  void RegisterPSSPlusSpacersToMaPSAPosition_finish();
-
   void GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start();
   void GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finish();
 
@@ -136,6 +133,12 @@ class AssemblyAssembly : public QObject
 
   void DisableVacuumBaseplate_start();
   void DisableVacuumBaseplate_finish();
+  // ---------
+
+  // others
+
+  void RegisterPSSPlusSpacersToMaPSAPosition_start();
+  void RegisterPSSPlusSpacersToMaPSAPosition_finish();
   // ---------
 
  signals:

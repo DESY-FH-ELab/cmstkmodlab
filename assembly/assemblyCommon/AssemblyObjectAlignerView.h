@@ -113,6 +113,9 @@ class AssemblyObjectAlignerView : public QWidget
 
   void display_infoTab();
 
+  void set_alignmentMode_PSP();
+  void set_alignmentMode_PSS();
+
  signals:
 
   void configuration(AssemblyObjectAligner::Configuration);
