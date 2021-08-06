@@ -1,14 +1,6 @@
 var searchData=
 [
-  ['getcapacity_214',['getCapacity',['../classCoriFlow.html#a6eaff5d5ae36ded7bb78c52503be2777',1,'CoriFlow::getCapacity()'],['../classCoriFlowFake.html#aeb98a6ffec31bdcafcc45edba1663405',1,'CoriFlowFake::getCapacity()'],['../classVCoriFlow.html#ac47bee963fef03d99b8b7c0856bd0b3a',1,'VCoriFlow::getCapacity()']]],
-  ['getcirculatorstatus_215',['GetCirculatorStatus',['../classHuberPetiteFleur.html#ad300da30fcbd2792903c498422ce5855',1,'HuberPetiteFleur::GetCirculatorStatus()'],['../classHuberPetiteFleurFake.html#a3965de11761d5b21066cb294d545d85a',1,'HuberPetiteFleurFake::GetCirculatorStatus()'],['../classJulaboFP50.html#acae0630363aaa0ba263524815b031eff',1,'JulaboFP50::GetCirculatorStatus()'],['../classJulaboFP50Fake.html#ac84abaf53c074892ba05bd1baaf58d66',1,'JulaboFP50Fake::GetCirculatorStatus()']]],
-  ['geterrorstatus_216',['GetErrorStatus',['../classPfeifferTPG262.html#a836ac5100dc5f3acc7f805305c1efadd',1,'PfeifferTPG262']]],
-  ['getpressure1_217',['GetPressure1',['../classPfeifferTPG262.html#afd555da6015338088e1ff2318a8c686d',1,'PfeifferTPG262']]],
-  ['getpressure2_218',['GetPressure2',['../classPfeifferTPG262.html#aa25ba5786da95e13c2b20900a64c2379',1,'PfeifferTPG262']]],
-  ['getpressures_219',['GetPressures',['../classPfeifferTPG262.html#af00789c684c3d8a0c59384c9bb26092a',1,'PfeifferTPG262']]],
-  ['getsetflow_220',['GetSetFlow',['../classIota300.html#a7bccea0dae44408cbe058677df95b9df',1,'Iota300']]],
-  ['getstatus_221',['GetStatus',['../classJulaboFP50.html#a0998d0ebde8293666e01d02b095c9c84',1,'JulaboFP50']]],
-  ['gmh3750_222',['GMH3750',['../classGMH3750.html#a0d97b71211b9c6f82b4fd944a3b4e66f',1,'GMH3750']]],
-  ['gmh3750comhandler_223',['GMH3750ComHandler',['../classGMH3750ComHandler.html#a03bd5cac0ce57671c36ba7bb367a4075',1,'GMH3750ComHandler::GMH3750ComHandler(ioport_t)'],['../classGMH3750ComHandler.html#afefaba8437d11a48ffdac7fb52ebaf28',1,'GMH3750ComHandler::GMH3750ComHandler(const GMH3750ComHandler &amp;)']]],
-  ['gmh3750fake_224',['GMH3750Fake',['../classGMH3750Fake.html#aecb603221ba8ce751d1a541674c24579',1,'GMH3750Fake']]]
+  ['finish_809',['finish',['../db/dd7/classConradCommunication.html#ac3c34c225ec618eedd3794b7e772377b',1,'ConradCommunication::finish()'],['../d6/d91/classVellemanCommunication.html#ae73ebf366747ffb1b4f79a21593f67f1',1,'VellemanCommunication::finish()']]],
+  ['flush_810',['flush',['../d7/d83/classAgilentTwisTorr304ComHandler.html#af934aec901bd253c05ba7da4ee294330',1,'AgilentTwisTorr304ComHandler::flush()'],['../dc/d07/classCoriFlowComHandler.html#ac78db29c55cfb78bfc8a91d63d2aa7d6',1,'CoriFlowComHandler::flush()'],['../d9/dd2/classIota300ComHandler.html#a2254cfbafbaeff809c47276407ce96d7',1,'Iota300ComHandler::flush()']]],
+  ['fp50comhandler_811',['FP50ComHandler',['../d4/dfd/classFP50ComHandler.html#ad3b0c71ad6a8848cf639eb6760d83db5',1,'FP50ComHandler::FP50ComHandler(ioport_t)'],['../d4/dfd/classFP50ComHandler.html#acec7305947304e8ca4019819ddb85f68',1,'FP50ComHandler::FP50ComHandler(const FP50ComHandler &amp;)']]]
 ];

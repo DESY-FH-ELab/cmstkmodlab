@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['tokenize_267',['Tokenize',['../classVKeithley2700.html#af38f1e832165e3271e168ebf17b4d9e2',1,'VKeithley2700']]],
-  ['tpg262comhandler_268',['TPG262ComHandler',['../classTPG262ComHandler.html#a1837383a917da95f9d94d06583f8412e',1,'TPG262ComHandler::TPG262ComHandler(ioport_t)'],['../classTPG262ComHandler.html#a8419fd760c9978802fd90eeb333c8469',1,'TPG262ComHandler::TPG262ComHandler(const TPG262ComHandler &amp;)']]]
+  ['queryrelaystatus_861',['queryRelayStatus',['../d9/d4a/classVellemanController.html#a4f420764aaa4b2e9842f28156fade8dd',1,'VellemanController::queryRelayStatus()'],['../de/d80/classVellemanControllerFake.html#af4315b9679254873225c20d23a17418f',1,'VellemanControllerFake::queryRelayStatus()']]],
+  ['querystatus_862',['queryStatus',['../df/dcb/classConradController.html#a3b78eec057b3ba3d22ff59b28e1ed7a0',1,'ConradController::queryStatus()'],['../da/dd6/classConradControllerFake.html#a55b825d0268f7c80e9fc342fd8f593e1',1,'ConradControllerFake::queryStatus()']]]
 ];

@@ -1,6 +1,10 @@
 var searchData=
 [
-  ['finish_19',['finish',['../classConradCommunication.html#ac3c34c225ec618eedd3794b7e772377b',1,'ConradCommunication']]],
-  ['flush_20',['flush',['../classCoriFlowComHandler.html#ac78db29c55cfb78bfc8a91d63d2aa7d6',1,'CoriFlowComHandler::flush()'],['../classIota300ComHandler.html#a2254cfbafbaeff809c47276407ce96d7',1,'Iota300ComHandler::flush()']]],
-  ['fp50comhandler_21',['FP50ComHandler',['../classFP50ComHandler.html',1,'FP50ComHandler'],['../classFP50ComHandler.html#ad3b0c71ad6a8848cf639eb6760d83db5',1,'FP50ComHandler::FP50ComHandler(ioport_t)'],['../classFP50ComHandler.html#acec7305947304e8ca4019819ddb85f68',1,'FP50ComHandler::FP50ComHandler(const FP50ComHandler &amp;)']]]
+  ['destroycontroller_115',['destroyController',['../d0/d92/classAbstractDeviceModel.html#a586597329a52503ea3805d87986ca46a',1,'AbstractDeviceModel']]],
+  ['deviceparameter_116',['DeviceParameter',['../dc/d22/classDeviceParameter.html',1,'']]],
+  ['deviceparameter_3c_20float_20_3e_117',['DeviceParameter&lt; float &gt;',['../dc/d22/classDeviceParameter.html',1,'']]],
+  ['deviceparameter_3c_20unsigned_20int_20_3e_118',['DeviceParameter&lt; unsigned int &gt;',['../dc/d22/classDeviceParameter.html',1,'']]],
+  ['devices_119',['Devices',['../dc/de5/group__devices.html',1,'']]],
+  ['differential_5f_120',['differential_',['../d7/d1a/classJulaboModel.html#a6a750af0564bcc7488c721cdb4e6f366',1,'JulaboModel']]],
+  ['disableactivechannels_121',['DisableActiveChannels',['../d7/d05/classKeithley2700.html#a8f414882ce08e40c9b2d54742cbf173f',1,'Keithley2700::DisableActiveChannels()'],['../d6/d57/classKeithley2700Fake.html#a7354351599092826c5bf8d661ee2adf4',1,'Keithley2700Fake::DisableActiveChannels()']]]
 ];
