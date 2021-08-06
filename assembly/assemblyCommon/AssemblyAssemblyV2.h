@@ -95,9 +95,6 @@ class AssemblyAssemblyV2 : public QObject
   void ApplyPSPToPSSXYOffset_start();
   void ApplyPSPToPSSXYOffset_finish();
 
-  void RegisterPSSPlusSpacersToMaPSAPosition_start();
-  void RegisterPSSPlusSpacersToMaPSAPosition_finish();
-
   void GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start();
   void GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finish();
 
@@ -143,6 +140,15 @@ class AssemblyAssemblyV2 : public QObject
   void DisableVacuumBaseplate_finish();
   // ---------
 
+  // others
+
+  void RegisterPSSPlusSpacersToMaPSAPosition_start();
+  void RegisterPSSPlusSpacersToMaPSAPosition_finish();
+
+  void switchToAlignmentTab_PSP();
+  void switchToAlignmentTab_PSS();
+  // ---------
+
  signals:
 
   // motion
@@ -169,7 +175,6 @@ class AssemblyAssemblyV2 : public QObject
   void GoToPSPMarkerIdealPosition_finished();
 
   void ApplyPSPToPSSXYOffset_finished();
-  void RegisterPSSPlusSpacersToMaPSAPosition_finished();
   void PSSPlusSpacersToMaPSAPosition_registered();
 
   void GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished();
@@ -178,7 +183,6 @@ class AssemblyAssemblyV2 : public QObject
 
   void LowerPSSPlusSpacersOntoMaPSA_finished();
   void LiftUpPickupTool_finished();
-
   // ------
 
   // vacuum
@@ -194,6 +198,13 @@ class AssemblyAssemblyV2 : public QObject
   void EnableVacuumBaseplate_finished();
   void DisableVacuumBaseplate_finished();
   // ------
+
+  // others
+  void RegisterPSSPlusSpacersToMaPSAPosition_finished();
+  void switchToAlignmentTab_PSP_request();
+  void switchToAlignmentTab_PSS_request();
+  // ------
+
 
   void DBLogMessage(const QString);
 };

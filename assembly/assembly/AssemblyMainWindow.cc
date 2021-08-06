@@ -235,7 +235,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     const QString tabname_Alignm("Alignment");
 
     aligner_view_ = new AssemblyObjectAlignerView(assembly_tab);
-    assembly_tab->addTab(aligner_view_, tabname_Alignm);
+    idx_alignment_tab = assembly_tab->addTab(aligner_view_, tabname_Alignm);
 
     // aligner
     aligner_ = new AssemblyObjectAligner(motion_manager_);
@@ -248,6 +248,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_objectAligner()));
     connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
     connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
+
+    connect(this, SIGNAL(set_alignmentMode_PSP_request()), aligner_view_, SLOT(set_alignmentMode_PSP()));
+    connect(this, SIGNAL(set_alignmentMode_PSS_request()), aligner_view_, SLOT(set_alignmentMode_PSS()));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Alignm;
     // ---------------------------------------------------------
@@ -275,6 +278,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
       assemblyV2_view_ = new AssemblyAssemblyV2View(assemblyV2_, assembly_tab);
       assembly_tab->addTab(assemblyV2_view_, tabname_Assembly);
+
+      connect(assemblyV2_, SIGNAL(switchToAlignmentTab_PSP_request()), this, SLOT(update_alignment_tab_psp()));
+      connect(assemblyV2_, SIGNAL(switchToAlignmentTab_PSS_request()), this, SLOT(update_alignment_tab_pss()));
 
       NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly
          << " (assembly_sequence = " << assembly_sequence << ")";
@@ -915,6 +921,10 @@ void AssemblyMainWindow::disconnect_otherSlots()
     disconnect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
     disconnect(motion_manager_, SIGNAL(restartMotionStage_request()), hwctr_view_->LStepExpress_Widget(), SLOT(restart()));
     disconnect(motion_manager_, SIGNAL(restartMotionStage_request), this, SLOT(messageBox_restartMotionStage()));
+    disconnect(assemblyV2_, SIGNAL(switchToAlignmentTab_PSP_request()), this, SLOT(update_alignment_tab_psp()));
+    disconnect(assemblyV2_, SIGNAL(switchToAlignmentTab_PSS_request()), this, SLOT(update_alignment_tab_pss()));
+    disconnect(this, SIGNAL(set_alignmentMode_PSP_request()), aligner_view_, SLOT(set_alignmentMode_PSP()));
+    disconnect(this, SIGNAL(set_alignmentMode_PSS_request()), aligner_view_, SLOT(set_alignmentMode_PSS()));
 
     return;
 }
@@ -1000,6 +1010,32 @@ void AssemblyMainWindow::quit()
     this->quit_thread(finder_thread_, "terminated AssemblyObjectFinderPatRecThread");
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "quit: application closed";
+
+    return;
+}
+
+//-- Automatically switch to 'Alignment' sub-tab and emit signal relevant for PSS/PSP
+void AssemblyMainWindow::update_alignment_tab_psp()
+{
+    this->switchAndUpdate_alignment_tab(true);
+}
+void AssemblyMainWindow::update_alignment_tab_pss()
+{
+    this->switchAndUpdate_alignment_tab(false);
+}
+void AssemblyMainWindow::switchAndUpdate_alignment_tab(bool psp_mode)
+{
+    // std::cout<<"There are "<<main_tab->count()<<" main tabs"<<std::endl; //Count main tabs
+    // QTabWidget* assemblyTab = main_tab->findChild<QTabWidget*>("Module Assembly");
+    QList<QTabWidget*> widgets = main_tab->findChildren<QTabWidget*>(); //Get main tabs
+    QTabWidget* assemblyTab = widgets[1]; //Get 'Module Assembly' main tab
+    // std::cout<<"There are "<<assemblyTab->count()<<" sub-tabs"<<std::endl; //Count sub-tabs
+
+    assemblyTab->setCurrentIndex(idx_alignment_tab); //Switch to 'Alignment' sub-tab
+
+    //Emit signal to set either PSP or PSS alignment mode
+    if(psp_mode) {emit set_alignmentMode_PSP_request();}
+    else {emit set_alignmentMode_PSS_request();}
 
     return;
 }
