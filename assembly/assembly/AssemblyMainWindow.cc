@@ -109,7 +109,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     /// Parameters
     ///   * instance created up here, so controllers can access it
-    params_ = AssemblyParameters::instance(config->getValue<std::string>("AssemblyParameters_file_path"));
+    params_ = AssemblyParameters::instance(config->getValue<std::string>("AssemblyParameters_file_path"), DBlogfile_path);
     if(params_->isValidConfig() == false)
     {
       NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
@@ -189,6 +189,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     image_view_->update_autofocus_config(zfocus_finder_->zrange(), zfocus_finder_->points());
 
+    connect(zfocus_finder_, SIGNAL(sig_update_progBar(int)), image_view_, SLOT(update_progBar(int)));
+
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Image;
     // ---------------------------------------------------------
 
@@ -266,8 +268,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
       NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly
          << " (assembly_sequence = " << assembly_sequence << ")";
-
-      emit DBLogMessage("== Using default assembly sequence == (MaPSA glued to baseplate last)");
     }
     else if(assembly_sequence == 2)
     {
@@ -278,8 +278,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
       NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly
          << " (assembly_sequence = " << assembly_sequence << ")";
-
-      emit DBLogMessage("== Using modified assembly sequence == (MaPSA glued to baseplate first)");
     }
     else
     {
@@ -356,9 +354,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     params_view_ = new AssemblyParametersView(controls_tab);
     controls_tab->addTab(params_view_, tabname_Parameters);
 
-    params_->set_view(params_view_);
-
     params_view_->copy_values(params_->map_double());
+
+    params_->set_view(params_view_);
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Parameters;
 
@@ -424,6 +422,11 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     DBLog_ctrl_ = new AssemblyDBLoggerController(DBLog_model_, DBLog_view_); //Controller
 
     connect_DBLogger();
+
+    //Dump all assembly parameter values to DBlogfile (components thicknesses, predefined movements, etc.) to DBLog file, for archiving
+    emit DBLogMessage("== ASSEMBLY PARAMETER VALUES...\n-------------------------");
+    params_view_->Dump_UserValues_toDBlogfile(DBlogfile_path);
+    emit DBLogMessage("-------------------------\n\n\n");
 
     if(assembly_sequence == 1) {emit DBLogMessage("== Using default assembly sequence == (MaPSA glued to baseplate last)");}
     else if(assembly_sequence == 2) {emit DBLogMessage("== Using modified assembly sequence == (MaPSA glued to baseplate first)");}
@@ -551,7 +554,7 @@ void AssemblyMainWindow::enable_images()
   connect(image_ctr_, SIGNAL(camera_disabled()), this      , SLOT(disconnect_images()));
 
   connect(this      , SIGNAL(image_request())  , image_ctr_, SLOT(acquire_image()));
-  connect(this      , SIGNAL(autofocus_ON ())  , image_ctr_, SLOT( enable_autofocus()));
+  connect(this      , SIGNAL(autofocus_ON ())  , image_ctr_, SLOT(enable_autofocus()));
   connect(this      , SIGNAL(autofocus_OFF())  , image_ctr_, SLOT(disable_autofocus()));
   connect(image_view_, SIGNAL(request_image()), image_ctr_, SLOT(acquire_image()));
 

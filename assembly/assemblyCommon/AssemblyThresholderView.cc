@@ -144,6 +144,28 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
 
   imgbin_thresh_inputcfg->addWidget(imgbin_thresh_label_, 40);
   imgbin_thresh_inputcfg->addWidget(imgbin_thresh_linee_, 60);
+
+  //Slider widget to chose the B/W threshold value using the mouse
+  threshold_slider_ = new QSlider(Qt::Horizontal, this);
+
+  //Fancy style
+  threshold_slider_->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: white;height: 10px;border-radius: 4px;}"
+  "QSlider::sub-page:horizontal {background: qlineargradient(x1: 0, y1: 0,    x2: 0, y2: 1,stop: 0 #66e, stop: 1 #bbf); background: qlineargradient(x1: 0, y1: 0.2, x2: 1, y2: 1, stop: 0 #bbf, stop: 1 #55f); border: 1px solid #777; height: 10px; border-radius: 4px;}"
+  "QSlider::add-page:horizontal {background: #fff;border: 1px solid #777;height: 10px;border-radius: 4px;}"
+  "QSlider::handle:horizontal {background: qlineargradient(x1:0, y1:0, x2:1, y2:1,stop:0 #eee, stop:1 #ccc);border: 1px solid #777;width: 13px;margin-top: -2px;margin-bottom: -2px;border-radius: 4px;}"
+  "QSlider::handle:horizontal:hover {background: qlineargradient(x1:0, y1:0, x2:1, y2:1,stop:0 #fff, stop:1 #ddd);border: 1px solid #444;border-radius: 4px;}"
+  "QSlider::sub-page:horizontal:disabled {background: #bbb;border-color: #999;}"
+  "QSlider::add-page:horizontal:disabled {background: #eee;border-color: #999;}"
+  "QSlider::handle:horizontal:disabled {background: #eee;border: 1px solid #aaa;border-radius: 4px;}"
+);
+
+  threshold_slider_->setValue(config->getValue<int>("AssemblyThresholderView_threshold", 30)); //Init to default value
+  threshold_slider_->setMinimum(0); threshold_slider_->setMaximum(255); //Set range
+  threshold_slider_->setSingleStep(5); //Step values when using left/right keys
+  threshold_slider_->setTickPosition(QSlider::TicksBothSides); //Ticks above+below //Not working with this styleSheet
+  threshold_slider_->setTickInterval(50); //Step interval between ticks
+  imgbin_thresh_inputcfg->addWidget(threshold_slider_, 80);
+  connect(threshold_slider_, SIGNAL(valueChanged(int)), this, SLOT(set_bw_threshold_slider(int)));
   // -----
 
   // method-2: adaptiveThreshold
@@ -384,6 +406,19 @@ void AssemblyThresholderView::display_infoTab()
 {
     QMessageBox::information(this, tr("Information - Convert Image to B/W"),
             tr("<p>There is no available information about the content of this tab yet.</p>"));
+
+    return;
+}
+
+//-- Update the B/W threshold when slider value gets changed
+void AssemblyThresholderView::set_bw_threshold_slider(int thr)
+{
+    threshold_slider_->setValue(thr); //Update the slider's value
+    assembly::QLineEdit_setText(imgbin_thresh_linee_, thr); //Update the value displayed
+
+    // NQLog("AssemblyThresholderView", NQLog::Debug) << "apply_threshold" << ": emitting signal \"threshold_value(" << thr << ")\"";
+
+    emit threshold_request(thr); //Update the B/W threshold (real-time)
 
     return;
 }

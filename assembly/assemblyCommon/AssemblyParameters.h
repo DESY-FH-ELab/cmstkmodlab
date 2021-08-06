@@ -26,6 +26,9 @@
 
 #include <QObject>
 #include <QString>
+#include <QRegExp>
+#include <QMutex>
+#include <QMutexLocker>
 
 class AssemblyParameters : public QObject
 {
@@ -33,10 +36,10 @@ class AssemblyParameters : public QObject
 
  public:
 
-  explicit AssemblyParameters(const std::string&, QObject* parent=nullptr);
+  explicit AssemblyParameters(const std::string&, const QString&, QObject* parent=nullptr);
   virtual ~AssemblyParameters();
 
-  static AssemblyParameters* instance(const std::string&, QObject* parent=nullptr);
+  static AssemblyParameters* instance(const std::string&, const QString&, QObject* parent=nullptr);
   static AssemblyParameters* instance(const bool permissive=true);
 
   void issue_key_error(const std::string&) const;
@@ -49,6 +52,9 @@ class AssemblyParameters : public QObject
 
   bool update();
 
+  void update_file(const QString&, bool=true);
+  void Update_AssemblyParameter_Value_inDBLogfile(const QString&, const QRegExp&, const QString&);
+
  private:
   Q_DISABLE_COPY(AssemblyParameters)
 
@@ -60,15 +66,22 @@ class AssemblyParameters : public QObject
 
   std::map<std::string, double> map_double_;
 
+  const QString& DBlogfile_path;
+
+  mutable QMutex mutex_;
+
  public slots:
 
   void write_to_file(const QString&);
   void write_to_file(const std::string&);
+  void append_to_file(const QString&);
 
   void read_from_file(const QString&);
   void read_from_file(const std::string&);
 
   bool isValidConfig();
+
+  void replace_assemblyParameter_value_inDBLogfile(const QString&);
 
  signals:
 };

@@ -24,6 +24,7 @@
 #include <QLabel>
 #include <QToolTip>
 #include <QEventLoop>
+#include <QProgressBar>
 
 #include <opencv2/opencv.hpp>
 
@@ -74,6 +75,7 @@ class AssemblyImageView : public QWidget
   QLineEdit        *autofocus_param_maxDZ_lineed_;
   QLineEdit        *autofocus_param_Nstep_lineed_;
   QPushButton      *autofocus_save_zscan_button_;
+  QProgressBar* progBar_;
 
   cv::Mat image_zscan_;
 
@@ -105,6 +107,10 @@ class AssemblyImageView : public QWidget
   void display_infoTab();
 
   void InfoMotionFinished();
+
+  void makeProgBarVisible();
+  void makeProgBarInvisible();
+  void update_progBar(int);
 
  signals:
 

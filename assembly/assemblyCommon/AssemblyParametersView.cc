@@ -749,3 +749,11 @@ void AssemblyParametersView::display_infoTab()
 
     return;
 }
+
+//Dump all assembly parameters to DBlogfile (for archiving)
+void AssemblyParametersView::Dump_UserValues_toDBlogfile(const QString& f_path)
+{
+    emit append_to_file_request(f_path);
+
+    return;
+}
