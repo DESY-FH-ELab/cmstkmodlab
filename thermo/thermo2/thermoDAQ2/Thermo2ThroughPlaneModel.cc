@@ -194,9 +194,9 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
       double pos;
 
       if (countTop<4) {
-	p = 2;
+        p = 2;
       } else {
-	p = 3;
+        p = 3;
       }
       p = 2; // make linear fit the default
 
@@ -207,15 +207,15 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
       cov = gsl_matrix_alloc(p, p);
 
       for (unsigned int i=0;i<6;i++) {
-	if (keithleyTopSensorStates_[i]) {
-	  pos = keithleyTopPositions_[i];
-	  gsl_vector_set(x, i, pos);
-	  gsl_vector_set(y, i, keithleyTopTemperatures_[i]);
+        if (keithleyTopSensorStates_[i]) {
+          pos = keithleyTopPositions_[i];
+          gsl_vector_set(x, i, pos);
+          gsl_vector_set(y, i, keithleyTopTemperatures_[i]);
 
-	  gsl_matrix_set(X, i, 0, 1.0);
-	  gsl_matrix_set(X, i, 1, pos);
-	  if (p==3) gsl_matrix_set(X, i, 2, pos*pos);
-	}
+          gsl_matrix_set(X, i, 0, 1.0);
+          gsl_matrix_set(X, i, 1, pos);
+          if (p==3) gsl_matrix_set(X, i, 2, pos*pos);
+        }
       }
 
       work = gsl_multifit_robust_alloc(gsl_multifit_robust_bisquare, X->size1, X->size2);
@@ -232,11 +232,10 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
       gsl_vector_free(c);
       gsl_matrix_free(cov);
 
-
       if (countBottom<4) {
-	p = 2;
+        p = 2;
       } else {
-	p = 3;
+        p = 3;
       }
       p = 2; // make linear fit the default
 
@@ -247,15 +246,15 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
       cov = gsl_matrix_alloc(p, p);
 
       for (unsigned int i=0;i<6;i++) {
-	if (keithleyBottomSensorStates_[i]) {
-	  pos = keithleyBottomPositions_[i];
-	  gsl_vector_set(x, i, pos);
-	  gsl_vector_set(y, i, keithleyBottomTemperatures_[i]);
+        if (keithleyBottomSensorStates_[i]) {
+          pos = keithleyBottomPositions_[i];
+          gsl_vector_set(x, i, pos);
+          gsl_vector_set(y, i, keithleyBottomTemperatures_[i]);
 
-	  gsl_matrix_set(X, i, 0, 1.0);
-	  gsl_matrix_set(X, i, 1, pos);
-	  if (p==3) gsl_matrix_set(X, i, 2, pos*pos);
-	}
+          gsl_matrix_set(X, i, 0, 1.0);
+          gsl_matrix_set(X, i, 1, pos);
+          if (p==3) gsl_matrix_set(X, i, 2, pos*pos);
+        }
       }
 
       work = gsl_multifit_robust_alloc(gsl_multifit_robust_bisquare, X->size1, X->size2);
