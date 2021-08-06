@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['querystatus_240',['queryStatus',['../classConradController.html#a3b78eec057b3ba3d22ff59b28e1ed7a0',1,'ConradController::queryStatus()'],['../classConradControllerFake.html#a55b825d0268f7c80e9fc342fd8f593e1',1,'ConradControllerFake::queryStatus()']]]
+  ['martacomhandler_853',['MartaComHandler',['../da/d72/classMartaComHandler.html#ab92eebcc3a6af944fb2c4a996e506997',1,'MartaComHandler::MartaComHandler(ipaddress_t, port_t)'],['../da/d72/classMartaComHandler.html#a0ad8d9e02c66d31bd261238f07dfef16',1,'MartaComHandler::MartaComHandler(const MartaComHandler &amp;)']]]
 ];
