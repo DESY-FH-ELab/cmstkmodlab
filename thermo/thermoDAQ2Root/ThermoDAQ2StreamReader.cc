@@ -496,13 +496,13 @@ void ThermoDAQ2StreamReader::process()
   }
 
   for (int i=0;i<2;++i) {
-  	for (int j=0;i<10;++i) {
+  	for (int j=0;j<10;++j) {
   		sprintf(branchName, "KeithleyDAQ6510State_%d%02d", i+1, j+1);
   		sprintf(branchLeafList, "KeithleyDAQ6510State_%d%02d/O", i+1, j+1);
   		otree_->Branch(branchName, &measurement_.keithleyState[i][j], branchLeafList);
 
   		sprintf(branchName, "KeithleyDAQ6510Temperature_%d%02d", i+1, j+1);
-  		sprintf(branchLeafList, "KeithleyDAQ6510Temperature_%d%02d/O", i+1, j+1);
+  		sprintf(branchLeafList, "KeithleyDAQ6510Temperature_%d%02d/F", i+1, j+1);
   		otree_->Branch(branchName, &measurement_.keithleyTemperature[i][j], branchLeafList);
   	}
   }
