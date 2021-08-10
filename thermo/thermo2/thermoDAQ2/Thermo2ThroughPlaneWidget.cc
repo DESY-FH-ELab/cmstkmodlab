@@ -53,6 +53,14 @@ Thermo2ThroughPlaneWidget::Thermo2ThroughPlaneWidget(Thermo2ThroughPlaneModel* m
   QVBoxLayout* layout = new QVBoxLayout(this);
   setLayout(layout);
 
+  mattermostStatus_ = new QCheckBox("Post status updates on Mattermost");
+  mattermostStatus_->setChecked(model_->getMattermostStatus());
+  layout->addWidget(mattermostStatus_);
+
+  // Connect all the signals
+  connect(mattermostStatus_, SIGNAL(clicked()),
+          this, SLOT(mattermostChanged()));
+
   svgWidget_ = new ThroughPlaneSVGWidget(this);
   svgWidget_->setMinimumWidth(460);
   svgWidget_->setMinimumHeight(svgWidget_->heightForWidth(460));
@@ -65,9 +73,14 @@ Thermo2ThroughPlaneWidget::Thermo2ThroughPlaneWidget(Thermo2ThroughPlaneModel* m
   updateInfo();
 }
 
+void Thermo2ThroughPlaneWidget::mattermostChanged()
+{
+  model_->setMattermostStatus(mattermostStatus_->isChecked());
+}
+
 void Thermo2ThroughPlaneWidget::updateInfo()
 {
-	QString svg = ThroughPlaneSVGString;
+  QString svg = ThroughPlaneSVGString;
 
   double value;
   QString s, p;

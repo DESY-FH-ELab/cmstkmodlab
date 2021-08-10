@@ -62,10 +62,12 @@ class Thermo2ThroughPlaneWidget : public QWidget
 
   Thermo2ThroughPlaneModel* model_;
 
+  QCheckBox* mattermostStatus_;
   ThroughPlaneSVGWidget* svgWidget_;
   
  public slots:
 
+  void mattermostChanged();
   void updateInfo();
 
  protected slots:

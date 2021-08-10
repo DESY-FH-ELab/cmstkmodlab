@@ -38,6 +38,9 @@ public:
 		  KeithleyDAQ6510Model* keithleyModel,
 		  QObject *parent = 0);
 
+  void setMattermostStatus(bool value) { mattermostStatus_ = value; }
+  bool getMattermostStatus() const { return mattermostStatus_; }
+
   bool getHuberState() const { return huberState_; }
   double getSinkTemperature() const { return huberTemperatureSetPoint_; }
 
