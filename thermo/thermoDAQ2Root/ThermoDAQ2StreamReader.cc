@@ -306,90 +306,107 @@ void ThermoDAQ2StreamReader::processDAQStarted(QXmlStreamReader& xml)
   measurementValid_ = true;
 }
 
-void ThermoDAQ2StreamReader::processLine(QString& line)
+void ThermoDAQ2StreamReader::processFile(QFile* file)
 {
-  QXmlStreamReader xml(line);
-  while (!xml.atEnd()) {
-    xml.readNextStartElement();
+  QXmlStreamReader xml(file);
+
+  while (!xml.atEnd() && !xml.hasError()) {
+    xml.readNext();
     if (xml.isStartElement()) {
 
+      // std::cout << "start element name: '" << xml.name().toString().toStdString() << "'" << ", text: '" << xml.text().toString().toStdString() << "'" << std::endl;
+
       if (xml.name()=="HuberUnistat525w") {
-        processHuberUnistat525w(xml);
-      }
-      if (xml.name()=="HuberUnistat525wControl") {
-        processHuberUnistat525wControl(xml);
-      }
-      if (xml.name()=="HuberUnistat525wInfo") {
-        processHuberUnistat525wInfo(xml);
-      }
+         processHuberUnistat525w(xml);
+       }
+       if (xml.name()=="HuberUnistat525wControl") {
+         processHuberUnistat525wControl(xml);
+       }
+       if (xml.name()=="HuberUnistat525wInfo") {
+         processHuberUnistat525wInfo(xml);
+       }
 
-      if (xml.name()=="Marta") {
-        processMarta(xml);
-      }
-      if (xml.name()=="MartaR507") {
-        processMartaR507(xml);
-      }
-      if (xml.name()=="MartaPTCO2") {
-        processMartaPTCO2(xml);
-      }
-      if (xml.name()=="MartaTTCO2") {
-        processMartaTTCO2(xml);
-      }
-      if (xml.name()=="MartaSCCO2") {
-        processMartaSCCO2(xml);
-      }
-      if (xml.name()=="MartaDPCO2") {
-        processMartaDPCO2(xml);
-      }
-      if (xml.name()=="MartaDTCO2") {
-        processMartaDTCO2(xml);
-      }
-      if (xml.name()=="MartaSTCO2") {
-        processMartaSTCO2(xml);
-      }
-      if (xml.name()=="MartaFlow") {
-        processMartaFlow(xml);
-      }
-      if (xml.name()=="MartaSettings") {
-        processMartaSettings(xml);
-      }
-      if (xml.name()=="MartaAlarms") {
-        processMartaAlarms(xml);
-      }
+       if (xml.name()=="Marta") {
+         processMarta(xml);
+       }
+       if (xml.name()=="MartaR507") {
+         processMartaR507(xml);
+       }
+       if (xml.name()=="MartaPTCO2") {
+         processMartaPTCO2(xml);
+       }
+       if (xml.name()=="MartaTTCO2") {
+         processMartaTTCO2(xml);
+       }
+       if (xml.name()=="MartaSCCO2") {
+         processMartaSCCO2(xml);
+       }
+       if (xml.name()=="MartaDPCO2") {
+         processMartaDPCO2(xml);
+       }
+       if (xml.name()=="MartaDTCO2") {
+         processMartaDTCO2(xml);
+       }
+       if (xml.name()=="MartaSTCO2") {
+         processMartaSTCO2(xml);
+       }
+       if (xml.name()=="MartaFlow") {
+         processMartaFlow(xml);
+       }
+       if (xml.name()=="MartaSettings") {
+         processMartaSettings(xml);
+       }
+       if (xml.name()=="MartaAlarms") {
+         processMartaAlarms(xml);
+       }
 
-      if (xml.name()=="AgilentTwisTorr304") {
-      	processAgilentTwisTorr304(xml);
-      }
+       if (xml.name()=="AgilentTwisTorr304") {
+         processAgilentTwisTorr304(xml);
+       }
 
-      if (xml.name()=="LeyboldGraphixOne") {
-        processLeyboldGraphixOne(xml);
-      }
+       if (xml.name()=="LeyboldGraphixOne") {
+         processLeyboldGraphixOne(xml);
+       }
 
-      if (xml.name()=="RohdeSchwarzNGE103B") {
-        processRohdeSchwarzNGE103B(xml);
-      }
-      if (xml.name()=="RohdeSchwarzNGE103BChannel") {
-        processRohdeSchwarzNGE103BChannel(xml);
+       if (xml.name()=="RohdeSchwarzNGE103B") {
+         processRohdeSchwarzNGE103B(xml);
+       }
+       if (xml.name()=="RohdeSchwarzNGE103BChannel") {
+         processRohdeSchwarzNGE103BChannel(xml);
+       }
 
-      }
+       if (xml.name()=="KeithleyDAQ6510") {
+         processKeithleyDAQ6510(xml);
+       }
+       if (xml.name()=="KeithleyDAQ6510Sensor") {
+         processKeithleyDAQ6510Sensor(xml);
+       }
+
+       if (xml.name()=="Log") {
+         processLog(xml);
+       }
+       if (xml.name()=="DAQStarted") {
+         processDAQStarted(xml);
+       }
+
+    } else if (xml.isEndElement()) {
+
+      // std::cout << "end element name: '" << xml.name().toString().toStdString() << "'" << ", text: '" << xml.text().toString().toStdString() << "'" << std::endl;
 
       if (xml.name()=="KeithleyDAQ6510") {
-        processKeithleyDAQ6510(xml);
-      }
-      if (xml.name()=="KeithleyDAQ6510Sensor") {
-        processKeithleyDAQ6510Sensor(xml);
+        if (measurementValid_) otree_->Fill();
       }
 
-      if (xml.name()=="Log") {
-        processLog(xml);
-      }
-      if (xml.name()=="DAQStarted") {
-        processDAQStarted(xml);
-      }
+    } else if (xml.hasError()) {
+
+      std::cout << "XML error: " << xml.errorString().toStdString() << std::endl;
+
+    } else if (xml.atEnd()) {
+
+      std::cout << "End of file reached" << std::endl;
+
     }
   }
-
-  if (measurementValid_) otree_->Fill();
 }
 
 void ThermoDAQ2StreamReader::process()
@@ -512,12 +529,7 @@ void ThermoDAQ2StreamReader::process()
   ologtree_->Branch("datime", "TDatime", &log_.datime);
   ologtree_->Branch("message", &log_.message);
 
-  QString line;
-  QTextStream in(&file);
-  while (!in.atEnd()) {
-    line = in.readLine();
-    processLine(line);
-  }
+  processFile(&file);
 
   ofile_->Write();
   delete ofile_;

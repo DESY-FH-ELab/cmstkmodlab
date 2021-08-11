@@ -120,6 +120,10 @@ void Thermo2DAQModel::createDAQStatusMessage(QString &buffer, bool start)
   QXmlStreamWriter xml(&buffer);
   xml.setAutoFormatting(true);
 
+  if (start) {
+    xml.writeStartElement("ThermoDAQ2");
+  }
+
   //
   // Start of Huber Unistat 525w
   //
@@ -319,6 +323,9 @@ void Thermo2DAQModel::createDAQStatusMessage(QString &buffer, bool start)
 
 void Thermo2DAQModel::stopMeasurement()
 {
+  QString buffer("</ThermoDAQ2>";
+  emit daqMessage(buffer);
+
   daqState_ = false;
   emit daqStateChanged(false);
 

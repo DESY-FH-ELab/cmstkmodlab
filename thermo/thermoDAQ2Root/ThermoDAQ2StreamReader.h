@@ -17,6 +17,7 @@
 
 #include <QObject>
 #include <QStringList>
+#include <QFile>
 #include <QXmlStreamReader>
 
 #include <TFile.h>
@@ -120,7 +121,7 @@ signals:
 protected:
   QStringList arguments_;
   void process();
-  void processLine(QString& line);
+  void processFile(QFile* file);
 
   void processLog(QXmlStreamReader& xml);
   void processDAQStarted(QXmlStreamReader& xml);
