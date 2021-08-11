@@ -412,7 +412,7 @@ void ThermoDAQ2StreamReader::process()
   otree_ = new TTree("thermoDAQ2", "thermoDAQ2");
 
   otree_->Branch("uTime", &measurement_.uTime, "uTime/i");
-  otree_->Branch("datime", &measurement_.datime, 1024, 2);
+  otree_->Branch("datime", "TDatime", &measurement_.datime);
 
   otree_->Branch("u525wState", &measurement_.u525wState_, "u525wState/O");
   otree_->Branch("u525wTemperatureSetPoint", &measurement_.u525wTemperatureSetPoint_, "u525wTemperatureSetPoint/F");
@@ -509,7 +509,7 @@ void ThermoDAQ2StreamReader::process()
 
   ologtree_ = new TTree("thermoLog", "thermoLog");
   ologtree_->Branch("uTime", &log_.uTime, "uTime/i");
-  ologtree_->Branch("datime", &log_.datime, 1024, 2);
+  ologtree_->Branch("datime", "TDatime", &log_.datime);
   ologtree_->Branch("message", &log_.message);
 
   QString line;
