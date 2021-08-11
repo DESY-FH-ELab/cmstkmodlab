@@ -227,8 +227,11 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
       gsl_multifit_robust_free(work);
 
       sampleTTop_ = gsl_vector_get(c, 0);
-      gradientTop_ = -1.0*gsl_vector_get(c, 1);
-      powerTop_ = gradientTop_ * kBlock_ * ABlock_;
+      gradientTop_ = -1.0 * gsl_vector_get(c, 1) * 1000.;
+      powerTop_ = gradientTop_ * kBlock_ * ABlock_ * 1e-6;
+
+      NQLogDebug("Thermo2ThroughPlaneModel") << "gradientTop_ = " << gradientTop_;
+      NQLogDebug("Thermo2ThroughPlaneModel") << "powerTop_ = " << powerTop_;
 
       gsl_matrix_free(X);
       gsl_vector_free(x);
@@ -266,8 +269,11 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
       gsl_multifit_robust_free(work);
 
       sampleTBottom_ = gsl_vector_get(c, 0);
-      gradientBottom_ = gsl_vector_get(c, 1);
-      powerBottom_ = gradientBottom_ * kBlock_ * ABlock_;
+      gradientBottom_ = gsl_vector_get(c, 1) * 1000.;
+      powerBottom_ = gradientBottom_ * kBlock_ * ABlock_ * 1e-6;
+
+      NQLogDebug("Thermo2ThroughPlaneModel") << "gradientBottom_ = " << gradientBottom_;
+      NQLogDebug("Thermo2ThroughPlaneModel") << "powerBottom_ = " << powerBottom_;
 
       gsl_matrix_free(X);
       gsl_vector_free(x);
