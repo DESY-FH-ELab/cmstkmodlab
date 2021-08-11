@@ -302,10 +302,18 @@ void Thermo2DAQModel::createDAQStatusMessage(QString &buffer, bool start)
   for (unsigned int card=1;card<=2;++card) {
     for (unsigned int channel=1;channel<=10;++channel) {
       unsigned int sensor = card*100 + channel;
+
+      keithleyState_[card-1][channel-1] = keithleyModel_->getSensorState(sensor)==READY;
+      if (keithleyState_[card-1][channel-1]) {
+        keithleyTemperature_[card-1][channel-1] = keithleyModel_->getTemperature(sensor);
+      } else {
+        keithleyTemperature_[card-1][channel-1] = 0;
+      }
+
       xml.writeStartElement(QString("KeithleyDAQ6510Sensor"));
       xml.writeAttribute("id", QString::number(sensor));
-      xml.writeAttribute("State", keithleyModel_->getSensorState(sensor)==READY ? "1" : "0");
-      xml.writeAttribute("T", QString::number(keithleyModel_->getTemperature(sensor), 'f', 4));
+      xml.writeAttribute("State", keithleyState_[card-1][channel-1]==true ? "1" : "0");
+      xml.writeAttribute("T", QString::number(keithleyTemperature_[card-1][channel-1], 'f', 4));
       xml.writeEndElement();
     }
   }
@@ -727,7 +735,11 @@ void Thermo2DAQModel::keithleyInfoChanged()
 
       bool changed = false;
       changed |= updateIfChanged<bool>(keithleyState_[card][channel], keithleyModel_->getSensorState(sensor)==READY ? "1" : "0");
-      changed |= updateIfChanged<float>(keithleyTemperature_[card][channel], keithleyModel_->getTemperature(sensor));
+      if (keithleyState_[card][channel]) {
+        changed |= updateIfChanged<float>(keithleyTemperature_[card][channel], keithleyModel_->getTemperature(sensor));
+      } else {
+        keithleyTemperature_[card][channel] = 0;
+      }
 
       if (changed) {
         xml.writeStartElement(QString("KeithleyDAQ6510Sensor"));
