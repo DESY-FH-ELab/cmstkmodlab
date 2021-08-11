@@ -734,7 +734,7 @@ void Thermo2DAQModel::keithleyInfoChanged()
       unsigned int sensor = (card+1)*100 + channel + 1;
 
       bool changed = false;
-      changed |= updateIfChanged<bool>(keithleyState_[card][channel], keithleyModel_->getSensorState(sensor)==READY ? "1" : "0");
+      changed |= updateIfChanged<bool>(keithleyState_[card][channel], keithleyModel_->getSensorState(sensor)==READY);
       if (keithleyState_[card][channel]) {
         changed |= updateIfChanged<float>(keithleyTemperature_[card][channel], keithleyModel_->getTemperature(sensor));
       } else {
