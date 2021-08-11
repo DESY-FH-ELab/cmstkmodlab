@@ -80,6 +80,9 @@ KeithleyDAQ6510Widget::KeithleyDAQ6510Widget(KeithleyDAQ6510Model* model,
   for (unsigned int card=0;card<2;++card) {
     for (unsigned int channel=0;channel<10;++channel) {
       unsigned int sensor = 100 * (card+1) + channel + 1;
+
+      if (model_->getSensorState(sensor)== READY) activeSensorCount_++;
+      
       sensorLayout->addWidget(new KeithleyDAQ6510TemperatureWidget(model_, sensor, this),
                               i/5, i%5);
       i++;
@@ -123,6 +126,12 @@ void KeithleyDAQ6510Widget::activeSensorCountChanged(unsigned int sensors)
   activeSensorCount_ = sensors;
 
   keithleyStateChanged(model_->getDeviceState());
+
+  if (activeSensorCount_>0) {
+    scanCheckBox_->setEnabled(model_->getDeviceState()== READY);
+  } else {
+    scanCheckBox_->setEnabled(false);
+  }
 }
 
 /// Updates the GUI when the Keithley multimeter is enabled/disabled.
@@ -131,6 +140,11 @@ void KeithleyDAQ6510Widget::controlStateChanged(bool enabled)
   if (enabled) {
     keithleyCheckBox_->setEnabled(true);
     keithleyStateChanged(model_->getDeviceState());
+    if (activeSensorCount_>0) {
+      scanCheckBox_->setEnabled(model_->getDeviceState());
+    } else {
+      scanCheckBox_->setEnabled(false);
+    }
   } else {
     keithleyCheckBox_->setEnabled(false);
     scanCheckBox_->setEnabled(false);
