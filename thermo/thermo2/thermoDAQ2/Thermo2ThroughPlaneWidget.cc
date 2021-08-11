@@ -114,7 +114,7 @@ void Thermo2ThroughPlaneWidget::updateInfo()
     for (unsigned int c=0;c<6;++c) {
       p = "§TTop" + QString::number(c+1) + "§";
       if (model_->getKeithleyTopSensorState(c)) {
-	s = QString::number(model_->getKeithleyTopTemperature(c),'f', 2);
+	s = QString::number(model_->getKeithleyTopTemperature(c),'f', 4);
 	svg.replace(p, s);
       } else {
 	svg.replace(p, "--.--");
@@ -122,7 +122,7 @@ void Thermo2ThroughPlaneWidget::updateInfo()
 
       p = "§TBot" + QString::number(c+1) + "§";
       if (model_->getKeithleyBottomSensorState(c)) {
-	s = QString::number(model_->getKeithleyBottomTemperature(c),'f', 2);
+	s = QString::number(model_->getKeithleyBottomTemperature(c),'f', 4);
 	svg.replace(p, s);
       } else {
 	svg.replace(p, "--.--");
@@ -140,31 +140,31 @@ void Thermo2ThroughPlaneWidget::updateInfo()
 
   if (model_->getCalculationState()) {
     value = model_->getGradientTop();
-    s = QString::number(value, 'f', 2);
+    s = QString::number(value, 'f', 4);
     svg.replace("§GradTop§", s);
 
     value = model_->getPowerTop();
-    s = QString::number(value, 'f', 2);
+    s = QString::number(value, 'f', 4);
     svg.replace("§PTop§", s);
 
     value = model_->getSampleTemperatureTop();
-    s = QString::number(value, 'f', 2);
+    s = QString::number(value, 'f', 4);
     svg.replace("§TTopSample§", s);
 
     value = model_->getSampleTemperatureMiddle();
-    s = QString::number(value, 'f', 2);
+    s = QString::number(value, 'f', 4);
     svg.replace("§TMidSample§", s);
 
     value = model_->getSampleTemperatureBottom();
-    s = QString::number(value, 'f', 2);
+    s = QString::number(value, 'f', 4);
     svg.replace("§TBotSample§", s);
 
     value = model_->getGradientBottom();
-    s = QString::number(value, 'f', 2);
+    s = QString::number(value, 'f', 4);
     svg.replace("§GradBot§", s);
 
     value = model_->getPowerBottom();
-    s = QString::number(value, 'f', 2);
+    s = QString::number(value, 'f', 4);
     svg.replace("§PBot§", s);
 
   } else {
