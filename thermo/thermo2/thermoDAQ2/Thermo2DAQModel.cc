@@ -331,7 +331,7 @@ void Thermo2DAQModel::createDAQStatusMessage(QString &buffer, bool start)
 
 void Thermo2DAQModel::stopMeasurement()
 {
-  QString buffer("</ThermoDAQ2>";
+  QString buffer("</ThermoDAQ2>");
   emit daqMessage(buffer);
 
   daqState_ = false;
