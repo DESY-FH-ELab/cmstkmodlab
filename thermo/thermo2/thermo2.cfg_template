@@ -47,8 +47,8 @@ ThroughPlaneNGE103BChannel             1
 ThroughPlaneKeithleyTopSensors         101 102 103 104 105 106        # From top to interface to sample
 ThroughPlaneKeithleyTopSensorTypes     4WirePT100                     # Type of temperature probe (4WirePT100 or Therm10k)
 ThroughPlaneKeithleyTopPositions       60.0 50.0 40.0 30.0 20.0 10.0  # Position of sensor from interface to sample in mm
-ThroughPlaneKeithleyTopOffsets         0.0 0.0 0.0 0.0 0.0 0.0        # Top temperature offsets
+ThroughPlaneKeithleyTopOffsets         +0.1552 -0.1430 -0.0140 -0.1677 +0.1909 -0.0296 # Top temperature offsets
 ThroughPlaneKeithleyBottomSensors      201 202 203 204 205 206        # From interface to sample to heat sink
 ThroughPlaneKeithleyBottomSensorTypes  4WirePT100                     # Type of temperature probe (4WirePT100 or Therm10k)
 ThroughPlaneKeithleyBottomPositions    10.0 20.0 30.0 40.0 50.0 60.0  # Position of sensor from interface to sample in mm
-ThroughPlaneKeithleyBottomOffsets      0.0 0.0 0.0 0.0 0.0 0.0        # Bottom temperature offsets
+ThroughPlaneKeithleyBottomOffsets      +0.2089 +0.0122 -0.0746 -0.0464 -0.1455 +0.0541 # Bottom temperature offsets
