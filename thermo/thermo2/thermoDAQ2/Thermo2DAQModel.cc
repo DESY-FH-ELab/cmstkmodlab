@@ -749,7 +749,7 @@ void Thermo2DAQModel::keithleyInfoChanged()
         xml.writeEndElement();
       }
     }
-  }
+  } 
   xml.writeEndElement();
 
   if (buffer.length()>0) {
