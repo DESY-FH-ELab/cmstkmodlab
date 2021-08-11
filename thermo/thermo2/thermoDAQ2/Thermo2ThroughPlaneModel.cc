@@ -175,12 +175,14 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
   unsigned int countBottom = 0;
   changed |= updateIfChanged<bool>(keithleyState_, keithleyModel_->getDeviceState()==READY ? true : false);
   for (unsigned int i=0;i<6;++i) {
-    changed |= updateIfChanged<bool>(keithleyTopSensorStates_[i], keithleyModel_->getSensorState(keithleyTopSensors_[i])==READY ? true : false);
+    changed |= updateIfChanged<bool>(keithleyTopSensorStates_[i],
+				     keithleyModel_->getSensorState(keithleyTopSensors_[i])==READY ? true : false);
     changed |= updateIfChanged<double>(keithleyTopTemperatures_[i],
         keithleyModel_->getTemperature(keithleyTopSensors_[i]) + keithleyTopOffsets_[i]);
     if (keithleyTopSensorStates_[i]) countTop++;
 
-    changed |= updateIfChanged<bool>(keithleyBottomSensorStates_[i], keithleyModel_->getSensorState(keithleyBottomSensors_[i])==READY ? true : false);
+    changed |= updateIfChanged<bool>(keithleyBottomSensorStates_[i],
+				     keithleyModel_->getSensorState(keithleyBottomSensors_[i])==READY ? true : false);
     changed |= updateIfChanged<double>(keithleyBottomTemperatures_[i],
         keithleyModel_->getTemperature(keithleyBottomSensors_[i]) + keithleyBottomOffsets_[i]);
     if (keithleyBottomSensorStates_[i]) countBottom++;
