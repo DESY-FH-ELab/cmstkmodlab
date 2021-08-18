@@ -182,14 +182,14 @@ void KeithleyDAQ6510Model::scanComplete()
 {
   NQLogDebug("KeithleyDAQ6510Model") << "scanComplete() " << controller_->GetScanStatus();
 
-  reading_t data;
+  VKeithleyDAQ6510::reading_t data;
   controller_->GetScanData(data);
 
   NQLogDebug("KeithleyDAQ6510Model") << "data size: " << data.size();
 
   bool changed = false;
 
-  for (reading_t::iterator it=data.begin();it!=data.end();++it) {
+  for (VKeithleyDAQ6510::reading_t::iterator it=data.begin();it!=data.end();++it) {
     unsigned int sensor;
     double temperature;
     double relativeTime;
