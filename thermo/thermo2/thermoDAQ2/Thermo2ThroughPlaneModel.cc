@@ -35,6 +35,8 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
    nge103BModel_(nge103BModel),
    keithleyModel_(keithleyModel)
 {
+  gsl_set_error_handler_off();
+
   ApplicationConfig* config = ApplicationConfig::instance();
 
   mattermostStatus_ = config->getValue<int>("ThroughPlaneMattermostStatus");
@@ -198,7 +200,8 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
       gsl_multifit_robust_workspace * work;
       unsigned int p;
       double pos;
-
+      int ret;
+      
       if (countTop<4) {
         p = 2;
       } else {
@@ -225,29 +228,32 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
       }
 
       work = gsl_multifit_robust_alloc(gsl_multifit_robust_bisquare, X->size1, X->size2);
-      gsl_multifit_robust(X, y, c, cov, work);
+      work->maxiter = 1000;
+      ret = gsl_multifit_robust(X, y, c, cov, work);
       gsl_multifit_robust_free(work);
 
-      sampleTTop_ = gsl_vector_get(c, 0);
-      gradientTop_ = -1.0 * gsl_vector_get(c, 1) * 1000.;
-      powerTop_ = gradientTop_ * kBlock_ * ABlock_ * 1e-6;
+      if (ret!=GSL_EMAXITER) {
+	sampleTTop_ = gsl_vector_get(c, 0);
+	gradientTop_ = -1.0 * gsl_vector_get(c, 1) * 1000.;
+	powerTop_ = gradientTop_ * kBlock_ * ABlock_ * 1e-6;
 
-      NQLogDebug("Thermo2ThroughPlaneModel") << "gradientTop_ = " << gradientTop_;
-      NQLogDebug("Thermo2ThroughPlaneModel") << "powerTop_ = " << powerTop_;
-
+	NQLogDebug("Thermo2ThroughPlaneModel") << "gradientTop_ = " << gradientTop_;
+	NQLogDebug("Thermo2ThroughPlaneModel") << "powerTop_ = " << powerTop_;
+      }
+      
       gsl_matrix_free(X);
       gsl_vector_free(x);
       gsl_vector_free(y);
       gsl_vector_free(c);
       gsl_matrix_free(cov);
-
+      
       if (countBottom<4) {
-        p = 2;
+	p = 2;
       } else {
         p = 3;
       }
       p = 2; // make linear fit the default
-
+      
       X = gsl_matrix_alloc(countBottom, p);
       x = gsl_vector_alloc(countBottom);
       y = gsl_vector_alloc(countBottom);
@@ -267,16 +273,19 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
       }
 
       work = gsl_multifit_robust_alloc(gsl_multifit_robust_bisquare, X->size1, X->size2);
-      gsl_multifit_robust(X, y, c, cov, work);
+      work->maxiter = 1000;
+      ret = gsl_multifit_robust(X, y, c, cov, work);
       gsl_multifit_robust_free(work);
 
-      sampleTBottom_ = gsl_vector_get(c, 0);
-      gradientBottom_ = gsl_vector_get(c, 1) * 1000.;
-      powerBottom_ = gradientBottom_ * kBlock_ * ABlock_ * 1e-6;
+      if (ret!=GSL_EMAXITER) {
+	sampleTBottom_ = gsl_vector_get(c, 0);
+	gradientBottom_ = gsl_vector_get(c, 1) * 1000.;
+	powerBottom_ = gradientBottom_ * kBlock_ * ABlock_ * 1e-6;
 
-      NQLogDebug("Thermo2ThroughPlaneModel") << "gradientBottom_ = " << gradientBottom_;
-      NQLogDebug("Thermo2ThroughPlaneModel") << "powerBottom_ = " << powerBottom_;
-
+	NQLogDebug("Thermo2ThroughPlaneModel") << "gradientBottom_ = " << gradientBottom_;
+	NQLogDebug("Thermo2ThroughPlaneModel") << "powerBottom_ = " << powerBottom_;
+      }
+      
       gsl_matrix_free(X);
       gsl_vector_free(x);
       gsl_vector_free(y);
@@ -284,6 +293,7 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
       gsl_matrix_free(cov);
 
       sampleTMiddle_ = 0.5*(sampleTTop_ + sampleTBottom_);
+      
     } else {
       calculationState_ = false;
     }
