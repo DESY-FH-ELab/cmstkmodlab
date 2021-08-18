@@ -58,5 +58,6 @@ else()
         pkg_check_modules(libmodbus REQUIRED IMPORTED_TARGET libmodbus)
 endif()
 
+add_subdirectory(external)
 add_subdirectory(devices)
 add_subdirectory(common)
