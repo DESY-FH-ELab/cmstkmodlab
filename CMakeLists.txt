@@ -12,6 +12,8 @@ project(cmstkmodlab VERSION 1.0.0)
 
 find_package(PkgConfig REQUIRED)
 
+add_compile_definitions(__${CMAKE_HOST_SYSTEM_NAME}__)
+
 if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
         option(FAKEIO "Build with fake IO support" ON)
 else()
@@ -46,6 +48,15 @@ find_package(Qt5 COMPONENTS Core Gui Widgets OpenGL Script Xml Svg REQUIRED)
 pkg_check_modules(LIBGPHOTO2 REQUIRED IMPORTED_TARGET libgphoto2)
 pkg_check_modules(OPENCV REQUIRED IMPORTED_TARGET opencv)
 pkg_check_modules(EXIV2 REQUIRED IMPORTED_TARGET exiv2)
+
+option(NOMARTA "Build without support for MARTA CO2 chiller" OFF)
+if(NOMARTA)
+        message("Build without support for MARTA CO2 chiller: ON")
+        add_compile_definitions(NOMARTA)
+else()
+        message("Build without support for MARTA CO2 chiller: OFF")
+        pkg_check_modules(libmodbus REQUIRED IMPORTED_TARGET libmodbus)
+endif()
 
 add_subdirectory(devices)
 add_subdirectory(common)
