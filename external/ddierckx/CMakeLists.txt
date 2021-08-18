@@ -1,4 +1,4 @@
-set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOMOC OFF)
 
 enable_language(Fortran)
 
