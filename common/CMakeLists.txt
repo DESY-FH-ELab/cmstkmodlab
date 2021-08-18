@@ -1,3 +1,6 @@
+configure_file(ApplicationConfig.h.in ApplicationConfig.h)
+configure_file(ApplicationConfig.cc.in ApplicationConfig.cc)
+
 add_library(Common SHARED
         nqlogger.cc
         SingletonApplication.cc
@@ -21,6 +24,10 @@ add_library(Common SHARED
 )
 
 set(DEVICE_LIBRARIES
+        TkModLabAgilent
+        TkModLabArduino
+        TkModLabCanon
+        #TkModLabConrad
         #TkModLabKeithley
         #TkModLabGreisinger
         #TkModLabJulabo
@@ -28,14 +35,11 @@ set(DEVICE_LIBRARIES
         #TkModLabPfeiffer
         #TkModLabHuber
         #TkModLabIota
-        TkModLabArduino
         #TkModLabCori
         #TkModLabNanotec
-        #TkModLabConrad
         #TkModLabVelleman
         #TkModLabLeybold
         TkModLabRohdeSchwarz
-        TkModLabAgilent
         #TkModLabMarta
 )
 
