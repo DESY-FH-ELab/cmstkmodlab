@@ -25,12 +25,12 @@ else()
         message("Fake IO support: OFF")
 endif()
 
-FIND_PACKAGE(CURL)
-IF(CURL_FOUND)
+find_package(CURL)
+if(CURL_FOUND)
         INCLUDE_DIRECTORIES(${CURL_INCLUDE_DIR})
-ELSE(CURL_FOUND)
+else(CURL_FOUND)
         MESSAGE(FATAL_ERROR "Could not find the CURL library and development files.")
-ENDIF(CURL_FOUND)
+endif(CURL_FOUND)
 
 set(CMAKE_AUTOMOC ON)
 
