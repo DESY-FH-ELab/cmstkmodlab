@@ -8,7 +8,7 @@ if(CMAKE_VERSION VERSION_LESS "3.7.0")
         set(CMAKE_INCLUDE_CURRENT_DIR ON)
 endif()
 
-project(cmstkmodlab VERSION 1.0.0)
+project(cmstkmodlab VERSION 2.3.0)
 
 find_package(PkgConfig REQUIRED)
 
