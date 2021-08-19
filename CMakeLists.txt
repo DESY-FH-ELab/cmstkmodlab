@@ -10,6 +10,18 @@ endif()
 
 project(cmstkmodlab VERSION 2.3.0)
 
+execute_process(COMMAND bash -c "git describe --dirty --always --tags" OUTPUT_VARIABLE GIT_DESCRIBE)
+
+message("")
+message("############################################")
+message("")
+message("     cmstkmodlab")
+message("")
+message(" version: ${GIT_DESCRIBE}")
+message("")
+message("############################################")
+message("")
+
 find_package(PkgConfig REQUIRED)
 
 add_compile_definitions(__${CMAKE_HOST_SYSTEM_NAME}__)
