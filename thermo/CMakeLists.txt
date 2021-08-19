@@ -1,8 +1,8 @@
-if(THERMO1)
+if(CMSTKMODLAB_THERMO1)
         add_subdirectory(thermo1)
 endif()
 
-if(THERMO2)
+if(CMSTKMODLAB_THERMO2)
         add_subdirectory(thermo2)
 endif()
 

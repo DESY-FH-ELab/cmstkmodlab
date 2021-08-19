@@ -4,7 +4,7 @@ config.status
 
 CMakeFiles
 CMakeCache.txt
-*.cmake
+cmake_install.cmake
 *_autogen
 
 tkmodlabenv.csh

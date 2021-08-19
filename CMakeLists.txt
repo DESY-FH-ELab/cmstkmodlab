@@ -22,6 +22,8 @@ message("")
 message("############################################")
 message("")
 
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+
 set(basepath ${PROJECT_SOURCE_DIR})
 
 find_package(PkgConfig REQUIRED)

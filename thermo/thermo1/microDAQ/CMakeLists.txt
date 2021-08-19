@@ -2,22 +2,18 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOMOC ON)
 
-add_executable(thermoDAQ
-        thermoDAQ.cc
-        TestWindow.cc
-        ThermoMainWindow.cc
-        ThermoScriptModel.cc
-        ThermoScriptThread.cc
-        ThermoScriptWidget.cc
-        ThermoScriptableGlobals.cc
-        ThermoDAQThread.cc
-        ThermoDAQModel.cc
-        ThermoDAQStreamer.cc
-        ThermoDAQWebInfo.cc
-        ThermoDAQWidget.cc
-        ThermoDAQServer.cc
-        ThermoPfeifferWidget.cc
-)
+add_executable(microDAQ
+        microDAQ.cc
+        MicroMainWindow.cc
+        MicroScriptModel.cc
+        MicroScriptThread.cc
+        MicroScriptWidget.cc
+        MicroScriptableGlobals.cc
+        MicroDAQThread.cc
+        MicroDAQModel.cc
+        MicroDAQStreamer.cc
+        MicroDAQWidget.cc
+        MicroDAQServer.cc)
 
 if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
         add_compile_definitions(APPLICATIONVERSIONSTR=\"unknown\")
@@ -52,6 +48,4 @@ set(CMAKE_CXX_FLAGS "${Qt5Network_EXECUTABLE_COMPILE_FLAGS}")
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
 
-target_link_libraries(thermoDAQ LINK_PUBLIC Common Qt5::Network)
-
-configure_file(thermoDAQ.desktop.in thermoDAQ.desktop)
+target_link_libraries(microDAQ LINK_PUBLIC Common Qt5::Network)
