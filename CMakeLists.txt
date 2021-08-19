@@ -22,6 +22,8 @@ message("")
 message("############################################")
 message("")
 
+set(basepath ${PROJECT_SOURCE_DIR})
+
 find_package(PkgConfig REQUIRED)
 
 add_compile_definitions(__${CMAKE_HOST_SYSTEM_NAME}__)
@@ -48,7 +50,7 @@ endif(CURL_FOUND)
 
 set(CMAKE_AUTOMOC ON)
 
-find_package(Qt5 COMPONENTS Core Gui Widgets OpenGL Script Xml Svg REQUIRED)
+find_package(Qt5 COMPONENTS Core Gui Widgets OpenGL Script Xml Svg Network Charts REQUIRED)
 
 #if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
 #        set(ENV{ROOT_DIR} /opt/local/libexec/root6/share/root/cmake)
@@ -79,3 +81,22 @@ add_subdirectory(external)
 add_subdirectory(devices)
 add_subdirectory(common)
 add_subdirectory(common_test)
+
+option(CMSTKMODLAB_THERMO1 "Build with support for version 1 of thermal test setup" OFF)
+if(CMSTKMODLAB_THERMO1)
+        message("Support for version 1 of thermal test setup: ON")
+        include(FindQwt)
+else()
+        message("Support for version 1 of thermal test setup: OFF")
+endif()
+
+option(CMSTKMODLAB_THERMO2 "Build with support for version 2 of thermal test setup" OFF)
+if(CMSTKMODLAB_THERMO2)
+        message("Support for version 2 of thermal test setup: ON")
+else()
+        message("Support for version 2 of thermal test setup: OFF")
+endif()
+
+if(CMSTKMODLAB_THERMO1 OR CMSTKMODLAB_THERMO2)
+        add_subdirectory(thermo)
+endif()
