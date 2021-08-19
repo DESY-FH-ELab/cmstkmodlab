@@ -63,12 +63,12 @@ set(CMAKE_AUTOMOC ON)
 
 find_package(Qt5 COMPONENTS Core Gui Widgets OpenGL Script Xml Svg Network Charts REQUIRED)
 
-#if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
-#        set(ENV{ROOT_DIR} /opt/local/libexec/root6/share/root/cmake)
-#else()
-#	set(ENV{ROOT_DIR} /home/mussgill/development/root_bin/cmake)
-#endif()
-#find_package(ROOT 6.16 CONFIG REQUIRED)
+if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
+        set(ENV{ROOT_DIR} /opt/local/libexec/root6/share/root/cmake)
+else()
+	set(ENV{ROOT_DIR} /home/mussgill/development/root_bin/cmake)
+endif()
+find_package(ROOT 6.16 REQUIRED)
 
 pkg_check_modules(LIBGPHOTO2 REQUIRED IMPORTED_TARGET libgphoto2)
 pkg_check_modules(OPENCV REQUIRED IMPORTED_TARGET opencv)
