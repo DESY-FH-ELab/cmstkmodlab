@@ -39,4 +39,11 @@ set(CMAKE_CXX_FLAGS "${Qt5Network_EXECUTABLE_COMPILE_FLAGS}")
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/assembly/AssemblyCommon)
 
-target_link_libraries(assembly LINK_PUBLIC AssemblyCommon)
+target_link_libraries(assembly
+        PRIVATE Qt5::Core
+        PRIVATE Qt5::Widgets
+        PRIVATE Qt5::Script
+        PRIVATE Qt5::Svg
+        PRIVATE Common
+        PRIVATE AssemblyCommon
+)

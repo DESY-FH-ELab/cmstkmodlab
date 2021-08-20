@@ -46,6 +46,14 @@ set(CMAKE_CXX_FLAGS "${Qt5Network_EXECUTABLE_COMPILE_FLAGS}")
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
 
-target_link_libraries(thermoDisplay2 LINK_PUBLIC Common Qt5::Network Qt5::Charts)
+target_link_libraries(thermoDisplay2
+        PRIVATE Qt5::Core
+        PRIVATE Qt5::Widgets
+        PRIVATE Qt5::Script
+        PRIVATE Qt5::Svg
+        PRIVATE Qt5::Network
+        PRIVATE Qt5::Charts
+        PRIVATE Common
+)
 
 configure_file(thermoDisplay2.desktop.in thermoDisplay2.desktop)

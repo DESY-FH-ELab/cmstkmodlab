@@ -2,20 +2,32 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOMOC ON)
 
-add_executable(thermoDAQ2
-        thermoDAQ2.cc
-        TestWindow.cc
-        Thermo2MainWindow.cc
-        Thermo2DAQModel.cc
-        Thermo2DAQWidget.cc
-        Thermo2DAQThread.cc
-        Thermo2DAQStreamer.cc
-        Thermo2DAQServer.cc
-        Thermo2ScriptModel.cc
-        Thermo2ScriptWidget.cc
-        Thermo2ScriptSnippets.cc
-        Thermo2ScriptThread.cc
-        Thermo2ScriptableGlobals.cc
+add_executable(defoReco
+        defoReco.cc
+        DefoRecoMainWindow.cc
+        DefoRecoMeasurement.cc
+        DefoRecoMeasurementListModel.cc
+        DefoRecoROIModel.cc
+        DefoROICopyFromWidget.cc
+        DefoROICopyToWidget.cc
+        DefoROIIOWidget.cc
+        DefoMeasurementListTreeWidget.cc
+        DefoMeasurementInfoListTreeWidget.cc
+        DefoMeasurementCommentTextView.cc
+        DefoRecoPointRecognitionWidget.cc
+        DefoRecoImageWidget.cc
+        DefoReconstructionModel.cc
+        DefoReconstructionWidget.cc
+        DefoRecoColorHistoWidget.cc
+        DefoGeometryWidget.cc
+        DefoGeometryParameterWidget.cc
+        DefoCalibrationWidget.cc
+        Defo2DSplineInterpolationWidget.cc
+        DefoReconstructionParameterWidget.cc
+        #DefoAnalysisWidget.cc
+        #DefoSurfacePlot.cc
+        #DefoSurfacePlotViewSettings.cc
+        DefoOfflinePreparationModel.cc
 )
 
 if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
@@ -35,6 +47,8 @@ include_directories(${Qt5Script_INCLUDE_DIRS})
 include_directories(${Qt5Svg_INCLUDE_DIRS})
 include_directories(${Qt5Network_INCLUDE_DIRS})
 
+include_directories(${QWT_INCLUDE_DIR})
+
 add_definitions(${Qt5Core_DEFINITIONS})
 add_definitions(${Qt5Widgts_DEFINITIONS})
 add_definitions(${Qt5Script_DEFINITIONS})
@@ -48,14 +62,17 @@ set(CMAKE_CXX_FLAGS "${Qt5Svg_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Network_EXECUTABLE_COMPILE_FLAGS}")
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/defo/defoCommon)
 
-target_link_libraries(thermoDAQ2
+target_link_libraries(defoReco
         PRIVATE Qt5::Core
         PRIVATE Qt5::Widgets
         PRIVATE Qt5::Script
         PRIVATE Qt5::Svg
         PRIVATE Qt5::Network
         PRIVATE Common
+        PRIVATE defoCommon
+        PUBLIC ${QWT_LIBRARY}
 )
 
-configure_file(thermoDAQ2.desktop.in thermoDAQ2.desktop)
+configure_file(defoReco.desktop.in defoReco.desktop)

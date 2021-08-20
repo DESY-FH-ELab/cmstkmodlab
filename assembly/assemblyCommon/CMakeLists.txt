@@ -100,4 +100,11 @@ target_compile_features(AssemblyCommon PUBLIC cxx_std_17)
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
 
-target_link_libraries(AssemblyCommon LINK_PUBLIC Common ROOT::Gpad)
+target_link_libraries(AssemblyCommon
+        PRIVATE Qt5::Core
+        PRIVATE Qt5::Widgets
+        PRIVATE Qt5::Script
+        PRIVATE Qt5::Svg
+        PRIVATE Common
+        PRIVATE ROOT::Gpad
+)

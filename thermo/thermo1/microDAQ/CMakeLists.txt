@@ -48,4 +48,11 @@ set(CMAKE_CXX_FLAGS "${Qt5Network_EXECUTABLE_COMPILE_FLAGS}")
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
 
-target_link_libraries(microDAQ LINK_PUBLIC Common Qt5::Network)
+target_link_libraries(microDAQ
+        PRIVATE Qt5::Core
+        PRIVATE Qt5::Widgets
+        PRIVATE Qt5::Script
+        PRIVATE Qt5::Svg
+        PRIVATE Qt5::Network
+        PRIVATE Common
+)

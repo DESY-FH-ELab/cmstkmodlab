@@ -2,9 +2,9 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOMOC ON)
 
-add_executable(thermoDAQ2Plots
+add_executable(defoDAQ2Root
         main.cc
-        ThermoDAQStreamReader.cc
+        DefoDAQStreamReader.cc
 )
 
 include_directories(${PROJECT_SOURCE_DIR})
@@ -28,9 +28,11 @@ set(CMAKE_CXX_FLAGS "${Qt5Svg_EXECUTABLE_COMPILE_FLAGS}")
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
 
-target_link_libraries(thermoDAQ2Plots 
+target_link_libraries(defoDAQ2Root
         PRIVATE Qt5::Core
         PRIVATE Qt5::Widgets
         PRIVATE Common
-        PUBLIC ROOT::Gpad
+        PRIVATE defoCommon
+        PUBLIC ROOT::RIO
+        PUBLIC ROOT::Tree
 )

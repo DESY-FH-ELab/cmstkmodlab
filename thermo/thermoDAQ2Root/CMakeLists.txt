@@ -29,4 +29,10 @@ set(CMAKE_CXX_FLAGS "${Qt5Svg_EXECUTABLE_COMPILE_FLAGS}")
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
 
-target_link_libraries(thermoDAQ2Root LINK_PUBLIC Common ROOT::RIO ROOT::Tree)
+target_link_libraries(thermoDAQ2Root
+        PRIVATE Qt5::Core
+        PRIVATE Qt5::Widgets
+        PRIVATE Common
+        PUBLIC ROOT::RIO
+        PUBLIC ROOT::Tree
+)

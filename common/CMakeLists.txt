@@ -1,3 +1,7 @@
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 configure_file(ApplicationConfig.h.in ApplicationConfig.h)
 configure_file(ApplicationConfig.cc.in ApplicationConfig.cc)
 
@@ -106,6 +110,8 @@ add_definitions(${Qt5Widgts_DEFINITIONS})
 add_definitions(${Qt5Script_DEFINITIONS})
 add_definitions(${Qt5Svg_DEFINITIONS})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -std=c++17")
+
 set(CMAKE_CXX_FLAGS "${Qt5Core_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Widgts_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Script_EXECUTABLE_COMPILE_FLAGS}")
@@ -114,6 +120,14 @@ set(CMAKE_CXX_FLAGS "${Qt5Svg_EXECUTABLE_COMPILE_FLAGS}")
 set_target_properties(Common PROPERTIES VERSION ${PROJECT_VERSION})
 
 target_compile_definitions(Common PRIVATE QT_NO_JAVA_STYLE_ITERATORS QT_NO_URL_CAST_FROM_STRING QT_NO_CAST_TO_ASCII)
-target_compile_features(Common PUBLIC cxx_std_17)
+target_compile_features(Common PRIVATE cxx_std_17)
 
-target_link_libraries(Common Qt5::Core Qt5::Widgets Qt5::Script Qt5::Svg ${CURL_LIBRARIES} libddierckx ${DEVICE_LIBRARIES})
+target_link_libraries(Common
+        PRIVATE Qt5::Core
+        PRIVATE Qt5::Widgets
+        PRIVATE Qt5::Script
+        PRIVATE Qt5::Svg
+        PUBLIC ${CURL_LIBRARIES}
+        PUBLIC libddierckx
+        ${DEVICE_LIBRARIES}
+)

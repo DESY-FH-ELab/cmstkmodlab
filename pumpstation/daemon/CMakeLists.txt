@@ -33,7 +33,14 @@ set(CMAKE_CXX_FLAGS "${Qt5Network_EXECUTABLE_COMPILE_FLAGS}")
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
 
-target_link_libraries(PumpStationDaemon LINK_PUBLIC Common Qt5::Network)
+target_link_libraries(PumpStationDaemon
+        PRIVATE Qt5::Core
+        PRIVATE Qt5::Widgets
+        PRIVATE Qt5::Script
+        PRIVATE Qt5::Svg
+        PRIVATE Qt5::Network
+        PRIVATE Common
+)
 
 configure_file(pumpstation.service.in pumpstation.service)
 

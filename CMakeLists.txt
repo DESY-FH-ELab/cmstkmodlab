@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -134,4 +134,12 @@ if(CMSTKMODLAB_PLASMA)
         add_subdirectory(plasma)
 else()
         message("Support for plasma cleaner test setup: OFF")
+endif()
+
+option(CMSTKMODLAB_DEFO "Build with support for defo setup" OFF)
+if(CMSTKMODLAB_DEFO)
+        message("Support for defo setup: ON")
+        add_subdirectory(defo)
+else()
+        message("Support for defo setup: OFF")
 endif()
