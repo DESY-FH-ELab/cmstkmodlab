@@ -2,6 +2,10 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOMOC ON)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 add_executable(defoReco
         defoReco.cc
         DefoRecoMainWindow.cc
@@ -29,6 +33,8 @@ add_executable(defoReco
         #DefoSurfacePlotViewSettings.cc
         DefoOfflinePreparationModel.cc
 )
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -std=c++11")
 
 if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
         add_compile_definitions(APPLICATIONVERSIONSTR=\"unknown\")
@@ -74,5 +80,6 @@ target_link_libraries(defoReco
         PRIVATE defoCommon
         PUBLIC ${QWT_LIBRARY}
 )
+target_compile_features(defoReco PRIVATE cxx_std_11)
 
 configure_file(defoReco.desktop.in defoReco.desktop)
