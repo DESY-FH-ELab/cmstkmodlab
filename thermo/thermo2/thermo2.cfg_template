@@ -43,7 +43,7 @@ ThroughPlaneResistance                 10.0   # Resistance of heat source in Ohm
 ThroughPlaneCableResistance            1.1    # Resistance of cable (incl. feedthrough) in Ohm
 ThroughPlaneKBlock                     394.0  # Thermal conductivity of blocks in W/m/K
 ThroughPlaneABlock                     900.0  # Area of blocks in mm^2 (30 mm x 30 mm)
-ThroughPlaneNGE103BChannel             1
+ThroughPlaneNGE103BChannel             3
 ThroughPlaneKeithleyTopSensors         101 102 103 104 105 106        # From top to interface to sample
 ThroughPlaneKeithleyTopSensorTypes     4WirePT100                     # Type of temperature probe (4WirePT100 or Therm10k)
 ThroughPlaneKeithleyTopPositions       60.0 50.0 40.0 30.0 20.0 10.0  # Position of sensor from interface to sample in mm
