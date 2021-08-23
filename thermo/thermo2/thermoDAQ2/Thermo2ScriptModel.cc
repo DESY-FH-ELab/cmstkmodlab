@@ -26,13 +26,15 @@ Thermo2ScriptModel::Thermo2ScriptModel(Thermo2DAQModel* daqModel,
 		MartaModel* martaModel,
 		RohdeSchwarzNGE103BModel* nge103BModel,
 		KeithleyDAQ6510Model* keithleyModel,
+        Thermo2ThroughPlaneModel* t2tpModel,
 		QObject *parent)
 : QObject(parent),
 	daqModel_(daqModel),
 	huberModel_(huberModel),
 	martaModel_(martaModel),
 	nge103BModel_(nge103BModel),
-	keithleyModel_(keithleyModel)
+	keithleyModel_(keithleyModel),
+    t2tpModel_(t2tpModel)
 {
   script_ = new QTextDocument(this);
   script_->setDocumentLayout(new QPlainTextDocumentLayout(script_));
@@ -45,6 +47,7 @@ Thermo2ScriptModel::Thermo2ScriptModel(Thermo2DAQModel* daqModel,
                                           martaModel_,
                                           nge103BModel_,
                                           keithleyModel_,
+                                          t2tpModel_,
                                           this);
   connect(scriptThread_, SIGNAL(started()), this, SLOT(executionStarted()));
   connect(scriptThread_, SIGNAL(finished()), this, SLOT(executionFinished()));
@@ -64,6 +67,11 @@ Thermo2ScriptModel::Thermo2ScriptModel(Thermo2DAQModel* daqModel,
 
   connect(keithleyModel_, SIGNAL(message(const QString &)),
   		this, SLOT(doAppendMessageText(const QString &)));
+
+  if (t2tpModel_) {
+    connect(t2tpModel_, SIGNAL(message(const QString &)),
+            this, SLOT(doAppendMessageText(const QString &)));
+  }
 
   connect(&executionTimer_, SIGNAL(timeout()), this, SLOT(executionHeartBeat()));
 }

@@ -115,6 +115,14 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
                                             30, this);
 #endif
 
+  throughPlaneModel_ = 0;
+  if (chillerAndVacuumActive_ && throughPlaneActive_) {
+    throughPlaneModel_ = new Thermo2ThroughPlaneModel(huberModel_,
+        nge103BModel_,
+        keithleyModel_,
+        this);
+  }
+
   daqModel_ = new Thermo2DAQModel(huberModel_,
 		  martaModel_,
 		  agilentModel_,
@@ -129,6 +137,7 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 		  martaModel_,
 		  nge103BModel_,
 		  keithleyModel_,
+		  throughPlaneModel_,
 		  this);
 
   daqStreamer_ = new Thermo2DAQStreamer(daqModel_, this);
@@ -146,13 +155,6 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
           this, SLOT(quit()));
   daqThread_->start();
   daqModel_->myMoveToThread(daqThread_);
-
-  if (chillerAndVacuumActive_ && throughPlaneActive_) {
-    throughPlaneModel_ = new Thermo2ThroughPlaneModel(huberModel_,
-        nge103BModel_,
-        keithleyModel_,
-        this);
-  }
 
   tabWidget_ = new QTabWidget(this);
   tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);

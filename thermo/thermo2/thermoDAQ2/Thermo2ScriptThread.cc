@@ -24,19 +24,22 @@
 #include "ScriptableMarta.h"
 #include "ScriptableRohdeSchwarzNGE103B.h"
 #include "ScriptableKeithleyDAQ6510.h"
+#include "ScriptableThermo2ThroughPlane.h"
 
 Thermo2ScriptThread::Thermo2ScriptThread(Thermo2ScriptModel* scriptModel,
-		HuberUnistat525wModel* huberModel,
-		MartaModel* martaModel,
-		RohdeSchwarzNGE103BModel* nge103BModel,
-		KeithleyDAQ6510Model* keithleyModel,
-		QObject *parent)
+    HuberUnistat525wModel* huberModel,
+    MartaModel* martaModel,
+    RohdeSchwarzNGE103BModel* nge103BModel,
+    KeithleyDAQ6510Model* keithleyModel,
+    Thermo2ThroughPlaneModel* t2tpModel,
+    QObject *parent)
 : QThread(parent),
-	scriptModel_(scriptModel),
-	huberModel_(huberModel),
-	martaModel_(martaModel),
-	nge103BModel_(nge103BModel),
-	keithleyModel_(keithleyModel)
+  scriptModel_(scriptModel),
+  huberModel_(huberModel),
+  martaModel_(martaModel),
+  nge103BModel_(nge103BModel),
+  keithleyModel_(keithleyModel),
+  t2tpModel_(t2tpModel)
 {
 
 }
@@ -71,6 +74,10 @@ void Thermo2ScriptThread::executeScript(const QString & script)
   ScriptableKeithleyDAQ6510 *keithleyObj = new ScriptableKeithleyDAQ6510(keithleyModel_, this);
   QScriptValue keithleyValue = engine_->newQObject(keithleyObj);
   engine_->globalObject().setProperty("daq6510", keithleyValue);
+
+  ScriptableThermo2ThroughPlane *t2tpObj = new ScriptableThermo2ThroughPlane(t2tpModel_, this);
+  QScriptValue t2tpValue = engine_->newQObject(t2tpObj);
+  engine_->globalObject().setProperty("t2tp", t2tpValue);
 
   start();
 }

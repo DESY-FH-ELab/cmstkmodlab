@@ -83,7 +83,8 @@ HEADERS += TestWindow.h \
            Thermo2ScriptThread.h \
            Thermo2ScriptableGlobals.h \
            Thermo2ThroughPlaneModel.h \
-           Thermo2ThroughPlaneWidget.h
+           Thermo2ThroughPlaneWidget.h \
+           ScriptableThermo2ThroughPlane.h
     
 SOURCES += thermoDAQ2.cc \
            TestWindow.cc \
@@ -99,4 +100,5 @@ SOURCES += thermoDAQ2.cc \
            Thermo2ScriptThread.cc \
            Thermo2ScriptableGlobals.cc \
            Thermo2ThroughPlaneModel.cc \
-           Thermo2ThroughPlaneWidget.cc
+           Thermo2ThroughPlaneWidget.cc \
+           ScriptableThermo2ThroughPlane.cc

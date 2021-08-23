@@ -22,6 +22,7 @@
 #include "MartaModel.h"
 #include "RohdeSchwarzNGE103BModel.h"
 #include "KeithleyDAQ6510Model.h"
+#include "Thermo2ThroughPlaneModel.h"
 
 #include "Thermo2ScriptThread.h"
 
@@ -35,6 +36,7 @@ public:
 			MartaModel* martaModel,
 			RohdeSchwarzNGE103BModel* nge103BModel,
 			KeithleyDAQ6510Model* keithleyModel,
+			Thermo2ThroughPlaneModel* t2tpModel,
 			QObject *parent = 0);
 
   QTextDocument* scriptDocument() { return script_; }
@@ -77,6 +79,8 @@ protected:
   MartaModel* martaModel_;
   RohdeSchwarzNGE103BModel* nge103BModel_;
   KeithleyDAQ6510Model* keithleyModel_;
+  Thermo2ThroughPlaneModel* t2tpModel_;
+
   Thermo2ScriptThread* scriptThread_;
 
 signals:

@@ -23,16 +23,19 @@ class Thermo2ScriptModel;
 #include "MartaModel.h"
 #include "RohdeSchwarzNGE103BModel.h"
 #include "KeithleyDAQ6510Model.h"
+#include "Thermo2ThroughPlaneModel.h"
 
 class Thermo2ScriptThread : public QThread
 {
 public:
+
   explicit Thermo2ScriptThread(Thermo2ScriptModel* scriptModel,
-                               HuberUnistat525wModel* huberModel,
-															 MartaModel* martaModel,
-                               RohdeSchwarzNGE103BModel* nge103BModel,
-                               KeithleyDAQ6510Model* keithleyModel,
-                               QObject *parent = 0);
+      HuberUnistat525wModel* huberModel,
+      MartaModel* martaModel,
+      RohdeSchwarzNGE103BModel* nge103BModel,
+      KeithleyDAQ6510Model* keithleyModel,
+      Thermo2ThroughPlaneModel* t2tpModel,
+      QObject *parent = 0);
 
   void executeScript(const QString & script);
   void abortScript();
@@ -48,6 +51,7 @@ protected:
   MartaModel* martaModel_;
   RohdeSchwarzNGE103BModel* nge103BModel_;
   KeithleyDAQ6510Model* keithleyModel_;
+  Thermo2ThroughPlaneModel* t2tpModel_;
 };
 
 #endif // THERMO2SCRIPTTHREAD_H

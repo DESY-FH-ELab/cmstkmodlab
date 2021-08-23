@@ -36,4 +36,20 @@ Thermo2ScriptSnippets::Thermo2ScriptSnippets(QWidget *parent)
   addItem("marta - get speed set point", "speed = marta.getSpeedSetPoint()\n");
   addItem("marta - set flow set point", "marta.setFlowSetPoint(flow)\n");
   addItem("marta - get flow set point", "flow = marta.getFlowSetPoint()\n");
+
+  addItem("nge103b - get output state", "state = nge103b.getOutputState(channel)\n");
+  addItem("nge103b - set output state", "nge103b.setOutputState(channel, state)\n");
+  addItem("nge103b - get voltage", "nge103b.getVoltage(channel)\n");
+  addItem("nge103b - set voltage", "nge103b.setVoltage(channel, voltage)\n");
+  addItem("nge103b - get measured voltage", "nge103b.getMeasuredVoltage(channel)\n");
+  addItem("nge103b - get current", "nge103b.getCurrent(channel)\n");
+  addItem("nge103b - set current", "nge103b.setCurrent(channel, current)\n");
+  addItem("nge103b - get measured current", "nge103b.getMeasuredCurrent(channel)\n");
+
+  addItem("daq6510 - get sensor state", "state = daq6510.state(sensor)\n");
+  addItem("daq6510 - get temperature", "temperature = daq6510.temperature(sensor)\n");
+  addItem("daq6510 - get temperature as string", "temperature = daq6510.temperatureAsString(sensor)\n");
+  addItem("daq6510 - wait for stable temperatures", "daq6510.waitForStableTemperature(sensors, timeout)\n");
+  addItem("daq6510 - wait for temperature above", "daq6510.waitForTemperatureAbove(sensor, temperature, timeout)\n");
+  addItem("daq6510 - wait for temperature below", "daq6510.waitForTemperatureBelow(sensor, temperature, timeout)\n");
 }
