@@ -114,7 +114,7 @@ void RohdeSchwarzNGE103BModel::setVoltage(int channel, float voltage)
 
   voltage_[channel-1] = voltage;
 
-  updateInformation();
+  emit informationChanged();
 }
 
 float RohdeSchwarzNGE103BModel::getMeasuredVoltage(int channel) const
@@ -154,7 +154,7 @@ void RohdeSchwarzNGE103BModel::setCurrent(int channel, float current)
 
   current_[channel-1] = current;
 
-  updateInformation();
+  emit informationChanged();
 }
 
 float RohdeSchwarzNGE103BModel::getMeasuredCurrent(int channel) const
