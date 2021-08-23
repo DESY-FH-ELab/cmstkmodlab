@@ -174,7 +174,7 @@ void RohdeSchwarzNGE103BChannelWidget::controlStateChanged(bool /*state*/)
 
 void RohdeSchwarzNGE103BChannelWidget::updateInfo()
 {
-  NQLogDebug("RohdeSchwarzNGE103BChannelWidget") << "updateInfo()";
+  NQLogDebug("RohdeSchwarzNGE103BChannelWidget") << "updateInfo() channel(" << channel_ << ")";
 
   unsigned int outputMode = model_->getOutputMode(channel_);
 
