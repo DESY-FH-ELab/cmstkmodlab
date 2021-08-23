@@ -39,7 +39,7 @@ mattermostchannel                      thermodaq2
 ThroughPlaneAutoConfig                 0      # Automatically configure Keithley channels on startup
 ThroughPlaneMattermostStatus           0      # Send status messages via Mattermost
 ThroughPlaneMattermostInterval         30     # Interval between mattermost status updates in minutes
-ThroughPlaneResistance                 100.0  # Resistance of heat source in Ohm
+ThroughPlaneResistance                 10.0   # Resistance of heat source in Ohm
 ThroughPlaneCableResistance            1.1    # Resistance of cable (incl. feedthrough) in Ohm
 ThroughPlaneKBlock                     394.0  # Thermal conductivity of blocks in W/m/K
 ThroughPlaneABlock                     900.0  # Area of blocks in mm^2 (30 mm x 30 mm)
