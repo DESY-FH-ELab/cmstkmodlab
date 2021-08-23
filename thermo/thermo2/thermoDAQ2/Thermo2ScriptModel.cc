@@ -42,7 +42,7 @@ Thermo2ScriptModel::Thermo2ScriptModel(Thermo2DAQModel* daqModel,
 
   scriptThread_ = new Thermo2ScriptThread(this,
                                           huberModel_,
-																					martaModel_,
+                                          martaModel_,
                                           nge103BModel_,
                                           keithleyModel_,
                                           this);

@@ -34,9 +34,9 @@ class Thermo2ThroughPlaneModel : public QObject
 public:
 
   explicit Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberModel,
-		  RohdeSchwarzNGE103BModel* nge103BModel,
-		  KeithleyDAQ6510Model* keithleyModel,
-		  QObject *parent = 0);
+      RohdeSchwarzNGE103BModel* nge103BModel,
+      KeithleyDAQ6510Model* keithleyModel,
+      QObject *parent = 0);
 
   void setMattermostStatus(bool value) { mattermostStatus_ = value; }
   bool getMattermostStatus() const { return mattermostStatus_; }
