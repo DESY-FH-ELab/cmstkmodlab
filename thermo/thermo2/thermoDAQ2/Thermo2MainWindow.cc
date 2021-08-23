@@ -100,18 +100,18 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   }
 
 #ifdef USE_FAKEIO
-  nge103BModel_ = new RohdeSchwarzNGE103BModel(config->getValue<std::string>("RohdeSchwarzNGE103B").c_str(),
+  nge103BModel_ = new RohdeSchwarzNGE103BModel(config->getValue<std::string>("RohdeSchwarzNGE103BDevice").c_str(),
                                                5, this);
 #else
-  nge103BModel_ = new RohdeSchwarzNGE103BModel(config->getValue<std::string>("RohdeSchwarzNGE103B").c_str(),
+  nge103BModel_ = new RohdeSchwarzNGE103BModel(config->getValue<std::string>("RohdeSchwarzNGE103BDevice").c_str(),
                                                10, this);
 #endif
 
 #ifdef USE_FAKEIO
-  keithleyModel_ = new KeithleyDAQ6510Model(config->getValue<std::string>("KeithleyDAQ6510").c_str(),
+  keithleyModel_ = new KeithleyDAQ6510Model(config->getValue<std::string>("KeithleyDAQ6510Device").c_str(),
                                             5, this);
 #else
-  keithleyModel_ = new KeithleyDAQ6510Model(config->getValue<std::string>("KeithleyDAQ6510").c_str(),
+  keithleyModel_ = new KeithleyDAQ6510Model(config->getValue<std::string>("KeithleyDAQ6510Device").c_str(),
                                             30, this);
 #endif
 

@@ -5,8 +5,8 @@ AgilentTwisTorr304Device               /dev/tty1
 HuberUnistatDevice                     /dev/tty0
 MartaIPAddress                         10.255.21.224:502
 LeyboldGraphixOneDevice                /dev/ttyUSB0
-RohdeSchwarzNGE103B                    /dev/ttyACM0
-KeithleyDAQ6510                        /dev/usbtmc0
+RohdeSchwarzNGE103BDevice              /dev/ttyACM0
+KeithleyDAQ6510Device                  /dev/usbtmc0
 
 #
 # Active Devices and Measurement Setups
