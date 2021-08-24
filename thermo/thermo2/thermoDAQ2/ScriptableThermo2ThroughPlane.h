@@ -28,36 +28,22 @@ public:
 
 public slots:
 
-  /*
-  QScriptValue getOutputState(int channel);
-  void setOutputState(int channel, bool state);
+  QScriptValue getSinkTemperature();
+  void setSinkTemperature(double temperature);
 
-  QScriptValue getVoltage(int channel);
-  void setVoltage(int channel, float voltage);
-  QScriptValue getMeasuredVoltage(int channel);
-  QScriptValue getMeasuredVoltageHistory(int channel, int secondsAgo);
+  QScriptValue getSourcePower();
+  void setSourcePower(double power);
 
-  QScriptValue getCurrent(int channel);
-  void setCurrent(int channel, float current);
-  QScriptValue getMeasuredCurrent(int channel);
-  QScriptValue getMeasuredCurrentHistory(int channel, int secondsAgo);
+  QScriptValue getTopSensor(unsigned int position);
+  QScriptValue getBottomSensor(unsigned int position);
 
-  QScriptValue getEasyRampDuration(int channel);
-  void setEasyRampDuration(int channel, float voltage);
-
-  QScriptValue getEasyRampState(int channel);
-  void setEasyRampState(int channel, bool state);
-  */
+  QScriptValue getTopTemperature(unsigned int position);
+  QScriptValue getBottomTemperature(unsigned int position);
 
 signals:
 
-  /*
-  void changeOutputState(int, bool);
-  void changeSetVoltage(int, float);
-  void changeSetCurrent(int, float);
-  void changeEasyRampDuration(int, float);
-  void changeEasyRampState(int, bool);
-  */
+  void changeSinkTemperature(double);
+  void changeSourcePower(double);
 
 protected:
 

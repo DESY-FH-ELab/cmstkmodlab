@@ -132,6 +132,22 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
   mattermostTimer_->start(60*1000);
 }
 
+void Thermo2ThroughPlaneModel::setSinkTemperature(double temperature)
+{
+  QMutexLocker locker(&mutex_);
+
+  huberModel_->setTemperatureSetPoint(temperature);
+}
+
+void Thermo2ThroughPlaneModel::setSourcePower(double power)
+{
+  QMutexLocker locker(&mutex_);
+
+  double current = std::round(std::sqrt(power/resistance_) * 100) / 100;
+
+  nge103BModel_->setCurrent(nge103BChannel_, current);
+}
+
 void Thermo2ThroughPlaneModel::huberInfoChanged()
 {
   NQLogDebug("Thermo2ThroughPlaneModel") << "huberInfoChanged()";

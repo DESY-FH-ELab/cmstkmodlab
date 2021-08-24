@@ -23,140 +23,70 @@ ScriptableThermo2ThroughPlane::ScriptableThermo2ThroughPlane(Thermo2ThroughPlane
   : QObject(parent),
     model_(model)
 {
-  /*
-  connect(this, SIGNAL(changeOutputState(int, bool)),
-          model_, SLOT(setOutputState(int, bool)));
-  connect(this, SIGNAL(changeSetVoltage(int, float)),
-          model_, SLOT(setVoltage(int, float)));
-  connect(this, SIGNAL(changeSetCurrent(int, float)),
-          model_, SLOT(setCurrent(int, float)));
-  connect(this, SIGNAL(changeEasyRampDuration(int, float)),
-          model_, SLOT(setEasyRampDuration(int, float)));
-  connect(this, SIGNAL(changeEasyRampState(int, bool)),
-          model_, SLOT(setEasyRampState(int, bool)));
-  */
+  connect(this, SIGNAL(changeSinkTemperature(double)),
+          model_, SLOT(setSinkTemperature(double)));
+  connect(this, SIGNAL(changeSourcePower(double)),
+          model_, SLOT(setSourcePower(double)));
 }
 
-/*
-QScriptValue ScriptableRohdeSchwarzNGE103B::getOutputState(int channel)
+QScriptValue ScriptableThermo2ThroughPlane::getSinkTemperature()
 {
   QMutexLocker locker(&mutex_);
-  bool value = model_->getOutputState(channel);
+  double value = model_->getSinkTemperature();
   return QScriptValue(value);
 }
 
-void ScriptableRohdeSchwarzNGE103B::setOutputState(int channel, bool state)
+void ScriptableThermo2ThroughPlane::setSinkTemperature(double temperature)
 {
-  NQLogDebug("ScriptableRohdeSchwarzNGE103B") << "setOutputState(int channel, bool state) "
-      << channel << " " << state;
+  NQLogDebug("ScriptableThermo2ThroughPlane") << "setSinkTemperature(double temperature) "
+      << temperature;
 
-  if (channel<1 || channel>3) return;
   QMutexLocker locker(&mutex_);
-  emit changeOutputState(channel, state);
+  emit changeSinkTemperature(temperature);
 }
 
-QScriptValue ScriptableRohdeSchwarzNGE103B::getVoltage(int channel)
+
+QScriptValue ScriptableThermo2ThroughPlane::getSourcePower()
 {
   QMutexLocker locker(&mutex_);
-  if (channel<1 || channel>3) return QScriptValue(-1);
-  float value = model_->getVoltage(channel);
+  double value = model_->getSourcePower();
   return QScriptValue(value);
 }
 
-void ScriptableRohdeSchwarzNGE103B::setVoltage(int channel, float voltage)
+void ScriptableThermo2ThroughPlane::setSourcePower(double power)
 {
-  NQLogDebug("ScriptableRohdeSchwarzNGE103B") << "setVoltage(int channel, float voltage) "
-      << channel << " " << voltage;
+  NQLogDebug("ScriptableThermo2ThroughPlane") << "setSourcePower(double power) "
+      << power;
 
-  if (channel<1 || channel>3 || voltage<0) return;
   QMutexLocker locker(&mutex_);
-  emit changeSetVoltage(channel, voltage);
+  emit changeSourcePower(power);
 }
 
-QScriptValue ScriptableRohdeSchwarzNGE103B::getMeasuredVoltage(int channel)
+QScriptValue ScriptableThermo2ThroughPlane::getTopSensor(unsigned int position)
 {
   QMutexLocker locker(&mutex_);
-  if (channel<1 || channel>3) return QScriptValue(-1);
-  float value = model_->getMeasuredVoltage(channel);
+  int value = model_->getKeithleyTopSensor(position);
   return QScriptValue(value);
 }
 
-QScriptValue ScriptableRohdeSchwarzNGE103B::getMeasuredVoltageHistory(int channel,
-                                                                      int secondsAgo)
+QScriptValue ScriptableThermo2ThroughPlane::getBottomSensor(unsigned int position)
 {
   QMutexLocker locker(&mutex_);
-  if (channel<1 || channel>3) return QScriptValue(-1);
-  bool value = model_->getMeasuredVoltageHistory(channel, secondsAgo);
+  int value = model_->getKeithleyBottomSensor(position);
   return QScriptValue(value);
 }
 
-QScriptValue ScriptableRohdeSchwarzNGE103B::getCurrent(int channel)
+
+QScriptValue ScriptableThermo2ThroughPlane::getTopTemperature(unsigned int position)
 {
   QMutexLocker locker(&mutex_);
-  if (channel<1 || channel>3) return QScriptValue(-1);
-  float value = model_->getCurrent(channel);
+  double value = model_->getKeithleyTopTemperature(position);
   return QScriptValue(value);
 }
 
-void ScriptableRohdeSchwarzNGE103B::setCurrent(int channel, float current)
-{
-  NQLogDebug("ScriptableRohdeSchwarzNGE103B") << "setCurrent(int channel, float current) "
-      << channel << " " << current;
-
-  if (channel<1 || channel>3 || current<0) return;
-  QMutexLocker locker(&mutex_);
-  emit changeSetCurrent(channel, current);
-}
-
-QScriptValue ScriptableRohdeSchwarzNGE103B::getMeasuredCurrent(int channel)
+QScriptValue ScriptableThermo2ThroughPlane::getBottomTemperature(unsigned int position)
 {
   QMutexLocker locker(&mutex_);
-  if (channel<1 || channel>3) return QScriptValue(-1);
-  float value = model_->getMeasuredCurrent(channel);
+  double value = model_->getKeithleyBottomTemperature(position);
   return QScriptValue(value);
 }
-
-QScriptValue ScriptableRohdeSchwarzNGE103B::getMeasuredCurrentHistory(int channel,
-                                                                      int secondsAgo)
-{
-  QMutexLocker locker(&mutex_);
-  if (channel<1 || channel>3) return QScriptValue(-1);
-  bool value = model_->getMeasuredCurrentHistory(channel, secondsAgo);
-  return QScriptValue(value);
-}
-
-QScriptValue ScriptableRohdeSchwarzNGE103B::getEasyRampDuration(int channel)
-{
-  QMutexLocker locker(&mutex_);
-  if (channel<1 || channel>3) return QScriptValue(-1);
-  bool value = model_->getEasyRampDuration(channel);
-  return QScriptValue(value);
-}
-
-void ScriptableRohdeSchwarzNGE103B::setEasyRampDuration(int channel, float duration)
-{
-  NQLogDebug("ScriptableRohdeSchwarzNGE103B") << "setEasyRampDuration(int channel, float duration) "
-      << channel << " " << duration;
-
-  if (channel<1 || channel>3 || duration<0) return;
-  QMutexLocker locker(&mutex_);
-  emit changeEasyRampDuration(channel, duration);
-}
-
-QScriptValue ScriptableRohdeSchwarzNGE103B::getEasyRampState(int channel)
-{
-  QMutexLocker locker(&mutex_);
-  bool value = model_->getEasyRampState(channel);
-  return QScriptValue(value);
-}
-
-void ScriptableRohdeSchwarzNGE103B::setEasyRampState(int channel, bool state)
-{
-  NQLogDebug("ScriptableRohdeSchwarzNGE103B") << "setEasyRampState(int channel, bool state) "
-      << channel << " " << state;
-
-  if (channel<1 || channel>3) return;
-  QMutexLocker locker(&mutex_);
-  emit changeEasyRampState(channel, state);
-}
-*/

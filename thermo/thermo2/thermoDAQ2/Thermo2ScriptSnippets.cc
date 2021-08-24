@@ -52,4 +52,13 @@ Thermo2ScriptSnippets::Thermo2ScriptSnippets(QWidget *parent)
   addItem("daq6510 - wait for stable temperatures", "daq6510.waitForStableTemperature(sensors, timeout)\n");
   addItem("daq6510 - wait for temperature above", "daq6510.waitForTemperatureAbove(sensor, temperature, timeout)\n");
   addItem("daq6510 - wait for temperature below", "daq6510.waitForTemperatureBelow(sensor, temperature, timeout)\n");
+
+  addItem("t2tp - get sink temperature", "temperature = t2tp.getSinkTemperature()\n");
+  addItem("t2tp - set sink temperature", "t2tp.setSinkTemperature(temperature)\n");
+  addItem("t2tp - get source power", "power = t2tp.getSourcePower()\n");
+  addItem("t2tp - set source power", "t2tp.setSourcePower(power)\n");
+  addItem("t2tp - get number of sensor in top block", "sensor = t2tp.getTopSensor(position)\n");
+  addItem("t2tp - get number of sensor in bottom block", "sensor = t2tp.getBottomSensor(position)\n");
+  addItem("t2tp - get temperature in top block", "temperature = t2tp.getTopTemperature(position)\n");
+  addItem("t2tp - get temperature in bottom block", "temperature = t2tp.getBottomTemperature(position)\n");
 }

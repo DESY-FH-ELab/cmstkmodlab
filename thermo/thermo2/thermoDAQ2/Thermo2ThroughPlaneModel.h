@@ -67,6 +67,9 @@ public:
 
 public slots:
 
+  void setSinkTemperature(double temperature);
+  void setSourcePower(double power);
+
 protected slots:
 
   void huberInfoChanged();
