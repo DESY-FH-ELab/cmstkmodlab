@@ -53,24 +53,34 @@ Thermo2ScriptModel::Thermo2ScriptModel(Thermo2DAQModel* daqModel,
   connect(scriptThread_, SIGNAL(finished()), this, SLOT(executionFinished()));
 
   if (huberModel_) {
-  	connect(huberModel_, SIGNAL(message(const QString &)),
-  			this, SLOT(doAppendMessageText(const QString &)));
+    connect(huberModel_, SIGNAL(message(const QString &)),
+	    this, SLOT(doAppendMessageText(const QString &)));
+    connect(huberModel_, SIGNAL(log(const QString &)),
+	    this, SLOT(log(const QString &)));
   }
 
   if (martaModel_) {
-  	connect(martaModel_, SIGNAL(message(const QString &)),
-  			this, SLOT(doAppendMessageText(const QString &)));
+    connect(martaModel_, SIGNAL(message(const QString &)),
+	    this, SLOT(doAppendMessageText(const QString &)));
+    connect(martaModel_, SIGNAL(log(const QString &)),
+	    this, SLOT(log(const QString &)));
   }
 
   connect(nge103BModel_, SIGNAL(message(const QString &)),
-  		this, SLOT(doAppendMessageText(const QString &)));
+	  this, SLOT(doAppendMessageText(const QString &)));
+  connect(nge103BModel_, SIGNAL(log(const QString &)),
+	  this, SLOT(log(const QString &)));
 
   connect(keithleyModel_, SIGNAL(message(const QString &)),
-  		this, SLOT(doAppendMessageText(const QString &)));
+	  this, SLOT(doAppendMessageText(const QString &)));
+  connect(keithleyModel_, SIGNAL(log(const QString &)),
+	  this, SLOT(log(const QString &)));
 
   if (t2tpModel_) {
     connect(t2tpModel_, SIGNAL(message(const QString &)),
             this, SLOT(doAppendMessageText(const QString &)));
+    connect(t2tpModel_, SIGNAL(log(const QString &)),
+            this, SLOT(log(const QString &)));
   }
 
   connect(&executionTimer_, SIGNAL(timeout()), this, SLOT(executionHeartBeat()));

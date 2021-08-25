@@ -139,6 +139,7 @@ protected:
 signals:
 
   void informationChanged();
+  void log(const QString & text);
 };
 
 #endif // THERMO2THROUGHPLANEMODEL_H

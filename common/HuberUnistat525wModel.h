@@ -101,6 +101,7 @@ signals:
   void deviceStateChanged( State newState );
   void informationChanged();
   void message(const QString & text);
+  void log(const QString & text);
   void controlStateChanged(bool);
 };
 

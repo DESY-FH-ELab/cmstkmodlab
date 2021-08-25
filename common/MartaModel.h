@@ -195,6 +195,7 @@ signals:
   void informationChanged();
   void alarmsChanged();
   void message(const QString & text);
+  void log(const QString & text);
   void controlStateChanged(bool);
 };
 

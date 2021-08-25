@@ -100,6 +100,7 @@ signals:
   void informationChanged();
   void temperatureGradientChanged(unsigned int sensor, double gradient);
   void message(const QString & text);
+  void log(const QString & text);
   void controlStateChanged(bool);
 };
 

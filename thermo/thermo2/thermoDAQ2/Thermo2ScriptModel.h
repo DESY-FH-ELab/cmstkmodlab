@@ -54,13 +54,13 @@ public:
   void message(uint value);
   void message(double value);
   void message(const QString & text);
-  void log(const QString & text);
 
 public slots:
   void executionStarted();
   void executionFinished();
   void doClearMessageText();
   void doAppendMessageText(const QString & text);
+  void log(const QString & text);
 
 protected slots:
   void executionHeartBeat();
