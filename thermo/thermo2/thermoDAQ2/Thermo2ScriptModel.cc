@@ -26,7 +26,7 @@ Thermo2ScriptModel::Thermo2ScriptModel(Thermo2DAQModel* daqModel,
 		MartaModel* martaModel,
 		RohdeSchwarzNGE103BModel* nge103BModel,
 		KeithleyDAQ6510Model* keithleyModel,
-        Thermo2ThroughPlaneModel* t2tpModel,
+		Thermo2ThroughPlaneModel* t2tpModel,
 		QObject *parent)
 : QObject(parent),
 	daqModel_(daqModel),
