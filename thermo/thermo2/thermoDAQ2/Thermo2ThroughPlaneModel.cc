@@ -421,3 +421,8 @@ void Thermo2ThroughPlaneModel::sendMattermostStatus()
 
   mattermostStatusTime_ = mattermostStatusTime_.addSecs(mattermostInterval_*60);
 }
+
+void Thermo2ThroughPlaneModel::statusMessage(const QString & text)
+{
+  emit message(text);
+}

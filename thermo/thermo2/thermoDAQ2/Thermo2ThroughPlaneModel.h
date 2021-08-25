@@ -65,6 +65,8 @@ public:
   double getGradientBottom() const { return gradientBottom_; }
   double getPowerBottom() const { return powerBottom_; }
 
+  void statusMessage(const QString & text);
+
 public slots:
 
   void setSinkTemperature(double temperature);
@@ -139,6 +141,7 @@ protected:
 signals:
 
   void informationChanged();
+  void message(const QString & text);
   void log(const QString & text);
 };
 
