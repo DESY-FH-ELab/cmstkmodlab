@@ -17,15 +17,15 @@ Thermo2ScriptSnippets::Thermo2ScriptSnippets(QWidget *parent)
 {
   addItem("", "");
   addItem("comment block", "/*\n\n*/\n");
-  addItem("thermo2 - start measurement", "thermo2.startMeasurement()\n");
-  addItem("thermo2 - stop measurement", "thermo2.stopMeasurement()\n");
-  addItem("thermo2 - wait", "thermo2.wait(seconds)\n");
-  addItem("thermo2 - message", "thermo2.message()\n");
-  addItem("thermo2 - log", "thermo2.log(\"\")\n");
-  addItem("thermo2 - mattermost", "thermo2.mattermost(\"\")\n");
-  addItem("thermo2 - unix time", "utime = thermo2.uTime()\n");
-  addItem("thermo2 - execution time", "etime = thermo2.uTime()\n");
-  addItem("thermo2 - make unix time", "utime = thermo2.mkUTime(year, month, day, hour, minute, second)\n");
+  addItem("thermo - start measurement", "thermo.startMeasurement()\n");
+  addItem("thermo - stop measurement", "thermo.stopMeasurement()\n");
+  addItem("thermo - wait", "thermo.wait(seconds)\n");
+  addItem("thermo - message", "thermo.message()\n");
+  addItem("thermo - log", "thermo.log(\"\")\n");
+  addItem("thermo - mattermost", "thermo.mattermost(\"\")\n");
+  addItem("thermo - unix time", "utime = thermo.uTime()\n");
+  addItem("thermo - execution time", "etime = thermo.uTime()\n");
+  addItem("thermo - make unix time", "utime = thermo.mkUTime(year, month, day, hour, minute, second)\n");
 
   // addItem("huber - set temperature set point", "huber.setTemperatureSetPoint(temperature)\n");
   // addItem("huber - get temperature set point", "temperature = huber.getTemperatureSetPoint()\n");
@@ -46,12 +46,12 @@ Thermo2ScriptSnippets::Thermo2ScriptSnippets(QWidget *parent)
   addItem("nge103b - set current", "nge103b.setCurrent(channel, current)\n");
   addItem("nge103b - get measured current", "nge103b.getMeasuredCurrent(channel)\n");
 
-  addItem("daq6510 - get sensor state", "state = daq6510.state(sensor)\n");
-  addItem("daq6510 - get temperature", "temperature = daq6510.temperature(sensor)\n");
-  addItem("daq6510 - get temperature as string", "temperature = daq6510.temperatureAsString(sensor)\n");
-  addItem("daq6510 - wait for stable temperatures", "daq6510.waitForStableTemperature(sensors, timeout)\n");
-  addItem("daq6510 - wait for temperature above", "daq6510.waitForTemperatureAbove(sensor, temperature, timeout)\n");
-  addItem("daq6510 - wait for temperature below", "daq6510.waitForTemperatureBelow(sensor, temperature, timeout)\n");
+  addItem("keithley - get sensor state", "state = keithley.state(sensor)\n");
+  addItem("keithley - get temperature", "temperature = keithley.temperature(sensor)\n");
+  addItem("keithley - get temperature as string", "temperature = keithley.temperatureAsString(sensor)\n");
+  addItem("keithley - wait for stable temperatures", "keithley.waitForStableTemperature(sensors, timeout)\n");
+  addItem("keithley - wait for temperature above", "keithley.waitForTemperatureAbove(sensor, temperature, timeout)\n");
+  addItem("keithley - wait for temperature below", "keithley.waitForTemperatureBelow(sensor, temperature, timeout)\n");
 
   addItem("t2tp - get sink temperature", "temperature = t2tp.getSinkTemperature()\n");
   addItem("t2tp - set sink temperature", "t2tp.setSinkTemperature(temperature)\n");

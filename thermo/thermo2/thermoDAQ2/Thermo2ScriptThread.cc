@@ -53,7 +53,7 @@ void Thermo2ScriptThread::executeScript(const QString & script)
 
   Thermo2ScriptableGlobals *globalsObj = new Thermo2ScriptableGlobals(scriptModel_, this);
   QScriptValue globalsValue = engine_->newQObject(globalsObj);
-  engine_->globalObject().setProperty("thermo2", globalsValue);
+  engine_->globalObject().setProperty("thermo", globalsValue);
 
   if (huberModel_) {
     ScriptableHuberUnistat525w* huberobj = new ScriptableHuberUnistat525w(huberModel_, this);
@@ -73,7 +73,7 @@ void Thermo2ScriptThread::executeScript(const QString & script)
 
   ScriptableKeithleyDAQ6510 *keithleyObj = new ScriptableKeithleyDAQ6510(keithleyModel_, this);
   QScriptValue keithleyValue = engine_->newQObject(keithleyObj);
-  engine_->globalObject().setProperty("daq6510", keithleyValue);
+  engine_->globalObject().setProperty("keithley", keithleyValue);
 
   ScriptableThermo2ThroughPlane *t2tpObj = new ScriptableThermo2ThroughPlane(t2tpModel_, this);
   QScriptValue t2tpValue = engine_->newQObject(t2tpObj);
