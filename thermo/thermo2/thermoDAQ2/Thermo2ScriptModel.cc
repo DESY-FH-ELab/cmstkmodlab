@@ -160,7 +160,6 @@ void Thermo2ScriptModel::executionFinished()
 
   daqModel_->customDAQMessage(buffer);
 
-
   emit setControlsEnabled(true);
 }
 
