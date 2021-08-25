@@ -82,6 +82,8 @@ protected slots:
   void insertSnippetButtonClicked();
 
   void scriptChanged();
+
+  void controlStateChanged(bool);
 };
 
 #endif // THERMO2SCRIPTWIDGET_H

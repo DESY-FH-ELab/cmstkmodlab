@@ -112,6 +112,8 @@ Thermo2ScriptWidget::Thermo2ScriptWidget(const QString& title,
           this, SLOT(clearMessageText()));
   connect(scriptModel_, SIGNAL(appendMessageText(const QString &)),
           this, SLOT(appendMessageText(const QString &)));
+  connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
+          this, SLOT(controlStateChanged(bool)));
 }
 
 void Thermo2ScriptWidget::openScriptButtonClicked()
@@ -191,6 +193,33 @@ void Thermo2ScriptWidget::abortScriptButtonClicked()
 void Thermo2ScriptWidget::scriptChanged()
 {
 
+}
+
+void Thermo2ScriptWidget::controlStateChanged(bool state)
+{
+  if (state) { // script NOT being executed
+    openScriptButton_->setEnabled(true);
+    saveScriptButton_->setEnabled(true);
+    saveAsScriptButton_->setEnabled(true);
+    executeScriptButton_->setEnabled(true);
+    abortScriptButton_->setEnabled(false);
+
+    scriptSnippets_->setEnabled(true);
+    insertSnippetButton_->setEnabled(true);
+
+    scriptEditor_->setEnabled(true);
+  } else { // script being executed
+    openScriptButton_->setEnabled(false);
+    saveScriptButton_->setEnabled(false);
+    saveAsScriptButton_->setEnabled(false);
+    executeScriptButton_->setEnabled(false);
+    abortScriptButton_->setEnabled(true);
+
+    scriptSnippets_->setEnabled(false);
+    insertSnippetButton_->setEnabled(false);
+
+    scriptEditor_->setEnabled(true);
+  }
 }
 
 void Thermo2ScriptWidget::insertSnippetButtonClicked()
