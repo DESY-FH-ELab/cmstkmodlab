@@ -21,7 +21,8 @@ add_executable(thermoDAQ2
 if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
         add_compile_definitions(APPLICATIONVERSIONSTR=\"unknown\")
 else()
-        execute_process(COMMAND bash -c "git describe --dirty --always --tags" OUTPUT_VARIABLE GIT_DESCRIBE)
+        execute_process(COMMAND sh -c "git describe --dirty --always --tags" OUTPUT_VARIABLE GIT_DESCRIBE)
+	string(REGEX REPLACE "\n$" "" GIT_DESCRIBE "${GIT_DESCRIBE}")
         add_compile_definitions(APPLICATIONVERSIONSTR=\"${GIT_DESCRIBE}\")
 endif()
 
