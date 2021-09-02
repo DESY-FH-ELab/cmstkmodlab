@@ -25,37 +25,36 @@ class VKeithleyDAQ6510
 {
  public:
 
-	typedef std::array<bool, 10> channels_t;
-	typedef std::array<channels_t,2> cards_t;
+  typedef std::array<bool, 10> channels_t;
+  typedef std::array<channels_t,2> cards_t;
 
-	typedef enum ChannelMode
-	{
-		UnknownMode          =  0,
-		FourWireRTD_PT100    = 10,
-		ThreeWireRTD_PT100   = 11,
-		TwoWireRTD_PT100     = 12,
-		FourWireRTD_PT385    = 20,
-		ThreeWireRTD_PT385   = 21,
-		TwoWireRTD_PT385     = 22,
-		FourWireRTD_PT3916   = 30,
-		ThreeWireRTD_PT3916  = 31,
-		TwoWireRTD_PT3916    = 32,
-		Thermistor_2252      = 40,
-		Thermistor_5000      = 41,
-		Thermistor_10000     = 42,
-		TCouple_B            = 50,
-		TCouple_E            = 51,
-		TCouple_J            = 52,
-		TCouple_K            = 53,
-		TCouple_N            = 54,
-		TCouple_R            = 55,
-		TCouple_S            = 56,
-		TCouple_T            = 57
-	} ChannelMode_t;
-	typedef std::array<std::array<ChannelMode_t, 10>,2> channelmodes_t;
+  typedef enum ChannelMode
+  {
+    UnknownMode          =  0,
+    FourWireRTD_PT100    = 10,
+    ThreeWireRTD_PT100   = 11,
+    TwoWireRTD_PT100     = 12,
+    FourWireRTD_PT385    = 20,
+    ThreeWireRTD_PT385   = 21,
+    TwoWireRTD_PT385     = 22,
+    FourWireRTD_PT3916   = 30,
+    ThreeWireRTD_PT3916  = 31,
+    TwoWireRTD_PT3916    = 32,
+    Thermistor_2252      = 40,
+    Thermistor_5000      = 41,
+    Thermistor_10000     = 42,
+    TCouple_B            = 50,
+    TCouple_E            = 51,
+    TCouple_J            = 52,
+    TCouple_K            = 53,
+    TCouple_N            = 54,
+    TCouple_R            = 55,
+    TCouple_S            = 56,
+    TCouple_T            = 57
+  } ChannelMode_t;
+  typedef std::array<std::array<ChannelMode_t, 10>,2> channelmodes_t;
 
-	typedef std::vector<std::tuple<unsigned int,double,double>> reading_t;
-
+  typedef std::vector<std::tuple<unsigned int,double,double>> reading_t;
 
   VKeithleyDAQ6510( ioport_t );
   virtual ~VKeithleyDAQ6510();

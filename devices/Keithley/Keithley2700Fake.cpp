@@ -80,7 +80,7 @@ void Keithley2700Fake::DisableActiveChannels( string channelString ) {
 ///
 ///
 ///
-const reading_t Keithley2700Fake::Scan( void )
+const VKeithley2700::reading_t Keithley2700Fake::Scan( void )
 {
   reading_t theReading;
 

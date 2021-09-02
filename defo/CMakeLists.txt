@@ -1,0 +1,6 @@
+add_subdirectory(defoCommon)
+add_subdirectory(defoDAQ)
+add_subdirectory(defoDisplay)
+add_subdirectory(defoReco)
+add_subdirectory(defoCalib)
+add_subdirectory(defoDAQ2ROOT)

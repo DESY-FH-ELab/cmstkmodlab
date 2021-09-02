@@ -39,7 +39,7 @@ VKeithley2700::~VKeithley2700()
 /// comma separated list of channels or channel ranges
 /// e.g. "0,3,6-9,12"
 ///
-const channels_t VKeithley2700::ParseChannelString( const std::string& channelString ) const
+const VKeithley2700::channels_t VKeithley2700::ParseChannelString( const std::string& channelString ) const
 {
   channels_t channels;
   channels.resize( 0 );
@@ -110,7 +110,7 @@ void VKeithley2700::Tokenize(const std::string& string,
 ///
 ///
 ///
-unsigned int VKeithley2700::EvaluateChannelToken( const std::string& string) const
+unsigned int VKeithley2700::EvaluateChannelToken( const std::string& string ) const
 {
   int channel = atoi( string.c_str() );
   if( channel < RangeMin || channel > RangeMax ) {
@@ -125,7 +125,7 @@ unsigned int VKeithley2700::EvaluateChannelToken( const std::string& string) con
 ///
 ///
 ///
-const range_t VKeithley2700::EvaluateRangeToken( const std::string& string ) const
+const VKeithley2700::range_t VKeithley2700::EvaluateRangeToken( const std::string& string ) const
 {
   std::vector<std::string> tokens;
   Tokenize( string, tokens, "-" );

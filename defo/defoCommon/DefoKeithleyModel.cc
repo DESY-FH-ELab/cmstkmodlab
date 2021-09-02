@@ -33,14 +33,14 @@ DefoKeithleyModel::DefoKeithleyModel(const char* port,
   */
 void DefoKeithleyModel::scanTemperatures()
 {
-  reading_t reading = controller_->Scan();
+  VKeithley2700::reading_t reading = controller_->Scan();
 
   // Good scan, cache the retrieved temperatures
   if (controller_->IsScanOk()) {
 
     NQLog("KeithleyModel", NQLog::Debug) << reading.size() << " temperature readings";
 
-    for (reading_t::const_iterator it = reading.begin();
+    for (VKeithley2700::reading_t::const_iterator it = reading.begin();
          it < reading.end();
          ++it) {
 
@@ -99,8 +99,8 @@ void DefoKeithleyModel::scanTemperatures()
 
   std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
-  channels_t activeChannels = controller_->GetActiveChannels();
-  for (channels_t::iterator it=activeChannels.begin();it!=activeChannels.end();++it) {
+  VKeithley2700::channels_t activeChannels = controller_->GetActiveChannels();
+  for (VKeithley2700::channels_t::iterator it=activeChannels.begin();it!=activeChannels.end();++it) {
     NQLog("KeithleyModel", NQLog::Message) << " scanTemperatures active channel: " << *it;
   }
   controller_->Reset();

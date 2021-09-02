@@ -1,0 +1,6 @@
+add_subdirectory(thermoDAQ)
+add_subdirectory(thermoDisplay)
+add_subdirectory(microDAQ)
+add_subdirectory(microDisplay)
+add_subdirectory(thermoDAQ2Log)
+add_subdirectory(thermoDAQ2Plots)
