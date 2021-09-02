@@ -89,6 +89,7 @@ endif()
 
 add_subdirectory(external)
 add_subdirectory(devices)
+add_subdirectory(tools)
 add_subdirectory(common)
 add_subdirectory(common_test)
 

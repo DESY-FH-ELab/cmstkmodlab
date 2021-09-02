@@ -33,8 +33,8 @@ typedef Keithley2700 Keithley2700_t;
 /// usage: ./readTemp port [channelString]
 /// where channelString = e.g. "1,2,3-5,8"
 ///
-int main( int argc, char** argv ) {
-
+int main( int argc, char** argv )
+{
   if( argc < 2 || argc > 3  ) {
     std::cerr << " [" << argv[0] << "] ** ERROR: unrecognized command line options" << std::endl;
     std::cerr << "   Usage: readTemp port [channelString]" << std::endl;
@@ -74,7 +74,7 @@ int main( int argc, char** argv ) {
   while (true) {
 
     // scan and fill theReading
-    reading_t theReading = keithley.Scan();
+    VKeithley2700::reading_t theReading = keithley.Scan();
     if (keithley.IsScanOk()) {
       
       // pretty print header, every ten lines
@@ -82,7 +82,7 @@ int main( int argc, char** argv ) {
 	dualOut << std::setw( 8 ) << std::setfill( ' ' ) << std::left << "";
 	dualOut << std::setw( 8 ) << std::setfill( ' ' ) << std::right << "seconds";
 	dualOut << std::setw( 2 ) << std::setfill( ' ' ) << std::right << "";
-	for( reading_t::const_iterator it = theReading.begin(); it < theReading.end(); ++it ) {
+	for( VKeithley2700::reading_t::const_iterator it = theReading.begin(); it < theReading.end(); ++it ) {
 	  dualOut << std::setw( 12 ) << std::right <<  std::setfill( '.' ) << it->first;
 	}
 	dualOut << std::endl << std::flush;
@@ -93,7 +93,7 @@ int main( int argc, char** argv ) {
       dualOut << std::setw( 8 ) << std::setfill( ' ' ) << std::left << " <DATA>";
       dualOut << std::setw( 8 ) << std::setfill( ' ' ) << std::right << currentTime - startingTime;
       dualOut << std::setw( 2 ) << std::setfill( ' ' ) << std::right << "";
-      for( reading_t::const_iterator it = theReading.begin(); it < theReading.end(); ++it ) {
+      for( VKeithley2700::reading_t::const_iterator it = theReading.begin(); it < theReading.end(); ++it ) {
 	dualOut << std::setw( 12 ) << std::right << std::setfill( ' ' ) << it->second;
       }
       dualOut << std::endl;
