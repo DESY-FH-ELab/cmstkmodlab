@@ -20,6 +20,7 @@ ThroughPlaneSetupActive                1
 #
 DataPath                               /home/mussgill/development/cmstkmodlab/thermo/thermo2/thermoDAQ2/data
 DataGroup                              cms
+ScriptDirectory                        /home/mussgill/development/cmstkmodlab/thermo/thermo2/thermoDAQ2/scripts
 
 #
 # Communication with Display Application

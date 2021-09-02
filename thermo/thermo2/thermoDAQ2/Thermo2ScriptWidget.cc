@@ -13,6 +13,7 @@
 #include <QGroupBox>
 #include <QVBoxLayout>
 
+#include "ApplicationConfig.h"
 #include "Thermo2ScriptWidget.h"
 
 Thermo2ScriptWidget::Thermo2ScriptWidget(const QString& title,
@@ -21,6 +22,9 @@ Thermo2ScriptWidget::Thermo2ScriptWidget(const QString& title,
   : QGroupBox(title, parent),
     scriptModel_(scriptModel)
 {
+  ApplicationConfig* config = ApplicationConfig::instance();
+  scriptDirectory_ = config->getValue<std::string>("ScriptDirectory").c_str();
+
   // Layouts to put everything into place
   QVBoxLayout* layout = new QVBoxLayout();
   setLayout(layout);
@@ -108,16 +112,34 @@ Thermo2ScriptWidget::Thermo2ScriptWidget(const QString& title,
           this, SLOT(clearMessageText()));
   connect(scriptModel_, SIGNAL(appendMessageText(const QString &)),
           this, SLOT(appendMessageText(const QString &)));
+  connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
+          this, SLOT(controlStateChanged(bool)));
 }
 
 void Thermo2ScriptWidget::openScriptButtonClicked()
 {
-	QString filename = QFileDialog::getOpenFileName(this,
-			"open script",
-			"./",
-			"Thermo Scripts (*.tsr)",
-			0);
+  QFileDialog dialog(this, "Open Script", scriptDirectory_);
+  dialog.setFileMode(QFileDialog::ExistingFile);
+  dialog.setNameFilter("Thermo Scripts (*.tsr)");
+  dialog.setViewMode(QFileDialog::List);
+  dialog.setAcceptMode(QFileDialog::AcceptOpen);
+
+  if (dialog.exec()) {
+    QString filename = dialog.selectedFiles().first();
+    if (!filename.isNull()) {
+      scriptModel_->openScript(filename);
+      scriptDirectory_ = dialog.directory().absolutePath();
+    }
+  }
+
+  /*
+  QString filename = QFileDialog::getOpenFileName(this,
+      "open script",
+      "./",
+      "Thermo Scripts (*.tsr)",
+      0);
   if (!filename.isNull()) scriptModel_->openScript(filename);
+  */
 }
 
 void Thermo2ScriptWidget::saveScriptButtonClicked()
@@ -131,7 +153,23 @@ void Thermo2ScriptWidget::saveScriptButtonClicked()
 
 void Thermo2ScriptWidget::saveAsScriptButtonClicked()
 {
-	QString filename = QFileDialog::getSaveFileName(this,
+  QFileDialog dialog(this, "Save Script", scriptDirectory_);
+  dialog.setFileMode(QFileDialog::AnyFile);
+  dialog.setNameFilter("Thermo Scripts (*.tsr)");
+  dialog.setViewMode(QFileDialog::List);
+  dialog.setAcceptMode(QFileDialog::AcceptSave);
+
+  if (dialog.exec()) {
+    QString filename = dialog.selectedFiles().first();
+    if (!filename.isNull()) {
+      if (!filename.endsWith(".tsr")) filename += ".tsr";
+      scriptModel_->saveScript(filename);
+      scriptDirectory_ = dialog.directory().absolutePath();
+    }
+  }
+
+  /*
+  QString filename = QFileDialog::getSaveFileName(this,
 			"save script",
 			"./",
 			"Thermo Scripts (*.tsr)",
@@ -139,6 +177,7 @@ void Thermo2ScriptWidget::saveAsScriptButtonClicked()
   if (filename.isNull()) return;
   if (!filename.endsWith(".tsr")) filename += ".tsr";
   scriptModel_->saveScript(filename);
+  */
 }
 
 void Thermo2ScriptWidget::executeScriptButtonClicked()
@@ -154,6 +193,33 @@ void Thermo2ScriptWidget::abortScriptButtonClicked()
 void Thermo2ScriptWidget::scriptChanged()
 {
 
+}
+
+void Thermo2ScriptWidget::controlStateChanged(bool state)
+{
+  if (state) { // script NOT being executed
+    openScriptButton_->setEnabled(true);
+    saveScriptButton_->setEnabled(true);
+    saveAsScriptButton_->setEnabled(true);
+    executeScriptButton_->setEnabled(true);
+    abortScriptButton_->setEnabled(false);
+
+    scriptSnippets_->setEnabled(true);
+    insertSnippetButton_->setEnabled(true);
+
+    scriptEditor_->setEnabled(true);
+  } else { // script being executed
+    openScriptButton_->setEnabled(false);
+    saveScriptButton_->setEnabled(false);
+    saveAsScriptButton_->setEnabled(false);
+    executeScriptButton_->setEnabled(false);
+    abortScriptButton_->setEnabled(true);
+
+    scriptSnippets_->setEnabled(false);
+    insertSnippetButton_->setEnabled(false);
+
+    scriptEditor_->setEnabled(true);
+  }
 }
 
 void Thermo2ScriptWidget::insertSnippetButtonClicked()
