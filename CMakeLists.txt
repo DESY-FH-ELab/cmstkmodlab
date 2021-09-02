@@ -83,7 +83,7 @@ endif()
 
 if(CMSTKMODLAB_MARTA)
         message(STATUS "Support for MARTA CO2 chiller: ON")
-        pkg_check_modules(libmodbus REQUIRED IMPORTED_TARGET libmodbus)
+        pkg_check_modules(MODBUS REQUIRED IMPORTED_TARGET libmodbus)
 else()
         message(STATUS "Support for MARTA CO2 chiller: OFF")
         add_compile_definitions(NOMARTA)
