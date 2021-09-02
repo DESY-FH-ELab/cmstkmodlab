@@ -121,6 +121,6 @@ target_link_libraries(Common
         PRIVATE Qt5::Script
         PRIVATE Qt5::Svg
         PUBLIC ${CURL_LIBRARIES}
-        PUBLIC libddierckx
+        PUBLIC ddierckx
         ${DEVICE_LIBRARIES}
 )

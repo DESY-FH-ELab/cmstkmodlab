@@ -1,5 +1,9 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 set(CMAKE_AUTOMOC ON)
 
 add_executable(thermoDAQ2Root
@@ -7,10 +11,6 @@ add_executable(thermoDAQ2Root
         ThermoDAQStreamReader.cc
         ThermoDAQ2StreamReader.cc
 )
-
-include_directories(${PROJECT_SOURCE_DIR})
-
-include_directories(${ROOT_INCLUDE_DIRS})
 
 include_directories(${Qt5Core_INCLUDE_DIRS})
 include_directories(${Qt5Widgts_INCLUDE_DIRS})
@@ -26,6 +26,10 @@ set(CMAKE_CXX_FLAGS "${Qt5Core_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Widgts_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Script_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Svg_EXECUTABLE_COMPILE_FLAGS}")
+
+include_directories(${PROJECT_SOURCE_DIR})
+
+include_directories(${ROOT_INCLUDE_DIRS})
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
 

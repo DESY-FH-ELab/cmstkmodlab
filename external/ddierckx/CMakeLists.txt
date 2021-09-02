@@ -2,7 +2,7 @@ set(CMAKE_AUTOMOC OFF)
 
 enable_language(Fortran)
 
-add_library(libddierckx SHARED
+add_library(ddierckx SHARED
         bispeu.f
         fourco.f
         fpchep.f
@@ -91,5 +91,5 @@ add_library(libddierckx SHARED
         spalde.f
 )
 
-set_target_properties(libddierckx PROPERTIES VERSION ${PROJECT_VERSION})
-set_target_properties(libddierckx PROPERTIES LINKER_LANGUAGE Fortran)
+set_target_properties(ddierckx PROPERTIES VERSION ${PROJECT_VERSION})
+set_target_properties(ddierckx PROPERTIES LINKER_LANGUAGE Fortran)

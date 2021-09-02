@@ -11,6 +11,7 @@ endif()
 project(cmstkmodlab VERSION 2.3.0)
 
 execute_process(COMMAND bash -c "git describe --dirty --always --tags" OUTPUT_VARIABLE GIT_DESCRIBE)
+string(REGEX REPLACE "\n$" "" GIT_DESCRIBE "${GIT_DESCRIBE}")
 
 message("")
 message("############################################")
@@ -64,12 +65,9 @@ set(CMAKE_AUTOMOC ON)
 
 find_package(Qt5 COMPONENTS Core Gui Widgets OpenGL Script Xml Svg Network Charts REQUIRED)
 
-if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
-        set(ENV{ROOT_DIR} /opt/local/libexec/root6/share/root/cmake)
-else()
-	set(ENV{ROOT_DIR} /home/mussgill/development/root_bin/cmake)
-endif()
+set(ENV{ROOT_DIR} ENV{ROOTSYS}/cmake)
 find_package(ROOT 6.16 REQUIRED)
+message(STATUS ${ROOT_INCLUDE_DIRS})
 
 pkg_check_modules(LIBGPHOTO2 REQUIRED IMPORTED_TARGET libgphoto2)
 pkg_check_modules(OPENCV REQUIRED IMPORTED_TARGET opencv)
