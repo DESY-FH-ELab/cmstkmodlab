@@ -1,6 +1,12 @@
 reconfigure
 Makefile
 config.status
+
+CMakeFiles
+CMakeCache.txt
+cmake_install.cmake
+*_autogen
+
 tkmodlabenv.csh
 tkmodlabenv.sh
 .cproject

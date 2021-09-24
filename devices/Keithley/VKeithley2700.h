@@ -16,15 +16,16 @@
 #include <string>
 #include <vector>
 
-typedef std::vector<std::pair<unsigned int, double> > reading_t;
-typedef std::vector<unsigned int> channels_t;
-typedef std::pair<unsigned int, unsigned int> range_t;
-
 typedef const char* ioport_t;
 
 class VKeithley2700
 {
  public:
+  
+  typedef std::vector<std::pair<unsigned int, double> > reading_t;
+  typedef std::vector<unsigned int> channels_t;
+  typedef std::pair<unsigned int, unsigned int> range_t;
+  
   VKeithley2700( ioport_t );
   virtual ~VKeithley2700();
   

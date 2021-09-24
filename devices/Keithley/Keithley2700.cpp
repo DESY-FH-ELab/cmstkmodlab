@@ -109,7 +109,7 @@ void Keithley2700::DisableActiveChannels( std::string channelString ) {
 ///
 ///
 ///
-const reading_t Keithley2700::Scan( void ) {
+const VKeithley2700::reading_t Keithley2700::Scan( void ) {
 
   reading_t theReading(0);
   char buffer[1000];

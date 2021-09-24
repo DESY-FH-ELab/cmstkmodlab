@@ -36,7 +36,7 @@ bool DefoExifReader::read()
 
     exifData_ = image->exifData();
     if (exifData_.empty()) {
-      throw Exiv2::Error(1, "no Exif data in file");
+      throw Exiv2::Error(Exiv2::kerErrorMessage, "no Exif data in file");
     }
     // Exiv2::ExifData::const_iterator end = exifData_.end();
     // for (Exiv2::ExifData::const_iterator i = exifData_.begin(); i != end; ++i) {
