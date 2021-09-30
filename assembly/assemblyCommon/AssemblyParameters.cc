@@ -315,6 +315,7 @@ bool AssemblyParameters::isValidConfig()
 }
 
 //Whenever the user updates some assembly parameter value interactively in the GUI --> automatically update the DBLogfile with new value(s)
+//NB: the live view of the DBLogfile's contents in the GUI does not get updated, only the actual file !
 void AssemblyParameters::replace_assemblyParameter_value_inDBLogfile(const QString& newVal)
 {
     QLineEdit* ptr_qedit = qobject_cast<QLineEdit*>(sender()); //Get pointer address of QLineEdit that triggered the SIGNAL(textChanged)
