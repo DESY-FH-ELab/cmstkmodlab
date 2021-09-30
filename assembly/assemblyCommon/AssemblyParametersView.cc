@@ -488,16 +488,6 @@ AssemblyParametersView::~AssemblyParametersView()
     disconnect(button_moveAbsRefPos4_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos4()));
     disconnect(button_moveAbsRefPos5_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos5()));
     disconnect(this , SIGNAL(click_moveToAbsRefPos(int)), this, SLOT(askConfirmMoveToAbsRefPoint(int)));
-
-    disconnect(button_moveRelRefDist1_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist1()));
-    disconnect(button_moveRelRefDist2_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist2()));
-    disconnect(button_moveRelRefDist3_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist3()));
-    disconnect(button_moveRelRefDist4_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist4()));
-    disconnect(button_moveRelRefDist5_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist5()));
-    disconnect(button_moveRelRefDist6_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist6()));
-    disconnect(button_moveRelRefDist7_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist7()));
-    disconnect(button_moveRelRefDist8_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist8()));
-    disconnect(button_moveRelRefDist9_ , SIGNAL(clicked()), this, SLOT(click_moveByRelRefDist9()));
     disconnect(this , SIGNAL(click_moveByRelRefDist(int)), this, SLOT(askConfirmMoveByRelRefDist(int)));
 }
 

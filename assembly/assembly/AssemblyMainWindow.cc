@@ -916,7 +916,7 @@ void AssemblyMainWindow::disconnect_multiPickupTest()
 //Disconnect remaining signal/slots, which did not get disconnected via specific functions //Actually miss several, not needed ?
 void AssemblyMainWindow::disconnect_otherSlots()
 {
-    disconnect(params_view_, SIGNAL(request_movetoabsrefposition(double,double,double,double)), motion_manager_, SLOT(moveAbsolute(double,double,double,double)));
+    disconnect(params_view_, SIGNAL(request_moveToAbsRefPosition(double,double,double,double)), motion_manager_, SLOT(moveAbsolute(double,double,double,double)));
     disconnect(params_view_, SIGNAL(request_moveByRelRefDistance(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
     disconnect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
     disconnect(motion_manager_, SIGNAL(restartMotionStage_request()), hwctr_view_->LStepExpress_Widget(), SLOT(restart()));
