@@ -661,7 +661,12 @@ void AssemblyImageView::mouseDoubleClickEvent(QMouseEvent* event)
 void AssemblyImageView::display_infoTab()
 {
     QMessageBox::information(this, tr("Information - Image Viewer"),
-            tr("<p>There is no available information about the content of this tab yet.</p>"));
+            tr("<ul>"
+            "<li>Click 'Snapshot' to take a camera image. An image can be loaded/saved.</li>"
+            "<li>Holding the mouseclick over the picture displays the relative x/y distances to the center. Upon double-click on the image, the camera moves to the selected position.</li>"
+            "<li>Clike 'Auto-focus image' to run the z-focus routine: pictures are taken at different z-values, and at the end the camera is moved to the best-focus height determined by the algorithm. Note that the result is interpolated, so the routine may be repeated to find the best average height. The delta-Z range may be adjusted to refine the measurements (min dX=5 microns).</li>"
+            "</ul>"
+            ));
     return;
 }
 
