@@ -885,7 +885,7 @@ void AssemblyObjectAlignerView::display_infoTab()
 //-- Set the mode to PSP
 void AssemblyObjectAlignerView::set_alignmentMode_PSP()
 {
-    alignm_PSS_radbu_->setEnabled(false);
+    alignm_PSS_radbu_->setEnabled(true); //Keep enabled, such that the user can still select PSS if needed
     alignm_PSS_radbu_->setChecked(false);
     alignm_PSP_radbu_->setEnabled(true);
     alignm_PSP_radbu_->setChecked(true);
@@ -900,7 +900,7 @@ void AssemblyObjectAlignerView::set_alignmentMode_PSP()
 //-- Set the mode to PSS
 void AssemblyObjectAlignerView::set_alignmentMode_PSS()
 {
-    alignm_PSP_radbu_->setEnabled(false);
+    alignm_PSP_radbu_->setEnabled(true); //Keep enabled, such that the user can still select PSP if needed
     alignm_PSP_radbu_->setChecked(false);
     alignm_PSS_radbu_->setEnabled(true);
     alignm_PSS_radbu_->setChecked(true);
