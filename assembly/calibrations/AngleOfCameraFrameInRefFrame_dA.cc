@@ -8,7 +8,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 // MEASUREMENTS
-const double ANGDEG_PATREC = -0.20; //Average -0.35 and -0.05 
+const double ANGDEG_PATREC = -0.20; //Average the best-match angles obtained via PatRec on the 2 fiducials <-> indicates the orientation of the sensor within the laboratory frame (?)
 
 const int PR1_PIXEL_X = 694;
 const int PR1_PIXEL_Y = 867;
@@ -23,7 +23,7 @@ const double PR2_MOTION_STAGE_POS_X = 37.22;
 const double PR2_MOTION_STAGE_POS_Y = -82.04;
 
 // SENSOR, IMAGE SPECIFICATIONS - using markers in one line
-const double ANGDEG_REFERC = 0.00; // PS-s
+const double ANGDEG_REFERC = 0.00; // PS-s //Target angle between 2 markers (?) <-> 0 by default, because the ref. points of both fiducials are supposed to be on the same line (both in laboratory/camera frames)
 //const double ANGDEG_REFERC = 0.00; // PS-p
 
 const double MM_PER_PIXEL = 0.0012;
@@ -130,11 +130,11 @@ int main(int /* argc */, char** /* argv */)
     if(VERBOSE > 3){ std::cout << "* PatRec #1: best-match position [mm] = "; PR1.print(); }
     if(VERBOSE > 3){ std::cout << "* PatRec #2: best-match position [mm] = "; PR2.print(); }
 
-    const double angdeg_measur = std::atan((PR2.y() - PR1.y()) / (PR2.x() - PR1.x())) * (180. / M_PI);
+    const double angdeg_measur = std::atan((PR2.y() - PR1.y()) / (PR2.x() - PR1.x())) * (180. / M_PI); //Compute angle between ref. points of both fiducials from their x-y positions (infered from motion stage position + best-match pixels in camera image) -- FOR CURRENTLY-TESTED ANGLE OFFSET 'angdeg_offset' !
 
     if(VERBOSE > 3){ std::cout << "* measured angle from PR1-best-match to PR2-best-match [deg] = " << angdeg_measur << std::endl; }
 
-    const double angdeg_offset_new = angdeg_measur - ANGDEG_REFERC - ANGDEG_PATREC - 90.0;
+    const double angdeg_offset_new = angdeg_measur - ANGDEG_REFERC - ANGDEG_PATREC - 90.0; //If the currently-tested angle offset 'angdeg_offset' is correct, we expect the difference between 'ANGDEG_PATREC' (indicates sensor's rotation in laboratory frame) and 'angdeg_measur' (indicates sensor's rotation according to camera image) to match the expected 'ANGDEG_REFERC' value (=0) ! The 90degrees offset is due to the fact that the camera and motion stage axes are (historically ?) offset by 90 degrees, cf. camera images.
 
     if(VERBOSE > 2){ std::cout << "* camera-offset angle assumed [deg] = " << angdeg_offset     << std::endl; }
     if(VERBOSE > 2){ std::cout << "* camera-offset angle derived [deg] = " << angdeg_offset_new << std::endl; }
