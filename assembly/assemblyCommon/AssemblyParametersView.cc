@@ -22,6 +22,7 @@
 #include <QFileDialog>
 #include <QToolBox>
 #include <QLabel>
+#include <sstream>
 
 AssemblyParametersView::AssemblyParametersView(QWidget* parent)
  : QWidget(parent)
@@ -437,6 +438,56 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   button_moveRelRefDist9_  = new QPushButton(tr("Apply Relative Movement"));
   dist_lay->addWidget(button_moveRelRefDist9_, row_index, 9, Qt::AlignLeft);
 
+  // Add separator line
+  ++row_index;
+  QFrame* line = new QFrame();
+  line->setFrameShape(QFrame::HLine);
+  line->setFrameShadow(QFrame::Sunken);
+  dist_lay->addWidget(line, row_index, 0);
+
+  // distance: from reference marker 1 ("top-left" marker when facing the platform) to reference marker 2 ("top-right")
+  // Add buttons to perform +dX/-dX relative movements from one marker to the other, both for PSS and PSP
+  // Contrary to other parameters, these values are read from the "assembly.cfg" file (hardcoded design values, not calibrated -- different for glass/silicon)
+  ++row_index;
+  tmp_tag = "AssemblyObjectAlignerView_PSP_deltaX";
+  tmp_des = "From PSP marker 1 -> 2 (dX>0) :";
+  map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
+  dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("dX"))    , row_index, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag), row_index, 2, Qt::AlignRight);
+  button_moveRelRefDist10_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist10_, row_index, 9, Qt::AlignLeft);
+  
+  ++row_index;
+  tmp_tag = "AssemblyObjectAlignerView_PSP_deltaX_neg";
+  tmp_des = "From PSP marker 2 -> 1 (dX<0) :";
+  map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
+  dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("dX"))    , row_index, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag), row_index, 2, Qt::AlignRight);
+  button_moveRelRefDist11_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist11_, row_index, 9, Qt::AlignLeft);
+
+  ++row_index;
+  tmp_tag = "AssemblyObjectAlignerView_PSS_deltaX";
+  tmp_des = "From PSS marker 1 -> 2 (dX>0) :";
+  map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
+  dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("dX"))    , row_index, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag), row_index, 2, Qt::AlignRight);
+  button_moveRelRefDist12_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist12_, row_index, 9, Qt::AlignLeft);
+
+  ++row_index;
+  tmp_tag = "AssemblyObjectAlignerView_PSS_deltaX_neg";
+  tmp_des = "From PSS marker 2 -> 1 (dX<0) :";
+  map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
+  dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("dX"))    , row_index, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag), row_index, 2, Qt::AlignRight);
+  button_moveRelRefDist13_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist13_, row_index, 9, Qt::AlignLeft);
+
   //// ---------------------
 
   layout->addStretch(1);
@@ -472,6 +523,10 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   connect(button_moveRelRefDist7_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist7()));
   connect(button_moveRelRefDist8_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist8()));
   connect(button_moveRelRefDist9_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist9()));
+  connect(button_moveRelRefDist10_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist10()));
+  connect(button_moveRelRefDist11_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist11()));
+  connect(button_moveRelRefDist12_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist12()));
+  connect(button_moveRelRefDist13_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist13()));
   connect(this , SIGNAL(click_moveByRelRefDist(int)), this, SLOT(askConfirmMoveByRelRefDist(int)));
 }
 
@@ -488,6 +543,20 @@ AssemblyParametersView::~AssemblyParametersView()
     disconnect(button_moveAbsRefPos4_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos4()));
     disconnect(button_moveAbsRefPos5_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos5()));
     disconnect(this , SIGNAL(click_moveToAbsRefPos(int)), this, SLOT(askConfirmMoveToAbsRefPoint(int)));
+
+    disconnect(button_moveRelRefDist1_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist1()));
+    disconnect(button_moveRelRefDist2_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist2()));
+    disconnect(button_moveRelRefDist3_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist3()));
+    disconnect(button_moveRelRefDist4_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist4()));
+    disconnect(button_moveRelRefDist5_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist5()));
+    disconnect(button_moveRelRefDist6_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist6()));
+    disconnect(button_moveRelRefDist7_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist7()));
+    disconnect(button_moveRelRefDist8_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist8()));
+    disconnect(button_moveRelRefDist9_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist9()));
+    disconnect(button_moveRelRefDist10_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist10()));
+    disconnect(button_moveRelRefDist11_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist11()));
+    disconnect(button_moveRelRefDist12_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist12()));
+    disconnect(button_moveRelRefDist13_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist13()));
     disconnect(this , SIGNAL(click_moveByRelRefDist(int)), this, SLOT(askConfirmMoveByRelRefDist(int)));
 }
 
@@ -585,10 +654,27 @@ void AssemblyParametersView::transmit_entries()
 
 void AssemblyParametersView::copy_values(const std::map<std::string, double>& map_double)
 {
+  //-- Values read from parameters (<-> calibrations) file
   for(const auto& key : map_double)
   {
     this->setText(key.first, key.second);
   }
+
+  //-- Values read from config file
+  //std::cout<<"===== AssemblyObjectAlignerView_PSS_deltaX = "<<config->getValue<std::string>(tmp)<<std::endl;
+  std::string tmp(""); double d=0; std::stringstream ss;
+  ApplicationConfig* config = ApplicationConfig::instance(); //Read config file
+
+  tmp = "AssemblyObjectAlignerView_PSP_deltaX";
+  ss << config->getValue<std::string>(tmp); ss >> d; //Convert string -> double
+  this->setText(tmp, d);
+  this->setText(tmp+"_neg", -d); //Minus sign
+
+  tmp = "AssemblyObjectAlignerView_PSS_deltaX";
+  ss.str(std::string()); ss.clear(); //Clear previous value
+  ss << config->getValue<std::string>(tmp); ss >> d;
+  this->setText(tmp, d);
+  this->setText(tmp+"_neg", -d); //Minus sign
 
   return;
 }
@@ -678,6 +764,14 @@ void AssemblyParametersView::askConfirmMoveByRelRefDist(int refPoint)
             break;
         case 9: tmp_tag = "FromPlatformRefPointCalibrationBaseplateToPSPEdge";
             break;
+        case 10: tmp_tag = "AssemblyObjectAlignerView_PSP_deltaX";
+            break;
+        case 11: tmp_tag = "AssemblyObjectAlignerView_PSP_deltaX_neg";
+            break;
+        case 12: tmp_tag = "AssemblyObjectAlignerView_PSS_deltaX";
+            break;
+        case 13: tmp_tag = "AssemblyObjectAlignerView_PSS_deltaX_neg";
+            break;
         default: return;
     }
 
@@ -687,6 +781,9 @@ void AssemblyParametersView::askConfirmMoveByRelRefDist(int refPoint)
     if(this->has(tmp_tag+"_dY") == true) {dy = this->get(tmp_tag+"_dY")->text().toDouble();}
     if(this->has(tmp_tag+"_dZ") == true) {dz = this->get(tmp_tag+"_dZ")->text().toDouble();}
     if(this->has(tmp_tag+"_dA") == true) {da = this->get(tmp_tag+"_dA")->text().toDouble();}
+
+    //Different naming scheme for 'config file' values (full name, no suffix)
+    if(this->has(tmp_tag) == true) {dx = this->get(tmp_tag)->text().toDouble();}
 
     QMessageBox msgBox;
     msgBox.setWindowTitle(tr("Move by relative distance"));
