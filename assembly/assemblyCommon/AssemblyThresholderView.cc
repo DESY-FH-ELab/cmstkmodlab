@@ -128,8 +128,10 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
   QVBoxLayout* imgbin_thresh_layout = new QVBoxLayout;
   lBin->addLayout(imgbin_thresh_layout);
 
-  imgbin_thresh_button_ = new QPushButton("openCV::threshold", this);
+  imgbin_thresh_button_ = new QPushButton("openCV::threshold", this); //Click this button to read/apply the value in the QLineEdit field
   imgbin_thresh_layout->addWidget(imgbin_thresh_button_);
+  const QSize BUTTON_SIZE = QSize(530, 35); //Set fixed button size
+  imgbin_thresh_button_->setFixedSize(BUTTON_SIZE);
 
   connect(imgbin_thresh_button_, SIGNAL(clicked()), this, SLOT(apply_threshold()));
 

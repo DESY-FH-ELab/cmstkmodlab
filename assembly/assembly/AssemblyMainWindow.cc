@@ -135,7 +135,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     motion_thread_  = new LStepExpressMotionThread(motion_manager_, this);
     motion_thread_->start();
 
-    connect(motion_manager_, SIGNAL(restartMotionStage_request), this, SLOT(messageBox_restartMotionStage())); //Display a pop-up GUI message whenever the MS gets automatically restarted
+    connect(motion_manager_, SIGNAL(restartMotionStage_request()), this, SLOT(messageBox_restartMotionStage())); //Display a pop-up GUI message whenever the MS gets automatically restarted
     /// -------------------
 
     /// Camera
@@ -916,11 +916,11 @@ void AssemblyMainWindow::disconnect_multiPickupTest()
 //Disconnect remaining signal/slots, which did not get disconnected via specific functions //Actually miss several, not needed ?
 void AssemblyMainWindow::disconnect_otherSlots()
 {
-    disconnect(params_view_, SIGNAL(request_movetoabsrefposition(double,double,double,double)), motion_manager_, SLOT(moveAbsolute(double,double,double,double)));
+    disconnect(params_view_, SIGNAL(request_moveToAbsRefPosition(double,double,double,double)), motion_manager_, SLOT(moveAbsolute(double,double,double,double)));
     disconnect(params_view_, SIGNAL(request_moveByRelRefDistance(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
     disconnect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
     disconnect(motion_manager_, SIGNAL(restartMotionStage_request()), hwctr_view_->LStepExpress_Widget(), SLOT(restart()));
-    disconnect(motion_manager_, SIGNAL(restartMotionStage_request), this, SLOT(messageBox_restartMotionStage()));
+    disconnect(motion_manager_, SIGNAL(restartMotionStage_request()), this, SLOT(messageBox_restartMotionStage()));
     disconnect(assemblyV2_, SIGNAL(switchToAlignmentTab_PSP_request()), this, SLOT(update_alignment_tab_psp()));
     disconnect(assemblyV2_, SIGNAL(switchToAlignmentTab_PSS_request()), this, SLOT(update_alignment_tab_pss()));
     disconnect(this, SIGNAL(set_alignmentMode_PSP_request()), aligner_view_, SLOT(set_alignmentMode_PSP()));
