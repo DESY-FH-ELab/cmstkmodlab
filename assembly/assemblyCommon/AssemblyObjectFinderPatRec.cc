@@ -151,7 +151,7 @@ void AssemblyObjectFinderPatRec::launch_PatRec(const AssemblyObjectFinderPatRec:
   // ----------
 
   // update template image
-  const cv::Mat img_templa = assembly::cv_imread(conf.template_filepath_, CV_LOAD_IMAGE_COLOR);
+  const cv::Mat img_templa = assembly::cv_imread(conf.template_filepath_, cv::IMREAD_COLOR);
 
   if(assembly::MatIsBlackAndWhite(img_templa) == false)
   {
@@ -413,7 +413,7 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
   cv::Mat img_templa_PatRec_gs;
   if(img_templa_PatRec.channels() > 1)
   {
-    cv::cvtColor(img_templa_PatRec, img_templa_PatRec_gs, CV_BGR2GRAY);
+    cv::cvtColor(img_templa_PatRec, img_templa_PatRec_gs, cv::COLOR_GRAY2BGR);
   }
   else
   {
@@ -423,8 +423,8 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
   // Template-Matching method for matchTemplate() routine of OpenCV
   // For SQDIFF and SQDIFF_NORMED, the best match is the lowest value; for all the other methods, the best match is the highest value.
   // REF https://docs.opencv.org/2.4/modules/imgproc/doc/object_detection.html?highlight=matchtemplate#matchtemplate
-  const int match_method = CV_TM_SQDIFF_NORMED;
-  const bool use_minFOM = ((match_method  == CV_TM_SQDIFF) || (match_method == CV_TM_SQDIFF_NORMED));
+  const int match_method = cv::TM_SQDIFF_NORMED;
+  const bool use_minFOM = ((match_method  == cv::TM_SQDIFF) || (match_method == cv::TM_SQDIFF_NORMED));
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching" << ": initiated matching routine with angular scan";
 
@@ -710,7 +710,7 @@ void AssemblyObjectFinderPatRec::PatRec(double& fom, cv::Point& match_loc, const
 
   minMaxLoc(result_mat, &minVal, &maxVal, &minLoc, &maxLoc, cv::Mat());
 
-  const bool use_minFOM = ((match_method  == CV_TM_SQDIFF) || (match_method == CV_TM_SQDIFF_NORMED));
+  const bool use_minFOM = ((match_method  == cv::TM_SQDIFF) || (match_method == cv::TM_SQDIFF_NORMED));
 
   if(use_minFOM){ match_loc = minLoc; fom = minVal; }
   else          { match_loc = maxLoc; fom = maxVal; }

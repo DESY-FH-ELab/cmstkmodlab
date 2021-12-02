@@ -221,7 +221,7 @@ void AssemblyUEyeFakeCamera::acquireImage()
 {
     if(cameraState_ != State::READY){ return; }
 
-    image_ = cv::imread(imageFilenames_[imageIndex_++], CV_LOAD_IMAGE_GRAYSCALE);
+    image_ = cv::imread(imageFilenames_[imageIndex_++], cv::IMREAD_GRAYSCALE);
 
     NQLog("AssemblyUEyeFakeCamera", NQLog::Debug) << "acquireImage"
        << ": emitting signal \"imageAcquired\"";

@@ -105,7 +105,7 @@ cv::Mat AssemblyThresholder::get_image_binary_threshold(const cv::Mat& img, cons
   if(img.channels() > 1)
   {
     // convert color to GS
-    cv::cvtColor(img, img_gs, CV_BGR2GRAY);
+    cv::cvtColor(img, img_gs, cv::COLOR_GRAY2BGR);
   }
   else
   {
@@ -170,7 +170,7 @@ cv::Mat AssemblyThresholder::get_image_binary_adaptiveThreshold(const cv::Mat& i
   if(img.channels() > 1)
   {
     // convert color to GS
-    cv::cvtColor(img, img_gs, CV_BGR2GRAY);
+    cv::cvtColor(img, img_gs, cv::COLOR_GRAY2BGR);
   }
   else
   {

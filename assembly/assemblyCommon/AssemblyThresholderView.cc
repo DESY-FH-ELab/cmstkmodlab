@@ -245,7 +245,7 @@ void AssemblyThresholderView::load_image_raw()
   const QString filename = QFileDialog::getOpenFileName(this, tr("Load Image"), QString::fromStdString(Config::CMSTkModLabBasePath+"/share/assembly"), tr("PNG Files (*.png);;All Files (*)"));
   if(filename.isNull() || filename.isEmpty()){ return; }
 
-  const cv::Mat img = assembly::cv_imread(filename, CV_LOAD_IMAGE_COLOR);
+  const cv::Mat img = assembly::cv_imread(filename, cv::IMREAD_COLOR);
 
   if(img.empty())
   {

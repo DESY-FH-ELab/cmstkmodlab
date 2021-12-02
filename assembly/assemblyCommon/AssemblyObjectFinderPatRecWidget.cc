@@ -147,7 +147,7 @@ void AssemblyObjectFinderPatRecWidget::load_image_template_from_path(const QStri
 {
   if(filename.isNull() || filename.isEmpty()){ return; }
 
-  const cv::Mat img = assembly::cv_imread(filename, CV_LOAD_IMAGE_COLOR);
+  const cv::Mat img = assembly::cv_imread(filename, cv::IMREAD_COLOR);
 
   if(img.empty())
   {
