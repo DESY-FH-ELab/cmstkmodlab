@@ -55,6 +55,7 @@ include_directories(${Qt5Script_INCLUDE_DIRS})
 include_directories(${Qt5Svg_INCLUDE_DIRS})
 
 include_directories(${CMAKE_SOURCE_DIR}/common)
+include_directories(${CMAKE_BINARY_DIR}/common)
 
 add_definitions(${Qt5Core_DEFINITIONS})
 add_definitions(${Qt5Widgts_DEFINITIONS})

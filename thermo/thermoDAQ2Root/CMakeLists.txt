@@ -32,6 +32,7 @@ include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${ROOT_INCLUDE_DIRS})
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/common)
 
 target_link_libraries(thermoDAQ2Root
         PRIVATE Qt5::Core
