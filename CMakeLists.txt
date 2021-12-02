@@ -33,7 +33,22 @@ IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
         "${PROJECT_SOURCE_DIR}"
         CACHE PATH "Prefix prepended to install directories" FORCE)
 ENDIF()
- 
+
+# Set up the RPATH so executables find the libraries even when installed in non-default location
+SET(CMAKE_MACOSX_RPATH TRUE)
+SET(CMAKE_SKIP_BUILD_RPATH FALSE)
+SET(CMAKE_SKIP_INSTALL_RPATH FALSE)
+SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+SET(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_FULL_LIBDIR})
+
+# Add the automatically determined parts of the RPATH which point to directories outside the build tree to the install RPATH
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+# The RPATH to be used when installing, but only if it's not a system directory
+LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" IsSystemDir)
+IF("${IsSystemDir}" STREQUAL "-1")
+    SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib:${CMAKE_SOURCE_DIR}/devices/lib:${CMAKE_SOURCE_DIR}/external/lib")
+ENDIF("${IsSystemDir}" STREQUAL "-1")
 
 find_package(PkgConfig REQUIRED)
 
