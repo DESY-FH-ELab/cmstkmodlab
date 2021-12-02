@@ -38,7 +38,7 @@ set(CMAKE_CXX_FLAGS "${Qt5Svg_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Network_EXECUTABLE_COMPILE_FLAGS}")
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/assembly/AssemblyCommon)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/assembly/assemblyCommon)
 
 target_link_libraries(motionCommander
         PRIVATE Qt5::Core
