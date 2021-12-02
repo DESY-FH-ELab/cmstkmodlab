@@ -10,7 +10,7 @@ add_executable(PumpStationAnalysis
 if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
         add_compile_definitions(APPLICATIONVERSIONSTR=\"unknown\")
 else()
-        execute_process(COMMAND bash -c "git describe --dirty --always --tags" OUTPUT_VARIABLE GIT_DESCRIBE)
+        execute_process(COMMAND bash -c "git describe --dirty --always --tags" OUTPUT_VARIABLE GIT_DESCRIBE OUTPUT_STRIP_TRAILING_WHITESPACE)
         add_compile_definitions(APPLICATIONVERSIONSTR=\"${GIT_DESCRIBE}\")
 endif()
 
