@@ -10,7 +10,7 @@ add_executable(PumpStationAnalysis
 if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
         add_compile_definitions(APPLICATIONVERSIONSTR=\"unknown\")
 else()
-        execute_process(COMMAND bash -c "git describe --dirty --always --tags" OUTPUT_VARIABLE GIT_DESCRIBE)
+        execute_process(COMMAND bash -c "git describe --dirty --always --tags" OUTPUT_VARIABLE GIT_DESCRIBE OUTPUT_STRIP_TRAILING_WHITESPACE)
         add_compile_definitions(APPLICATIONVERSIONSTR=\"${GIT_DESCRIBE}\")
 endif()
 
@@ -33,7 +33,21 @@ set(CMAKE_CXX_FLAGS "${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Network_EXECUTABLE_COMPILE_FLAGS}")
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/common)
 
-target_link_libraries(PumpStationAnalysis LINK_PUBLIC Qt5::Core Qt5::Xml ROOT::RIO ROOT::Tree)
+target_link_libraries(PumpStationAnalysis
+  LINK_PUBLIC
+  Qt5::Core
+  Qt5::Xml
+  ROOT::RIO
+  ROOT::Tree
+  Common
+)
 
-install(TARGETS PumpStationAnalysis DESTINATION /usr/bin)
+INSTALL(
+    TARGETS PumpStationAnalysis
+    EXPORT Pumpstation
+    RUNTIME DESTINATION bin
+    RUNTIME DESTINATION /usr/bin
+    ARCHIVE DESTINATION lib
+)

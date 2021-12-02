@@ -27,6 +27,14 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 set(basepath ${PROJECT_SOURCE_DIR})
 
+# Configure the installation prefix to allow both local as system-wide installation
+IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    SET(CMAKE_INSTALL_PREFIX
+        "${PROJECT_SOURCE_DIR}"
+        CACHE PATH "Prefix prepended to install directories" FORCE)
+ENDIF()
+ 
+
 find_package(PkgConfig REQUIRED)
 
 add_compile_definitions(__${CMAKE_HOST_SYSTEM_NAME}__)
@@ -73,6 +81,8 @@ pkg_check_modules(LIBGPHOTO2 REQUIRED IMPORTED_TARGET libgphoto2)
 pkg_check_modules(OPENCV4 REQUIRED IMPORTED_TARGET opencv4)
 pkg_check_modules(EXIV2 REQUIRED IMPORTED_TARGET exiv2)
 
+include(FindQWT)
+
 if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
         option(CMSTKMODLAB_MARTA "Build with support for MARTA CO2 chiller" OFF)
 else()
@@ -96,7 +106,6 @@ add_subdirectory(common_test)
 option(CMSTKMODLAB_THERMO1 "Build with support for version 1 of thermal test setup" OFF)
 if(CMSTKMODLAB_THERMO1)
         message(STATUS "Support for version 1 of thermal test setup: ON")
-        include(FindQwt)
 else()
         message(STATUS "Support for version 1 of thermal test setup: OFF")
 endif()

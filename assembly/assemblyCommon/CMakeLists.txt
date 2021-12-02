@@ -109,3 +109,10 @@ target_link_libraries(AssemblyCommon
         PRIVATE Common
         PRIVATE ROOT::Gpad
 )
+
+INSTALL(
+    TARGETS AssemblyCommon
+    EXPORT Assembly
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)

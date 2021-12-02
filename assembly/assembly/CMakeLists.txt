@@ -49,3 +49,10 @@ target_link_libraries(assembly
         PRIVATE Common
         PRIVATE AssemblyCommon
 )
+
+INSTALL(
+    TARGETS assembly
+    EXPORT Assembly
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)

@@ -12,3 +12,10 @@ target_link_libraries(common_test
 	PRIVATE Qt5::Widgets
 	PRIVATE Common
 )
+
+INSTALL(
+    TARGETS common_test
+    EXPORT CommonTest
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)

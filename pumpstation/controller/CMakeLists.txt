@@ -42,12 +42,20 @@ set(CMAKE_CXX_FLAGS "${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Network_EXECUTABLE_COMPILE_FLAGS}")
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/common)
 
 target_compile_features(PumpStationControl PRIVATE cxx_std_17)
 
 target_link_libraries(PumpStationControl
         PRIVATE Qt5::Widgets
         PRIVATE Qt5::Network
+	Common
 )
 
-install(TARGETS PumpStationControl DESTINATION /usr/bin)
+INSTALL(
+    TARGETS PumpStationControl
+    EXPORT Pumpstation
+    RUNTIME DESTINATION bin
+    RUNTIME DESTINATION /usr/bin
+    ARCHIVE DESTINATION lib
+)
