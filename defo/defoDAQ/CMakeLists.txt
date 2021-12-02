@@ -81,3 +81,10 @@ target_link_libraries(defoDAQ
         PRIVATE defoCommon
 )
 target_compile_features(defoDAQ PRIVATE cxx_std_11)
+
+INSTALL(
+    TARGETS defoDAQ
+    EXPORT Defo
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)

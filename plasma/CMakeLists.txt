@@ -39,3 +39,10 @@ target_link_libraries(plasmacleaner
         PRIVATE Qt5::Widgets
         PRIVATE Common
 )
+
+INSTALL(
+    TARGETS plasmacleaner
+    EXPORT Plasma
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)

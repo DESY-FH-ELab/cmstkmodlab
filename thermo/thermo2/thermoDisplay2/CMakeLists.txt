@@ -59,3 +59,10 @@ target_link_libraries(thermoDisplay2
 )
 
 configure_file(thermoDisplay2.desktop.in thermoDisplay2.desktop)
+
+INSTALL(
+    TARGETS thermoDisplay2
+    EXPORT Thermo
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)

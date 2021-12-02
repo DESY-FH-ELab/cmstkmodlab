@@ -35,6 +35,19 @@ set(CMAKE_CXX_FLAGS "${Qt5Network_EXECUTABLE_COMPILE_FLAGS}")
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
 INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/common)
 
-target_link_libraries(PumpStationAnalysis LINK_PUBLIC Qt5::Core Qt5::Xml ROOT::RIO ROOT::Tree)
+target_link_libraries(PumpStationAnalysis
+  LINK_PUBLIC
+  Qt5::Core
+  Qt5::Xml
+  ROOT::RIO
+  ROOT::Tree
+  Common
+)
 
-install(TARGETS PumpStationAnalysis DESTINATION /usr/bin)
+INSTALL(
+    TARGETS PumpStationAnalysis
+    EXPORT Pumpstation
+    RUNTIME DESTINATION bin
+    RUNTIME DESTINATION /usr/bin
+    ARCHIVE DESTINATION lib
+)

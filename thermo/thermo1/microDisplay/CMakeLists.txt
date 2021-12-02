@@ -55,3 +55,10 @@ target_link_libraries(microDisplay
 )
 
 configure_file(microDisplay.desktop.in micro.desktop)
+
+INSTALL(
+    TARGETS microDisplay
+    EXPORT Thermo
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)

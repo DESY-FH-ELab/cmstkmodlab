@@ -124,3 +124,10 @@ target_link_libraries(Common
         PUBLIC ddierckx
         ${DEVICE_LIBRARIES}
 )
+
+INSTALL(
+    TARGETS Common
+    EXPORT Common
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)

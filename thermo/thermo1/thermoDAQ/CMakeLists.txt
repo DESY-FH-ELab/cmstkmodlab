@@ -64,3 +64,10 @@ target_link_libraries(thermoDAQ
 )
 
 configure_file(thermoDAQ.desktop.in thermoDAQ.desktop)
+
+INSTALL(
+    TARGETS thermoDAQ
+    EXPORT Thermo
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)

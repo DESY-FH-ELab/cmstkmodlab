@@ -58,3 +58,10 @@ target_link_libraries(microDAQ
         PRIVATE Qt5::Network
         PRIVATE Common
 )
+
+INSTALL(
+    TARGETS microDAQ
+    EXPORT Thermo
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)

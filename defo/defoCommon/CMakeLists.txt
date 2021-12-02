@@ -82,3 +82,10 @@ target_link_libraries(defoCommon
         PRIVATE Common
         PUBLIC PkgConfig::EXIV2
 )
+
+INSTALL(
+    TARGETS defoCommon
+    EXPORT Defo
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)

@@ -35,3 +35,10 @@ target_link_libraries(thermoDAQ2Plots
         PRIVATE Common
         PUBLIC ROOT::Gpad
 )
+
+INSTALL(
+    TARGETS thermoDAQ2Plots
+    EXPORT Thermo
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)

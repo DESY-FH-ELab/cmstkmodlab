@@ -85,3 +85,10 @@ target_link_libraries(defoReco
 target_compile_features(defoReco PRIVATE cxx_std_11)
 
 configure_file(defoReco.desktop.in defoReco.desktop)
+
+INSTALL(
+    TARGETS defoReco
+    EXPORT Defo
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)

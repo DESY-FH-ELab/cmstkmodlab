@@ -49,3 +49,10 @@ target_link_libraries(motionCommander
         PRIVATE Common
         PRIVATE AssemblyCommon
 )
+
+INSTALL(
+    TARGETS motionCommander
+    EXPORT Assembly
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)

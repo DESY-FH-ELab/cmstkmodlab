@@ -37,3 +37,10 @@ target_link_libraries(defoDAQ2Root
         PUBLIC ROOT::RIO
         PUBLIC ROOT::Tree
 )
+
+INSTALL(
+    TARGETS defoDAQ2Root
+    EXPORT Defo
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)

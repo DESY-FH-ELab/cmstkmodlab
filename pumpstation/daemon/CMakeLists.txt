@@ -52,3 +52,10 @@ add_custom_target(restart
         COMMAND ${CMAKE_COMMAND} --build . --target install; systemctl stop pumpstation; chmod 664 pumpstation.service; cp pumpstation.service /etc/systemd/system; systemctl daemon-reload; systemctl enable pumpstation; systemctl start pumpstation
         COMMENT "restart pump station daemon ..."
 )
+
+INSTALL(
+    TARGETS PumpStationDaemon
+    EXPORT Pumpstation
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)

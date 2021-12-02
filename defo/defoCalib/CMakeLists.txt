@@ -52,3 +52,10 @@ target_link_libraries(defoCalib
         PRIVATE defoCommon
         PUBLIC ${QWT_LIBRARY}
 )
+
+INSTALL(
+    TARGETS defoCalib
+    EXPORT Defo
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)

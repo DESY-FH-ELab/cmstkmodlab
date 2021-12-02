@@ -34,3 +34,10 @@ target_link_libraries(thermoDAQ2Log
         PRIVATE Qt5::Widgets
         PRIVATE Common
 )
+
+INSTALL(
+    TARGETS thermoDAQ2Log
+    EXPORT Thermo
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)

@@ -27,6 +27,14 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 set(basepath ${PROJECT_SOURCE_DIR})
 
+# Configure the installation prefix to allow both local as system-wide installation
+IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    SET(CMAKE_INSTALL_PREFIX
+        "${PROJECT_SOURCE_DIR}"
+        CACHE PATH "Prefix prepended to install directories" FORCE)
+ENDIF()
+ 
+
 find_package(PkgConfig REQUIRED)
 
 add_compile_definitions(__${CMAKE_HOST_SYSTEM_NAME}__)

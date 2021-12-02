@@ -56,3 +56,10 @@ target_link_libraries(defoDisplay
 )
 
 configure_file(defoDisplay.desktop.in defoDisplay.desktop)
+
+INSTALL(
+    TARGETS defoDisplay
+    EXPORT Defo
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)

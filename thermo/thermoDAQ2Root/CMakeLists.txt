@@ -41,3 +41,10 @@ target_link_libraries(thermoDAQ2Root
         PUBLIC ROOT::RIO
         PUBLIC ROOT::Tree
 )
+
+INSTALL(
+    TARGETS thermoDAQ2Root
+    EXPORT Thermo
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)
