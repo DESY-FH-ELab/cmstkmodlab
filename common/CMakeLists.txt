@@ -14,7 +14,6 @@ add_library(Common SHARED
         nplane3D.cc
         nspline2D.cc
         SingletonApplication.cc
-        ApplicationConfig.cc
         ApplicationConfigReader.cc
         ApplicationConfigWriter.cc
         SlackBot.cc
@@ -66,6 +65,7 @@ add_library(Common SHARED
         MartaModel.cc
         MartaWidget.cc
         ScriptableMarta.cc
+        ${CMAKE_BINARY_DIR}/common/ApplicationConfig.cc
 )
 
 set(DEVICE_LIBRARIES
