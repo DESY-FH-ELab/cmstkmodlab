@@ -99,6 +99,7 @@ target_compile_definitions(AssemblyCommon PRIVATE QT_NO_JAVA_STYLE_ITERATORS QT_
 target_compile_features(AssemblyCommon PUBLIC cxx_std_17)
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/common)
 
 target_link_libraries(AssemblyCommon
         PRIVATE Qt5::Core
