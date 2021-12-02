@@ -513,7 +513,7 @@ double AssemblyZFocusFinder::image_focus_value(const cv::Mat& img)
 //
 //  // Convert the image to grayscale
 //  cv::Mat img_gray;
-//  cv::cvtColor(img_gaus, img_gray, cv::COLOR_GRAY2BGR);
+//  cv::cvtColor(img_gaus, img_gray, cv::COLOR_BGR2GRAY);
 
   // Apply laplacian function to GS image
   cv::Mat img_lap;

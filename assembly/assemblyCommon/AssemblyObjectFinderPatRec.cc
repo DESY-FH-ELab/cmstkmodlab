@@ -413,7 +413,7 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
   cv::Mat img_templa_PatRec_gs;
   if(img_templa_PatRec.channels() > 1)
   {
-    cv::cvtColor(img_templa_PatRec, img_templa_PatRec_gs, cv::COLOR_GRAY2BGR);
+    cv::cvtColor(img_templa_PatRec, img_templa_PatRec_gs, cv::COLOR_BGR2GRAY);
   }
   else
   {
