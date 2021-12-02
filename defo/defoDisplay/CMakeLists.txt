@@ -29,7 +29,6 @@ include_directories(${Qt5Svg_INCLUDE_DIRS})
 include_directories(${Qt5Network_INCLUDE_DIRS})
 
 include_directories(${QWT_INCLUDE_DIR})
-message(STATUS "QWT: ${QWT_INCLUDE_DIR}")
 
 add_definitions(${Qt5Core_DEFINITIONS})
 add_definitions(${Qt5Widgts_DEFINITIONS})
