@@ -335,7 +335,7 @@ void AssemblyObjectFinderPatRecView::update_image(const int stage, const QString
 
   QMutexLocker ml(&mutex_);
 
-  const cv::Mat img = assembly::cv_imread(filename, CV_LOAD_IMAGE_UNCHANGED);
+  const cv::Mat img = assembly::cv_imread(filename, cv::IMREAD_UNCHANGED);
 
   ml.unlock();
 

@@ -70,7 +70,7 @@ find_package(ROOT 6.16 REQUIRED)
 message(STATUS ${ROOT_INCLUDE_DIRS})
 
 pkg_check_modules(LIBGPHOTO2 REQUIRED IMPORTED_TARGET libgphoto2)
-pkg_check_modules(OPENCV REQUIRED IMPORTED_TARGET opencv)
+pkg_check_modules(OPENCV4 REQUIRED IMPORTED_TARGET opencv4)
 pkg_check_modules(EXIV2 REQUIRED IMPORTED_TARGET exiv2)
 
 if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")

@@ -513,7 +513,7 @@ void AssemblyObjectAlignerView::updateImage(const int stage, const QString& file
 {
   NQLog("AssemblyObjectAlignerView", NQLog::Spam) << "updateImage(" << stage << ", file=" << filename << ")";
 
-  const cv::Mat img = assembly::cv_imread(filename, CV_LOAD_IMAGE_UNCHANGED);
+  const cv::Mat img = assembly::cv_imread(filename, cv::IMREAD_UNCHANGED);
 
   this->updateImage(stage, img);
 

@@ -251,7 +251,7 @@ void AssemblyImageView::load_image()
   const QString filename = QFileDialog::getOpenFileName(this, tr("Load Image"), QString::fromStdString(Config::CMSTkModLabBasePath+"/share/assembly"), tr("PNG Files (*.png);;All Files (*)"));
   if(filename.isNull() || filename.isEmpty()){ return; }
 
-  const cv::Mat img = assembly::cv_imread(filename, CV_LOAD_IMAGE_COLOR);
+  const cv::Mat img = assembly::cv_imread(filename, cv::IMREAD_COLOR);
 
   if(img.empty())
   {
@@ -349,15 +349,15 @@ void AssemblyImageView::modify_image_axesConventions()
   cv::Mat img = image_.clone(); //Use current image (possibly with center lines displayed), not raw image
 
   //See: https://docs.opencv.org/2.4/modules/core/doc/drawing_functions.html#puttext
-  //CV_AA = anti-aliased linetype
+  //cv::LINE_AA = anti-aliased linetype
   //Text position is hardcoded
   int fontFace = cv::FONT_HERSHEY_PLAIN; //FONT_HERSHEY_SIMPLEX, ...
   double fontScale = 8;
   int linethick = 3;
-  putText(img, "+x", cv::Point(img.cols/2.0+padding, 2*padding), fontFace, fontScale, cv::Scalar(255,0,0), linethick, CV_AA);
-  putText(img, "-x", cv::Point(img.cols/2.0+padding, img.rows-padding), fontFace, fontScale, cv::Scalar(255,0,0), linethick, CV_AA);
-  putText(img, "+y", cv::Point(padding, img.rows/2.0+2*padding), fontFace, fontScale, cv::Scalar(255,0,0), linethick, CV_AA);
-  putText(img, "-y", cv::Point(img.cols-5*padding, img.rows/2.0+2*padding), fontFace, fontScale, cv::Scalar(255,0,0), linethick, CV_AA);
+  putText(img, "+x", cv::Point(img.cols/2.0+padding, 2*padding), fontFace, fontScale, cv::Scalar(255,0,0), linethick, cv::LINE_AA);
+  putText(img, "-x", cv::Point(img.cols/2.0+padding, img.rows-padding), fontFace, fontScale, cv::Scalar(255,0,0), linethick, cv::LINE_AA);
+  putText(img, "+y", cv::Point(padding, img.rows/2.0+2*padding), fontFace, fontScale, cv::Scalar(255,0,0), linethick, cv::LINE_AA);
+  putText(img, "-y", cv::Point(img.cols-5*padding, img.rows/2.0+2*padding), fontFace, fontScale, cv::Scalar(255,0,0), linethick, cv::LINE_AA);
 
   //Add line/label for distance scale
   line   (img, cv::Point(0, 125), cv::Point(0+167, 125), cv::Scalar(0,255,0), 2, 8, 0);
@@ -365,7 +365,7 @@ void AssemblyImageView::modify_image_axesConventions()
 
   //Add line/label for rotation angle convention (positive angle <-> anti-clockwise)
   line   (img, cv::Point(10, img.rows-180), cv::Point(150, img.rows-80), cv::Scalar(255,0,0), 2, 8, 0);
-  putText(img, "+a", cv::Point(180, img.rows-15), fontFace, fontScale, cv::Scalar(255,0,0), linethick, CV_AA);
+  putText(img, "+a", cv::Point(180, img.rows-15), fontFace, fontScale, cv::Scalar(255,0,0), linethick, cv::LINE_AA);
 
   this->update_image(img, false);
 
@@ -442,7 +442,7 @@ void AssemblyImageView::update_image_zscan(const QString& img_path)
 {
   if(assembly::IsFile(img_path))
   {
-    image_zscan_ = assembly::cv_imread(img_path.toStdString(), CV_LOAD_IMAGE_COLOR);
+    image_zscan_ = assembly::cv_imread(img_path.toStdString(), cv::IMREAD_COLOR);
 
     NQLog("AssemblyImageView", NQLog::Spam) << "update_image_zscan"
        << ": emitting signal \"image_zscan_updated\"";

@@ -38,7 +38,7 @@ void AssemblyUEyeView::setImage(const cv::Mat& newImage)
     if(newImage.channels() == 1)
     {
         cv::Mat temp;
-        cvtColor(newImage, temp, CV_GRAY2RGB);
+        cvtColor(newImage, temp, cv::COLOR_GRAY2RGB);
 
         image_ = QImage((const uchar *) temp.data, temp.cols, temp.rows, temp.step, QImage::Format_RGB888);
         image_.bits();

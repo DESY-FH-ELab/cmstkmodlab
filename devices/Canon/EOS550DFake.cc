@@ -189,7 +189,7 @@ string EOS550DFake::renderPicture(bool preview)
 
   // Font settings
 #ifndef USE_FAKEIO
-  int fontFace = CV_FONT_HERSHEY_SIMPLEX;
+  int fontFace = cv::FONT_HERSHEY_SIMPLEX;
 #else
   int fontFace = FONT_HERSHEY_SIMPLEX;
 #endif
@@ -284,7 +284,7 @@ string EOS550DFake::renderPicture(bool preview)
 
   vector<int> options;
 #ifndef USE_FAKEIO
-  options.push_back(CV_IMWRITE_JPEG_QUALITY);
+  options.push_back(cv::IMWRITE_JPEG_QUALITY);
 #else
   options.push_back(IMWRITE_JPEG_QUALITY);
 #endif
