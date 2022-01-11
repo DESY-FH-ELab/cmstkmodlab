@@ -21,6 +21,8 @@
 
 #include "HuberPilotOne.h"
 
+// #define __HUBERPILOTONE_DEBUG 1
+
 HuberPilotOne::HuberPilotOne(const ioport_t ioPort)
  : VHuberPilotOne(ioPort),
    uDelay_(250000)
@@ -32,7 +34,7 @@ HuberPilotOne::HuberPilotOne(const ioport_t ioPort)
 
 bool HuberPilotOne::SetTemperatureSetPoint(const float temperatureSetPoint)
 {
-  #ifdef __HUBERPETITEFLEUR_DEBUG
+  #ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::SetTemperatureSetPoint] -- DEBUG: Called." << std::endl;
   #endif
 
@@ -97,7 +99,7 @@ float HuberPilotOne::GetTemperatureSetPoint()
 
 float HuberPilotOne::GetBathTemperature()
 {
-#ifdef __HUBERPETITEFLEUR_DEBUG
+#ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::GetBathTemperature] -- DEBUG: Called." << std::endl;
 #endif
 
@@ -116,7 +118,7 @@ float HuberPilotOne::GetBathTemperature()
 
 float HuberPilotOne::GetReturnTemperature()
 {
-#ifdef __HUBERPETITEFLEUR_DEBUG
+#ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::GetBathTemperature] -- DEBUG: Called." << std::endl;
 #endif
 
@@ -135,7 +137,7 @@ float HuberPilotOne::GetReturnTemperature()
 
 float HuberPilotOne::GetPumpPressure()
 {
-#ifdef __HUBERPETITEFLEUR_DEBUG
+#ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::GetPumpPressure] -- DEBUG: Called." << std::endl;
 #endif
 
@@ -154,7 +156,7 @@ float HuberPilotOne::GetPumpPressure()
 
 int HuberPilotOne::GetPower()
 {
-#ifdef __HUBERPETITEFLEUR_DEBUG
+#ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::GetPower] -- DEBUG: Called." << std::endl;
 #endif
 
@@ -173,7 +175,7 @@ int HuberPilotOne::GetPower()
 
 bool HuberPilotOne::SetTemperatureControlMode(bool external)
 {
-#ifdef __HUBERPETITEFLEUR_DEBUG
+#ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::SetTemperatureControlMode] -- DEBUG: Called." << std::endl;
 #endif
 
@@ -210,7 +212,7 @@ return true;
 
 bool HuberPilotOne::GetTemperatureControlMode()
 {
-#ifdef __HUBERPETITEFLEUR_DEBUG
+#ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::GetTemperatureControlMode] -- DEBUG: Called." << std::endl;
 #endif
 
@@ -229,7 +231,7 @@ bool HuberPilotOne::GetTemperatureControlMode()
 
 bool HuberPilotOne::SetTemperatureControlEnabled(bool enabled)
 {
-#ifdef __HUBERPETITEFLEUR_DEBUG
+#ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::SetTemperatureControlEnabled] -- DEBUG: Called." << std::endl;
 #endif
 
@@ -266,7 +268,7 @@ return true;
 
 bool HuberPilotOne::GetTemperatureControlEnabled()
 {
-#ifdef __HUBERPETITEFLEUR_DEBUG
+#ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::GetTemperatureControlEnabled] -- DEBUG: Called." << std::endl;
 #endif
 
@@ -285,7 +287,7 @@ bool HuberPilotOne::GetTemperatureControlEnabled()
 
 bool HuberPilotOne::SetCirculatorEnabled(bool enabled)
 {
-#ifdef __HUBERPETITEFLEUR_DEBUG
+#ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::SetCirculatorEnabled] -- DEBUG: Called." << std::endl;
 #endif
 
@@ -322,7 +324,7 @@ return true;
 
 bool HuberPilotOne::GetCirculatorEnabled()
 {
-#ifdef __HUBERPETITEFLEUR_DEBUG
+#ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::GetCirculatorEnabled] -- DEBUG: Called." << std::endl;
 #endif
 
@@ -341,7 +343,7 @@ bool HuberPilotOne::GetCirculatorEnabled()
 
 float HuberPilotOne::GetCoolingWaterInletTemperature()
 {
-#ifdef __HUBERPETITEFLEUR_DEBUG
+#ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::GetCoolingWaterInletTemperature] -- DEBUG: Called." << std::endl;
 #endif
 
@@ -360,7 +362,7 @@ float HuberPilotOne::GetCoolingWaterInletTemperature()
 
 float HuberPilotOne::GetCoolingWaterOutletTemperature()
 {
-#ifdef __HUBERPETITEFLEUR_DEBUG
+#ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::GetCoolingWaterOutletTemperature] -- DEBUG: Called." << std::endl;
 #endif
 
@@ -379,7 +381,7 @@ float HuberPilotOne::GetCoolingWaterOutletTemperature()
 
 void HuberPilotOne::StripBuffer(char* buffer) const
 {
-  #ifdef __HUBERPETITEFLEUR_DEBUG
+  #ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::StripBuffer] -- DEBUG: Called." << std::endl;
   std::cout << "[HuberPilotOne::StripBuffer] -- DEBUG: Buffer is:" << std::endl;
   std::cout << " > " << buffer << std::endl;
@@ -408,7 +410,7 @@ float HuberPilotOne::ToFloat(const char* buffer) const
 
 void HuberPilotOne::Device_Init()
 {
-  #ifdef __HUBERPETITEFLEUR_DEBUG
+  #ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::Device_Init] -- DEBUG: Called." << std::endl;
   #endif
 
