@@ -17,35 +17,54 @@
 
 #ifdef USE_FAKEIO
 #include "HuberPetiteFleurFake.h"
+#include "HuberPilotOneFake.h"
 typedef HuberPetiteFleurFake HuberPetiteFleur_t;
+typedef HuberPilotOneFake HuberPilotOne_t;
 #else
 #include "HuberPetiteFleur.h"
+#include "HuberPilotOne.h"
 typedef HuberPetiteFleur HuberPetiteFleur_t;
+typedef HuberPilotOne HuberPilotOne_t;
 #endif
 
 int main()
 {
   std::cout << "test" << std::endl;
-  
-  HuberPetiteFleur_t huber("/dev/ttyACM0");
-  
-  huber.SetWorkingTemperature(12.34);
 
-  long suffering = 0;
+  HuberPilotOne_t huber("/dev/ttyACM1");
 
-  while (1) {
-    std::cout << "bath = " << huber.GetBathTemperature() << std::endl;
-    float work = huber.GetWorkingTemperature();
-    std::cout << "work = " << work << std::endl;
-    std::cout << "circ = " << (int)huber.GetCirculatorStatus() << std::endl;
-    if (fabs(work-12.34)>0.01) break;
-    std::cout << std::endl;
-    usleep(500000);
+  std::cout << huber.GetTemperatureSetPoint() << std::endl;
+  std::cout << huber.GetBathTemperature() << std::endl;
+  std::cout << huber.GetReturnTemperature() << std::endl;
+  std::cout << huber.GetPumpPressure() << std::endl;
+  std::cout << huber.GetPower() << std::endl;
+  std::cout << huber.GetTemperatureControlEnabled() << std::endl;
+  std::cout << huber.GetCoolingWaterInletTemperature() << std::endl;
+  std::cout << huber.GetCoolingWaterOutletTemperature() << std::endl;
 
-    suffering++;
+  /*
+  {
+    HuberPetiteFleur_t huber("/dev/ttyACM0");
   
-    std::cout << "suffering: " << suffering << std::endl;
+    huber.SetWorkingTemperature(12.34);
+
+    long suffering = 0;
+
+    while (1) {
+      std::cout << "bath = " << huber.GetBathTemperature() << std::endl;
+      float work = huber.GetWorkingTemperature();
+      std::cout << "work = " << work << std::endl;
+      std::cout << "circ = " << (int)huber.GetCirculatorStatus() << std::endl;
+      if (fabs(work-12.34)>0.01) break;
+      std::cout << std::endl;
+      usleep(500000);
+
+      suffering++;
+  
+      std::cout << "suffering: " << suffering << std::endl;
+    }
   }
-
+  */
+  
   return 0;
 }
