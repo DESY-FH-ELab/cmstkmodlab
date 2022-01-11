@@ -62,7 +62,7 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   			5, this);
 #else
   	huberModel_ = new HuberUnistat525wModel(config->getValue<std::string>("HuberUnistatDevice").c_str(),
-  			20, this);
+  			10, this);
 #endif
   }
 
