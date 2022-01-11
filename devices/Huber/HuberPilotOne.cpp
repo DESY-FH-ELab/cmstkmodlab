@@ -25,7 +25,7 @@
 
 HuberPilotOne::HuberPilotOne(const ioport_t ioPort)
  : VHuberPilotOne(ioPort),
-   uDelay_(250000)
+   uDelay_(100000)
 {
   comHandler_ = new PilotOneComHandler( ioPort );
   isCommunication_ = false;
