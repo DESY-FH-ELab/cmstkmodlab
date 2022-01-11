@@ -416,15 +416,15 @@ void HuberPilotOne::Device_Init()
 
   char buffer[1000];
   
-  comHandler_->SendCommand( "CA?" );
+  comHandler_->SendCommand( "{M1B****" );
   usleep( uDelay_ );
 
   comHandler_->ReceiveString( buffer );
   usleep( uDelay_ );
   StripBuffer( buffer );
   std::string temp(buffer);
-
-  if (temp.compare(0, 2, "CA")!=0) {
+  
+  if (temp.compare(0, 8, "{S1BD98B")!=0) {
     std::cerr << " [HuberPilotOne::Device_Init] ** ERROR: Device communication problem."
         << std::endl;
     isCommunication_ = false;
