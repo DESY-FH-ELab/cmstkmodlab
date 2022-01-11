@@ -50,7 +50,7 @@ bool HuberPilotOne::SetTemperatureSetPoint(const float temperatureSetPoint)
   theCommand << "{M00"
       << std::setfill('0') << std::setw(4)
       << std::hex << std::uppercase
-      << temperatureSetPoint * 100;
+      << (int)(temperatureSetPoint * 100);
 
   comHandler_->SendCommand(theCommand.str().c_str());
   usleep(uDelay_);
