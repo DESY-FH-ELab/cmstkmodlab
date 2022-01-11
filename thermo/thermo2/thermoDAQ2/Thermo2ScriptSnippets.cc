@@ -27,8 +27,8 @@ Thermo2ScriptSnippets::Thermo2ScriptSnippets(QWidget *parent)
   addItem("thermo - execution time", "etime = thermo.uTime()\n");
   addItem("thermo - make unix time", "utime = thermo.mkUTime(year, month, day, hour, minute, second)\n");
 
-  // addItem("huber - set temperature set point", "huber.setTemperatureSetPoint(temperature)\n");
-  // addItem("huber - get temperature set point", "temperature = huber.getTemperatureSetPoint()\n");
+  addItem("huber - set temperature set point", "huber.setTemperatureSetPoint(temperature)\n");
+  addItem("huber - get temperature set point", "temperature = huber.getTemperatureSetPoint()\n");
 
   addItem("marta - set temperature set point", "marta.setTemperatureSetPoint(temperature)\n");
   addItem("marta - get temperature set point", "temperature = marta.getTemperatureSetPoint()\n");
