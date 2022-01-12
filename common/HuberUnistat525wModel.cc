@@ -195,11 +195,21 @@ void HuberUnistat525wModel::updateInformation()
     bool newTemperatureControlEnabled = controller_->GetTemperatureControlEnabled();
     bool newCirculatorEnabled = controller_->GetCirculatorEnabled();
     double newBathTemperature = controller_->GetBathTemperature();
-    double newReturnTemperature = controller_->GetReturnTemperature();
-    double newCWInletTemperature = controller_->GetCoolingWaterInletTemperature();
-    double newCWOutletTemperature = controller_->GetCoolingWaterOutletTemperature();
-    double newPumpPressure = controller_->GetPumpPressure();
-    int newPower = controller_->GetPower();
+
+    // double newReturnTemperature = controller_->GetReturnTemperature();
+    double newReturnTemperature = 0.0;
+
+    // double newCWInletTemperature = controller_->GetCoolingWaterInletTemperature();
+    double newCWInletTemperature = 0.0;
+
+    // double newCWOutletTemperature = controller_->GetCoolingWaterOutletTemperature();
+    double newCWOutletTemperature = 0.0;
+
+    // double newPumpPressure = controller_->GetPumpPressure();
+    double newPumpPressure = 0.0;
+
+    // int newPower = controller_->GetPower();
+    int newPower = 0.0;
 
     if (newTemperatureSetPoint != temperatureSetPoint_ ||
         newTemperatureControlMode != temperatureControlMode_ ||
