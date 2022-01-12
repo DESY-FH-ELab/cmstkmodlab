@@ -14,7 +14,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -std=c++11")
 set_target_properties(TkModLabCanon PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(TkModLabCanon PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/devices/lib)
 
-target_link_libraries(TkModLabCanon PkgConfig::LIBGPHOTO2 PkgConfig::OPENCV4 PkgConfig::EXIV2)
+if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
+      include_directories( ${OpenCV_INCLUDE_DIRS} )
+      target_link_libraries(TkModLabCanon PkgConfig::LIBGPHOTO2 ${OpenCV_LIBS} PkgConfig::EXIV2)
+else()
+      target_link_libraries(TkModLabCanon PkgConfig::LIBGPHOTO2 PkgConfig::OPENCV4 PkgConfig::EXIV2)
+endif()
 target_compile_features(TkModLabCanon PRIVATE cxx_std_11)
 
 #add_executable(TkModLabAgilent_test test.cc)
