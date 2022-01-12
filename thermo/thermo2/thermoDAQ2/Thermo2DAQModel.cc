@@ -91,6 +91,18 @@ void Thermo2DAQModel::startMeasurement()
     nge103BMeasuredCurrent_[i] = 0.;
   }
 
+  u525wState_ = false;
+  u525wTemperatureSetPoint_ = 0.0;
+  u525wTemperatureControlMode_ = false;
+  u525wTemperatureControlEnabled_ = false;
+  u525wCirculatorEnabled_ = false;
+  u525wBathTemperature_ = 0.0;
+  u525wReturnTemperature_ = 0.0;
+  u525wPumpPressure_ = 0.0;
+  u525wPower_ = 0.0;
+  u525wCWInletTemperature_ = 0.0;
+  u525wCWOutletTemperature_ = 0.0;
+
   agilentState_ = false;
   agilentPumpState_ = false;
   agilentPumpStatus_ = 0;
