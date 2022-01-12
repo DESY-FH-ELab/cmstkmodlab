@@ -79,9 +79,6 @@ void Thermo2DAQModel::myMoveToThread(QThread *thread)
 
 void Thermo2DAQModel::startMeasurement()
 {
-  daqState_ = true;
-  emit daqStateChanged(true);
-
   for (int i=0;i<3;++i) {
     nge103BOutputState_[i] = false;
     nge103BOutputMode_[i] = 0;
@@ -121,6 +118,9 @@ void Thermo2DAQModel::startMeasurement()
   QString buffer;
   createDAQStatusMessage(buffer, true);
   emit daqMessage(buffer);
+
+  daqState_ = true;
+  emit daqStateChanged(true);
 
   NQLogMessage("thermo2DAQ") << "measurement started";
 }
@@ -372,6 +372,8 @@ void Thermo2DAQModel::customDAQMessage(const QString & message)
 
 void Thermo2DAQModel::huberInfoChanged()
 {
+  if (!daqState_) return;
+
   NQLogDebug("Thermo2DAQModel") << "huberInfoChanged()";
 
   if (thread()==QApplication::instance()->thread()) {
@@ -434,6 +436,8 @@ void Thermo2DAQModel::huberInfoChanged()
 
 void Thermo2DAQModel::martaInfoChanged()
 {
+  if (!daqState_) return;
+
   NQLogDebug("Thermo2DAQModel") << "martaInfoChanged()";
 
   if (thread()==QApplication::instance()->thread()) {
@@ -590,6 +594,8 @@ void Thermo2DAQModel::martaInfoChanged()
 
 void Thermo2DAQModel::agilentInfoChanged()
 {
+  if (!daqState_) return;
+
   NQLogDebug("Thermo2DAQModel") << "agilentInfoChanged()";
 
   if (thread()==QApplication::instance()->thread()) {
@@ -632,6 +638,8 @@ void Thermo2DAQModel::agilentInfoChanged()
 
 void Thermo2DAQModel::leyboldInfoChanged()
 {
+  if (!daqState_) return;
+
   NQLogDebug("Thermo2DAQModel") << "leyboldInfoChanged()";
 
   if (thread()==QApplication::instance()->thread()) {
@@ -671,6 +679,8 @@ void Thermo2DAQModel::leyboldInfoChanged()
 
 void Thermo2DAQModel::nge103BInfoChanged()
 {
+  if (!daqState_) return;
+
   NQLogDebug("Thermo2DAQModel") << "nge103BInfoChanged()";
 
   if (thread()==QApplication::instance()->thread()) {
@@ -722,6 +732,8 @@ void Thermo2DAQModel::nge103BInfoChanged()
 
 void Thermo2DAQModel::keithleyInfoChanged()
 {
+  if (!daqState_) return;
+
   NQLogDebug("Thermo2DAQModel") << "keithleyInfoChanged()";
 
   if (thread()==QApplication::instance()->thread()) {
