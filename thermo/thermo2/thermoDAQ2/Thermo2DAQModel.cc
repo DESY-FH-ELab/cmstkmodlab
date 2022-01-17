@@ -115,12 +115,12 @@ void Thermo2DAQModel::startMeasurement()
     }
   }
 
+  daqState_ = true;
+  emit daqStateChanged(true);
+
   QString buffer;
   createDAQStatusMessage(buffer, true);
   emit daqMessage(buffer);
-
-  daqState_ = true;
-  emit daqStateChanged(true);
 
   NQLogMessage("thermo2DAQ") << "measurement started";
 }
