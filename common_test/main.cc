@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2019 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -18,6 +18,8 @@
 #include <vector>
 #include <map>
 #include <cmath>
+
+#include <QApplication>
 
 #include <nvector3D.h>
 #include <npoint3D.h>
@@ -39,6 +41,8 @@
 
 #include <MartaModel.h>
 
+#include "CommonTestMainWindow.h"
+
 double imageScale(double focalLength)
 {
   double p0 = -0.0240888;
@@ -48,13 +52,29 @@ double imageScale(double focalLength)
   return p0 + p1 * focalLength + p2 * focalLength * focalLength;
 }
 
-int main(int /* argc */, char ** /* argv */)
+int main(int argc, char ** argv)
 {
+  {
+    QApplication app(argc, argv);
+
+    app.setStyle("cleanlooks");
+
+    ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2/thermo2.cfg");
+
+    CommonTestMainWindow mainWindow;
+
+    mainWindow.show();
+
+    return app.exec();
+  }
+
+  /*
   {
     MartaModel *marta = new MartaModel("10.255.21.224:502");
 
     delete marta;
   }
+  */
   
   /*
   {
