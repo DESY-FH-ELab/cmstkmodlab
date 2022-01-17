@@ -13,8 +13,6 @@
 #include <iostream>
 #include <cmath>
 
-#include <gsl/gsl_multifit.h>
-
 #include <QApplication>
 #include <QDateTime>
 #include <QXmlStreamWriter>
@@ -35,8 +33,6 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
    nge103BModel_(nge103BModel),
    keithleyModel_(keithleyModel)
 {
-  gsl_set_error_handler_off();
-
   ApplicationConfig* config = ApplicationConfig::instance();
 
   mattermostStatus_ = config->getValue<int>("ThroughPlaneMattermostStatus");
@@ -211,102 +207,38 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
     if (countTop>=2 && countBottom>=2) {
       calculationState_ = true;
 
-      gsl_matrix *X, *cov;
-      gsl_vector *x, *y, *c;
-      gsl_multifit_robust_workspace * work;
-      unsigned int p;
-      double pos;
-      int ret;
+      std::vector<std::pair<double,double> > values;
+      double p0, p1;
 
-      if (countTop<4) {
-        p = 2;
-      } else {
-        p = 3;
-      }
-      p = 2; // make linear fit the default
-
-      X = gsl_matrix_alloc(countTop, p);
-      x = gsl_vector_alloc(countTop);
-      y = gsl_vector_alloc(countTop);
-      c = gsl_vector_alloc(p);
-      cov = gsl_matrix_alloc(p, p);
-
+      values.clear();
       for (unsigned int i=0;i<6;i++) {
         if (keithleyTopSensorStates_[i]) {
-          pos = keithleyTopPositions_[i];
-          gsl_vector_set(x, i, pos);
-          gsl_vector_set(y, i, keithleyTopTemperatures_[i]);
-
-          gsl_matrix_set(X, i, 0, 1.0);
-          gsl_matrix_set(X, i, 1, pos);
-          if (p==3) gsl_matrix_set(X, i, 2, pos*pos);
+          values.push_back(std::pair<double,double>(keithleyTopPositions_[i], keithleyTopTemperatures_[i]));
         }
       }
+      fitter_.fit(values, 2, p0, p1);
 
-      work = gsl_multifit_robust_alloc(gsl_multifit_robust_bisquare, X->size1, X->size2);
-      work->maxiter = 1000;
-      ret = gsl_multifit_robust(X, y, c, cov, work);
-      gsl_multifit_robust_free(work);
+      sampleTTop_ = p0; // [degC]
+      gradientTop_ = -1.0 * p1 * 1000.; // [degC/m]
+      powerTop_ = gradientTop_ * kBlock_ * ABlock_ * 1e-6; // [W]
 
-      if (ret!=GSL_EMAXITER) {
-        sampleTTop_ = gsl_vector_get(c, 0);
-        gradientTop_ = -1.0 * gsl_vector_get(c, 1) * 1000.;
-        powerTop_ = gradientTop_ * kBlock_ * ABlock_ * 1e-6;
+      NQLogDebug("Thermo2ThroughPlaneModel") << "gradientTop_ = " << gradientTop_;
+      NQLogDebug("Thermo2ThroughPlaneModel") << "powerTop_ = " << powerTop_;
 
-        NQLogDebug("Thermo2ThroughPlaneModel") << "gradientTop_ = " << gradientTop_;
-        NQLogDebug("Thermo2ThroughPlaneModel") << "powerTop_ = " << powerTop_;
-      }
-
-      gsl_matrix_free(X);
-      gsl_vector_free(x);
-      gsl_vector_free(y);
-      gsl_vector_free(c);
-      gsl_matrix_free(cov);
-
-      if (countBottom<4) {
-        p = 2;
-      } else {
-        p = 3;
-      }
-      p = 2; // make linear fit the default
-
-      X = gsl_matrix_alloc(countBottom, p);
-      x = gsl_vector_alloc(countBottom);
-      y = gsl_vector_alloc(countBottom);
-      c = gsl_vector_alloc(p);
-      cov = gsl_matrix_alloc(p, p);
-
+      values.clear();
       for (unsigned int i=0;i<6;i++) {
-        if (keithleyBottomSensorStates_[i]) {
-          pos = keithleyBottomPositions_[i];
-          gsl_vector_set(x, i, pos);
-          gsl_vector_set(y, i, keithleyBottomTemperatures_[i]);
-
-          gsl_matrix_set(X, i, 0, 1.0);
-          gsl_matrix_set(X, i, 1, pos);
-          if (p==3) gsl_matrix_set(X, i, 2, pos*pos);
+        if (keithleyTopSensorStates_[i]) {
+          values.push_back(std::pair<double,double>(keithleyBottomPositions_[i], keithleyTopTemperatures_[i]));
         }
       }
+      fitter_.fit(values, 2, p0, p1);
 
-      work = gsl_multifit_robust_alloc(gsl_multifit_robust_bisquare, X->size1, X->size2);
-      work->maxiter = 1000;
-      ret = gsl_multifit_robust(X, y, c, cov, work);
-      gsl_multifit_robust_free(work);
+      sampleTBottom_ = p0;
+      gradientBottom_ = p1 * 1000.;
+      powerBottom_ = gradientBottom_ * kBlock_ * ABlock_ * 1e-6;
 
-      if (ret!=GSL_EMAXITER) {
-        sampleTBottom_ = gsl_vector_get(c, 0);
-        gradientBottom_ = gsl_vector_get(c, 1) * 1000.;
-        powerBottom_ = gradientBottom_ * kBlock_ * ABlock_ * 1e-6;
-
-        NQLogDebug("Thermo2ThroughPlaneModel") << "gradientBottom_ = " << gradientBottom_;
-        NQLogDebug("Thermo2ThroughPlaneModel") << "powerBottom_ = " << powerBottom_;
-      }
-
-      gsl_matrix_free(X);
-      gsl_vector_free(x);
-      gsl_vector_free(y);
-      gsl_vector_free(c);
-      gsl_matrix_free(cov);
+      NQLogDebug("Thermo2ThroughPlaneModel") << "gradientBottom_ = " << gradientBottom_;
+      NQLogDebug("Thermo2ThroughPlaneModel") << "powerBottom_ = " << powerBottom_;
 
       sampleTMiddle_ = 0.5*(sampleTTop_ + sampleTBottom_);
 

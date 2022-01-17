@@ -1,2 +1,3 @@
+add_subdirectory(thermo2Common)
 add_subdirectory(thermoDAQ2)
 add_subdirectory(thermoDisplay2)

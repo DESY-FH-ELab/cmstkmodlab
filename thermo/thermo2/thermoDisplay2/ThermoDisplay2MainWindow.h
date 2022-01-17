@@ -22,6 +22,8 @@
 #include <QtCharts/QChart>
 #include <QtCharts/QLineSeries>
 
+#include "Thermo2ThroughPlaneFitter.h"
+
 #include "ThermoDAQ2Client.h"
 #include "ThermoDAQ2NetworkReader.h"
 
@@ -67,10 +69,14 @@ protected:
   std::array<unsigned int,6> keithleyTopCards_;
   std::array<unsigned int,6> keithleyTopChannels_;
   std::array<double,6> keithleyTopPositions_;
+  std::array<double,6> keithleyTopOffsets_;
   std::array<unsigned int,6> keithleyBottomSensors_;
   std::array<unsigned int,6> keithleyBottomCards_;
   std::array<unsigned int,6> keithleyBottomChannels_;
   std::array<double,6> keithleyBottomPositions_;
+  std::array<double,6> keithleyBottomOffsets_;
+
+  Thermo2ThroughPlaneFitter fitter_;
 
   ThermoDisplay2ChartView *ChillerTSChartView_;
   ThermoDisplay2TemperatureStateChart *ChillerTSChart_;

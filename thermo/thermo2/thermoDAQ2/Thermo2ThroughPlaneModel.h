@@ -24,6 +24,8 @@
 #include <QMutex>
 #include <QMutexLocker>
 
+#include "Thermo2ThroughPlaneFitter.h"
+
 #include "HuberUnistat525wModel.h"
 #include "RohdeSchwarzNGE103BModel.h"
 #include "KeithleyDAQ6510Model.h"
@@ -128,6 +130,8 @@ protected:
   std::array<double,6> keithleyBottomTemperatures_;
 
   double sourcePower_;
+
+  Thermo2ThroughPlaneFitter fitter_;
 
   bool calculationState_;
   double gradientTop_;
