@@ -34,6 +34,7 @@ void ApplicationConfigWriter::write(std::multimap<std::string,std::string> &keyv
     file.close();
     writeMerge(keyvalueMap);
   } else {
+    file.close();
     writeNew(keyvalueMap);
   }
 }
@@ -73,8 +74,8 @@ void ApplicationConfigWriter::writeMerge(std::multimap<std::string,std::string> 
 		if (it!=tmap.end()) {
 			if (itFind==keyMap.end()) {
 				ostream.fill(' ');
-				ostream.width(25);
-				ostream << std::left << it->first;
+				ostream.width(24);
+				ostream << std::left << it->first << " ";
 
 				count = 0;
 				auto range = tmap.equal_range(it->first);
@@ -83,7 +84,7 @@ void ApplicationConfigWriter::writeMerge(std::multimap<std::string,std::string> 
 					ostream << i->second;
 					count++;
 				}
-				ostream << "\n";
+				ostream << std::endl;
 
 				keyMap.insert(std::make_pair(it->first, it->first));
 			}
@@ -99,8 +100,8 @@ void ApplicationConfigWriter::writeMerge(std::multimap<std::string,std::string> 
 		std::map<std::string,std::string>::iterator itFind = keyMap.find(kv.first);
 		if (itFind==keyMap.end()) {
 			ostream.fill(' ');
-			ostream.width(25);
-			ostream << std::left << kv.first;
+			ostream.width(24);
+			ostream << std::left << kv.first << " ";
 
 			count = 0;
 			auto range = tmap.equal_range(kv.first);
@@ -109,7 +110,7 @@ void ApplicationConfigWriter::writeMerge(std::multimap<std::string,std::string> 
 				ostream << i->second;
 				count++;
 			}
-			ostream << "\n";
+			ostream << std::endl;
 
 			keyMap.insert(std::make_pair(kv.first, kv.first));
 		}
@@ -124,6 +125,7 @@ void ApplicationConfigWriter::writeMerge(std::multimap<std::string,std::string> 
 
 void ApplicationConfigWriter::writeNew(std::multimap<std::string,std::string> &keyvalueMap)
 {
+  int count = 0;
 	std::map<std::string,std::string> keyMap;
   std::ofstream file(outputFileName_.c_str(), std::ios::out);
   for (auto & kv : keyvalueMap) {
@@ -131,13 +133,17 @@ void ApplicationConfigWriter::writeNew(std::multimap<std::string,std::string> &k
   	std::map<std::string,std::string>::iterator itFind = keyMap.find(kv.first);
   	if (itFind==keyMap.end()) {
   		file.fill(' ');
-  		file.width(25);
-  		file << std::left << kv.first;
+  		file.width(24);
+  		file << std::left << kv.first << " ";
 
+  		count = 0;
   		auto range = keyvalueMap.equal_range(kv.first);
   		for (auto i = range.first; i != range.second; ++i) {
-  			file << i->second << " ";
+  		  if (count>0) file << " ";
+  		file << i->second << " ";
+  		count++;
   		}
+  		file << std::endl;
 
   		keyMap.insert(std::make_pair(kv.first, kv.first));
   	}
