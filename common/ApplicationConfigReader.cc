@@ -31,8 +31,7 @@ void ApplicationConfigReader::fill(std::multimap<std::string,std::string> &keyva
 {
   std::ifstream file(inputFileName_.c_str(), std::ios::in);
 
-  if(not file.good())
-  {
+  if (!file.good()) {
     std::cerr << " [ApplicationConfigReader::openAndCheckFile] ** ERROR: failed to open file: " << inputFileName_ << "." << std::endl;
 
     QMessageBox::critical(0, tr("[ApplicationConfigReader::fill]"),
@@ -47,20 +46,17 @@ void ApplicationConfigReader::fill(std::multimap<std::string,std::string> &keyva
   std::string Value;
   std::string buffer;
 
-  while(std::getline(file, buffer))
-  {
+  while (std::getline(file, buffer)) {
     // ignore all characters after (and including) hashtag
-    if(buffer.find("#") != std::string::npos)
-    {
+    if (buffer.find("#") != std::string::npos) {
       buffer = buffer.substr(0, buffer.find("#"));
     }
 
-    if(buffer.empty()){ continue; }
+    if (buffer.empty()) continue;
 
     std::istringstream iss(buffer.c_str(), std::istringstream::in);
     iss >> Key;
-    while(iss >> std::quoted(Value))
-    {
+    while (iss >> std::quoted(Value)) {
       keyvalueMap.insert(std::make_pair(Key, Value));
     }
   }
