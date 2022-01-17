@@ -27,7 +27,7 @@ class ApplicationConfigWriter : public QObject
 {
   Q_OBJECT
 
- public:
+public:
 
   ApplicationConfigWriter( const std::string & filename );
   ~ApplicationConfigWriter();
@@ -35,10 +35,10 @@ class ApplicationConfigWriter : public QObject
   void write(std::multimap<std::string,std::string> &keyvalueMap);
   std::string getFileName( void ) { return outputFileName_; }
 
- private:
+private:
 
   std::string outputFileName_;
-  
+
   void writeMerge(std::multimap<std::string,std::string> &keyvalueMap);
   void writeNew(std::multimap<std::string,std::string> &keyvalueMap);
 };

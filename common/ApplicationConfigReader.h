@@ -28,14 +28,14 @@ class ApplicationConfigReader : public QObject
 
   Q_OBJECT
 
- public:
+public:
   ApplicationConfigReader( const std::string & filename );
   ~ApplicationConfigReader();
 
   void fill(std::multimap<std::string,std::string> &keyvalueMap);
   std::string getFileName( void ) { return inputFileName_; }
 
- private:
+private:
 
   std::string inputFileName_;
 };
