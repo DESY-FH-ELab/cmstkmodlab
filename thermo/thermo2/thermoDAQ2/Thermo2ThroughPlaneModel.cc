@@ -126,6 +126,25 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
   connect(mattermostTimer_, SIGNAL(timeout()),
 	  this, SLOT(sendMattermostStatus()));
   mattermostTimer_->start(60*1000);
+
+  connect(config, SIGNAL(valueChanged()),
+          this, SLOT(configurationChanged()));
+}
+
+void Thermo2ThroughPlaneModel::configurationChanged()
+{
+  QMutexLocker locker(&mutex_);
+
+  ApplicationConfig* config = ApplicationConfig::instance();
+
+  resistance_ = config->getValue<double>("ThroughPlaneResistance");
+  cableResistance_ = config->getValue<double>("ThroughPlaneCableResistance");
+  kBlock_ = config->getValue<double>("ThroughPlaneKBlock");
+  ABlock_ = config->getValue<double>("ThroughPlaneABlock");
+  keithleyTopPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopPositions");
+  keithleyTopOffsets_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopOffsets");
+  keithleyBottomPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomPositions");
+  keithleyBottomOffsets_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomOffsets");
 }
 
 void Thermo2ThroughPlaneModel::setSinkTemperature(double temperature)

@@ -49,6 +49,10 @@ public slots:
   void clearData();
   void savePlots();
 
+protected slots:
+
+  void configurationChanged();
+
 protected:
 
   QTimer* timer_;

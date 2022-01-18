@@ -76,6 +76,8 @@ public slots:
 
 protected slots:
 
+  void configurationChanged();
+
   void huberInfoChanged();
   void nge103BInfoChanged();
   void keithleyInfoChanged();

@@ -484,6 +484,23 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
           this, SLOT(requestData()));
   timer_->setSingleShot(false);
   timer_->start(5000);
+
+  connect(config, SIGNAL(valueChanged()),
+          this, SLOT(configurationChanged()));
+}
+
+void ThermoDisplay2MainWindow::configurationChanged()
+{
+  ApplicationConfig* config = ApplicationConfig::instance();
+
+  resistance_ = config->getValue<double>("ThroughPlaneResistance");
+  cableResistance_ = config->getValue<double>("ThroughPlaneCableResistance");
+  kBlock_ = config->getValue<double>("ThroughPlaneKBlock");
+  ABlock_ = config->getValue<double>("ThroughPlaneABlock");
+  keithleyTopPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopPositions");
+  keithleyTopOffsets_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopOffsets");
+  keithleyBottomPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomPositions");
+  keithleyBottomOffsets_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomOffsets");
 }
 
 void ThermoDisplay2MainWindow::clearData()
