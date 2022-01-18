@@ -19,6 +19,8 @@
 
 #include <QObject>
 
+#include "ApplicationConfig.h"
+
 /** @addtogroup common
  *  @{
  */
@@ -32,15 +34,15 @@ public:
   ApplicationConfigWriter( const std::string & filename );
   ~ApplicationConfigWriter();
 
-  void write(std::multimap<std::string,std::string> &keyvalueMap);
+  void write(ApplicationConfig::storage_t  &keyvalueMap);
   std::string getFileName( void ) { return outputFileName_; }
 
 private:
 
   std::string outputFileName_;
 
-  void writeMerge(std::multimap<std::string,std::string> &keyvalueMap);
-  void writeNew(std::multimap<std::string,std::string> &keyvalueMap);
+  void writeMerge(ApplicationConfig::storage_t  &keyvalueMap);
+  void writeNew(ApplicationConfig::storage_t  &keyvalueMap);
 };
 
 /** @} */

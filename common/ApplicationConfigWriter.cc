@@ -12,6 +12,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 
 #include <QMessageBox>
 
@@ -27,7 +28,7 @@ ApplicationConfigWriter::~ApplicationConfigWriter()
 
 }
 
-void ApplicationConfigWriter::write(std::multimap<std::string,std::string> &keyvalueMap)
+void ApplicationConfigWriter::write(ApplicationConfig::storage_t  &keyvalueMap)
 {
   std::ifstream file( outputFileName_.c_str(), std::ios::in );
   if (file.good()) {
@@ -39,11 +40,17 @@ void ApplicationConfigWriter::write(std::multimap<std::string,std::string> &keyv
   }
 }
 
-void ApplicationConfigWriter::writeMerge(std::multimap<std::string,std::string> &keyvalueMap)
+void ApplicationConfigWriter::writeMerge(ApplicationConfig::storage_t  &keyvalueMap)
 {
   std::map<std::string,std::string> keyMap;
-  std::multimap<std::string,std::string> tmap = keyvalueMap;
+  ApplicationConfig::storage_t tmap = keyvalueMap;
   std::ostringstream ostream;
+
+  unsigned long maxKeyLength = 0;
+  for (auto & kv : keyvalueMap) {
+    maxKeyLength = std::max(maxKeyLength, kv.first.size());
+  }
+  maxKeyLength = 5*(1+maxKeyLength/5)-1;
 
   std::ifstream file( outputFileName_.c_str(), std::ios::in );
   if( !file.good() ) {
@@ -58,9 +65,12 @@ void ApplicationConfigWriter::writeMerge(std::multimap<std::string,std::string> 
   int count;
   std::string Key;
   std::string Value;
+  std::vector<std::string> Values;
   std::string buffer;
+  std::string::size_type n;
 
   while (std::getline(file, buffer)) {
+
     while (buffer[0]==' ') buffer = buffer.substr(1, buffer.length());
     if (buffer[0]=='\0' || buffer[0]=='\n' || buffer[0]=='#') {
       ostream << buffer << std::endl;
@@ -70,20 +80,25 @@ void ApplicationConfigWriter::writeMerge(std::multimap<std::string,std::string> 
     std::istringstream iss(buffer.c_str(), std::istringstream::in);
     iss >> Key;
     std::map<std::string,std::string>::iterator itFind = keyMap.find(Key);
-    std::map<std::string,std::string>::iterator it = tmap.find(Key);
+    ApplicationConfig::storage_t::iterator it = tmap.find(Key);
     if (it!=tmap.end()) {
       if (itFind==keyMap.end()) {
         ostream.fill(' ');
-        ostream.width(24);
+        ostream.width(maxKeyLength);
         ostream << std::left << it->first << " ";
 
         count = 0;
-        auto range = tmap.equal_range(it->first);
-        for (auto i = range.first; i != range.second; ++i) {
+        for (auto & v : it->second) {
           if (count>0) ostream << " ";
-          ostream << i->second;
+          ostream << v;
           count++;
         }
+
+        n = buffer.find("#");
+        if (n != std::string::npos) {
+          ostream << " " << buffer.substr(n);
+        }
+
         ostream << std::endl;
 
         keyMap.insert(std::make_pair(it->first, it->first));
@@ -100,14 +115,13 @@ void ApplicationConfigWriter::writeMerge(std::multimap<std::string,std::string> 
     std::map<std::string,std::string>::iterator itFind = keyMap.find(kv.first);
     if (itFind==keyMap.end()) {
       ostream.fill(' ');
-      ostream.width(24);
+      ostream.width(maxKeyLength);
       ostream << std::left << kv.first << " ";
 
       count = 0;
-      auto range = tmap.equal_range(kv.first);
-      for (auto i = range.first; i != range.second; ++i) {
+      for (auto & v : kv.second) {
         if (count>0) ostream << " ";
-        ostream << i->second;
+        ostream << v;
         count++;
       }
       ostream << std::endl;
@@ -123,24 +137,29 @@ void ApplicationConfigWriter::writeMerge(std::multimap<std::string,std::string> 
   ofile.close();
 }
 
-void ApplicationConfigWriter::writeNew(std::multimap<std::string,std::string> &keyvalueMap)
+void ApplicationConfigWriter::writeNew(ApplicationConfig::storage_t  &keyvalueMap)
 {
   int count = 0;
   std::map<std::string,std::string> keyMap;
   std::ofstream file(outputFileName_.c_str(), std::ios::out);
-  for (auto & kv : keyvalueMap) {
 
+  unsigned long maxKeyLength = 0;
+  for (auto & kv : keyvalueMap) {
+    maxKeyLength = std::max(maxKeyLength, kv.first.size());
+  }
+  maxKeyLength = 5*(1+maxKeyLength/5)-1;
+
+  for (auto & kv : keyvalueMap) {
     std::map<std::string,std::string>::iterator itFind = keyMap.find(kv.first);
     if (itFind==keyMap.end()) {
       file.fill(' ');
-      file.width(24);
+      file.width(maxKeyLength);
       file << std::left << kv.first << " ";
 
       count = 0;
-      auto range = keyvalueMap.equal_range(kv.first);
-      for (auto i = range.first; i != range.second; ++i) {
+      for (auto & v : kv.second) {
         if (count>0) file << " ";
-        file << i->second << " ";
+        file << v << " ";
         count++;
       }
       file << std::endl;

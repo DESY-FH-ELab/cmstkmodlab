@@ -27,7 +27,7 @@ ApplicationConfigReader::~ApplicationConfigReader()
 {
 }
 
-void ApplicationConfigReader::fill(std::multimap<std::string,std::string> &keyvalueMap)
+void ApplicationConfigReader::fill(ApplicationConfig::storage_t &keyvalueMap)
 {
   std::ifstream file(inputFileName_.c_str(), std::ios::in);
 
@@ -44,6 +44,7 @@ void ApplicationConfigReader::fill(std::multimap<std::string,std::string> &keyva
 
   std::string Key;
   std::string Value;
+  std::vector<std::string> Values;
   std::string buffer;
 
   while (std::getline(file, buffer)) {
@@ -56,9 +57,11 @@ void ApplicationConfigReader::fill(std::multimap<std::string,std::string> &keyva
 
     std::istringstream iss(buffer.c_str(), std::istringstream::in);
     iss >> Key;
+    Values.clear();
     while (iss >> std::quoted(Value)) {
-      keyvalueMap.insert(std::make_pair(Key, Value));
+      Values.push_back(Value);
     }
+    keyvalueMap[Key] = Values;
   }
 
   file.close();

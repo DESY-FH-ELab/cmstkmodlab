@@ -19,6 +19,8 @@
 
 #include <QObject>
 
+#include "ApplicationConfig.h"
+
 /** @addtogroup common
  *  @{
  */
@@ -32,7 +34,7 @@ public:
   ApplicationConfigReader( const std::string & filename );
   ~ApplicationConfigReader();
 
-  void fill(std::multimap<std::string,std::string> &keyvalueMap);
+  void fill(ApplicationConfig::storage_t &keyvalueMap);
   std::string getFileName( void ) { return inputFileName_; }
 
 private:

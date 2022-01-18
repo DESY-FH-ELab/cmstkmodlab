@@ -37,12 +37,14 @@ class ApplicationConfig
 public:
 
   static ApplicationConfig* instance(const std::string filename = std::string());
+  typedef std::map<std::string,std::vector<std::string> > storage_t;
+
 
   template <class aType> aType getValue(std::string const& key) const {
     aType returnValue = 0;
-    std::multimap<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
+    storage_t::const_iterator it = keyvalueMap_.find(key);
     if (it!=keyvalueMap_.end()) {
-      std::istringstream iss(it->second.c_str(), std::istringstream::in);
+      std::istringstream iss(it->second.front().c_str(), std::istringstream::in);
       iss >> returnValue;
     } else {
       issueKeyError(key);
@@ -53,13 +55,13 @@ public:
   template <class aType> std::vector<aType> getValueVector(std::string const& key) const {
     aType returnValue = 0;
     std::vector<aType> returnVector;
-    std::pair<std::multimap<std::string,std::string>::const_iterator,
-              std::multimap<std::string,std::string>::const_iterator> ret;
-    ret = keyvalueMap_.equal_range(key);
-    for (std::multimap<std::string,std::string>::const_iterator it=ret.first; it!=ret.second; ++it) {
-      std::istringstream iss(it->second.c_str(), std::istringstream::in);
-      iss >> returnValue;
-      returnVector.push_back(returnValue);
+    storage_t::const_iterator it = keyvalueMap_.find(key);
+    if (it!=keyvalueMap_.end()) {
+      for (auto & v : it->second) {
+        std::istringstream iss(v.c_str(), std::istringstream::in);
+        iss >> returnValue;
+        returnVector.push_back(returnValue);
+      }
     }
     return returnVector;
   }
@@ -67,65 +69,84 @@ public:
   template <class aType,std::size_t N> std::array<aType,N> getValueArray(std::string const& key) const {
     aType returnValue = 0;
     std::array<aType,N> returnArray;
-    std::pair<std::multimap<std::string,std::string>::const_iterator,
-              std::multimap<std::string,std::string>::const_iterator> ret;
-    ret = keyvalueMap_.equal_range(key);
     std::size_t i = 0;
-    for (std::multimap<std::string,std::string>::const_iterator it=ret.first; it!=ret.second; ++it) {
-      std::istringstream iss(it->second.c_str(), std::istringstream::in);
-      iss >> returnValue;
-      returnArray[i++] = returnValue;
-      if (i==N) break;
+    storage_t::const_iterator it = keyvalueMap_.find(key);
+    if (it!=keyvalueMap_.end()) {
+      for (auto & v : it->second) {
+        std::istringstream iss(v.c_str(), std::istringstream::in);
+        iss >> returnValue;
+        returnArray[i++] = returnValue;
+        if (i==N) break;
+      }
     }
     return returnArray;
   }
 
   template <class aType> aType getValue(std::string const& key, aType defaultValue) const {
-    aType returnValue = 0;
-    std::multimap<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
+    aType returnValue = defaultValue;
+    storage_t::const_iterator it = keyvalueMap_.find(key);
     if (it!=keyvalueMap_.end()) {
-      std::istringstream iss(it->second.c_str(), std::istringstream::in);
+      std::istringstream iss(it->second.front().c_str(), std::istringstream::in);
       iss >> returnValue;
-    } else {
-      returnValue = defaultValue;
     }
     return returnValue;
   }
 
   std::string getValue(std::string const& key) const {
-    std::multimap<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
+    storage_t::const_iterator it = keyvalueMap_.find(key);
     if (it!=keyvalueMap_.end()) {
-      return it->second;
-    } else {
-      issueKeyError(key);
+      return it->second.front();
     }
+    return std::string();
+  }
+ 
+  std::string getValueByIndex(std::string const& key, std::size_t idx) const {
+    storage_t::const_iterator it = keyvalueMap_.find(key);
+    if (it!=keyvalueMap_.end()) {
+      if (idx<it->second.size()) return it->second[idx];
+     }
     return std::string();
   }
 
   std::vector<std::string> getValueVector(std::string const& key) const {
     std::vector<std::string> returnVector;
-    std::pair<std::multimap<std::string,std::string>::const_iterator,
-              std::multimap<std::string,std::string>::const_iterator> ret;
-    ret = keyvalueMap_.equal_range(key);
-    for (std::multimap<std::string,std::string>::const_iterator it=ret.first; it!=ret.second; ++it) {
-      returnVector.push_back(it->second);
+    storage_t::const_iterator it = keyvalueMap_.find(key);
+    if (it!=keyvalueMap_.end()) {
+      returnVector = it->second;
     }
     return returnVector;
   }
 
   std::string getValue(std::string const& key, std::string defaultValue) const {
-    std::multimap<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
+    storage_t::const_iterator it = keyvalueMap_.find(key);
     if (it!=keyvalueMap_.end()) {
-      return it->second;
-    } else {
-      return defaultValue;
+      return it->second.front();
     }
+    return defaultValue;
   }
 
   template <class aType> void setValue(std::string const& key, aType value) {
     QVariant variant(value);
-    keyvalueMap_.erase(key);
-    keyvalueMap_.insert(std::make_pair(key, variant.toString().toStdString()));
+    storage_t::iterator it = keyvalueMap_.find(key);
+    if (it!=keyvalueMap_.end()) {
+      keyvalueMap_.erase(key);
+      std::vector<std::string> values;
+      values.push_back(variant.toString().toStdString());
+      keyvalueMap_.insert(std::make_pair(key, values));
+    } else {
+      std::vector<std::string> values;
+      values.push_back(variant.toString().toStdString());
+      keyvalueMap_.insert(std::make_pair(key, values));
+    }
+  }
+ 
+  void setValueByIndex(std::string const& key, std::size_t idx, std::string& value) {
+    storage_t::iterator it = keyvalueMap_.find(key);
+    if (it!=keyvalueMap_.end()) {
+      if (idx<it->second.size()) {
+        it->second[idx] = value;
+      }
+    }
   }
 
   void safe(const std::string filename);
@@ -137,7 +158,7 @@ protected:
 
   void issueKeyError(const std::string&) const;
 
-  std::multimap<std::string,std::string> keyvalueMap_;
+  storage_t keyvalueMap_;
 };
 
 template <> std::string ApplicationConfig::getValue(std::string const& key) const;
