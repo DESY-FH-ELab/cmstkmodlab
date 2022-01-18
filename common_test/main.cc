@@ -59,7 +59,7 @@ int main(int argc, char ** argv)
 
     app.setStyle("cleanlooks");
 
-    ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2/thermo2.cfg");
+    ApplicationConfig * config = ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2/thermo2.cfg");
 
     CommonTestMainWindow mainWindow;
 

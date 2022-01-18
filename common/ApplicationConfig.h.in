@@ -156,6 +156,23 @@ public:
 
   void safe(const std::string filename);
 
+  const storage_t& getKeyValueMap() { return keyvalueMap_; }
+  
+  std::vector<std::string> getKeys() {
+  	std::vector<std::string> k;
+  	for (storage_t::const_iterator it=keyvalueMap_.begin();
+  	     it!=keyvalueMap_.end();
+  	     ++it) {
+      k.push_back(it->first);
+    }
+    return k;
+  }
+
+signals:
+  
+  void structureChanged();
+  void valueChanged();
+
 protected:
 
   ApplicationConfig(const std::string filename, QObject *parent);
