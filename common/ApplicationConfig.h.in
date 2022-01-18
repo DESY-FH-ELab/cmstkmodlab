@@ -32,13 +32,14 @@ namespace Config {
   extern const std::string CMSTkModLabBasePath;
 }
 
-class ApplicationConfig
+class ApplicationConfig : public QObject
 {
+  Q_OBJECT
 public:
 
-  static ApplicationConfig* instance(const std::string filename = std::string());
   typedef std::map<std::string,std::vector<std::string> > storage_t;
 
+  static ApplicationConfig* instance(const std::string filename = std::string(), QObject *parent = 0);
 
   template <class aType> aType getValue(std::string const& key) const {
     aType returnValue = 0;
@@ -133,10 +134,13 @@ public:
       std::vector<std::string> values;
       values.push_back(variant.toString().toStdString());
       keyvalueMap_.insert(std::make_pair(key, values));
+      emit valueChanged();
     } else {
       std::vector<std::string> values;
       values.push_back(variant.toString().toStdString());
       keyvalueMap_.insert(std::make_pair(key, values));
+      emit structureChanged();
+      emit valueChanged();      
     }
   }
  
@@ -145,6 +149,7 @@ public:
     if (it!=keyvalueMap_.end()) {
       if (idx<it->second.size()) {
         it->second[idx] = value;
+      	emit valueChanged();
       }
     }
   }
@@ -153,7 +158,7 @@ public:
 
 protected:
 
-  ApplicationConfig(const std::string filename);
+  ApplicationConfig(const std::string filename, QObject *parent);
   static ApplicationConfig* instance_;
 
   void issueKeyError(const std::string&) const;

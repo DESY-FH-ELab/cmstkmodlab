@@ -19,17 +19,21 @@ const std::string Config::CMSTkModLabBasePath("@basepath@");
 
 ApplicationConfig* ApplicationConfig::instance_ = NULL;
 
-ApplicationConfig::ApplicationConfig(const std::string filename)
+ApplicationConfig::ApplicationConfig(const std::string filename, QObject *parent)
+ : QObject(parent)
 {
   ApplicationConfigReader reader(filename);
   reader.fill(keyvalueMap_);
+  
+  emit structureChanged();
+  emit valueChanged();
 }
 
-ApplicationConfig* ApplicationConfig::instance(const std::string filename)
+ApplicationConfig* ApplicationConfig::instance(const std::string filename, QObject *parent)
 {
   if (instance_==NULL) {
     if (!filename.empty()) {
-      instance_ = new ApplicationConfig(filename);
+      instance_ = new ApplicationConfig(filename, parent);
     }
   }
   return instance_;
