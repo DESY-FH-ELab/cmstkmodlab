@@ -245,6 +245,9 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 
   tabWidget_->addTab(widget, "DAQ && Scripting");
 
+  configViewer_ = new ApplicationConfigViewer(false, this);
+  tabWidget_->addTab(configViewer_, "Configuration");
+
   setCentralWidget(tabWidget_);
   updateGeometry();
 }

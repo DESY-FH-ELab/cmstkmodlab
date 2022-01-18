@@ -452,6 +452,9 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
     tabWidget_->addTab(w, "Through-Plane Setup");
   }
 
+  configViewer_ = new ApplicationConfigViewer(false, this);
+  tabWidget_->addTab(configViewer_, "Configuration");
+
   client_ = new ThermoDAQ2Client(config->getValue<unsigned int>("ServerPort"));
   reader_ = new ThermoDAQ2NetworkReader(this);
 

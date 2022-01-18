@@ -31,6 +31,8 @@
 #include "ThermoDisplay2Chart.h"
 #include "ThermoDisplay2LineSeries.h"
 
+#include "ApplicationConfigViewer.h"
+
 QT_CHARTS_USE_NAMESPACE
 
 class ThermoDisplay2MainWindow : public QMainWindow
@@ -158,6 +160,8 @@ protected:
   ThermoDisplay2LineSeries *ThroughPlanePSource_;
   ThermoDisplay2LineSeries *ThroughPlanePTop_;
   ThermoDisplay2LineSeries *ThroughPlanePBottom_;
+
+  ApplicationConfigViewer* configViewer_;
 };
 
 #endif // THERMODISPLAY2MAINWINDOW_H

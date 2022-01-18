@@ -32,6 +32,8 @@
 #include "Thermo2ScriptModel.h"
 #include "Thermo2ThroughPlaneModel.h"
 
+#include "ApplicationConfigViewer.h"
+
 class Thermo2MainWindow : public QMainWindow
 {
   Q_OBJECT
@@ -67,6 +69,8 @@ protected:
   Thermo2ScriptModel* scriptModel_;
 
   Thermo2ThroughPlaneModel* throughPlaneModel_;
+
+  ApplicationConfigViewer* configViewer_;
 };
 
 #endif // THERMO2MAINWINDOW_H
