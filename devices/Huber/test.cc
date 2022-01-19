@@ -27,13 +27,20 @@ typedef HuberPetiteFleur HuberPetiteFleur_t;
 typedef HuberPilotOne HuberPilotOne_t;
 #endif
 
-int main()
+int main(int argc, char* argv[])
 {
-  std::cout << "test" << std::endl;
+  std::string ioPort = "/dev/ttyACM0";
+  if (argc==2) ioPort = argv[1];
 
-  HuberPilotOne_t huber("/dev/ttyACM1");
+  std::cout << "test on " << ioPort << std::endl;
+
+  HuberPilotOne_t huber(ioPort.c_str());
 
   std::cout << huber.GetTemperatureSetPoint() << std::endl;
+  //huber.SetTemperatureSetPoint(1.5);
+  //std::cout << huber.GetTemperatureSetPoint() << std::endl;
+    
+  /*
   std::cout << huber.GetBathTemperature() << std::endl;
   std::cout << huber.GetReturnTemperature() << std::endl;
   std::cout << huber.GetPumpPressure() << std::endl;
@@ -41,7 +48,8 @@ int main()
   std::cout << huber.GetTemperatureControlEnabled() << std::endl;
   std::cout << huber.GetCoolingWaterInletTemperature() << std::endl;
   std::cout << huber.GetCoolingWaterOutletTemperature() << std::endl;
-
+  */
+  
   /*
   {
     HuberPetiteFleur_t huber("/dev/ttyACM0");
