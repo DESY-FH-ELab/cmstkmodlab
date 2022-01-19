@@ -247,7 +247,7 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
       values.clear();
       for (unsigned int i=0;i<6;i++) {
         if (keithleyTopSensorStates_[i]) {
-          values.push_back(std::pair<double,double>(keithleyBottomPositions_[i], keithleyTopTemperatures_[i]));
+          values.push_back(std::pair<double,double>(keithleyBottomPositions_[i], keithleyBottomTemperatures_[i]));
         }
       }
       fitter_.fit(values, 2, p0, p1);
