@@ -10,7 +10,7 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <QHeaderView.h>
+#include <QHeaderView>
 
 #include <nqlogger.h>
 #include <ApplicationConfig.h>

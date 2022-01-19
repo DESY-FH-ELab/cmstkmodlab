@@ -12,6 +12,8 @@
 
 #include <iostream>
 
+#include <QtGlobal>
+
 #include <nqlogger.h>
 #include <ApplicationConfig.h>
 
@@ -128,9 +130,12 @@ bool ApplicationConfigItemModel::setData(const QModelIndex &index, const QVarian
   ApplicationConfig* config = ApplicationConfig::instance();
 
   if (role == Qt::EditRole) {
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
     if (!checkIndex(index))
       return false;
-
+#endif
+    
     std::string key = keys_[index.row()].first;
     std::size_t idx = keys_[index.row()].second;
 
