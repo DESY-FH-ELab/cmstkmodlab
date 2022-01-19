@@ -52,19 +52,19 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   unsigned int card;
   unsigned int channel;
   for (unsigned int c=0;c<6;++c) {
-  	sensor = keithleyTopSensors_[c];
-  	channel = sensor%100;
-  	card = (sensor-channel)/100;
+    sensor = keithleyTopSensors_[c];
+    channel = sensor%100;
+    card = (sensor-channel)/100;
 
-  	keithleyTopCards_[c] = card-1;
-  	keithleyTopChannels_[c] = channel-1;
+    keithleyTopCards_[c] = card-1;
+    keithleyTopChannels_[c] = channel-1;
 
-  	sensor = keithleyBottomSensors_[c];
-  	channel = sensor%100;
-  	card = (sensor-channel)/100;
+    sensor = keithleyBottomSensors_[c];
+    channel = sensor%100;
+    card = (sensor-channel)/100;
 
-  	keithleyBottomCards_[c] = card-1;
-  	keithleyBottomChannels_[c] = channel-1;
+    keithleyBottomCards_[c] = card-1;
+    keithleyBottomChannels_[c] = channel-1;
   }
 
   tabWidget_ = new QTabWidget(this);
@@ -89,96 +89,96 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   QVBoxLayout *layout;
 
   if (chillerAndVacuumActive_) {
-  	w = new QWidget(tabWidget_);
-  	layout = new QVBoxLayout(w);
+    w = new QWidget(tabWidget_);
+    layout = new QVBoxLayout(w);
 
-  	ChillerTSChart_ = new ThermoDisplay2TemperatureStateChart();
+    ChillerTSChart_ = new ThermoDisplay2TemperatureStateChart();
 
-  	ChillerTBathSeries_ = new ThermoDisplay2LineSeries();
-  	ChillerTBathSeries_->setName("Bath");
-  	ChillerTSChart_->addSeries(ChillerTBathSeries_);
+    ChillerTBathSeries_ = new ThermoDisplay2LineSeries();
+    ChillerTBathSeries_->setName("Bath");
+    ChillerTSChart_->addSeries(ChillerTBathSeries_);
 
-  	/*
-    {
+    /*
+      {
       ChillerTBathSeries_->setEnabled(true);
       QDateTime dtEnd = QDateTime::currentDateTime();
       QDateTime dtStart = dtEnd.addSecs(-2 *  24 * 60 * 60);
       while (dtStart<=dtEnd) {
-        ChillerTBathSeries_->append(dtStart.toMSecsSinceEpoch(), 1.23);
-        dtStart = dtStart.addSecs(60);
+      ChillerTBathSeries_->append(dtStart.toMSecsSinceEpoch(), 1.23);
+      dtStart = dtStart.addSecs(60);
       }
-    }
-  	*/
+      }
+    */
 
-  	ChillerTReturnSeries_ = new ThermoDisplay2LineSeries();
-  	ChillerTReturnSeries_->setName("Return");
-  	ChillerTSChart_->addSeries(ChillerTReturnSeries_);
+    ChillerTReturnSeries_ = new ThermoDisplay2LineSeries();
+    ChillerTReturnSeries_->setName("Return");
+    ChillerTSChart_->addSeries(ChillerTReturnSeries_);
 
-  	ChillerTCWISeries_ = new ThermoDisplay2LineSeries();
-  	ChillerTCWISeries_->setName("CW Inlet");
-  	ChillerTSChart_->addSeries(ChillerTCWISeries_);
+    ChillerTCWISeries_ = new ThermoDisplay2LineSeries();
+    ChillerTCWISeries_->setName("CW Inlet");
+    ChillerTSChart_->addSeries(ChillerTCWISeries_);
 
-  	ChillerTCWOSeries_ = new ThermoDisplay2LineSeries();
-  	ChillerTCWOSeries_->setName("CW Outlet");
-  	ChillerTSChart_->addSeries(ChillerTCWOSeries_);
+    ChillerTCWOSeries_ = new ThermoDisplay2LineSeries();
+    ChillerTCWOSeries_->setName("CW Outlet");
+    ChillerTSChart_->addSeries(ChillerTCWOSeries_);
 
-  	ChillerSTCSeries_ = new ThermoDisplay2LineSeries();
-  	ChillerSTCSeries_->setName("T Control");
-  	ChillerTSChart_->addStateSeries(ChillerSTCSeries_);
+    ChillerSTCSeries_ = new ThermoDisplay2LineSeries();
+    ChillerSTCSeries_->setName("T Control");
+    ChillerTSChart_->addStateSeries(ChillerSTCSeries_);
 
-  	ChillerSCSeries_ = new ThermoDisplay2LineSeries();
-  	ChillerSCSeries_->setName("Circulator");
-  	ChillerTSChart_->addStateSeries(ChillerSCSeries_);
+    ChillerSCSeries_ = new ThermoDisplay2LineSeries();
+    ChillerSCSeries_->setName("Circulator");
+    ChillerTSChart_->addStateSeries(ChillerSCSeries_);
 
-  	ChillerTSChartView_ = new ThermoDisplay2TemperatureStateChartView(ChillerTSChart_);
-  	ChillerTSChartView_->setRenderHint(QPainter::Antialiasing);
-  	ChillerTSChartView_->setMinimumSize(800, 300);
-  	layout->addWidget(ChillerTSChartView_);
+    ChillerTSChartView_ = new ThermoDisplay2TemperatureStateChartView(ChillerTSChart_);
+    ChillerTSChartView_->setRenderHint(QPainter::Antialiasing);
+    ChillerTSChartView_->setMinimumSize(800, 300);
+    layout->addWidget(ChillerTSChartView_);
 
-  	ChillerTSChart_->connectMarkers();
-  	ChillerTSChart_->updateLegend();
-  	ChillerTSChart_->refreshAxes();
+    ChillerTSChart_->connectMarkers();
+    ChillerTSChart_->updateLegend();
+    ChillerTSChart_->refreshAxes();
 
-  	ChillerPPChart_ = new ThermoDisplay2PowerPressureChart();
+    ChillerPPChart_ = new ThermoDisplay2PowerPressureChart();
 
-  	ChillerPowerSeries_ = new ThermoDisplay2LineSeries();
-  	ChillerPowerSeries_->setName("Power");
-  	ChillerPPChart_->addPowerSeries(ChillerPowerSeries_);
+    ChillerPowerSeries_ = new ThermoDisplay2LineSeries();
+    ChillerPowerSeries_->setName("Power");
+    ChillerPPChart_->addPowerSeries(ChillerPowerSeries_);
 
-  	ChillerPressureSeries_ = new ThermoDisplay2LineSeries();
-  	ChillerPressureSeries_->setName("Pressure");
-  	ChillerPPChart_->addPressureSeries(ChillerPressureSeries_);
+    ChillerPressureSeries_ = new ThermoDisplay2LineSeries();
+    ChillerPressureSeries_->setName("Pressure");
+    ChillerPPChart_->addPressureSeries(ChillerPressureSeries_);
 
-  	ChillerPPChartView_ = new ThermoDisplay2PowerPressureChartView(ChillerPPChart_);
-  	ChillerPPChartView_->setRenderHint(QPainter::Antialiasing);
-  	ChillerPPChartView_->setMinimumSize(800, 300);
-  	layout->addWidget(ChillerPPChartView_);
+    ChillerPPChartView_ = new ThermoDisplay2PowerPressureChartView(ChillerPPChart_);
+    ChillerPPChartView_->setRenderHint(QPainter::Antialiasing);
+    ChillerPPChartView_->setMinimumSize(800, 300);
+    layout->addWidget(ChillerPPChartView_);
 
-  	ChillerPPChart_->connectMarkers();
-  	ChillerPPChart_->updateLegend();
+    ChillerPPChart_->connectMarkers();
+    ChillerPPChart_->updateLegend();
 
-  	tabWidget_->addTab(w, "Chiller");
+    tabWidget_->addTab(w, "Chiller");
   }
 
   if (chillerAndVacuumActive_) {
-  	w = new QWidget(tabWidget_);
-  	layout = new QVBoxLayout(w);
+    w = new QWidget(tabWidget_);
+    layout = new QVBoxLayout(w);
 
-  	VacuumPressureSeries_ = new ThermoDisplay2LineSeries();
-  	VacuumPressureSeries_->setName("pressure");
+    VacuumPressureSeries_ = new ThermoDisplay2LineSeries();
+    VacuumPressureSeries_->setName("pressure");
 
-  	VacuumPressureChart_ = new ThermoDisplay2LogPressureChart();
-  	VacuumPressureChart_->addSeries(VacuumPressureSeries_);
+    VacuumPressureChart_ = new ThermoDisplay2LogPressureChart();
+    VacuumPressureChart_->addSeries(VacuumPressureSeries_);
 
-  	VacuumChartView_ = new ThermoDisplay2PressureChartView(VacuumPressureChart_);
-  	VacuumChartView_->setRenderHint(QPainter::Antialiasing);
-  	VacuumChartView_->setMinimumSize(800, 300);
-  	layout->addWidget(VacuumChartView_);
+    VacuumChartView_ = new ThermoDisplay2PressureChartView(VacuumPressureChart_);
+    VacuumChartView_->setRenderHint(QPainter::Antialiasing);
+    VacuumChartView_->setMinimumSize(800, 300);
+    layout->addWidget(VacuumChartView_);
 
-  	VacuumPressureChart_->connectMarkers();
-  	VacuumPressureChart_->updateLegend();
+    VacuumPressureChart_->connectMarkers();
+    VacuumPressureChart_->updateLegend();
 
-  	tabWidget_->addTab(w, "Vacuum");
+    tabWidget_->addTab(w, "Vacuum");
   }
 
   w = new QWidget(tabWidget_);
@@ -250,142 +250,142 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   tabWidget_->addTab(w, "Temperature");
 
   if (martaActive_) {
-  	w = new QWidget(tabWidget_);
-  	layout = new QVBoxLayout(w);
+    w = new QWidget(tabWidget_);
+    layout = new QVBoxLayout(w);
 
-  	MartaPT03Series_ = new ThermoDisplay2LineSeries();
-  	MartaPT03Series_->setName("PT03R507");
+    MartaPT03Series_ = new ThermoDisplay2LineSeries();
+    MartaPT03Series_->setName("PT03R507");
 
-  	MartaPT05Series_ = new ThermoDisplay2LineSeries();
-  	MartaPT05Series_->setName("PT05R507");
+    MartaPT05Series_ = new ThermoDisplay2LineSeries();
+    MartaPT05Series_->setName("PT05R507");
 
-  	MartaPT01CO2Series_ = new ThermoDisplay2LineSeries();
-  	MartaPT01CO2Series_->setName("PT01CO2");
+    MartaPT01CO2Series_ = new ThermoDisplay2LineSeries();
+    MartaPT01CO2Series_->setName("PT01CO2");
 
-  	MartaPT02CO2Series_ = new ThermoDisplay2LineSeries();
-  	MartaPT02CO2Series_->setName("PT02CO2");
+    MartaPT02CO2Series_ = new ThermoDisplay2LineSeries();
+    MartaPT02CO2Series_->setName("PT02CO2");
 
-  	MartaPT03CO2Series_ = new ThermoDisplay2LineSeries();
-  	MartaPT03CO2Series_->setName("PT03CO2");
+    MartaPT03CO2Series_ = new ThermoDisplay2LineSeries();
+    MartaPT03CO2Series_->setName("PT03CO2");
 
-  	MartaPT04CO2Series_ = new ThermoDisplay2LineSeries();
-  	MartaPT04CO2Series_->setName("PT04CO2");
+    MartaPT04CO2Series_ = new ThermoDisplay2LineSeries();
+    MartaPT04CO2Series_->setName("PT04CO2");
 
-  	/*
-    MartaPT05CO2Series_ = new ThermoDisplay2LineSeries();
-    MartaPT05CO2Series_->setName("PT05CO2");
-  	*/
+    /*
+      MartaPT05CO2Series_ = new ThermoDisplay2LineSeries();
+      MartaPT05CO2Series_->setName("PT05CO2");
+    */
 
-  	MartaPT06CO2Series_ = new ThermoDisplay2LineSeries();
-  	MartaPT06CO2Series_->setName("PT06CO2");
+    MartaPT06CO2Series_ = new ThermoDisplay2LineSeries();
+    MartaPT06CO2Series_->setName("PT06CO2");
 
-  	MartaDP01CO2Series_ = new ThermoDisplay2LineSeries();
-  	MartaDP01CO2Series_->setName("DP01CO2");
+    MartaDP01CO2Series_ = new ThermoDisplay2LineSeries();
+    MartaDP01CO2Series_->setName("DP01CO2");
 
-  	MartaDP02CO2Series_ = new ThermoDisplay2LineSeries();
-  	MartaDP02CO2Series_->setName("DP02CO2");
+    MartaDP02CO2Series_ = new ThermoDisplay2LineSeries();
+    MartaDP02CO2Series_->setName("DP02CO2");
 
-  	MartaDP03CO2Series_ = new ThermoDisplay2LineSeries();
-  	MartaDP03CO2Series_->setName("DP03CO2");
+    MartaDP03CO2Series_ = new ThermoDisplay2LineSeries();
+    MartaDP03CO2Series_->setName("DP03CO2");
 
-  	MartaDP04CO2Series_ = new ThermoDisplay2LineSeries();
-  	MartaDP04CO2Series_->setName("DP04CO2");
+    MartaDP04CO2Series_ = new ThermoDisplay2LineSeries();
+    MartaDP04CO2Series_->setName("DP04CO2");
 
-  	MartaPressureChart_ = new ThermoDisplay2LinPressureDeltaPressureChart();
-  	MartaPressureChart_->addPressureSeries(MartaPT03Series_);
-  	MartaPressureChart_->addPressureSeries(MartaPT05Series_);
-  	MartaPressureChart_->addPressureSeries(MartaPT01CO2Series_);
-  	MartaPressureChart_->addPressureSeries(MartaPT02CO2Series_);
-  	MartaPressureChart_->addPressureSeries(MartaPT03CO2Series_);
-  	MartaPressureChart_->addPressureSeries(MartaPT04CO2Series_);
-  	//MartaPressureChart_->addPressureSeries(MartaPT05CO2Series_);
-  	MartaPressureChart_->addPressureSeries(MartaPT06CO2Series_);
-  	MartaPressureChart_->addDeltaPressureSeries(MartaDP01CO2Series_);
-  	MartaPressureChart_->addDeltaPressureSeries(MartaDP02CO2Series_);
-  	MartaPressureChart_->addDeltaPressureSeries(MartaDP03CO2Series_);
-  	MartaPressureChart_->addDeltaPressureSeries(MartaDP04CO2Series_);
+    MartaPressureChart_ = new ThermoDisplay2LinPressureDeltaPressureChart();
+    MartaPressureChart_->addPressureSeries(MartaPT03Series_);
+    MartaPressureChart_->addPressureSeries(MartaPT05Series_);
+    MartaPressureChart_->addPressureSeries(MartaPT01CO2Series_);
+    MartaPressureChart_->addPressureSeries(MartaPT02CO2Series_);
+    MartaPressureChart_->addPressureSeries(MartaPT03CO2Series_);
+    MartaPressureChart_->addPressureSeries(MartaPT04CO2Series_);
+    //MartaPressureChart_->addPressureSeries(MartaPT05CO2Series_);
+    MartaPressureChart_->addPressureSeries(MartaPT06CO2Series_);
+    MartaPressureChart_->addDeltaPressureSeries(MartaDP01CO2Series_);
+    MartaPressureChart_->addDeltaPressureSeries(MartaDP02CO2Series_);
+    MartaPressureChart_->addDeltaPressureSeries(MartaDP03CO2Series_);
+    MartaPressureChart_->addDeltaPressureSeries(MartaDP04CO2Series_);
 
-  	MartaPressureChartView_ = new ThermoDisplay2PressureDeltaPressureChartView(MartaPressureChart_);
-  	MartaPressureChartView_->setRenderHint(QPainter::Antialiasing);
-  	MartaPressureChartView_->setMinimumSize(800, 300);
-  	layout->addWidget(MartaPressureChartView_);
+    MartaPressureChartView_ = new ThermoDisplay2PressureDeltaPressureChartView(MartaPressureChart_);
+    MartaPressureChartView_->setRenderHint(QPainter::Antialiasing);
+    MartaPressureChartView_->setMinimumSize(800, 300);
+    layout->addWidget(MartaPressureChartView_);
 
-  	MartaPressureChart_->connectMarkers();
-  	MartaPressureChart_->updateLegend();
+    MartaPressureChart_->connectMarkers();
+    MartaPressureChart_->updateLegend();
 
-  	MartaTSetPointSeries_= new ThermoDisplay2LineSeries();
-  	MartaTSetPointSeries_->setName("Set Point");
+    MartaTSetPointSeries_= new ThermoDisplay2LineSeries();
+    MartaTSetPointSeries_->setName("Set Point");
 
-  	MartaTT02Series_ = new ThermoDisplay2LineSeries();
-  	MartaTT02Series_->setName("TT02R507");
+    MartaTT02Series_ = new ThermoDisplay2LineSeries();
+    MartaTT02Series_->setName("TT02R507");
 
-  	MartaTT01CO2Series_ = new ThermoDisplay2LineSeries();
-  	MartaTT01CO2Series_->setName("TT01CO2");
+    MartaTT01CO2Series_ = new ThermoDisplay2LineSeries();
+    MartaTT01CO2Series_->setName("TT01CO2");
 
-  	MartaTT02CO2Series_ = new ThermoDisplay2LineSeries();
-  	MartaTT02CO2Series_->setName("TT02CO2");
+    MartaTT02CO2Series_ = new ThermoDisplay2LineSeries();
+    MartaTT02CO2Series_->setName("TT02CO2");
 
-  	MartaTT03CO2Series_ = new ThermoDisplay2LineSeries();
-  	MartaTT03CO2Series_->setName("TT03CO2");
+    MartaTT03CO2Series_ = new ThermoDisplay2LineSeries();
+    MartaTT03CO2Series_->setName("TT03CO2");
 
-  	MartaTT04CO2Series_ = new ThermoDisplay2LineSeries();
-  	MartaTT04CO2Series_->setName("TT04CO2");
+    MartaTT04CO2Series_ = new ThermoDisplay2LineSeries();
+    MartaTT04CO2Series_->setName("TT04CO2");
 
-  	/*
-    MartaTT05CO2Series_ = new ThermoDisplay2LineSeries();
-    MartaTT05CO2Series_->setName("TT05CO2");
-  	*/
+    /*
+      MartaTT05CO2Series_ = new ThermoDisplay2LineSeries();
+      MartaTT05CO2Series_->setName("TT05CO2");
+    */
 
-  	MartaTT06CO2Series_ = new ThermoDisplay2LineSeries();
-  	MartaTT06CO2Series_->setName("TT06CO2");
+    MartaTT06CO2Series_ = new ThermoDisplay2LineSeries();
+    MartaTT06CO2Series_->setName("TT06CO2");
 
-  	MartaTT07CO2Series_ = new ThermoDisplay2LineSeries();
-  	MartaTT07CO2Series_->setName("TT07CO2");
+    MartaTT07CO2Series_ = new ThermoDisplay2LineSeries();
+    MartaTT07CO2Series_->setName("TT07CO2");
 
-  	MartaST01CO2Series_ = new ThermoDisplay2LineSeries();
-  	MartaST01CO2Series_->setName("ST01CO2");
+    MartaST01CO2Series_ = new ThermoDisplay2LineSeries();
+    MartaST01CO2Series_->setName("ST01CO2");
 
-  	MartaST02CO2Series_ = new ThermoDisplay2LineSeries();
-  	MartaST02CO2Series_->setName("ST02CO2");
+    MartaST02CO2Series_ = new ThermoDisplay2LineSeries();
+    MartaST02CO2Series_->setName("ST02CO2");
 
-  	MartaST03CO2Series_ = new ThermoDisplay2LineSeries();
-  	MartaST03CO2Series_->setName("ST03CO2");
+    MartaST03CO2Series_ = new ThermoDisplay2LineSeries();
+    MartaST03CO2Series_->setName("ST03CO2");
 
-  	MartaST04CO2Series_ = new ThermoDisplay2LineSeries();
-  	MartaST04CO2Series_->setName("ST04CO2");
+    MartaST04CO2Series_ = new ThermoDisplay2LineSeries();
+    MartaST04CO2Series_->setName("ST04CO2");
 
-  	MartaDT02CO2Series_ = new ThermoDisplay2LineSeries();
-  	MartaDT02CO2Series_->setName("DT02CO2");
+    MartaDT02CO2Series_ = new ThermoDisplay2LineSeries();
+    MartaDT02CO2Series_->setName("DT02CO2");
 
-  	MartaDT03CO2Series_ = new ThermoDisplay2LineSeries();
-  	MartaDT03CO2Series_->setName("DT03CO2");
+    MartaDT03CO2Series_ = new ThermoDisplay2LineSeries();
+    MartaDT03CO2Series_->setName("DT03CO2");
 
-  	MartaTemperatureChart_ = new ThermoDisplay2TemperatureDeltaTemperatureChart();
-  	MartaTemperatureChart_->addTemperatureSeries(MartaTSetPointSeries_);
-  	MartaTemperatureChart_->addTemperatureSeries(MartaTT02Series_);
-  	MartaTemperatureChart_->addTemperatureSeries(MartaTT01CO2Series_);
-  	MartaTemperatureChart_->addTemperatureSeries(MartaTT02CO2Series_);
-  	MartaTemperatureChart_->addTemperatureSeries(MartaTT03CO2Series_);
-  	MartaTemperatureChart_->addTemperatureSeries(MartaTT04CO2Series_);
-  	//MartaTemperatureChart_->addTemperatureSeries(MartaTT05CO2Series_);
-  	MartaTemperatureChart_->addTemperatureSeries(MartaTT06CO2Series_);
-  	MartaTemperatureChart_->addTemperatureSeries(MartaTT07CO2Series_);
-  	MartaTemperatureChart_->addTemperatureSeries(MartaST01CO2Series_);
-  	MartaTemperatureChart_->addTemperatureSeries(MartaST02CO2Series_);
-  	MartaTemperatureChart_->addTemperatureSeries(MartaST03CO2Series_);
-  	MartaTemperatureChart_->addTemperatureSeries(MartaST04CO2Series_);
-  	MartaTemperatureChart_->addDeltaTemperatureSeries(MartaDT02CO2Series_);
-  	MartaTemperatureChart_->addDeltaTemperatureSeries(MartaDT03CO2Series_);
+    MartaTemperatureChart_ = new ThermoDisplay2TemperatureDeltaTemperatureChart();
+    MartaTemperatureChart_->addTemperatureSeries(MartaTSetPointSeries_);
+    MartaTemperatureChart_->addTemperatureSeries(MartaTT02Series_);
+    MartaTemperatureChart_->addTemperatureSeries(MartaTT01CO2Series_);
+    MartaTemperatureChart_->addTemperatureSeries(MartaTT02CO2Series_);
+    MartaTemperatureChart_->addTemperatureSeries(MartaTT03CO2Series_);
+    MartaTemperatureChart_->addTemperatureSeries(MartaTT04CO2Series_);
+    //MartaTemperatureChart_->addTemperatureSeries(MartaTT05CO2Series_);
+    MartaTemperatureChart_->addTemperatureSeries(MartaTT06CO2Series_);
+    MartaTemperatureChart_->addTemperatureSeries(MartaTT07CO2Series_);
+    MartaTemperatureChart_->addTemperatureSeries(MartaST01CO2Series_);
+    MartaTemperatureChart_->addTemperatureSeries(MartaST02CO2Series_);
+    MartaTemperatureChart_->addTemperatureSeries(MartaST03CO2Series_);
+    MartaTemperatureChart_->addTemperatureSeries(MartaST04CO2Series_);
+    MartaTemperatureChart_->addDeltaTemperatureSeries(MartaDT02CO2Series_);
+    MartaTemperatureChart_->addDeltaTemperatureSeries(MartaDT03CO2Series_);
 
-  	MartaTemperatureChartView_ = new ThermoDisplay2TemperatureDeltaTemperatureChartView(MartaTemperatureChart_);
-  	MartaTemperatureChartView_->setRenderHint(QPainter::Antialiasing);
-  	MartaTemperatureChartView_->setMinimumSize(800, 300);
-  	layout->addWidget(MartaTemperatureChartView_);
+    MartaTemperatureChartView_ = new ThermoDisplay2TemperatureDeltaTemperatureChartView(MartaTemperatureChart_);
+    MartaTemperatureChartView_->setRenderHint(QPainter::Antialiasing);
+    MartaTemperatureChartView_->setMinimumSize(800, 300);
+    layout->addWidget(MartaTemperatureChartView_);
 
-  	MartaTemperatureChart_->connectMarkers();
-  	MartaTemperatureChart_->updateLegend();
+    MartaTemperatureChart_->connectMarkers();
+    MartaTemperatureChart_->updateLegend();
 
-  	tabWidget_->addTab(w, "Marta");
+    tabWidget_->addTab(w, "Marta");
   }
 
   if (chillerAndVacuumActive_ && throughPlaneActive_) {
@@ -395,32 +395,32 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
     ThroughPlaneTChart_ = new ThermoDisplay2TemperatureChart();
 
     for (unsigned int c = 0;c<6;++c) {
-    	ThroughPlaneTopTSeries_[c] = new ThermoDisplay2LineSeries();
-    	ThroughPlaneTopTSeries_[c]->setName(QString("Top%1 (%2)").arg(c+1).arg(keithleyTopSensors_[c]));
-    	ThroughPlaneTChart_->addSeries(ThroughPlaneTopTSeries_[c]);
+      ThroughPlaneTopTSeries_[c] = new ThermoDisplay2LineSeries();
+      ThroughPlaneTopTSeries_[c]->setName(QString("Top%1 (%2)").arg(c+1).arg(keithleyTopSensors_[c]));
+      ThroughPlaneTChart_->addSeries(ThroughPlaneTopTSeries_[c]);
     }
 
     for (unsigned int c = 0;c<6;++c) {
-    	ThroughPlaneBottomTSeries_[c] = new ThermoDisplay2LineSeries();
-    	ThroughPlaneBottomTSeries_[c]->setName(QString("Bottom%1 (%2)").arg(c+1).arg(keithleyBottomSensors_[c]));
-    	ThroughPlaneTChart_->addSeries(ThroughPlaneBottomTSeries_[c]);
+      ThroughPlaneBottomTSeries_[c] = new ThermoDisplay2LineSeries();
+      ThroughPlaneBottomTSeries_[c]->setName(QString("Bottom%1 (%2)").arg(c+1).arg(keithleyBottomSensors_[c]));
+      ThroughPlaneTChart_->addSeries(ThroughPlaneBottomTSeries_[c]);
     }
 
     ThroughPlaneTSampleTop_ = new ThermoDisplay2LineSeries();
     ThroughPlaneTSampleTop_->setName(QString("SampleTop"));
-  	ThroughPlaneTChart_->addSeries(ThroughPlaneTSampleTop_);
+    ThroughPlaneTChart_->addSeries(ThroughPlaneTSampleTop_);
 
-  	ThroughPlaneTSampleBottom_ = new ThermoDisplay2LineSeries();
-  	ThroughPlaneTSampleBottom_->setName(QString("SampleBottom"));
-  	ThroughPlaneTChart_->addSeries(ThroughPlaneTSampleBottom_);
+    ThroughPlaneTSampleBottom_ = new ThermoDisplay2LineSeries();
+    ThroughPlaneTSampleBottom_->setName(QString("SampleBottom"));
+    ThroughPlaneTChart_->addSeries(ThroughPlaneTSampleBottom_);
 
-  	ThroughPlaneTSampleMiddle_ = new ThermoDisplay2LineSeries();
-  	ThroughPlaneTSampleMiddle_->setName(QString("SampleMiddle"));
-  	ThroughPlaneTChart_->addSeries(ThroughPlaneTSampleMiddle_);
+    ThroughPlaneTSampleMiddle_ = new ThermoDisplay2LineSeries();
+    ThroughPlaneTSampleMiddle_->setName(QString("SampleMiddle"));
+    ThroughPlaneTChart_->addSeries(ThroughPlaneTSampleMiddle_);
 
     ThroughPlaneTSink_ = new ThermoDisplay2LineSeries();
     ThroughPlaneTSink_->setName(QString("Sink"));
-  	ThroughPlaneTChart_->addSeries(ThroughPlaneTSink_);
+    ThroughPlaneTChart_->addSeries(ThroughPlaneTSink_);
 
     ThroughPlaneTChartView_ = new ThermoDisplay2TemperatureChartView(ThroughPlaneTChart_);
     ThroughPlaneTChartView_->setRenderHint(QPainter::Antialiasing);
@@ -467,15 +467,15 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   setCentralWidget(tabWidget_);
 
   /*
-  QPalette pal = palette();
-  QColor color = pal.color(QPalette::Window);
-  if (color.lightnessF()<0.4) {
+    QPalette pal = palette();
+    QColor color = pal.color(QPalette::Window);
+    if (color.lightnessF()<0.4) {
     ChillerTSChart_->setTheme(QChart::ChartThemeDark);
     UChart_->setTheme(QChart::ChartThemeDark);
     IChart_->setTheme(QChart::ChartThemeDark);
     TChart_[0]->setTheme(QChart::ChartThemeDark);
     TChart_[1]->setTheme(QChart::ChartThemeDark);
-  }
+    }
   */
 
   requestData();
@@ -541,7 +541,7 @@ void ThermoDisplay2MainWindow::savePlots()
 
   int currentTab = tabWidget_->currentIndex();
   for (int idx=0;idx<4;++idx) {
-  	if (idx!=currentTab) tabWidget_->setCurrentIndex(idx);
+    if (idx!=currentTab) tabWidget_->setCurrentIndex(idx);
   }
   tabWidget_->setCurrentIndex(currentTab);
 
@@ -551,179 +551,179 @@ void ThermoDisplay2MainWindow::savePlots()
   QApplication::processEvents();
 
   if (chillerAndVacuumActive_) {
-  	auto dpr = 2.0*ChillerTSChartView_->devicePixelRatioF();
-  	QPixmap buffer(ChillerTSChartView_->width() * dpr,
-  			ChillerTSChartView_->height() * dpr);
-  	buffer.fill(Qt::transparent);
+    auto dpr = 2.0*ChillerTSChartView_->devicePixelRatioF();
+    QPixmap buffer(ChillerTSChartView_->width() * dpr,
+		   ChillerTSChartView_->height() * dpr);
+    buffer.fill(Qt::transparent);
 
-  	QPainter *painter = new QPainter(&buffer);
-  	painter->setPen(*(new QColor(255,34,255,255)));
-  	ChillerTSChartView_->render(painter);
+    QPainter *painter = new QPainter(&buffer);
+    painter->setPen(*(new QColor(255,34,255,255)));
+    ChillerTSChartView_->render(painter);
 
-  	QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_chillerTS.png");
-  	file.open(QIODevice::WriteOnly);
-  	buffer.save(&file, "PNG");
+    QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_chillerTS.png");
+    file.open(QIODevice::WriteOnly);
+    buffer.save(&file, "PNG");
   }
 
   QApplication::processEvents();
 
   if (chillerAndVacuumActive_) {
-  	auto dpr = 2.0*ChillerPPChartView_->devicePixelRatioF();
-  	QPixmap buffer(ChillerPPChartView_->width() * dpr,
-  			ChillerPPChartView_->height() * dpr);
-  	buffer.fill(Qt::transparent);
+    auto dpr = 2.0*ChillerPPChartView_->devicePixelRatioF();
+    QPixmap buffer(ChillerPPChartView_->width() * dpr,
+		   ChillerPPChartView_->height() * dpr);
+    buffer.fill(Qt::transparent);
 
-  	QPainter *painter = new QPainter(&buffer);
-  	painter->setPen(*(new QColor(255,34,255,255)));
-  	ChillerPPChartView_->render(painter);
+    QPainter *painter = new QPainter(&buffer);
+    painter->setPen(*(new QColor(255,34,255,255)));
+    ChillerPPChartView_->render(painter);
 
-  	QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_chillerPP.png");
-  	file.open(QIODevice::WriteOnly);
-  	buffer.save(&file, "PNG");
+    QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_chillerPP.png");
+    file.open(QIODevice::WriteOnly);
+    buffer.save(&file, "PNG");
   }
 
   QApplication::processEvents();
 
   if (chillerAndVacuumActive_) {
-  	auto dpr = 2.0*VacuumChartView_->devicePixelRatioF();
-  	QPixmap buffer(VacuumChartView_->width() * dpr,
-  			VacuumChartView_->height() * dpr);
-  	buffer.fill(Qt::transparent);
+    auto dpr = 2.0*VacuumChartView_->devicePixelRatioF();
+    QPixmap buffer(VacuumChartView_->width() * dpr,
+		   VacuumChartView_->height() * dpr);
+    buffer.fill(Qt::transparent);
 
-  	QPainter *painter = new QPainter(&buffer);
-  	VacuumChartView_->render(painter);
+    QPainter *painter = new QPainter(&buffer);
+    VacuumChartView_->render(painter);
 
-  	QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_vacuum.png");
-  	file.open(QIODevice::WriteOnly);
-  	buffer.save(&file, "PNG");
+    QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_vacuum.png");
+    file.open(QIODevice::WriteOnly);
+    buffer.save(&file, "PNG");
   }
 
   QApplication::processEvents();
 
   {
-  	auto dpr = 2.0*UChartView_->devicePixelRatioF();
-  	QPixmap buffer(UChartView_->width() * dpr,
-  			UChartView_->height() * dpr);
-  	buffer.fill(Qt::transparent);
+    auto dpr = 2.0*UChartView_->devicePixelRatioF();
+    QPixmap buffer(UChartView_->width() * dpr,
+		   UChartView_->height() * dpr);
+    buffer.fill(Qt::transparent);
 
-  	QPainter *painter = new QPainter(&buffer);
-  	painter->setPen(*(new QColor(255,34,255,255)));
-  	UChartView_->render(painter);
+    QPainter *painter = new QPainter(&buffer);
+    painter->setPen(*(new QColor(255,34,255,255)));
+    UChartView_->render(painter);
 
-  	QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_voltage.png");
-  	file.open(QIODevice::WriteOnly);
-  	buffer.save(&file, "PNG");
+    QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_voltage.png");
+    file.open(QIODevice::WriteOnly);
+    buffer.save(&file, "PNG");
   }
 
   QApplication::processEvents();
 
   {
-  	auto dpr = 2.0*IChartView_->devicePixelRatioF();
-  	QPixmap buffer(IChartView_->width() * dpr,
-  			IChartView_->height() * dpr);
-  	buffer.fill(Qt::transparent);
+    auto dpr = 2.0*IChartView_->devicePixelRatioF();
+    QPixmap buffer(IChartView_->width() * dpr,
+		   IChartView_->height() * dpr);
+    buffer.fill(Qt::transparent);
 
-  	QPainter *painter = new QPainter(&buffer);
-  	painter->setPen(*(new QColor(255,34,255,255)));
-  	IChartView_->render(painter);
+    QPainter *painter = new QPainter(&buffer);
+    painter->setPen(*(new QColor(255,34,255,255)));
+    IChartView_->render(painter);
 
-  	QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_current.png");
-  	file.open(QIODevice::WriteOnly);
-  	buffer.save(&file, "PNG");
+    QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_current.png");
+    file.open(QIODevice::WriteOnly);
+    buffer.save(&file, "PNG");
   }
 
   QApplication::processEvents();
 
   {
-  	auto dpr = 2.0*TChartView_[0]->devicePixelRatioF();
-  	QPixmap buffer(TChartView_[0]->width() * dpr,
-  			TChartView_[0]->height() * dpr);
-  	buffer.fill(Qt::transparent);
+    auto dpr = 2.0*TChartView_[0]->devicePixelRatioF();
+    QPixmap buffer(TChartView_[0]->width() * dpr,
+		   TChartView_[0]->height() * dpr);
+    buffer.fill(Qt::transparent);
 
-  	QPainter *painter = new QPainter(&buffer);
-  	painter->setPen(*(new QColor(255,34,255,255)));
-  	TChartView_[0]->render(painter);
+    QPainter *painter = new QPainter(&buffer);
+    painter->setPen(*(new QColor(255,34,255,255)));
+    TChartView_[0]->render(painter);
 
-  	QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_temperatures1.png");
-  	file.open(QIODevice::WriteOnly);
-  	buffer.save(&file, "PNG");
+    QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_temperatures1.png");
+    file.open(QIODevice::WriteOnly);
+    buffer.save(&file, "PNG");
   }
 
   QApplication::processEvents();
 
   {
-  	auto dpr = 2.0*TChartView_[1]->devicePixelRatioF();
-  	QPixmap buffer(TChartView_[1]->width() * dpr,
-  			TChartView_[1]->height() * dpr);
-  	buffer.fill(Qt::transparent);
+    auto dpr = 2.0*TChartView_[1]->devicePixelRatioF();
+    QPixmap buffer(TChartView_[1]->width() * dpr,
+		   TChartView_[1]->height() * dpr);
+    buffer.fill(Qt::transparent);
 
-  	QPainter *painter = new QPainter(&buffer);
-  	painter->setPen(*(new QColor(255,34,255,255)));
-  	TChartView_[1]->render(painter);
+    QPainter *painter = new QPainter(&buffer);
+    painter->setPen(*(new QColor(255,34,255,255)));
+    TChartView_[1]->render(painter);
 
-  	QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_temperatures2.png");
-  	file.open(QIODevice::WriteOnly);
-  	buffer.save(&file, "PNG");
+    QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_temperatures2.png");
+    file.open(QIODevice::WriteOnly);
+    buffer.save(&file, "PNG");
   }
 
   if (martaActive_) {
-  	auto dpr = 2.0*MartaPressureChartView_->devicePixelRatioF();
-  	QPixmap buffer(MartaPressureChartView_->width() * dpr,
-  			MartaPressureChartView_->height() * dpr);
-  	buffer.fill(Qt::transparent);
+    auto dpr = 2.0*MartaPressureChartView_->devicePixelRatioF();
+    QPixmap buffer(MartaPressureChartView_->width() * dpr,
+		   MartaPressureChartView_->height() * dpr);
+    buffer.fill(Qt::transparent);
 
-  	QPainter *painter = new QPainter(&buffer);
-  	painter->setPen(*(new QColor(255,34,255,255)));
-  	MartaPressureChartView_->render(painter);
+    QPainter *painter = new QPainter(&buffer);
+    painter->setPen(*(new QColor(255,34,255,255)));
+    MartaPressureChartView_->render(painter);
 
-  	QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_marta_pressures.png");
-  	file.open(QIODevice::WriteOnly);
-  	buffer.save(&file, "PNG");
+    QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_marta_pressures.png");
+    file.open(QIODevice::WriteOnly);
+    buffer.save(&file, "PNG");
   }
 
   if (martaActive_) {
-  	auto dpr = 2.0*MartaTemperatureChartView_->devicePixelRatioF();
-  	QPixmap buffer(MartaTemperatureChartView_->width() * dpr,
-  			MartaTemperatureChartView_->height() * dpr);
-  	buffer.fill(Qt::transparent);
+    auto dpr = 2.0*MartaTemperatureChartView_->devicePixelRatioF();
+    QPixmap buffer(MartaTemperatureChartView_->width() * dpr,
+		   MartaTemperatureChartView_->height() * dpr);
+    buffer.fill(Qt::transparent);
 
-  	QPainter *painter = new QPainter(&buffer);
-  	painter->setPen(*(new QColor(255,34,255,255)));
-  	MartaTemperatureChartView_->render(painter);
+    QPainter *painter = new QPainter(&buffer);
+    painter->setPen(*(new QColor(255,34,255,255)));
+    MartaTemperatureChartView_->render(painter);
 
-  	QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_marta_temperatures.png");
-  	file.open(QIODevice::WriteOnly);
-  	buffer.save(&file, "PNG");
+    QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_marta_temperatures.png");
+    file.open(QIODevice::WriteOnly);
+    buffer.save(&file, "PNG");
   }
 
   if (chillerAndVacuumActive_ && throughPlaneActive_) {
-  	auto dpr = 2.0*ThroughPlaneTChartView_->devicePixelRatioF();
-  	QPixmap buffer(ThroughPlaneTChartView_->width() * dpr,
-  			ThroughPlaneTChartView_->height() * dpr);
-  	buffer.fill(Qt::transparent);
+    auto dpr = 2.0*ThroughPlaneTChartView_->devicePixelRatioF();
+    QPixmap buffer(ThroughPlaneTChartView_->width() * dpr,
+		   ThroughPlaneTChartView_->height() * dpr);
+    buffer.fill(Qt::transparent);
 
-  	QPainter *painter = new QPainter(&buffer);
-  	painter->setPen(*(new QColor(255,34,255,255)));
-  	ThroughPlaneTChartView_->render(painter);
+    QPainter *painter = new QPainter(&buffer);
+    painter->setPen(*(new QColor(255,34,255,255)));
+    ThroughPlaneTChartView_->render(painter);
 
-  	QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_throughplane1.png");
-  	file.open(QIODevice::WriteOnly);
-  	buffer.save(&file, "PNG");
+    QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_throughplane1.png");
+    file.open(QIODevice::WriteOnly);
+    buffer.save(&file, "PNG");
   }
 
   if (chillerAndVacuumActive_ && throughPlaneActive_) {
-  	auto dpr = 2.0*ThroughPlanePChartView_->devicePixelRatioF();
-  	QPixmap buffer(ThroughPlanePChartView_->width() * dpr,
-  			ThroughPlanePChartView_->height() * dpr);
-  	buffer.fill(Qt::transparent);
+    auto dpr = 2.0*ThroughPlanePChartView_->devicePixelRatioF();
+    QPixmap buffer(ThroughPlanePChartView_->width() * dpr,
+		   ThroughPlanePChartView_->height() * dpr);
+    buffer.fill(Qt::transparent);
 
-  	QPainter *painter = new QPainter(&buffer);
-  	painter->setPen(*(new QColor(255,34,255,255)));
-  	ThroughPlanePChartView_->render(painter);
+    QPainter *painter = new QPainter(&buffer);
+    painter->setPen(*(new QColor(255,34,255,255)));
+    ThroughPlanePChartView_->render(painter);
 
-  	QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_throughplane2.png");
-  	file.open(QIODevice::WriteOnly);
-  	buffer.save(&file, "PNG");
+    QFile file(dir + "/" + dt.toString("yyyy-MM-dd-hh-mm-ss") + "_thermo2_throughplane2.png");
+    file.open(QIODevice::WriteOnly);
+    buffer.save(&file, "PNG");
   }
 
 }
@@ -741,30 +741,30 @@ void ThermoDisplay2MainWindow::updateInfo()
   const Measurement_t& m = reader_->getMeasurement();
 
   if (chillerAndVacuumActive_) {
-  	bool updateLegend = false;
+    bool updateLegend = false;
 
-  	if (ChillerTBathSeries_->isEnabled()!=m.u525wState_) updateLegend = true;
-  	ChillerTBathSeries_->setEnabled(m.u525wState_);
-  	ChillerTReturnSeries_->setEnabled(m.u525wState_);
-  	ChillerTCWISeries_->setEnabled(m.u525wState_);
-  	ChillerTCWOSeries_->setEnabled(m.u525wState_);
-  	ChillerPowerSeries_->setEnabled(m.u525wState_);
-  	ChillerPressureSeries_->setEnabled(m.u525wState_);
-  	ChillerSTCSeries_->setEnabled(m.u525wState_);
-  	ChillerSCSeries_->setEnabled(m.u525wState_);
-  	ChillerTBathSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wBathTemperature_);
-  	ChillerTReturnSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wReturnTemperature_);
-  	ChillerTCWISeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wCWInletTemperature_);
-  	ChillerTCWOSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wCWOutletTemperature_);
-  	ChillerPowerSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wPower_/1000.);
-  	ChillerPressureSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wPumpPressure_);
-  	ChillerSTCSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wTemperatureControlEnabled_);
-  	ChillerSCSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wCirculatorEnabled_);
+    if (ChillerTBathSeries_->isEnabled()!=m.u525wState_) updateLegend = true;
+    ChillerTBathSeries_->setEnabled(m.u525wState_);
+    ChillerTReturnSeries_->setEnabled(m.u525wState_);
+    ChillerTCWISeries_->setEnabled(m.u525wState_);
+    ChillerTCWOSeries_->setEnabled(m.u525wState_);
+    ChillerPowerSeries_->setEnabled(m.u525wState_);
+    ChillerPressureSeries_->setEnabled(m.u525wState_);
+    ChillerSTCSeries_->setEnabled(m.u525wState_);
+    ChillerSCSeries_->setEnabled(m.u525wState_);
+    ChillerTBathSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wBathTemperature_);
+    ChillerTReturnSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wReturnTemperature_);
+    ChillerTCWISeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wCWInletTemperature_);
+    ChillerTCWOSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wCWOutletTemperature_);
+    ChillerPowerSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wPower_/1000.);
+    ChillerPressureSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wPumpPressure_);
+    ChillerSTCSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wTemperatureControlEnabled_);
+    ChillerSCSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wCirculatorEnabled_);
 
-  	if (updateLegend) {
-  		ChillerTSChart_->updateLegend();
-  		ChillerPPChart_->updateLegend();
-  	}
+    if (updateLegend) {
+      ChillerTSChart_->updateLegend();
+      ChillerPPChart_->updateLegend();
+    }
   }
 
   if (chillerAndVacuumActive_) {
@@ -898,106 +898,117 @@ void ThermoDisplay2MainWindow::updateInfo()
   }
 
   if (chillerAndVacuumActive_ && throughPlaneActive_) {
-  	bool updateLegend = false;
+    bool updateLegend = false;
 
-  	if (ThroughPlaneTSink_->isEnabled()!=m.u525wState_) updateLegend = true;
-  	ThroughPlaneTSink_->setEnabled(m.u525wState_);
-  	ThroughPlaneTSink_->append(m.dt.toMSecsSinceEpoch(), m.u525wBathTemperature_);
+    if (ThroughPlaneTSink_->isEnabled()!=m.u525wState_) updateLegend = true;
+    ThroughPlaneTSink_->setEnabled(m.u525wState_);
+    ThroughPlaneTSink_->append(m.dt.toMSecsSinceEpoch(), m.u525wBathTemperature_);
 
-  	unsigned int card, channel;
+    unsigned int card, channel;
     unsigned int countTop = 0;
     unsigned int countBottom = 0;
 
-  	for (unsigned int c = 0;c<6;++c) {
+    for (unsigned int c = 0;c<6;++c) {
 
-  		card = keithleyTopCards_[c];
-  		channel = keithleyTopChannels_[c];
+      card = keithleyTopCards_[c];
+      channel = keithleyTopChannels_[c];
 
-  		if (ThroughPlaneTopTSeries_[c]->isEnabled()!=m.keithleyState[card][channel]) updateLegend = true;
-  		if (m.keithleyState[card][channel]) countTop++;
-  		ThroughPlaneTopTSeries_[c]->setEnabled(m.keithleyState[card][channel]);
-  		ThroughPlaneTopTSeries_[c]->append(m.dt.toMSecsSinceEpoch(), m.keithleyTemperature[card][channel] + keithleyTopOffsets_[c]);
+      if (ThroughPlaneTopTSeries_[c]->isEnabled()!=m.keithleyState[card][channel]) updateLegend = true;
+      if (m.keithleyState[card][channel]) countTop++;
+      ThroughPlaneTopTSeries_[c]->setEnabled(m.keithleyState[card][channel]);
+      ThroughPlaneTopTSeries_[c]->append(m.dt.toMSecsSinceEpoch(), m.keithleyTemperature[card][channel] + keithleyTopOffsets_[c]);
 
-  		card = keithleyBottomCards_[c];
-  		channel = keithleyBottomChannels_[c];
+      card = keithleyBottomCards_[c];
+      channel = keithleyBottomChannels_[c];
 
-  		if (ThroughPlaneBottomTSeries_[c]->isEnabled()!=m.keithleyState[card][channel]) updateLegend = true;
-  		if (m.keithleyState[card][channel]) countBottom++;
-  		ThroughPlaneBottomTSeries_[c]->setEnabled(m.keithleyState[card][channel]);
-  		ThroughPlaneBottomTSeries_[c]->append(m.dt.toMSecsSinceEpoch(), m.keithleyTemperature[card][channel] + keithleyBottomOffsets_[c]);
-  	}
+      if (ThroughPlaneBottomTSeries_[c]->isEnabled()!=m.keithleyState[card][channel]) updateLegend = true;
+      if (m.keithleyState[card][channel]) countBottom++;
+      ThroughPlaneBottomTSeries_[c]->setEnabled(m.keithleyState[card][channel]);
+      ThroughPlaneBottomTSeries_[c]->append(m.dt.toMSecsSinceEpoch(), m.keithleyTemperature[card][channel] + keithleyBottomOffsets_[c]);
+    }
 
-  	if (m.nge103BState[nge103BChannel_-1]) {
-  		double sourcePower = resistance_ * std::pow(m.nge103BState[nge103BChannel_-1], 2);
-  		ThroughPlanePSource_->append(m.dt.toMSecsSinceEpoch(), sourcePower);
-  	}
+    if (m.nge103BState[nge103BChannel_-1]) {
+      double sourcePower = resistance_ * std::pow(m.nge103BState[nge103BChannel_-1], 2);
+      ThroughPlanePSource_->setEnabled(true);
+      ThroughPlanePSource_->append(m.dt.toMSecsSinceEpoch(), sourcePower);
+    } else {
+      ThroughPlanePSource_->setEnabled(true);
+      ThroughPlanePSource_->append(m.dt.toMSecsSinceEpoch(), 0.0);
+    }
 
-  	if (countTop>=2 && countBottom>=2) {
+    if (countTop>=2 && countBottom>=2) {
 
-  	  std::vector<std::pair<double,double> > values;
-  	  double pos;
-  	  double p0, p1;
+      ThroughPlaneTSampleTop_->setEnabled(true);
+      ThroughPlaneTSampleMiddle_->setEnabled(true);
+      ThroughPlaneTSampleBottom_->setEnabled(true);
+      ThroughPlanePTop_->setEnabled(true);
+      ThroughPlanePBottom_->setEnabled(true);
+      
+      std::vector<std::pair<double,double> > values;
+      double pos;
+      double p0, p1;
 
-  	  values.clear();
-  	  for (unsigned int i=0;i<6;i++) {
-  	    card = keithleyTopCards_[i];
-  	    channel = keithleyTopChannels_[i];
+      values.clear();
+      for (unsigned int i=0;i<6;i++) {
+	card = keithleyTopCards_[i];
+	channel = keithleyTopChannels_[i];
 
-  	    if (m.keithleyState[card][channel]) {
-  	      values.push_back(std::pair<double,double>(keithleyTopPositions_[i],
-  	          m.keithleyTemperature[card][channel] + keithleyTopOffsets_[i]));
-  	    }
-  	  }
-  	  fitter_.fit(values, 2, p0, p1);
+	if (m.keithleyState[card][channel]) {
+	  values.push_back(std::pair<double,double>(keithleyTopPositions_[i],
+						    m.keithleyTemperature[card][channel] + keithleyTopOffsets_[i]));
+	}
+      }
+      fitter_.fit(values, 2, p0, p1);
 
-  	  double sampleTTop = p0; // [degC]
-  	  double gradientTop = -1.0 * p1 * 1000.; // [degC/m]
-  	  double powerTop = gradientTop * kBlock_ * ABlock_ * 1e-6; // [W]
+      double sampleTTop = p0; // [degC]
+      double gradientTop = -1.0 * p1 * 1000.; // [degC/m]
+      double powerTop = gradientTop * kBlock_ * ABlock_ * 1e-6; // [W]
 
-  	  values.clear();
-  	  for (unsigned int i=0;i<6;i++) {
-  	    card = keithleyBottomCards_[i];
-  	    channel = keithleyBottomChannels_[i];
+      values.clear();
+      for (unsigned int i=0;i<6;i++) {
+	card = keithleyBottomCards_[i];
+	channel = keithleyBottomChannels_[i];
 
-  	    if (m.keithleyState[card][channel]) {
-  	      values.push_back(std::pair<double,double>(keithleyBottomPositions_[i],
-  	          m.keithleyTemperature[card][channel] + keithleyBottomOffsets_[i]));
-  	    }
-  	  }
-  	  fitter_.fit(values, 2, p0, p1);
+	if (m.keithleyState[card][channel]) {
+	  values.push_back(std::pair<double,double>(keithleyBottomPositions_[i],
+						    m.keithleyTemperature[card][channel] + keithleyBottomOffsets_[i]));
+	}
+      }
+      fitter_.fit(values, 2, p0, p1);
 
-  	  double sampleTBottom = p0;
-  	  double gradientBottom = 1.0 * p1 * 1000.; // [degC/m]
-  	  double powerBottom = gradientBottom * kBlock_ * ABlock_ * 1e-6; // [W]
-
+      double sampleTBottom = p0;
+      double gradientBottom = 1.0 * p1 * 1000.; // [degC/m]
+      double powerBottom = gradientBottom * kBlock_ * ABlock_ * 1e-6; // [W]
 
       ThroughPlaneTSampleTop_->append(m.dt.toMSecsSinceEpoch(), sampleTTop);
-  	  ThroughPlaneTSampleMiddle_->append(m.dt.toMSecsSinceEpoch(), 0.5*(sampleTTop+sampleTBottom));
+      ThroughPlaneTSampleMiddle_->append(m.dt.toMSecsSinceEpoch(), 0.5*(sampleTTop+sampleTBottom));
       ThroughPlaneTSampleBottom_->append(m.dt.toMSecsSinceEpoch(), sampleTBottom);
 
-  	  ThroughPlanePTop_->append(m.dt.toMSecsSinceEpoch(), powerTop);
-  	  ThroughPlanePBottom_->append(m.dt.toMSecsSinceEpoch(), powerBottom);
-  	}
+      ThroughPlanePTop_->append(m.dt.toMSecsSinceEpoch(), powerTop);
+      ThroughPlanePBottom_->append(m.dt.toMSecsSinceEpoch(), powerBottom);
+    }
 
-  	if (updateLegend) {
-  		ThroughPlaneTChart_->updateLegend();
-  	}
+    if (updateLegend) {
+      ThroughPlaneTChart_->updateLegend();
+      ThroughPlanePChart_->updateLegend();
+    }
   }
 
   if (chillerAndVacuumActive_) {
-  	ChillerTSChartView_->refreshAxes();
-  	ChillerPPChartView_->refreshAxes();
-  	VacuumChartView_->refreshAxes();
+    ChillerTSChartView_->refreshAxes();
+    ChillerPPChartView_->refreshAxes();
+    VacuumChartView_->refreshAxes();
   }
   UChartView_->refreshAxes();
   IChartView_->refreshAxes();
   TChartView_[0]->refreshAxes();
   TChartView_[1]->refreshAxes();
   if (martaActive_) {
-  	MartaPressureChartView_->refreshAxes();
-  	MartaTemperatureChartView_->refreshAxes();
+    MartaPressureChartView_->refreshAxes();
+    MartaTemperatureChartView_->refreshAxes();
   }
   if (chillerAndVacuumActive_ && throughPlaneActive_) {
-  	ThroughPlaneTChartView_->refreshAxes();
+    ThroughPlaneTChartView_->refreshAxes();
+    ThroughPlanePChartView_->refreshAxes();
   }
 }
