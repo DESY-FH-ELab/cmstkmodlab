@@ -73,7 +73,6 @@ add_library(Common SHARED
 set(DEVICE_LIBRARIES
         TkModLabAgilent
         TkModLabArduino
-        TkModLabCanon
         TkModLabConrad
         TkModLabCori
         TkModLabGreisinger
@@ -91,6 +90,11 @@ set(DEVICE_LIBRARIES
         TkModLabRohdeSchwarz
         TkModLabVelleman
 )
+if(CMSTKMODLAB_ASSEMBLY OR CMSTKMODLAB_DEFO)
+set(DEVICE_LIBRARIES
+        TkModLabCanon
+)
+endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
