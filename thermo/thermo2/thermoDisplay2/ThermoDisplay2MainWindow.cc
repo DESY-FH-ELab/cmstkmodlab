@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <string>
+#include <cmath>
 
 #include <QApplication>
 #include <QGroupBox>
