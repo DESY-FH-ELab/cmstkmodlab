@@ -239,7 +239,7 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
 
       sampleTTop_ = p0; // [degC]
       gradientTop_ = -1.0 * p1 * 1000.; // [degC/m]
-      powerTop_ = gradientTop_ * kBlock_ * ABlock_ * 1e-6; // [W]
+      powerTop_ = -1.0 * gradientTop_ * kBlock_ * ABlock_ * 1e-6; // [W]
 
       NQLogDebug("Thermo2ThroughPlaneModel") << "gradientTop_ = " << gradientTop_;
       NQLogDebug("Thermo2ThroughPlaneModel") << "powerTop_ = " << powerTop_;
@@ -253,8 +253,8 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
       fitter_.fit(values, 2, p0, p1);
 
       sampleTBottom_ = p0;
-      gradientBottom_ = p1 * 1000.;
-      powerBottom_ = gradientBottom_ * kBlock_ * ABlock_ * 1e-6;
+      gradientBottom_ = 1.0 * p1 * 1000.;
+      powerBottom_ = -1.0 * gradientBottom_ * kBlock_ * ABlock_ * 1e-6;
 
       NQLogDebug("Thermo2ThroughPlaneModel") << "gradientBottom_ = " << gradientBottom_;
       NQLogDebug("Thermo2ThroughPlaneModel") << "powerBottom_ = " << powerBottom_;

@@ -962,7 +962,7 @@ void ThermoDisplay2MainWindow::updateInfo()
 
       double sampleTTop = p0; // [degC]
       double gradientTop = -1.0 * p1 * 1000.; // [degC/m]
-      double powerTop = gradientTop * kBlock_ * ABlock_ * 1e-6; // [W]
+      double powerTop = -1.0 * gradientTop * kBlock_ * ABlock_ * 1e-6; // [W]
 
       values.clear();
       for (unsigned int i=0;i<6;i++) {
@@ -978,7 +978,7 @@ void ThermoDisplay2MainWindow::updateInfo()
 
       double sampleTBottom = p0;
       double gradientBottom = 1.0 * p1 * 1000.; // [degC/m]
-      double powerBottom = gradientBottom * kBlock_ * ABlock_ * 1e-6; // [W]
+      double powerBottom = -1.0 * gradientBottom * kBlock_ * ABlock_ * 1e-6; // [W]
 
       ThroughPlaneTSampleTop_->append(m.dt.toMSecsSinceEpoch(), sampleTTop);
       ThroughPlaneTSampleMiddle_->append(m.dt.toMSecsSinceEpoch(), 0.5*(sampleTTop+sampleTBottom));
