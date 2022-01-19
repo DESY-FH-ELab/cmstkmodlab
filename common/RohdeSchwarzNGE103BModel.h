@@ -21,7 +21,6 @@
 
 #include "DeviceState.h"
 #include "DeviceParameter.h"
-#include "ValueHistory.h"
 
 #ifdef USE_FAKEIO
 #include "devices/RohdeSchwarz/RohdeSchwarzNGE103BFake.h"
@@ -48,10 +47,8 @@ public:
   unsigned int getOutputMode(int channel) const;
   float getVoltage(int channel) const;
   float getMeasuredVoltage(int channel) const;
-  float getMeasuredVoltageHistory(int channel, int secondsAgo) const;
   float getCurrent(int channel) const;
   float getMeasuredCurrent(int channel) const;
-  float getMeasuredCurrentHistory(int channel, int secondsAgo) const;
   float getEasyRampDuration(int channel) const;
   bool getEasyRampState(int channel) const;
 
@@ -85,10 +82,8 @@ protected:
   std::array<unsigned int,3> outputMode_;
   std::array<float,3> voltage_;
   std::array<float,3> measuredVoltage_;
-  std::array<ValueHistory<float>,3> measuredVoltageHistory_;
   std::array<float,3> current_;
   std::array<float,3> measuredCurrent_;
-  std::array<ValueHistory<float>,3> measuredCurrentHistory_;
   std::array<float,3> easyRampDuration_;
   std::array<bool,3> easyRampState_;
 

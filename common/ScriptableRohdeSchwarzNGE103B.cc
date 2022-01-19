@@ -78,15 +78,6 @@ QScriptValue ScriptableRohdeSchwarzNGE103B::getMeasuredVoltage(int channel)
   return QScriptValue(value);
 }
 
-QScriptValue ScriptableRohdeSchwarzNGE103B::getMeasuredVoltageHistory(int channel,
-                                                                      int secondsAgo)
-{
-  QMutexLocker locker(&mutex_);
-  if (channel<1 || channel>3) return QScriptValue(-1);
-  bool value = model_->getMeasuredVoltageHistory(channel, secondsAgo);
-  return QScriptValue(value);
-}
-
 QScriptValue ScriptableRohdeSchwarzNGE103B::getCurrent(int channel)
 {
   QMutexLocker locker(&mutex_);
@@ -110,15 +101,6 @@ QScriptValue ScriptableRohdeSchwarzNGE103B::getMeasuredCurrent(int channel)
   QMutexLocker locker(&mutex_);
   if (channel<1 || channel>3) return QScriptValue(-1);
   float value = model_->getMeasuredCurrent(channel);
-  return QScriptValue(value);
-}
-
-QScriptValue ScriptableRohdeSchwarzNGE103B::getMeasuredCurrentHistory(int channel,
-                                                                      int secondsAgo)
-{
-  QMutexLocker locker(&mutex_);
-  if (channel<1 || channel>3) return QScriptValue(-1);
-  bool value = model_->getMeasuredCurrentHistory(channel, secondsAgo);
   return QScriptValue(value);
 }
 
