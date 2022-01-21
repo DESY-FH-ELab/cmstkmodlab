@@ -47,6 +47,7 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   keithleyBottomSensors_ = config->getValueArray<unsigned int,6>("ThroughPlaneKeithleyBottomSensors");
   keithleyBottomPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomPositions");
   keithleyBottomOffsets_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomOffsets");
+  keithleyAmbientSensor_ = config->getValue<double>("KeithleyAmbientSensor", 0);
 
   unsigned int sensor;
   unsigned int card;
@@ -65,6 +66,17 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
 
     keithleyBottomCards_[c] = card-1;
     keithleyBottomChannels_[c] = channel-1;
+  }
+  if (keithleyAmbientSensor_!=0) {
+    sensor = keithleyAmbientSensor_;
+    channel = sensor%100;
+    card = (sensor-channel)/100;
+
+    keithleyAmbientCard_ = card-1;
+    keithleyAmbientChannel_ = channel-1;
+  } else {
+    keithleyAmbientCard_ = 0;
+    keithleyAmbientChannel_ = 0;
   }
 
   tabWidget_ = new QTabWidget(this);
@@ -417,6 +429,12 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
     ThroughPlaneTSampleMiddle_ = new ThermoDisplay2LineSeries();
     ThroughPlaneTSampleMiddle_->setName(QString("SampleMiddle"));
     ThroughPlaneTChart_->addSeries(ThroughPlaneTSampleMiddle_);
+
+    if (keithleyAmbientSensor_!=0) {
+      ThroughPlaneTAmbient_ = new ThermoDisplay2LineSeries();
+      ThroughPlaneTAmbient_->setName(QString("Ambient"));
+      ThroughPlaneTChart_->addSeries(ThroughPlaneTAmbient_);
+    }
 
     ThroughPlaneTSink_ = new ThermoDisplay2LineSeries();
     ThroughPlaneTSink_->setName(QString("Sink"));
@@ -925,6 +943,15 @@ void ThermoDisplay2MainWindow::updateInfo()
       if (m.keithleyState[card][channel]) countBottom++;
       ThroughPlaneBottomTSeries_[c]->setEnabled(m.keithleyState[card][channel]);
       ThroughPlaneBottomTSeries_[c]->append(m.dt.toMSecsSinceEpoch(), m.keithleyTemperature[card][channel] + keithleyBottomOffsets_[c]);
+    }
+
+    if (keithleyAmbientSensor_!=0) {
+      card = keithleyAmbientCard_;
+      channel = keithleyAmbientChannel_;
+
+      if (ThroughPlaneTAmbient_->isEnabled()!=m.keithleyState[card][channel]) updateLegend = true;
+      ThroughPlaneTAmbient_->setEnabled(m.keithleyState[card][channel]);
+      ThroughPlaneTAmbient_->append(m.dt.toMSecsSinceEpoch(), m.keithleyTemperature[card][channel]);
     }
 
     if (m.nge103BState[nge103BChannel_-1]) {

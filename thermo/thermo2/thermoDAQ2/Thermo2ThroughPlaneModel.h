@@ -52,11 +52,14 @@ public:
 
   unsigned int getKeithleyTopSensor(unsigned int position) const { return keithleyTopSensors_[position]; }
   unsigned int getKeithleyBottomSensor(unsigned int position) const { return keithleyBottomSensors_[position]; }
+  unsigned int getKeithleyAmbientSensor() const { return keithleyAmbientSensor_; }
   bool getKeithleyState() const { return keithleyState_; }
   bool getKeithleyTopSensorState(unsigned int position) const { return keithleyTopSensorStates_[position]; }
   bool getKeithleyBottomSensorState(unsigned int position) const { return keithleyBottomSensorStates_[position]; }
+  bool getKeithleyAmbientSensorState() const { return keithleyAmbientSensorState_; }
   double getKeithleyTopTemperature(unsigned int position) const { return keithleyTopTemperatures_[position]; }
   double getKeithleyBottomTemperature(unsigned int position) const { return keithleyBottomTemperatures_[position]; }
+  double getKeithleyAmbientTemperature() const { return keithleyAmbientTemperature_; }
 
   bool getCalculationState() const { return calculationState_; }
   double getGradientTop() const { return gradientTop_; }
@@ -125,11 +128,15 @@ protected:
   VKeithleyDAQ6510::ChannelMode_t keithleyBottomSensorTypes_;
   std::array<double,6> keithleyBottomPositions_;
   std::array<double,6> keithleyBottomOffsets_;
+  unsigned int keithleyAmbientSensor_;
+  VKeithleyDAQ6510::ChannelMode_t keithleyAmbientSensorType_;
   bool keithleyState_;
   std::array<bool,6> keithleyTopSensorStates_;
   std::array<bool,6> keithleyBottomSensorStates_;
+  bool keithleyAmbientSensorState_;
   std::array<double,6> keithleyTopTemperatures_;
   std::array<double,6> keithleyBottomTemperatures_;
+  double keithleyAmbientTemperature_;
 
   double sourcePower_;
 

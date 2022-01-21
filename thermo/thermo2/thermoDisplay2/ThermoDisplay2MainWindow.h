@@ -81,6 +81,9 @@ protected:
   std::array<unsigned int,6> keithleyBottomChannels_;
   std::array<double,6> keithleyBottomPositions_;
   std::array<double,6> keithleyBottomOffsets_;
+  unsigned int keithleyAmbientSensor_;
+  unsigned int keithleyAmbientCard_;
+  unsigned int keithleyAmbientChannel_;
 
   Thermo2ThroughPlaneFitter fitter_;
 
@@ -153,6 +156,7 @@ protected:
 
   ThermoDisplay2ChartView *ThroughPlaneTChartView_;
   ThermoDisplay2TemperatureChart *ThroughPlaneTChart_;
+  ThermoDisplay2LineSeries *ThroughPlaneTAmbient_;
   ThermoDisplay2LineSeries *ThroughPlaneTSink_;
   ThermoDisplay2LineSeries *ThroughPlaneTopTSeries_[6];
   ThermoDisplay2LineSeries *ThroughPlaneTSampleTop_;

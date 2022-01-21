@@ -36,6 +36,12 @@ mattermostusername                     thermodaq2
 mattermostchannel                      thermodaq2
 
 #
+# Ambient temperature sensor
+#
+KeithleyAmbientSensor                  210
+KeithleyAmbientSensorType              4WirePT100
+
+#
 # Through-Plane Thermal Measurement Setup
 #
 ThroughPlaneAutoConfig                 0      # Automatically configure Keithley channels on startup

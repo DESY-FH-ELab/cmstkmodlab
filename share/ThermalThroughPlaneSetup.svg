@@ -123,5 +123,6 @@
             <text x="39.989px" y="337.766px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.667px;"><tspan x="39.989px 45.388px 53.152px 56.17px 61.569px 66.968px 73.55px 78.949px 81.379px 86.778px 89.208px 95.789px 98.219px " y="337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px 337.766px ">§GradBot§ K/m</tspan></text>
             <text x="62.817px" y="357.766px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.667px;"><tspan x="62.817px 68.216px 74.798px 81.379px 86.778px 89.208px 94.607px 97.037px " y="357.766px 357.766px 357.766px 357.766px 357.766px 357.766px 357.766px 357.766px ">§PBot§ W</tspan></text>
         </g>
+        <text x="39.239px" y="27.766px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.667px;"><tspan x="39.239px 45.82px 54.173px 59.571px 61.408px 66.807px 72.206px 74.636px 77.066px 79.496px 84.895px 90.086px 96.667px 105.019px 110.418px 115.817px 118.248px 121.98px " y="27.766px 27.766px 27.766px 27.766px 27.766px 27.766px 27.766px 27.766px 27.766px 27.766px 27.766px 27.766px 27.766px 27.766px 27.766px 27.766px 27.766px 27.766px ">Ambient: §TAmb§ °C</tspan></text>
     </g>
 </svg>

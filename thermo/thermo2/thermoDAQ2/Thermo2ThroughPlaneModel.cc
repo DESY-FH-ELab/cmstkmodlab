@@ -56,6 +56,7 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
   keithleyBottomSensors_ = config->getValueArray<unsigned int,6>("ThroughPlaneKeithleyBottomSensors");
   keithleyBottomPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomPositions");
   keithleyBottomOffsets_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomOffsets");
+  keithleyAmbientSensor_ = config->getValue<double>("KeithleyAmbientSensor", 0);
 
   std::string sensorType;
 
@@ -77,6 +78,17 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
     keithleyBottomSensorTypes_ = VKeithleyDAQ6510::FourWireRTD_PT100;
   }
 
+  if (keithleyAmbientSensor_!=0) {
+    sensorType = config->getValue("KeithleyAmbientSensorType");
+    if (sensorType=="4WirePT100") {
+      keithleyAmbientSensorType_ = VKeithleyDAQ6510::FourWireRTD_PT100;
+    }else if (sensorType=="Therm10k") {
+      keithleyAmbientSensorType_ = VKeithleyDAQ6510::Thermistor_10000;
+    } else {
+      keithleyAmbientSensorType_ = VKeithleyDAQ6510::FourWireRTD_PT100;
+    }
+  }
+
   bool throughPlaneAutoConfig = config->getValue<int>("ThroughPlaneAutoConfig");
   if (throughPlaneAutoConfig) {
     for (unsigned int i=0;i<6;++i) {
@@ -85,6 +97,11 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
 
       keithleyModel_->setSensorMode(keithleyBottomSensors_[i], keithleyBottomSensorTypes_);
       keithleyModel_->setSensorEnabled(keithleyBottomSensors_[i], true);
+    }
+
+    if (keithleyAmbientSensor_!=0) {
+      keithleyModel_->setSensorMode(keithleyAmbientSensor_, keithleyAmbientSensorType_);
+      keithleyModel_->setSensorEnabled(keithleyAmbientSensor_, true);
     }
   }
 
@@ -219,6 +236,13 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
     changed |= updateIfChanged<double>(keithleyBottomTemperatures_[i],
         keithleyModel_->getTemperature(keithleyBottomSensors_[i]) + keithleyBottomOffsets_[i]);
     if (keithleyBottomSensorStates_[i]) countBottom++;
+  }
+
+  if (keithleyAmbientSensor_!=0) {
+    changed |= updateIfChanged<bool>(keithleyAmbientSensorState_,
+        keithleyModel_->getSensorState(keithleyAmbientSensor_)==READY ? true : false);
+    changed |= updateIfChanged<double>(keithleyAmbientTemperature_,
+        keithleyModel_->getTemperature(keithleyAmbientSensor_));
   }
 
   if (changed) {
