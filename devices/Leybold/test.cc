@@ -31,18 +31,22 @@ typedef LeyboldGraphixThree LeyboldGraphixThree_t;
 #include <fcntl.h>
 #include <unistd.h>
 
-int main()
+int main(int argc, char* argv[])
 {
+  std::string ioPort = "/dev/ttyUSB0";
+  if (argc==2) ioPort = argv[1];
+
+  std::cout << "test on " << ioPort << std::endl;
+
   {
-    LeyboldGraphixOne_t leybold("/dev/ttyUSB0");
+    LeyboldGraphixOne_t leybold(ioPort.c_str());
 
     std::cout << "version:                 " << leybold.GetVersion() << std::endl;
     std::cout << "serial number:           " << leybold.GetSerialNumber() << std::endl;
     std::cout << "item number:             " << leybold.GetItemNumber() << std::endl;
   }
 
-  return 1;
-
+  /*
   {
     LeyboldGraphixThree_t leybold("/dev/ttyUSB0");
 
@@ -96,6 +100,7 @@ int main()
       std::cout << std::endl;
     }
   }
-
+  */
+  
   return 0;
 }
