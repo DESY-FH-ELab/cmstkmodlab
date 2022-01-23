@@ -43,10 +43,14 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   nge103BChannel_ = config->getValue<unsigned int>("ThroughPlaneNGE103BChannel");
   keithleyTopSensors_ = config->getValueArray<unsigned int,6>("ThroughPlaneKeithleyTopSensors");
   keithleyTopPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopPositions");
-  keithleyTopOffsets_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopOffsets");
+  keithleyTopCor0_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor0");
+  keithleyTopCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor1");
+  keithleyTopCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor2");
   keithleyBottomSensors_ = config->getValueArray<unsigned int,6>("ThroughPlaneKeithleyBottomSensors");
   keithleyBottomPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomPositions");
-  keithleyBottomOffsets_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomOffsets");
+  keithleyBottomCor0_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor0");
+  keithleyBottomCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor1");
+  keithleyBottomCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor2");
   keithleyAmbientSensor_ = config->getValue<double>("KeithleyAmbientSensor", 0);
 
   unsigned int sensor;
@@ -517,9 +521,13 @@ void ThermoDisplay2MainWindow::configurationChanged()
   kBlock_ = config->getValue<double>("ThroughPlaneKBlock");
   ABlock_ = config->getValue<double>("ThroughPlaneABlock");
   keithleyTopPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopPositions");
-  keithleyTopOffsets_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopOffsets");
+  keithleyTopCor0_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor0");
+  keithleyTopCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor1");
+  keithleyTopCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor2");
   keithleyBottomPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomPositions");
-  keithleyBottomOffsets_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomOffsets");
+  keithleyBottomCor0_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor0");
+  keithleyBottomCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor1");
+  keithleyBottomCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor2");
 }
 
 void ThermoDisplay2MainWindow::clearData()
@@ -925,6 +933,7 @@ void ThermoDisplay2MainWindow::updateInfo()
     unsigned int card, channel;
     unsigned int countTop = 0;
     unsigned int countBottom = 0;
+    double temp, tcor;
 
     for (unsigned int c = 0;c<6;++c) {
 
@@ -934,7 +943,11 @@ void ThermoDisplay2MainWindow::updateInfo()
       if (ThroughPlaneTopTSeries_[c]->isEnabled()!=m.keithleyState[card][channel]) updateLegend = true;
       if (m.keithleyState[card][channel]) countTop++;
       ThroughPlaneTopTSeries_[c]->setEnabled(m.keithleyState[card][channel]);
-      ThroughPlaneTopTSeries_[c]->append(m.dt.toMSecsSinceEpoch(), m.keithleyTemperature[card][channel] + keithleyTopOffsets_[c]);
+      temp = m.keithleyTemperature[card][channel];
+      tcor =  keithleyTopCor0_[c];
+      tcor += keithleyTopCor1_[c] * temp;
+      tcor += keithleyTopCor2_[c] * temp * temp;
+      ThroughPlaneTopTSeries_[c]->append(m.dt.toMSecsSinceEpoch(), tcor);
 
       card = keithleyBottomCards_[c];
       channel = keithleyBottomChannels_[c];
@@ -942,7 +955,11 @@ void ThermoDisplay2MainWindow::updateInfo()
       if (ThroughPlaneBottomTSeries_[c]->isEnabled()!=m.keithleyState[card][channel]) updateLegend = true;
       if (m.keithleyState[card][channel]) countBottom++;
       ThroughPlaneBottomTSeries_[c]->setEnabled(m.keithleyState[card][channel]);
-      ThroughPlaneBottomTSeries_[c]->append(m.dt.toMSecsSinceEpoch(), m.keithleyTemperature[card][channel] + keithleyBottomOffsets_[c]);
+      temp = m.keithleyTemperature[card][channel];
+      tcor =  keithleyBottomCor0_[c];
+      tcor += keithleyBottomCor1_[c] * temp;
+      tcor += keithleyBottomCor2_[c] * temp * temp;
+      ThroughPlaneBottomTSeries_[c]->append(m.dt.toMSecsSinceEpoch(),tcor);
     }
 
     if (keithleyAmbientSensor_!=0) {
@@ -977,13 +994,16 @@ void ThermoDisplay2MainWindow::updateInfo()
 
       values.clear();
       for (unsigned int i=0;i<6;i++) {
-	card = keithleyTopCards_[i];
-	channel = keithleyTopChannels_[i];
+        card = keithleyTopCards_[i];
+        channel = keithleyTopChannels_[i];
 
-	if (m.keithleyState[card][channel]) {
-	  values.push_back(std::pair<double,double>(keithleyTopPositions_[i],
-						    m.keithleyTemperature[card][channel] + keithleyTopOffsets_[i]));
-	}
+        if (m.keithleyState[card][channel]) {
+          temp = m.keithleyTemperature[card][channel];
+          tcor =  keithleyTopCor0_[i];
+          tcor += keithleyTopCor1_[i] * temp;
+          tcor += keithleyTopCor2_[i] * temp * temp;
+          values.push_back(std::pair<double,double>(keithleyTopPositions_[i], tcor));
+        }
       }
       fitter_.fit(values, 2, p0, p1);
 
@@ -993,13 +1013,16 @@ void ThermoDisplay2MainWindow::updateInfo()
 
       values.clear();
       for (unsigned int i=0;i<6;i++) {
-	card = keithleyBottomCards_[i];
-	channel = keithleyBottomChannels_[i];
+        card = keithleyBottomCards_[i];
+        channel = keithleyBottomChannels_[i];
 
-	if (m.keithleyState[card][channel]) {
-	  values.push_back(std::pair<double,double>(keithleyBottomPositions_[i],
-						    m.keithleyTemperature[card][channel] + keithleyBottomOffsets_[i]));
-	}
+        if (m.keithleyState[card][channel]) {
+          temp = m.keithleyTemperature[card][channel];
+          tcor =  keithleyBottomCor0_[i];
+          tcor += keithleyBottomCor1_[i] * temp;
+          tcor += keithleyBottomCor2_[i] * temp * temp;
+          values.push_back(std::pair<double,double>(keithleyBottomPositions_[i], tcor));
+        }
       }
       fitter_.fit(values, 2, p0, p1);
 

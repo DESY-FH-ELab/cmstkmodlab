@@ -52,10 +52,14 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
   nge103BChannel_ = config->getValue<unsigned int>("ThroughPlaneNGE103BChannel");
   keithleyTopSensors_ = config->getValueArray<unsigned int,6>("ThroughPlaneKeithleyTopSensors");
   keithleyTopPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopPositions");
-  keithleyTopOffsets_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopOffsets");
+  keithleyTopCor0_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor0");
+  keithleyTopCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor1");
+  keithleyTopCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor2");
   keithleyBottomSensors_ = config->getValueArray<unsigned int,6>("ThroughPlaneKeithleyBottomSensors");
   keithleyBottomPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomPositions");
-  keithleyBottomOffsets_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomOffsets");
+  keithleyBottomCor0_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor0");
+  keithleyBottomCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor1");
+  keithleyBottomCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor2");
   keithleyAmbientSensor_ = config->getValue<double>("KeithleyAmbientSensor", 0);
 
   std::string sensorType;
@@ -159,9 +163,13 @@ void Thermo2ThroughPlaneModel::configurationChanged()
   kBlock_ = config->getValue<double>("ThroughPlaneKBlock");
   ABlock_ = config->getValue<double>("ThroughPlaneABlock");
   keithleyTopPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopPositions");
-  keithleyTopOffsets_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopOffsets");
+  keithleyTopCor0_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor0");
+  keithleyTopCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor1");
+  keithleyTopCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor2");
   keithleyBottomPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomPositions");
-  keithleyBottomOffsets_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomOffsets");
+  keithleyBottomCor0_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor0");
+  keithleyBottomCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor1");
+  keithleyBottomCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor2");
 }
 
 void Thermo2ThroughPlaneModel::setSinkTemperature(double temperature)
@@ -223,18 +231,27 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
   bool changed = false;
   unsigned int countTop = 0;
   unsigned int countBottom = 0;
+  double temp, tcor;
   changed |= updateIfChanged<bool>(keithleyState_, keithleyModel_->getDeviceState()==READY ? true : false);
   for (unsigned int i=0;i<6;++i) {
     changed |= updateIfChanged<bool>(keithleyTopSensorStates_[i],
         keithleyModel_->getSensorState(keithleyTopSensors_[i])==READY ? true : false);
-    changed |= updateIfChanged<double>(keithleyTopTemperatures_[i],
-        keithleyModel_->getTemperature(keithleyTopSensors_[i]) + keithleyTopOffsets_[i]);
+
+    temp = keithleyModel_->getTemperature(keithleyTopSensors_[i]);
+    tcor =  keithleyTopCor0_[i];
+    tcor += keithleyTopCor1_[i] * temp;
+    tcor += keithleyTopCor2_[i] * temp * temp;
+    changed |= updateIfChanged<double>(keithleyTopTemperatures_[i], tcor);
     if (keithleyTopSensorStates_[i]) countTop++;
 
     changed |= updateIfChanged<bool>(keithleyBottomSensorStates_[i],
         keithleyModel_->getSensorState(keithleyBottomSensors_[i])==READY ? true : false);
-    changed |= updateIfChanged<double>(keithleyBottomTemperatures_[i],
-        keithleyModel_->getTemperature(keithleyBottomSensors_[i]) + keithleyBottomOffsets_[i]);
+
+    temp = keithleyModel_->getTemperature(keithleyBottomSensors_[i]);
+    tcor =  keithleyBottomCor0_[i];
+    tcor += keithleyBottomCor1_[i] * temp;
+    tcor += keithleyBottomCor2_[i] * temp * temp;
+    changed |= updateIfChanged<double>(keithleyBottomTemperatures_[i], tcor);
     if (keithleyBottomSensorStates_[i]) countBottom++;
   }
 

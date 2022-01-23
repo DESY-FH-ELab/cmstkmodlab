@@ -75,12 +75,16 @@ protected:
   std::array<unsigned int,6> keithleyTopCards_;
   std::array<unsigned int,6> keithleyTopChannels_;
   std::array<double,6> keithleyTopPositions_;
-  std::array<double,6> keithleyTopOffsets_;
+  std::array<double,6> keithleyTopCor0_;
+  std::array<double,6> keithleyTopCor1_;
+  std::array<double,6> keithleyTopCor2_;
   std::array<unsigned int,6> keithleyBottomSensors_;
   std::array<unsigned int,6> keithleyBottomCards_;
   std::array<unsigned int,6> keithleyBottomChannels_;
   std::array<double,6> keithleyBottomPositions_;
-  std::array<double,6> keithleyBottomOffsets_;
+  std::array<double,6> keithleyBottomCor0_;
+  std::array<double,6> keithleyBottomCor1_;
+  std::array<double,6> keithleyBottomCor2_;
   unsigned int keithleyAmbientSensor_;
   unsigned int keithleyAmbientCard_;
   unsigned int keithleyAmbientChannel_;
