@@ -18,6 +18,9 @@ Thermo2ScriptSnippets::Thermo2ScriptSnippets(QWidget *parent)
   addItem("", "");
   addItem("comment block", "/*\n\n*/\n");
 
+  addItem("for loop", "for (let i = 0; i < 5; i++) {\n\n}\n");
+  addItem("for of loop", "let arr = [0, 1, 2];\nfor (let i of arr) {\n\n}\n");
+  
   addItem("thermo - start measurement", "thermo.startMeasurement();\n");
   addItem("thermo - stop measurement", "thermo.stopMeasurement();\n");
   addItem("thermo - wait", "thermo.wait(seconds);\n");
