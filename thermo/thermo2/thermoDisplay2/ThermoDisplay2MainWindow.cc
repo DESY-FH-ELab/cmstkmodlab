@@ -465,7 +465,7 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
     ThroughPlanePBottom_->setName(QString("Bottom"));
     ThroughPlanePChart_->addSeries(ThroughPlanePBottom_);
 
-    ThroughPlanePChartView_ = new ThermoDisplay2TemperatureChartView(ThroughPlanePChart_);
+    ThroughPlanePChartView_ = new ThermoDisplay2PowerChartView(ThroughPlanePChart_);
     ThroughPlanePChartView_->setRenderHint(QPainter::Antialiasing);
     ThroughPlanePChartView_->setMinimumSize(800, 300);
     layout->addWidget(ThroughPlanePChartView_);
