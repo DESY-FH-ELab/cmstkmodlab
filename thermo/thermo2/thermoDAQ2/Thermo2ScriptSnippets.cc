@@ -18,8 +18,8 @@ Thermo2ScriptSnippets::Thermo2ScriptSnippets(QWidget *parent)
   addItem("", "");
   addItem("comment block", "/*\n\n*/\n");
 
-  addItem("for loop", "for (let i = 0; i < 5; i++) {\n\n}\n");
-  addItem("for of loop", "let arr = [0, 1, 2];\nfor (let i of arr) {\n\n}\n");
+  addItem("for loop", "for (var i = 0; i < 5; i++) {\n  // do something with i\n}\n");
+  addItem("for loop array", "var array = [0, 1, 2];\nfor (var i=0;i<array.length;i++) {\n  // do something with array[i]\n}\n");
   
   addItem("thermo - start measurement", "thermo.startMeasurement();\n");
   addItem("thermo - stop measurement", "thermo.stopMeasurement();\n");
