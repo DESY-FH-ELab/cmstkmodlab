@@ -972,7 +972,7 @@ void ThermoDisplay2MainWindow::updateInfo()
     }
 
     if (m.nge103BState[nge103BChannel_-1]) {
-      double sourcePower = resistance_ * std::pow(m.nge103BState[nge103BChannel_-1], 2);
+      double sourcePower = resistance_ * std::pow(m.nge103BCurrent[nge103BChannel_-1], 2);
       ThroughPlanePSource_->setEnabled(true);
       ThroughPlanePSource_->append(m.dt.toMSecsSinceEpoch(), sourcePower);
     } else {
