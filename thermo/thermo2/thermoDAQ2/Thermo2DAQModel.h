@@ -100,6 +100,16 @@ protected:
   int u525wPower_;
   float u525wCWInletTemperature_;
   float u525wCWOutletTemperature_;
+  bool u525AutoPID_;
+  int u525KpInternal_;
+  float u525TnInternal_;
+  float u525TvInternal_;
+  int u525KpJacket_;
+  float u525TnJacket_;
+  float u525TvJacket_;
+  int u525KpProcess_;
+  float u525TnProcess_;
+  float u525TvProcess_;
 
   // Marta CO2 Chiller Data
   bool martaState_;

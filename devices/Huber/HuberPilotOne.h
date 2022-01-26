@@ -46,6 +46,36 @@ class HuberPilotOne : public VHuberPilotOne
   float GetCoolingWaterInletTemperature();
   float GetCoolingWaterOutletTemperature();
 
+  bool SetAutoPID(bool autoPID);
+  bool GetAutoPID();
+
+  bool SetKpInternal(int Kp);
+  int GetKpInternal();
+
+  bool SetTnInternal(float Tn);
+  float GetTnInternal();
+
+  bool SetTvInternal(float Tn);
+  float GetTvInternal();
+
+  bool SetKpJacket(int Kp);
+  int GetKpJacket();
+
+  bool SetTnJacket(float Tn);
+  float GetTnJacket();
+
+  bool SetTvJacket(float Tn);
+  float GetTvJacket();
+
+  bool SetKpProcess(int Kp);
+  int GetKpProcess();
+
+  bool SetTnProcess(float Tn);
+  float GetTnProcess();
+
+  bool SetTvProcess(float Tn);
+  float GetTvProcess();
+
  private:
 
   const int uDelay_;

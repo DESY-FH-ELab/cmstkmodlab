@@ -99,6 +99,16 @@ void Thermo2DAQModel::startMeasurement()
   u525wPower_ = 0.0;
   u525wCWInletTemperature_ = 0.0;
   u525wCWOutletTemperature_ = 0.0;
+  u525AutoPID_ = false;
+  u525KpInternal_ = 0;
+  u525TnInternal_ = 0.0;
+  u525TvInternal_ = 0.0;
+  u525KpJacket_ = 0;
+  u525TnJacket_ = 0.0;
+  u525TvJacket_ = 0.0;
+  u525KpProcess_ = 0;
+  u525TnProcess_ = 0.0;
+  u525TvProcess_ = 0.0;
 
   agilentState_ = false;
   agilentPumpState_ = false;
@@ -151,14 +161,37 @@ void Thermo2DAQModel::createDAQStatusMessage(QString &buffer, bool start)
   	xml.writeAttribute("CirculatorEnabled", QString::number(huberModel_->getCirculatorEnabled()));
   	xml.writeEndElement();
 
-  	xml.writeStartElement("HuberUnistat525wInfo");
-  	xml.writeAttribute("Bath", QString::number(huberModel_->getBathTemperature(), 'f', 2));
-  	xml.writeAttribute("Return", QString::number(huberModel_->getReturnTemperature(), 'f', 2));
-  	xml.writeAttribute("Pressure", QString::number(huberModel_->getPumpPressure(), 'f', 3));
-  	xml.writeAttribute("Power", QString::number(huberModel_->getPower()));
-  	xml.writeAttribute("CWI", QString::number(huberModel_->getCoolingWaterInletTemperature(), 'f', 2));
-  	xml.writeAttribute("CWO", QString::number(huberModel_->getCoolingWaterOutletTemperature(), 'f', 2));
-  	xml.writeEndElement();
+    xml.writeStartElement("HuberUnistat525wInfo");
+    xml.writeAttribute("Bath", QString::number(huberModel_->getBathTemperature(), 'f', 2));
+    xml.writeAttribute("Return", QString::number(huberModel_->getReturnTemperature(), 'f', 2));
+    xml.writeAttribute("Pressure", QString::number(huberModel_->getPumpPressure(), 'f', 3));
+    xml.writeAttribute("Power", QString::number(huberModel_->getPower()));
+    xml.writeAttribute("CWI", QString::number(huberModel_->getCoolingWaterInletTemperature(), 'f', 2));
+    xml.writeAttribute("CWO", QString::number(huberModel_->getCoolingWaterOutletTemperature(), 'f', 2));
+    xml.writeEndElement();
+
+    xml.writeStartElement("HuberUnistat525wPID");
+    xml.writeAttribute("AutoPID", huberModel_->getAutoPID() ? "1" : "0");
+
+    xml.writeStartElement("HuberUnistat525wPIDInternal");
+    xml.writeAttribute("Kp", QString::number(huberModel_->getKpInternal()));
+    xml.writeAttribute("Tn", QString::number(huberModel_->getTnInternal(), 'f', 1));
+    xml.writeAttribute("Tv", QString::number(huberModel_->getTnInternal(), 'f', 1));
+    xml.writeEndElement();
+
+    xml.writeStartElement("HuberUnistat525wPIDJacket");
+    xml.writeAttribute("Kp", QString::number(huberModel_->getKpJacket()));
+    xml.writeAttribute("Tn", QString::number(huberModel_->getTnJacket(), 'f', 1));
+    xml.writeAttribute("Tv", QString::number(huberModel_->getTnJacket(), 'f', 1));
+    xml.writeEndElement();
+
+    xml.writeStartElement("HuberUnistat525wPIDProcess");
+    xml.writeAttribute("Kp", QString::number(huberModel_->getKpProcess()));
+    xml.writeAttribute("Tn", QString::number(huberModel_->getTnProcess(), 'f', 1));
+    xml.writeAttribute("Tv", QString::number(huberModel_->getTnProcess(), 'f', 1));
+    xml.writeEndElement();
+
+    xml.writeEndElement();
 
   	xml.writeEndElement();
   }
@@ -400,6 +433,16 @@ void Thermo2DAQModel::huberInfoChanged()
   changed |= updateIfChanged<int>(u525wPower_, huberModel_->getPower());
   changed |= updateIfChanged<float>(u525wCWInletTemperature_, huberModel_->getCoolingWaterInletTemperature());
   changed |= updateIfChanged<float>(u525wCWOutletTemperature_, huberModel_->getCoolingWaterOutletTemperature());
+  changed |= updateIfChanged<bool>(u525AutoPID_, huberModel_->getAutoPID());
+  changed |= updateIfChanged<int>(u525KpInternal_, huberModel_->getKpInternal());
+  changed |= updateIfChanged<float>(u525TnInternal_, huberModel_->getTnInternal());
+  changed |= updateIfChanged<float>(u525TvInternal_, huberModel_->getTvInternal());
+  changed |= updateIfChanged<int>(u525KpJacket_, huberModel_->getKpJacket());
+  changed |= updateIfChanged<float>(u525TnJacket_, huberModel_->getTnJacket());
+  changed |= updateIfChanged<float>(u525TvJacket_, huberModel_->getTvJacket());
+  changed |= updateIfChanged<int>(u525KpProcess_, huberModel_->getKpProcess());
+  changed |= updateIfChanged<float>(u525TnProcess_, huberModel_->getTnProcess());
+  changed |= updateIfChanged<float>(u525TvProcess_, huberModel_->getTvProcess());
 
   if (changed) {
     QXmlStreamWriter xml(&buffer);
@@ -423,6 +466,29 @@ void Thermo2DAQModel::huberInfoChanged()
     xml.writeAttribute("Power", QString::number(u525wPower_));
     xml.writeAttribute("CWI", QString::number(u525wCWInletTemperature_, 'f', 2));
     xml.writeAttribute("CWO", QString::number(u525wCWOutletTemperature_, 'f', 2));
+    xml.writeEndElement();
+
+    xml.writeStartElement("HuberUnistat525wPID");
+    xml.writeAttribute("AutoPID", u525AutoPID_ ? "1" : "0");
+
+    xml.writeStartElement("HuberUnistat525wPIDInternal");
+    xml.writeAttribute("Kp", QString::number(u525KpInternal_));
+    xml.writeAttribute("Tn", QString::number(u525TnInternal_, 'f', 1));
+    xml.writeAttribute("Tv", QString::number(u525TvInternal_, 'f', 1));
+    xml.writeEndElement();
+
+    xml.writeStartElement("HuberUnistat525wPIDJacket");
+    xml.writeAttribute("Kp", QString::number(u525KpJacket_));
+    xml.writeAttribute("Tn", QString::number(u525TnJacket_, 'f', 1));
+    xml.writeAttribute("Tv", QString::number(u525TvJacket_, 'f', 1));
+    xml.writeEndElement();
+
+    xml.writeStartElement("HuberUnistat525wPIDProcess");
+    xml.writeAttribute("Kp", QString::number(u525KpProcess_));
+    xml.writeAttribute("Tn", QString::number(u525TnProcess_, 'f', 1));
+    xml.writeAttribute("Tv", QString::number(u525TvProcess_, 'f', 1));
+    xml.writeEndElement();
+
     xml.writeEndElement();
 
     xml.writeEndElement();

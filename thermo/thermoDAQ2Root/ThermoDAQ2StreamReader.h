@@ -39,6 +39,16 @@ typedef struct {
   int            u525wPower_;
   float          u525wCWInletTemperature_;
   float          u525wCWOutletTemperature_;
+  bool           u525wAutoPID_;
+  int            u525wKpInternal_;
+  float          u525wTnInternal_;
+  float          u525wTvInternal_;
+  int            u525wKpJacket_;
+  float          u525wTnJacket_;
+  float          u525wTvJacket_;
+  int            u525wKpProcess_;
+  float          u525wTnProcess_;
+  float          u525wTvProcess_;
 
   bool           martaState_;
   float          martaPT03_;
@@ -129,6 +139,10 @@ protected:
   void processHuberUnistat525w(QXmlStreamReader& xml);
   void processHuberUnistat525wControl(QXmlStreamReader& xml);
   void processHuberUnistat525wInfo(QXmlStreamReader& xml);
+  void processHuberUnistat525wPID(QXmlStreamReader& xml);
+  void processHuberUnistat525wPIDInternal(QXmlStreamReader& xml);
+  void processHuberUnistat525wPIDJacket(QXmlStreamReader& xml);
+  void processHuberUnistat525wPIDProcess(QXmlStreamReader& xml);
 
   void processMarta(QXmlStreamReader& xml);
   void processMartaR507(QXmlStreamReader& xml);

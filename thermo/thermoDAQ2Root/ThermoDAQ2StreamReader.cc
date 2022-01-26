@@ -77,6 +77,32 @@ void ThermoDAQ2StreamReader::processHuberUnistat525wInfo(QXmlStreamReader& xml)
   measurement_.u525wCWOutletTemperature_ = CWO;
 }
 
+void ThermoDAQ2StreamReader::processHuberUnistat525wPID(QXmlStreamReader& xml)
+{
+  measurement_.u525wAutoPID_ = xml.attributes().value("AutoPID").toString().toInt();
+}
+
+void ThermoDAQ2StreamReader::processHuberUnistat525wPIDInternal(QXmlStreamReader& xml)
+{
+  measurement_.u525wKpInternal_ = xml.attributes().value("Kp").toString().toInt();
+  measurement_.u525wTnInternal_ = xml.attributes().value("Tn").toString().toFloat();
+  measurement_.u525wTvInternal_ = xml.attributes().value("Tv").toString().toFloat();
+}
+
+void ThermoDAQ2StreamReader::processHuberUnistat525wPIDJacket(QXmlStreamReader& xml)
+{
+  measurement_.u525wKpJacket_ = xml.attributes().value("Kp").toString().toInt();
+  measurement_.u525wTnJacket_ = xml.attributes().value("Tn").toString().toFloat();
+  measurement_.u525wTvJacket_ = xml.attributes().value("Tv").toString().toFloat();
+}
+
+void ThermoDAQ2StreamReader::processHuberUnistat525wPIDProcess(QXmlStreamReader& xml)
+{
+  measurement_.u525wKpProcess_ = xml.attributes().value("Kp").toString().toInt();
+  measurement_.u525wTnProcess_ = xml.attributes().value("Tn").toString().toFloat();
+  measurement_.u525wTvProcess_ = xml.attributes().value("Tv").toString().toFloat();
+}
+
 void ThermoDAQ2StreamReader::processMarta(QXmlStreamReader& xml)
 {
   QString time = xml.attributes().value("time").toString();
@@ -317,77 +343,89 @@ void ThermoDAQ2StreamReader::processFile(QFile* file)
       // std::cout << "start element name: '" << xml.name().toString().toStdString() << "'" << ", text: '" << xml.text().toString().toStdString() << "'" << std::endl;
 
       if (xml.name()=="HuberUnistat525w") {
-         processHuberUnistat525w(xml);
-       }
-       if (xml.name()=="HuberUnistat525wControl") {
-         processHuberUnistat525wControl(xml);
-       }
-       if (xml.name()=="HuberUnistat525wInfo") {
-         processHuberUnistat525wInfo(xml);
-       }
+        processHuberUnistat525w(xml);
+      }
+      if (xml.name()=="HuberUnistat525wControl") {
+        processHuberUnistat525wControl(xml);
+      }
+      if (xml.name()=="HuberUnistat525wInfo") {
+        processHuberUnistat525wInfo(xml);
+      }
+      if (xml.name()=="HuberUnistat525wPID") {
+        processHuberUnistat525wPID(xml);
+      }
+      if (xml.name()=="HuberUnistat525wPIDInternal") {
+        processHuberUnistat525wPIDInternal(xml);
+      }
+      if (xml.name()=="HuberUnistat525wPIDJacket") {
+        processHuberUnistat525wPIDJacket(xml);
+      }
+      if (xml.name()=="HuberUnistat525wPIDProcess") {
+        processHuberUnistat525wPIDProcess(xml);
+      }
 
-       if (xml.name()=="Marta") {
-         processMarta(xml);
-       }
-       if (xml.name()=="MartaR507") {
-         processMartaR507(xml);
-       }
-       if (xml.name()=="MartaPTCO2") {
-         processMartaPTCO2(xml);
-       }
-       if (xml.name()=="MartaTTCO2") {
-         processMartaTTCO2(xml);
-       }
-       if (xml.name()=="MartaSCCO2") {
-         processMartaSCCO2(xml);
-       }
-       if (xml.name()=="MartaDPCO2") {
-         processMartaDPCO2(xml);
-       }
-       if (xml.name()=="MartaDTCO2") {
-         processMartaDTCO2(xml);
-       }
-       if (xml.name()=="MartaSTCO2") {
-         processMartaSTCO2(xml);
-       }
-       if (xml.name()=="MartaFlow") {
-         processMartaFlow(xml);
-       }
-       if (xml.name()=="MartaSettings") {
-         processMartaSettings(xml);
-       }
-       if (xml.name()=="MartaAlarms") {
-         processMartaAlarms(xml);
-       }
+      if (xml.name()=="Marta") {
+        processMarta(xml);
+      }
+      if (xml.name()=="MartaR507") {
+        processMartaR507(xml);
+      }
+      if (xml.name()=="MartaPTCO2") {
+        processMartaPTCO2(xml);
+      }
+      if (xml.name()=="MartaTTCO2") {
+        processMartaTTCO2(xml);
+      }
+      if (xml.name()=="MartaSCCO2") {
+        processMartaSCCO2(xml);
+      }
+      if (xml.name()=="MartaDPCO2") {
+        processMartaDPCO2(xml);
+      }
+      if (xml.name()=="MartaDTCO2") {
+        processMartaDTCO2(xml);
+      }
+      if (xml.name()=="MartaSTCO2") {
+        processMartaSTCO2(xml);
+      }
+      if (xml.name()=="MartaFlow") {
+        processMartaFlow(xml);
+      }
+      if (xml.name()=="MartaSettings") {
+        processMartaSettings(xml);
+      }
+      if (xml.name()=="MartaAlarms") {
+        processMartaAlarms(xml);
+      }
 
-       if (xml.name()=="AgilentTwisTorr304") {
-         processAgilentTwisTorr304(xml);
-       }
+      if (xml.name()=="AgilentTwisTorr304") {
+        processAgilentTwisTorr304(xml);
+      }
 
-       if (xml.name()=="LeyboldGraphixOne") {
-         processLeyboldGraphixOne(xml);
-       }
+      if (xml.name()=="LeyboldGraphixOne") {
+        processLeyboldGraphixOne(xml);
+      }
 
-       if (xml.name()=="RohdeSchwarzNGE103B") {
-         processRohdeSchwarzNGE103B(xml);
-       }
-       if (xml.name()=="RohdeSchwarzNGE103BChannel") {
-         processRohdeSchwarzNGE103BChannel(xml);
-       }
+      if (xml.name()=="RohdeSchwarzNGE103B") {
+        processRohdeSchwarzNGE103B(xml);
+      }
+      if (xml.name()=="RohdeSchwarzNGE103BChannel") {
+        processRohdeSchwarzNGE103BChannel(xml);
+      }
 
-       if (xml.name()=="KeithleyDAQ6510") {
-         processKeithleyDAQ6510(xml);
-       }
-       if (xml.name()=="KeithleyDAQ6510Sensor") {
-         processKeithleyDAQ6510Sensor(xml);
-       }
+      if (xml.name()=="KeithleyDAQ6510") {
+        processKeithleyDAQ6510(xml);
+      }
+      if (xml.name()=="KeithleyDAQ6510Sensor") {
+        processKeithleyDAQ6510Sensor(xml);
+      }
 
-       if (xml.name()=="Log") {
-         processLog(xml);
-       }
-       if (xml.name()=="DAQStarted") {
-         processDAQStarted(xml);
-       }
+      if (xml.name()=="Log") {
+        processLog(xml);
+      }
+      if (xml.name()=="DAQStarted") {
+        processDAQStarted(xml);
+      }
 
     } else if (xml.isEndElement()) {
 
@@ -442,7 +480,16 @@ void ThermoDAQ2StreamReader::process()
   otree_->Branch("u525wPower", &measurement_.u525wPower_, "u525wPower/I");
   otree_->Branch("u525wCWInletTemperature", &measurement_.u525wCWInletTemperature_, "u525wCWInletTemperature/F");
   otree_->Branch("u525wCWOutletTemperature", &measurement_.u525wCWOutletTemperature_, "u525wCWOutletTemperature/F");
-
+  otree_->Branch("u525wAutoPID", &measurement_.u525wAutoPID_, "u525wAutoPID/O");
+  otree_->Branch("u525wKpInternal", &measurement_.u525wKpInternal_, "u525wKpInternal/i");
+  otree_->Branch("u525wTnInternal", &measurement_.u525wTnInternal_, "u525wTnInternal/F");
+  otree_->Branch("u525wTvInternal", &measurement_.u525wTvInternal_, "u525wTvInternal/F");
+  otree_->Branch("u525wKpJacket", &measurement_.u525wKpJacket_, "u525wKpJacket/i");
+  otree_->Branch("u525wTnJacket", &measurement_.u525wTnJacket_, "u525wTnJacket/F");
+  otree_->Branch("u525wTvJacket", &measurement_.u525wTvJacket_, "u525wTvJacket/F");
+  otree_->Branch("u525wKpProcess", &measurement_.u525wKpProcess_, "u525wKpProcess/i");
+  otree_->Branch("u525wTnProcess", &measurement_.u525wTnProcess_, "u525wTnProcess/F");
+  otree_->Branch("u525wTvProcess", &measurement_.u525wTvProcess_, "u525wTvProcess/F");
 
   otree_->Branch("martaState", &measurement_.martaState_, "martaState/O");
   otree_->Branch("martaPT03", &measurement_.martaPT03_, "martaPT03/F");

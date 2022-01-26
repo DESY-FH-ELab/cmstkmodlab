@@ -56,6 +56,17 @@ public:
   double getCoolingWaterInletTemperature() const;
   double getCoolingWaterOutletTemperature() const;
 
+  bool getAutoPID() const;
+  int getKpInternal() const;
+  double getTnInternal() const;
+  double getTvInternal() const;
+  int getKpJacket() const;
+  double getTnJacket() const;
+  double getTvJacket() const;
+  int getKpProcess() const;
+  double getTnProcess() const;
+  double getTvProcess() const;
+
 public slots:
 
   void setDeviceEnabled(bool enabled);
@@ -91,6 +102,17 @@ protected:
 
   double cwInletTemperature_;
   double cwOutletTemperature_;
+
+  bool autoPID_;
+  int KpInternal_;
+  double TnInternal_;
+  double TvInternal_;
+  int KpJacket_;
+  double TnJacket_;
+  double TvJacket_;
+  int KpProcess_;
+  double TnProcess_;
+  double TvProcess_;
 
 protected slots:
 

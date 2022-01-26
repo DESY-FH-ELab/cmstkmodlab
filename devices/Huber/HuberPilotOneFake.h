@@ -47,12 +47,52 @@ class HuberPilotOneFake : public VHuberPilotOne
   float GetCoolingWaterInletTemperature();
   float GetCoolingWaterOutletTemperature();
 
+  bool SetAutoPID(bool autoPID);
+  bool GetAutoPID();
+
+  bool SetKpInternal(int Kp);
+  int GetKpInternal();
+
+  bool SetTnInternal(float Tn);
+  float GetTnInternal();
+
+  bool SetTvInternal(float Tn);
+  float GetTvInternal();
+
+  bool SetKpJacket(int Kp);
+  int GetKpJacket();
+
+  bool SetTnJacket(float Tn);
+  float GetTnJacket();
+
+  bool SetTvJacket(float Tn);
+  float GetTvJacket();
+
+  bool SetKpProcess(int Kp);
+  int GetKpProcess();
+
+  bool SetTnProcess(float Tn);
+  float GetTnProcess();
+
+  bool SetTvProcess(float Tn);
+  float GetTvProcess();
+
  private:
 
   float temperatureSetPoint_;
   bool externalTemperatureControl_;
   bool temperatureControlEnabled_;
   bool circulatorEnabled_;
+  bool autoPID_;
+  int KpInternal_;
+  float TnInternal_;
+  float TvInternal_;
+  int KpJacket_;
+  float TnJacket_;
+  float TvJacket_;
+  int KpProcess_;
+  float TnProcess_;
+  float TvProcess_;
 
   std::random_device randomDevice_{};
   std::mt19937 randomGenerator_{randomDevice_()};

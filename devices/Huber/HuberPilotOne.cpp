@@ -80,7 +80,7 @@ bool HuberPilotOne::SetTemperatureSetPoint(const float temperatureSetPoint)
 
 float HuberPilotOne::GetTemperatureSetPoint()
 {
-#ifdef __HUBERPETITEFLEUR_DEBUG
+#ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::GetTemperatureSetPoint] -- DEBUG: Called." << std::endl;
 #endif
 
@@ -367,6 +367,647 @@ float HuberPilotOne::GetCoolingWaterOutletTemperature()
 #endif
 
   comHandler_->SendCommand("{M4C****");
+  usleep(uDelay_);
+
+  char buffer[1000];
+  memset(buffer, 0, sizeof(buffer));
+  comHandler_->ReceiveString(buffer);
+  usleep(uDelay_);
+
+  StripBuffer(buffer);
+
+  return ToFloat(buffer);
+}
+
+bool HuberPilotOne::SetAutoPID(bool autoPID)
+{
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetCirculatorEnabled] -- DEBUG: Called." << std::endl;
+#endif
+
+  std::stringstream theCommand;
+  theCommand << "{M12"
+      << std::setfill('0') << std::setw(4)
+      << autoPID;
+
+  comHandler_->SendCommand(theCommand.str().c_str());
+  usleep(uDelay_);
+
+  char buffer[1000];
+  memset(buffer, 0, sizeof(buffer));
+  comHandler_->ReceiveString(buffer);
+  usleep(uDelay_);
+  StripBuffer(buffer);
+
+  bool ret = ToInteger(buffer);
+
+  if (autoPID != ret) {
+    std::cerr << " [HuberPilotOne::SetCirculatorEnabled] ** ERROR: check failed."
+              << std::endl;
+    if (strlen(buffer)== 0)
+      std::cerr << "  > Got no reply. (timeout?)" << std::endl;
+    else
+      std::cerr << "  > Expected: " << autoPID
+                << " but received " << ret << std::endl;
+
+    return false;
+  }
+
+  return true;
+}
+
+bool HuberPilotOne::GetAutoPID()
+{
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetAutoPID] -- DEBUG: Called." << std::endl;
+#endif
+
+  comHandler_->SendCommand("{M12****");
+  usleep(uDelay_);
+
+  char buffer[1000];
+  memset(buffer, 0, sizeof(buffer));
+  comHandler_->ReceiveString(buffer);
+  usleep(uDelay_);
+
+  StripBuffer(buffer);
+
+  return ToInteger(buffer);
+}
+
+bool HuberPilotOne::SetKpInternal(int Kp)
+{
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetKpInternal] -- DEBUG: Called." << std::endl;
+#endif
+
+  if (Kp > 32000 ||
+      Kp < 0 ) {
+    std::cerr << " [HuberPilotOne::SetKpInternal] ** ERROR: Kp = "
+        << Kp << " exceeds soft limits [0,32000]." << std::endl;
+    std::cerr << "  > (s. HuberPilotOne class definition)" << std::endl;
+    return false;
+  }
+
+  std::stringstream theCommand;
+  theCommand << "{M1D"
+      << std::setfill('0') << std::setw(4)
+  << std::hex << std::uppercase
+  << Kp;
+
+  comHandler_->SendCommand(theCommand.str().c_str());
+  usleep(uDelay_);
+
+  char buffer[1000];
+  memset(buffer, 0, sizeof(buffer));
+  comHandler_->ReceiveString(buffer);
+  usleep(uDelay_);
+  StripBuffer(buffer);
+
+  float ret = ToInteger(buffer);
+
+  if (Kp != ret) {
+    std::cerr << " [HuberPilotOne::SetKpInternal] ** ERROR: check failed."
+        << std::endl;
+    if (strlen(buffer)== 0)
+      std::cerr << "  > Got no reply. (timeout?)" << std::endl;
+    else
+      std::cerr << "  > Expected: Kp = " << Kp
+      << " but received Kp = " << ret << std::endl;
+
+    return false;
+  }
+
+  return true;
+}
+
+int HuberPilotOne::GetKpInternal()
+{
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetKpInternal] -- DEBUG: Called." << std::endl;
+#endif
+
+  comHandler_->SendCommand("{M1D****");
+  usleep(uDelay_);
+
+  char buffer[1000];
+  memset(buffer, 0, sizeof(buffer));
+  comHandler_->ReceiveString(buffer);
+  usleep(uDelay_);
+
+  StripBuffer(buffer);
+
+  return ToInteger(buffer);
+}
+
+bool HuberPilotOne::SetTnInternal(float Tn)
+{
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetTnInternal] -- DEBUG: Called." << std::endl;
+#endif
+
+  if (Tn > 3200. ||
+      Tn < 0. ) {
+    std::cerr << " [HuberPilotOne::SetTnInternal] ** ERROR: Tn = "
+        << Tn << " exceeds soft limits [0.0,3200.0]." << std::endl;
+    std::cerr << "  > (s. HuberPilotOne class definition)" << std::endl;
+    return false;
+  }
+
+  std::stringstream theCommand;
+  theCommand << "{M1E"
+      << std::setfill('0') << std::setw(4)
+  << std::hex << std::uppercase
+  << (int)(Tn * 10);
+
+  comHandler_->SendCommand(theCommand.str().c_str());
+  usleep(uDelay_);
+
+  char buffer[1000];
+  memset(buffer, 0, sizeof(buffer));
+  comHandler_->ReceiveString(buffer);
+  usleep(uDelay_);
+  StripBuffer(buffer);
+
+  float ret = ToFloat(buffer)/10.;
+
+  if (Tn != ret) {
+    std::cerr << " [HuberPilotOne::SetTnInternal] ** ERROR: check failed."
+        << std::endl;
+    if (strlen(buffer)== 0)
+      std::cerr << "  > Got no reply. (timeout?)" << std::endl;
+    else
+      std::cerr << "  > Expected: Tn = " << Tn
+      << " but received Tn = " << ret << std::endl;
+
+    return false;
+  }
+
+  return true;
+}
+
+float HuberPilotOne::GetTnInternal()
+{
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetTnInternal] -- DEBUG: Called." << std::endl;
+#endif
+
+  comHandler_->SendCommand("{M1E****");
+  usleep(uDelay_);
+
+  char buffer[1000];
+  memset(buffer, 0, sizeof(buffer));
+  comHandler_->ReceiveString(buffer);
+  usleep(uDelay_);
+
+  StripBuffer(buffer);
+
+  return ToFloat(buffer);
+}
+
+bool HuberPilotOne::SetTvInternal(float Tv)
+{
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetTvInternal] -- DEBUG: Called." << std::endl;
+#endif
+
+  if (Tv > 3200. ||
+      Tv < 0. ) {
+    std::cerr << " [HuberPilotOne::SetTvInternal] ** ERROR: Tv = "
+        << Tv << " exceeds soft limits [0.0,3200.0]." << std::endl;
+    std::cerr << "  > (s. HuberPilotOne class definition)" << std::endl;
+    return false;
+  }
+
+  std::stringstream theCommand;
+  theCommand << "{M1F"
+      << std::setfill('0') << std::setw(4)
+  << std::hex << std::uppercase
+  << (int)(Tv * 10);
+
+  comHandler_->SendCommand(theCommand.str().c_str());
+  usleep(uDelay_);
+
+  char buffer[1000];
+  memset(buffer, 0, sizeof(buffer));
+  comHandler_->ReceiveString(buffer);
+  usleep(uDelay_);
+  StripBuffer(buffer);
+
+  float ret = ToFloat(buffer)/10.;
+
+  if (Tv != ret) {
+    std::cerr << " [HuberPilotOne::SetTvInternal] ** ERROR: check failed."
+        << std::endl;
+    if (strlen(buffer)== 0)
+      std::cerr << "  > Got no reply. (timeout?)" << std::endl;
+    else
+      std::cerr << "  > Expected: Tv = " << Tv
+      << " but received Tv = " << ret << std::endl;
+
+    return false;
+  }
+
+  return true;
+}
+
+float HuberPilotOne::GetTvInternal()
+{
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetTvInternal] -- DEBUG: Called." << std::endl;
+#endif
+
+  comHandler_->SendCommand("{M1F****");
+  usleep(uDelay_);
+
+  char buffer[1000];
+  memset(buffer, 0, sizeof(buffer));
+  comHandler_->ReceiveString(buffer);
+  usleep(uDelay_);
+
+  StripBuffer(buffer);
+
+  return ToFloat(buffer);
+}
+
+bool HuberPilotOne::SetKpJacket(int Kp)
+{
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetKpJacket] -- DEBUG: Called." << std::endl;
+#endif
+
+  if (Kp > 32000 ||
+      Kp < 0 ) {
+    std::cerr << " [HuberPilotOne::SetKpJacket] ** ERROR: Kp = "
+        << Kp << " exceeds soft limits [0,32000]." << std::endl;
+    std::cerr << "  > (s. HuberPilotOne class definition)" << std::endl;
+    return false;
+  }
+
+  std::stringstream theCommand;
+  theCommand << "{M20"
+      << std::setfill('0') << std::setw(4)
+  << std::hex << std::uppercase
+  << Kp;
+
+  comHandler_->SendCommand(theCommand.str().c_str());
+  usleep(uDelay_);
+
+  char buffer[1000];
+  memset(buffer, 0, sizeof(buffer));
+  comHandler_->ReceiveString(buffer);
+  usleep(uDelay_);
+  StripBuffer(buffer);
+
+  float ret = ToInteger(buffer);
+
+  if (Kp != ret) {
+    std::cerr << " [HuberPilotOne::SetKpJacket] ** ERROR: check failed."
+        << std::endl;
+    if (strlen(buffer)== 0)
+      std::cerr << "  > Got no reply. (timeout?)" << std::endl;
+    else
+      std::cerr << "  > Expected: Kp = " << Kp
+      << " but received Kp = " << ret << std::endl;
+
+    return false;
+  }
+
+  return true;
+}
+
+int HuberPilotOne::GetKpJacket()
+{
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetKpJacket] -- DEBUG: Called." << std::endl;
+#endif
+
+  comHandler_->SendCommand("{M20****");
+  usleep(uDelay_);
+
+  char buffer[1000];
+  memset(buffer, 0, sizeof(buffer));
+  comHandler_->ReceiveString(buffer);
+  usleep(uDelay_);
+
+  StripBuffer(buffer);
+
+  return ToInteger(buffer);
+}
+
+bool HuberPilotOne::SetTnJacket(float Tn)
+{
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetTnJacket] -- DEBUG: Called." << std::endl;
+#endif
+
+  if (Tn > 3200. ||
+      Tn < 0. ) {
+    std::cerr << " [HuberPilotOne::SetTnJacket] ** ERROR: Tn = "
+        << Tn << " exceeds soft limits [0.0,3200.0]." << std::endl;
+    std::cerr << "  > (s. HuberPilotOne class definition)" << std::endl;
+    return false;
+  }
+
+  std::stringstream theCommand;
+  theCommand << "{M21"
+      << std::setfill('0') << std::setw(4)
+  << std::hex << std::uppercase
+  << (int)(Tn * 10);
+
+  comHandler_->SendCommand(theCommand.str().c_str());
+  usleep(uDelay_);
+
+  char buffer[1000];
+  memset(buffer, 0, sizeof(buffer));
+  comHandler_->ReceiveString(buffer);
+  usleep(uDelay_);
+  StripBuffer(buffer);
+
+  float ret = ToFloat(buffer)/10.;
+
+  if (Tn != ret) {
+    std::cerr << " [HuberPilotOne::SetTnJacket] ** ERROR: check failed."
+        << std::endl;
+    if (strlen(buffer)== 0)
+      std::cerr << "  > Got no reply. (timeout?)" << std::endl;
+    else
+      std::cerr << "  > Expected: Tn = " << Tn
+      << " but received Tn = " << ret << std::endl;
+
+    return false;
+  }
+
+  return true;
+}
+
+float HuberPilotOne::GetTnJacket()
+{
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetTnJacket] -- DEBUG: Called." << std::endl;
+#endif
+
+  comHandler_->SendCommand("{M21****");
+  usleep(uDelay_);
+
+  char buffer[1000];
+  memset(buffer, 0, sizeof(buffer));
+  comHandler_->ReceiveString(buffer);
+  usleep(uDelay_);
+
+  StripBuffer(buffer);
+
+  return ToFloat(buffer);
+}
+
+bool HuberPilotOne::SetTvJacket(float Tv)
+{
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetTvJacket] -- DEBUG: Called." << std::endl;
+#endif
+
+  if (Tv > 3200. ||
+      Tv < 0. ) {
+    std::cerr << " [HuberPilotOne::SetTvJacket] ** ERROR: Tv = "
+        << Tv << " exceeds soft limits [0.0,3200.0]." << std::endl;
+    std::cerr << "  > (s. HuberPilotOne class definition)" << std::endl;
+    return false;
+  }
+
+  std::stringstream theCommand;
+  theCommand << "{M22"
+      << std::setfill('0') << std::setw(4)
+  << std::hex << std::uppercase
+  << (int)(Tv * 10);
+
+  comHandler_->SendCommand(theCommand.str().c_str());
+  usleep(uDelay_);
+
+  char buffer[1000];
+  memset(buffer, 0, sizeof(buffer));
+  comHandler_->ReceiveString(buffer);
+  usleep(uDelay_);
+  StripBuffer(buffer);
+
+  float ret = ToFloat(buffer)/10.;
+
+  if (Tv != ret) {
+    std::cerr << " [HuberPilotOne::SetTvJacket] ** ERROR: check failed."
+        << std::endl;
+    if (strlen(buffer)== 0)
+      std::cerr << "  > Got no reply. (timeout?)" << std::endl;
+    else
+      std::cerr << "  > Expected: Tv = " << Tv
+      << " but received Tv = " << ret << std::endl;
+
+    return false;
+  }
+
+  return true;
+}
+
+float HuberPilotOne::GetTvJacket()
+{
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetTvJacket] -- DEBUG: Called." << std::endl;
+#endif
+
+  comHandler_->SendCommand("{M22****");
+  usleep(uDelay_);
+
+  char buffer[1000];
+  memset(buffer, 0, sizeof(buffer));
+  comHandler_->ReceiveString(buffer);
+  usleep(uDelay_);
+
+  StripBuffer(buffer);
+
+  return ToFloat(buffer);
+}
+
+bool HuberPilotOne::SetKpProcess(int Kp)
+{
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetKpProcess] -- DEBUG: Called." << std::endl;
+#endif
+
+  if (Kp > 32000 ||
+      Kp < 0 ) {
+    std::cerr << " [HuberPilotOne::SetKpProcess] ** ERROR: Kp = "
+        << Kp << " exceeds soft limits [0,32000]." << std::endl;
+    std::cerr << "  > (s. HuberPilotOne class definition)" << std::endl;
+    return false;
+  }
+
+  std::stringstream theCommand;
+  theCommand << "{M23"
+      << std::setfill('0') << std::setw(4)
+  << std::hex << std::uppercase
+  << Kp;
+
+  comHandler_->SendCommand(theCommand.str().c_str());
+  usleep(uDelay_);
+
+  char buffer[1000];
+  memset(buffer, 0, sizeof(buffer));
+  comHandler_->ReceiveString(buffer);
+  usleep(uDelay_);
+  StripBuffer(buffer);
+
+  float ret = ToInteger(buffer);
+
+  if (Kp != ret) {
+    std::cerr << " [HuberPilotOne::SetKpProcess] ** ERROR: check failed."
+        << std::endl;
+    if (strlen(buffer)== 0)
+      std::cerr << "  > Got no reply. (timeout?)" << std::endl;
+    else
+      std::cerr << "  > Expected: Kp = " << Kp
+      << " but received Kp = " << ret << std::endl;
+
+    return false;
+  }
+
+  return true;
+}
+
+int HuberPilotOne::GetKpProcess()
+{
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetKpProcess] -- DEBUG: Called." << std::endl;
+#endif
+
+  comHandler_->SendCommand("{M23****");
+  usleep(uDelay_);
+
+  char buffer[1000];
+  memset(buffer, 0, sizeof(buffer));
+  comHandler_->ReceiveString(buffer);
+  usleep(uDelay_);
+
+  StripBuffer(buffer);
+
+  return ToInteger(buffer);
+}
+
+bool HuberPilotOne::SetTnProcess(float Tn)
+{
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetTnProcess] -- DEBUG: Called." << std::endl;
+#endif
+
+  if (Tn > 3200. ||
+      Tn < 0. ) {
+    std::cerr << " [HuberPilotOne::SetTnProcess] ** ERROR: Tn = "
+        << Tn << " exceeds soft limits [0.0,3200.0]." << std::endl;
+    std::cerr << "  > (s. HuberPilotOne class definition)" << std::endl;
+    return false;
+  }
+
+  std::stringstream theCommand;
+  theCommand << "{M24"
+      << std::setfill('0') << std::setw(4)
+  << std::hex << std::uppercase
+  << (int)(Tn * 10);
+
+  comHandler_->SendCommand(theCommand.str().c_str());
+  usleep(uDelay_);
+
+  char buffer[1000];
+  memset(buffer, 0, sizeof(buffer));
+  comHandler_->ReceiveString(buffer);
+  usleep(uDelay_);
+  StripBuffer(buffer);
+
+  float ret = ToFloat(buffer)/10.;
+
+  if (Tn != ret) {
+    std::cerr << " [HuberPilotOne::SetTnProcess] ** ERROR: check failed."
+        << std::endl;
+    if (strlen(buffer)== 0)
+      std::cerr << "  > Got no reply. (timeout?)" << std::endl;
+    else
+      std::cerr << "  > Expected: Tn = " << Tn
+      << " but received Tn = " << ret << std::endl;
+
+    return false;
+  }
+
+  return true;
+}
+
+float HuberPilotOne::GetTnProcess()
+{
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetTnProcess] -- DEBUG: Called." << std::endl;
+#endif
+
+  comHandler_->SendCommand("{M24****");
+  usleep(uDelay_);
+
+  char buffer[1000];
+  memset(buffer, 0, sizeof(buffer));
+  comHandler_->ReceiveString(buffer);
+  usleep(uDelay_);
+
+  StripBuffer(buffer);
+
+  return ToFloat(buffer);
+}
+
+bool HuberPilotOne::SetTvProcess(float Tv)
+{
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetTvProcess] -- DEBUG: Called." << std::endl;
+#endif
+
+  if (Tv > 3200. ||
+      Tv < 0. ) {
+    std::cerr << " [HuberPilotOne::SetTvProcess] ** ERROR: Tv = "
+        << Tv << " exceeds soft limits [0.0,3200.0]." << std::endl;
+    std::cerr << "  > (s. HuberPilotOne class definition)" << std::endl;
+    return false;
+  }
+
+  std::stringstream theCommand;
+  theCommand << "{M25"
+      << std::setfill('0') << std::setw(4)
+  << std::hex << std::uppercase
+  << (int)(Tv * 10);
+
+  comHandler_->SendCommand(theCommand.str().c_str());
+  usleep(uDelay_);
+
+  char buffer[1000];
+  memset(buffer, 0, sizeof(buffer));
+  comHandler_->ReceiveString(buffer);
+  usleep(uDelay_);
+  StripBuffer(buffer);
+
+  float ret = ToFloat(buffer)/10.;
+
+  if (Tv != ret) {
+    std::cerr << " [HuberPilotOne::SetTvProcess] ** ERROR: check failed."
+        << std::endl;
+    if (strlen(buffer)== 0)
+      std::cerr << "  > Got no reply. (timeout?)" << std::endl;
+    else
+      std::cerr << "  > Expected: Tv = " << Tv
+      << " but received Tv = " << ret << std::endl;
+
+    return false;
+  }
+
+  return true;
+}
+
+float HuberPilotOne::GetTvProcess()
+{
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetTvProcess] -- DEBUG: Called." << std::endl;
+#endif
+
+  comHandler_->SendCommand("{M25****");
   usleep(uDelay_);
 
   char buffer[1000];

@@ -142,6 +142,56 @@ double HuberUnistat525wModel::getCoolingWaterOutletTemperature() const
   return cwOutletTemperature_;
 }
 
+bool HuberUnistat525wModel::getAutoPID() const
+{
+  return autoPID_;
+}
+
+int HuberUnistat525wModel::getKpInternal() const
+{
+  return KpInternal_;
+}
+
+double HuberUnistat525wModel::getTnInternal() const
+{
+  return TnInternal_;
+}
+
+double HuberUnistat525wModel::getTvInternal() const
+{
+  return TvInternal_;
+}
+
+int HuberUnistat525wModel::getKpJacket() const
+{
+  return KpJacket_;
+}
+
+double HuberUnistat525wModel::getTnJacket() const
+{
+  return TnJacket_;
+}
+
+double HuberUnistat525wModel::getTvJacket() const
+{
+  return TvJacket_;
+}
+
+int HuberUnistat525wModel::getKpProcess() const
+{
+  return KpProcess_;
+}
+
+double HuberUnistat525wModel::getTnProcess() const
+{
+  return TnProcess_;
+}
+
+double HuberUnistat525wModel::getTvProcess() const
+{
+  return TvProcess_;
+}
+
 void HuberUnistat525wModel::initialize()
 {
   NQLog("HuberUnistat525wModel", NQLog::Message) << "initialize()";
@@ -211,6 +261,17 @@ void HuberUnistat525wModel::updateInformation()
     // int newPower = controller_->GetPower();
     int newPower = 0.0;
 
+    bool newAutoPID = controller_->GetAutoPID();
+    int newKpInternal = controller_->GetKpInternal();
+    double newTnInternal = controller_->GetTnInternal();
+    double newTvInternal = controller_->GetTvInternal();
+    int newKpJacket = controller_->GetKpJacket();
+    double newTnJacket = controller_->GetTnJacket();
+    double newTvJacket = controller_->GetTvJacket();
+    int newKpProcess = controller_->GetKpProcess();
+    double newTnProcess = controller_->GetTnProcess();
+    double newTvProcess = controller_->GetTvProcess();
+
     if (newTemperatureSetPoint != temperatureSetPoint_ ||
         newTemperatureControlMode != temperatureControlMode_ ||
         newTemperatureControlEnabled != temperatureControlEnabled_ ||
@@ -220,7 +281,17 @@ void HuberUnistat525wModel::updateInformation()
         newCWInletTemperature != cwInletTemperature_ ||
         newCWOutletTemperature != cwOutletTemperature_ ||
         newPumpPressure != pumpPressure_ ||
-        newPower != power_) {
+        newPower != power_ ||
+        newAutoPID != autoPID_ ||
+        newKpInternal != KpInternal_ ||
+        newTnInternal != TnInternal_ ||
+        newTvInternal != TvInternal_ ||
+        newKpJacket != KpJacket_ ||
+        newTnJacket != TnJacket_ ||
+        newTvJacket != TvJacket_||
+        newKpProcess != KpProcess_ ||
+        newTnProcess != TnProcess_ ||
+        newTvProcess != TvProcess_) {
 
       temperatureSetPoint_ = newTemperatureSetPoint;
       temperatureControlMode_ = newTemperatureControlMode;
@@ -232,6 +303,17 @@ void HuberUnistat525wModel::updateInformation()
       power_ = newPower;
       cwInletTemperature_ = newCWInletTemperature;
       cwOutletTemperature_ = newCWOutletTemperature;
+
+      autoPID_ = newAutoPID;
+      KpInternal_ = newKpInternal ;
+      TnInternal_ = newTnInternal ;
+      TvInternal_ = newTvInternal ;
+      KpJacket_ = newKpJacket ;
+      TnJacket_ = newTnJacket ;
+      TvJacket_ = newTvJacket ;
+      KpProcess_ = newKpProcess ;
+      TnProcess_ = newTnProcess ;
+      TvProcess_ = newTvProcess ;
 
       NQLog("HuberUnistat525wModel", NQLog::Spam) << "information changed";
 

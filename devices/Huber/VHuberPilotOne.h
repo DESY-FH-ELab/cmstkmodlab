@@ -52,6 +52,36 @@ class VHuberPilotOne
   virtual float GetCoolingWaterInletTemperature() = 0;
   virtual float GetCoolingWaterOutletTemperature() = 0;
 
+  virtual bool SetAutoPID(bool autoPID) = 0;
+  virtual bool GetAutoPID() = 0;
+
+  virtual bool SetKpInternal(int Kp) = 0;
+  virtual int GetKpInternal() = 0;
+
+  virtual bool SetTnInternal(float Tn) = 0;
+  virtual float GetTnInternal() = 0;
+
+  virtual bool SetTvInternal(float Tn) = 0;
+  virtual float GetTvInternal() = 0;
+
+  virtual bool SetKpJacket(int Kp) = 0;
+  virtual int GetKpJacket() = 0;
+
+  virtual bool SetTnJacket(float Tn) = 0;
+  virtual float GetTnJacket() = 0;
+
+  virtual bool SetTvJacket(float Tn) = 0;
+  virtual float GetTvJacket() = 0;
+
+  virtual bool SetKpProcess(int Kp) = 0;
+  virtual int GetKpProcess() = 0;
+
+  virtual bool SetTnProcess(float Tn) = 0;
+  virtual float GetTnProcess() = 0;
+
+  virtual bool SetTvProcess(float Tn) = 0;
+  virtual float GetTvProcess() = 0;
+
   static constexpr int PilotOneLowerTempLimit = -40;
   static constexpr int PilotOneUpperTempLimit = 40;
 };
