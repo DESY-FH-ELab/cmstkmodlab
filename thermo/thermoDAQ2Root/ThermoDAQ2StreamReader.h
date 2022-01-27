@@ -170,6 +170,9 @@ protected:
   Measurement2_t measurement_;
   Log2_t log_;
 
+  bool triggerKeithley_;
+  bool triggerHuber_;
+
   TFile *ofile_;
   TTree *otree_;
   TTree *ologtree_;

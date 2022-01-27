@@ -29,6 +29,9 @@ ThermoDAQ2StreamReader::ThermoDAQ2StreamReader(QStringList arguments,
     measurementValid_(false)
 {
   log_.message = "";
+
+  triggerKeithley_ = false;
+  triggerHuber_ = false;
 }
 
 void ThermoDAQ2StreamReader::run()
@@ -431,7 +434,11 @@ void ThermoDAQ2StreamReader::processFile(QFile* file)
 
       // std::cout << "end element name: '" << xml.name().toString().toStdString() << "'" << ", text: '" << xml.text().toString().toStdString() << "'" << std::endl;
 
-      if (xml.name()=="KeithleyDAQ6510") {
+      if (triggerKeithley_ && xml.name()=="KeithleyDAQ6510") {
+        if (measurementValid_) otree_->Fill();
+      }
+
+      if (triggerHuber_ && xml.name()=="HuberUnistat525w") {
         if (measurementValid_) otree_->Fill();
       }
 
@@ -449,7 +456,23 @@ void ThermoDAQ2StreamReader::processFile(QFile* file)
 
 void ThermoDAQ2StreamReader::process()
 {
-  if (arguments_.size()<2 || arguments_.size()>3) return;
+  if (arguments_.size()<3 || arguments_.size()>4) return;
+
+  if (arguments_.size()==4) {
+    QString trigger = arguments_.at(2);
+
+    if (trigger.contains("Keithley")) {
+      triggerKeithley_ = true;
+    }
+    if (trigger.contains("Huber")) {
+      triggerHuber_ = true;
+    }
+    if (!triggerKeithley_ && !triggerHuber_) {
+      triggerKeithley_ = true;
+    }
+  } else {
+    triggerKeithley_ = true;
+  }
 
   QFile file(arguments_.last());
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) return;

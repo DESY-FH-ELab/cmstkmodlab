@@ -20,8 +20,8 @@
 
 int main(int argc, char *argv[])
 {
-  if (argc<2 || argc>3) {
-    std::cout << "usage: thermoDAQ2ROOT [version] <xml data file>" << std::endl;
+  if (argc<3 || argc>4) {
+    std::cout << "usage: thermoDAQ2ROOT <version> [options] <xml data file>" << std::endl;
     return -1;
   }
 
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
   int fileversion = a.arguments().at(1).toInt();
 
   if (fileversion<1 || fileversion>2) {
-    std::cout << "usage: thermoDAQ2ROOT [version] <xml data file>" << std::endl;
+    std::cout << "usage: thermoDAQ2ROOT [version] [options] <xml data file>" << std::endl;
     std::cout << "       version has to be either 1 or 2" << std::endl;
     return -1;
   }

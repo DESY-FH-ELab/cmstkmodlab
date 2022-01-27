@@ -229,9 +229,9 @@ void ThermoDAQStreamReader::processLine(QString& line)
 
 void ThermoDAQStreamReader::process()
 {
-    if (arguments_.size()!=2) return;
+    if (arguments_.size()<3 || arguments_.size()>4) return;
 
-    QFile file(arguments_.at(1));
+    QFile file(arguments_.last());
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) return;
 
     QFileInfo fi(file);
