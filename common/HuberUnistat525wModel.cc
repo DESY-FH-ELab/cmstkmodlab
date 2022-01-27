@@ -262,15 +262,24 @@ void HuberUnistat525wModel::updateInformation()
     int newPower = 0.0;
 
     bool newAutoPID = controller_->GetAutoPID();
+
     int newKpInternal = controller_->GetKpInternal();
     double newTnInternal = controller_->GetTnInternal();
     double newTvInternal = controller_->GetTvInternal();
-    int newKpJacket = controller_->GetKpJacket();
-    double newTnJacket = controller_->GetTnJacket();
-    double newTvJacket = controller_->GetTvJacket();
-    int newKpProcess = controller_->GetKpProcess();
-    double newTnProcess = controller_->GetTnProcess();
-    double newTvProcess = controller_->GetTvProcess();
+    
+    // int newKpJacket = controller_->GetKpJacket();
+    int newKpJacket = 0;
+    // double newTnJacket = controller_->GetTnJacket();
+    double newTnJacket = 0.0;
+    // double newTvJacket = controller_->GetTvJacket();
+    double newTvJacket = 0.0;
+
+    // int newKpProcess = controller_->GetKpProcess();
+    int newKpProcess = 0;
+    // double newTnProcess = controller_->GetTnProcess();
+    double newTnProcess = 0.0;
+    // double newTvProcess = controller_->GetTvProcess();
+    double newTvProcess = 0.0;
 
     if (newTemperatureSetPoint != temperatureSetPoint_ ||
         newTemperatureControlMode != temperatureControlMode_ ||
