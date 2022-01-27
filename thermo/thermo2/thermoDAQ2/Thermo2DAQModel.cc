@@ -470,25 +470,21 @@ void Thermo2DAQModel::huberInfoChanged()
 
     xml.writeStartElement("HuberUnistat525wPID");
     xml.writeAttribute("AutoPID", u525AutoPID_ ? "1" : "0");
-
-    xml.writeStartElement("HuberUnistat525wPIDInternal");
-    xml.writeAttribute("Kp", QString::number(u525KpInternal_));
-    xml.writeAttribute("Tn", QString::number(u525TnInternal_, 'f', 1));
-    xml.writeAttribute("Tv", QString::number(u525TvInternal_, 'f', 1));
-    xml.writeEndElement();
-
-    xml.writeStartElement("HuberUnistat525wPIDJacket");
-    xml.writeAttribute("Kp", QString::number(u525KpJacket_));
-    xml.writeAttribute("Tn", QString::number(u525TnJacket_, 'f', 1));
-    xml.writeAttribute("Tv", QString::number(u525TvJacket_, 'f', 1));
-    xml.writeEndElement();
-
-    xml.writeStartElement("HuberUnistat525wPIDProcess");
-    xml.writeAttribute("Kp", QString::number(u525KpProcess_));
-    xml.writeAttribute("Tn", QString::number(u525TnProcess_, 'f', 1));
-    xml.writeAttribute("Tv", QString::number(u525TvProcess_, 'f', 1));
-    xml.writeEndElement();
-
+    if (!u525AutoPID_) {
+      if (!u525wTemperatureControlMode_) {
+        xml.writeStartElement("HuberUnistat525wPIDInternal");
+        xml.writeAttribute("Kp", QString::number(u525KpInternal_));
+        xml.writeAttribute("Tn", QString::number(u525TnInternal_, 'f', 1));
+        xml.writeAttribute("Tv", QString::number(u525TvInternal_, 'f', 1));
+        xml.writeEndElement();
+      } else {
+        xml.writeStartElement("HuberUnistat525wPIDProcess");
+        xml.writeAttribute("Kp", QString::number(u525KpProcess_));
+        xml.writeAttribute("Tn", QString::number(u525TnProcess_, 'f', 1));
+        xml.writeAttribute("Tv", QString::number(u525TvProcess_, 'f', 1));
+        xml.writeEndElement();
+     }
+    }
     xml.writeEndElement();
 
     xml.writeEndElement();
