@@ -73,7 +73,7 @@ public slots:
   void setControlsEnabled(bool enabled);
 
   void setTemperatureSetPoint(double temperature);
-  void setTemperatureControlMode(bool external);
+  void setTemperatureControlMode(bool process);
   void setTemperatureControlEnabled(bool enabled);
   void setCirculatorEnabled(bool enabled);
 

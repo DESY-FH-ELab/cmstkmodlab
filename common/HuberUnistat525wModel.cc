@@ -61,14 +61,14 @@ bool HuberUnistat525wModel::getTemperatureControlMode() const
   return temperatureControlMode_;
 }
 
-void HuberUnistat525wModel::setTemperatureControlMode(bool external)
+void HuberUnistat525wModel::setTemperatureControlMode(bool process)
 {
   if (state_ == READY) {
 
-    if (temperatureControlMode_!=external) {
+    if (temperatureControlMode_!=process) {
 
-      if (controller_->SetTemperatureControlMode(external)) {
-        temperatureControlMode_ = external;
+      if (controller_->SetTemperatureControlMode(process)) {
+        temperatureControlMode_ = process;
         emit informationChanged();
       }
     }

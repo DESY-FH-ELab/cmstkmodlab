@@ -40,7 +40,7 @@ class VHuberPilotOne
   virtual float GetPumpPressure() = 0;
   virtual int GetPower() = 0;
 
-  virtual bool SetTemperatureControlMode(bool external) = 0;
+  virtual bool SetTemperatureControlMode(bool process) = 0;
   virtual bool GetTemperatureControlMode() = 0;
 
   virtual bool SetTemperatureControlEnabled(bool enabled) = 0;

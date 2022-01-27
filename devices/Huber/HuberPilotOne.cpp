@@ -173,7 +173,7 @@ int HuberPilotOne::GetPower()
   return ToInteger(buffer);
 }
 
-bool HuberPilotOne::SetTemperatureControlMode(bool external)
+bool HuberPilotOne::SetTemperatureControlMode(bool process)
 {
 #ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::SetTemperatureControlMode] -- DEBUG: Called." << std::endl;
@@ -182,7 +182,7 @@ bool HuberPilotOne::SetTemperatureControlMode(bool external)
   std::stringstream theCommand;
   theCommand << "{M13"
       << std::setfill('0') << std::setw(4)
-      << external;
+      << process;
 
   comHandler_->SendCommand(theCommand.str().c_str());
   usleep(uDelay_);
@@ -195,19 +195,19 @@ bool HuberPilotOne::SetTemperatureControlMode(bool external)
 
   bool ret = ToInteger(buffer);
 
-  if (external != ret) {
+  if (process != ret) {
     std::cerr << " [HuberPilotOne::SetTemperatureControlMode] ** ERROR: check failed."
-              << std::endl;
+        << std::endl;
     if (strlen(buffer)== 0)
       std::cerr << "  > Got no reply. (timeout?)" << std::endl;
     else
-      std::cerr << "  > Expected: " << external
-                << " but received " << ret << std::endl;
+      std::cerr << "  > Expected: " << process
+      << " but received " << ret << std::endl;
 
     return false;
   }
 
-return true;
+  return true;
 }
 
 bool HuberPilotOne::GetTemperatureControlMode()

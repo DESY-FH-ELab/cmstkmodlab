@@ -35,7 +35,7 @@ class HuberPilotOneFake : public VHuberPilotOne
   float GetPumpPressure();
   int GetPower();
 
-  bool SetTemperatureControlMode(bool external);
+  bool SetTemperatureControlMode(bool process);
   bool GetTemperatureControlMode();
 
   bool SetTemperatureControlEnabled(bool enabled);
@@ -80,7 +80,7 @@ class HuberPilotOneFake : public VHuberPilotOne
  private:
 
   float temperatureSetPoint_;
-  bool externalTemperatureControl_;
+  bool processTemperatureControl_;
   bool temperatureControlEnabled_;
   bool circulatorEnabled_;
   bool autoPID_;

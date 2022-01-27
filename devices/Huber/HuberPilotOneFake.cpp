@@ -26,7 +26,7 @@ HuberPilotOneFake::HuberPilotOneFake(const ioport_t ioPort)
  : VHuberPilotOne(ioPort)
 {
   temperatureSetPoint_ = 20.0;
-  externalTemperatureControl_ = false;
+  processTemperatureControl_ = false;
   temperatureControlEnabled_ = false;
   circulatorEnabled_ = false;
 
@@ -98,9 +98,9 @@ int HuberPilotOneFake::GetPower()
   return 500 + 100*normalDistribution_(randomGenerator_);
 }
 
-bool HuberPilotOneFake::SetTemperatureControlMode(bool external)
+bool HuberPilotOneFake::SetTemperatureControlMode(bool process)
 {
-  externalTemperatureControl_ = external;
+  processTemperatureControl_ = process;
   return true;
 }
 

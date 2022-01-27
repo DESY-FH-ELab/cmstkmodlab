@@ -34,7 +34,7 @@ class HuberPilotOne : public VHuberPilotOne
   float GetPumpPressure();
   int GetPower();
 
-  bool SetTemperatureControlMode(bool external);
+  bool SetTemperatureControlMode(bool process);
   bool GetTemperatureControlMode();
 
   bool SetTemperatureControlEnabled(bool enabled);

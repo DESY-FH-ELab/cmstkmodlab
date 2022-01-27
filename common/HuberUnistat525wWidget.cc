@@ -18,7 +18,7 @@ HuberUnistat525wTemperatureControlModeBox::HuberUnistat525wTemperatureControlMod
    model_(model)
 {
   addItem("internal", 0);
-  addItem("external", 1);
+  addItem("process", 1);
 
   int idx = findData(model_->getTemperatureControlMode());
   if (idx!=-1) setCurrentIndex(idx);
