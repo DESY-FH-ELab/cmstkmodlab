@@ -41,4 +41,3 @@ target_link_libraries(thermoDAQ2Root
         PUBLIC ROOT::Tree
 )
 
-add_subdirectory(thermoDAQ2RootConverter)

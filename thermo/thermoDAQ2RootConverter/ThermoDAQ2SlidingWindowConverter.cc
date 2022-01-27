@@ -23,9 +23,9 @@
 #include "ThermoDAQ2SlidingWindowConverter.h"
 
 ThermoDAQ2SlidingWindowConverter::ThermoDAQ2SlidingWindowConverter(QStringList arguments,
-								   QObject* parent)
-  : QObject(parent),
-    arguments_(arguments)
+    QObject* parent)
+: QObject(parent),
+  arguments_(arguments)
 {
 
 }
@@ -44,10 +44,6 @@ void ThermoDAQ2SlidingWindowConverter::process()
   std::string ifilename = arguments_.at(3).toStdString();
   std::string ofilename = arguments_.at(4).toStdString();
 
-  std::cout << windowSize << std::endl;
-  std::cout << ifilename << std::endl;
-  std::cout << ofilename << std::endl;
-
   char branchName[40];
   char branchLeafList[40];
   Long64_t nentries;
@@ -65,7 +61,7 @@ void ThermoDAQ2SlidingWindowConverter::process()
   itree_->SetBranchAddress("u525wTemperatureControlMode", &omeasurement_.u525wTemperatureControlMode_);
   itree_->SetBranchAddress("u525wTemperatureControlEnabled", &omeasurement_.u525wTemperatureControlEnabled_);
   itree_->SetBranchAddress("u525wCirculatorEnabled", &omeasurement_.u525wCirculatorEnabled_);
-  itree_->SetBranchAddress("u525wBathTemperature", &omeasurement_.u525wBathTemperature_);
+  itree_->SetBranchAddress("u525wBathTemperature", &imeasurement_.u525wBathTemperature_);
   itree_->SetBranchAddress("u525wReturnTemperature", &omeasurement_.u525wReturnTemperature_);
   itree_->SetBranchAddress("u525wPumpPressure", &omeasurement_.u525wPumpPressure_);
   itree_->SetBranchAddress("u525wPower", &omeasurement_.u525wPower_);
@@ -293,8 +289,6 @@ void ThermoDAQ2SlidingWindowConverter::process()
   for (Long64_t ientry=1; ientry<nentries ; ientry++) {
     itree_->GetEntry(ientry);
 
-    std::cout << omeasurement_.datime.AsSQLString() << std::endl;
-
     Long64_t currentUTime = omeasurement_.uTime;
 
     windowSteps += currentUTime - previousUTime;
@@ -312,7 +306,9 @@ void ThermoDAQ2SlidingWindowConverter::process()
   for (Long64_t ientry=firstEntry; ientry<nentries ; ientry++) {
     itree_->GetEntry(ientry);
 
-    std::cout << "entry: " << ientry << " (" << omeasurement_.datime.AsSQLString() << ")" << std::endl;
+    if ((ientry%10)==0) {
+      std::cout << "entry " << ientry << "/" << nentries << std::endl;
+    }
 
     Long64_t entryUTime = omeasurement_.uTime;
     windowSteps = 0;
@@ -324,11 +320,11 @@ void ThermoDAQ2SlidingWindowConverter::process()
 
         if (entryUTime-currentUTime>=windowSize) {
             lastEntry = jentry;
+            break;
         }
     }
 
-    // std::cout << "last entry: " << lastEntry << std::endl;
-
+    omeasurement_.u525wBathTemperature_ = 0;
     for (int i=0;i<2;++i) {
       for (int j=0;j<10;++j) {
           omeasurement_.keithleyTemperature[i][j] = 0;
@@ -341,23 +337,22 @@ void ThermoDAQ2SlidingWindowConverter::process()
 
         Long64_t currentUTime = omeasurement_.uTime;
 
+        omeasurement_.u525wBathTemperature_ += imeasurement_.u525wBathTemperature_;
+
         for (int i=0;i<2;++i) {
           for (int j=0;j<10;++j) {
               omeasurement_.keithleyTemperature[i][j] += imeasurement_.keithleyTemperature[i][j];
           }
         }
         steps++;
-
-        // std::cout << imeasurement_.keithleyTemperature[1][2] << std::endl;
     }
 
+    omeasurement_.u525wBathTemperature_ /= steps;
     for (int i=0;i<2;++i) {
       for (int j=0;j<10;++j) {
           omeasurement_.keithleyTemperature[i][j] /= steps;
       }
     }
-
-    // std::cout << omeasurement_.keithleyTemperature[1][2] << std::endl;
 
     otree_->Fill();
   }

@@ -157,6 +157,9 @@ if(CMSTKMODLAB_ASSEMBLY OR CMSTKMODLAB_DEFO)
 	pkg_check_modules(EXIV2 REQUIRED IMPORTED_TARGET exiv2)
 endif()
 
+configure_file(tkmodlabenv.sh.in tkmodlabenv.sh)
+configure_file(tkmodlabenv.csh.in tkmodlabenv.csh)
+
 add_subdirectory(external)
 add_subdirectory(devices)
 add_subdirectory(tools)

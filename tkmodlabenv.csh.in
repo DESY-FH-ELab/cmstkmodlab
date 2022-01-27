@@ -3,6 +3,7 @@ setenv TKMODLABBASE "@basepath@"
 setenv PATH "@basepath@/tools/bin:$PATH"
 
 setenv PATH "@basepath@/thermo/thermoDAQ2Root:$PATH"
+setenv PATH "@basepath@/thermo/thermoDAQ2RootConverter:$PATH"
 setenv PATH "@basepath@/thermo/thermo1/thermoDAQ:$PATH"
 setenv PATH "@basepath@/thermo/thermo1/thermoDisplay:$PATH"
 setenv PATH "@basepath@/thermo/thermo1/thermoDAQ2Log:$PATH"
