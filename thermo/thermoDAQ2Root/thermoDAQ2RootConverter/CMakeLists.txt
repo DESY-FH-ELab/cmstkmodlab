@@ -6,10 +6,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_AUTOMOC ON)
 
-add_executable(thermoDAQ2Root
+add_executable(thermoDAQ2RootConverter
         main.cc
-        ThermoDAQStreamReader.cc
-        ThermoDAQ2StreamReader.cc
+        ThermoDAQ2SlidingWindowConverter.cc
 )
 
 include_directories(${Qt5Core_INCLUDE_DIRS})
@@ -33,12 +32,10 @@ include_directories(${ROOT_INCLUDE_DIRS})
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
 
-target_link_libraries(thermoDAQ2Root
+target_link_libraries(thermoDAQ2RootConverter
         PRIVATE Qt5::Core
         PRIVATE Qt5::Widgets
         PRIVATE Common
         PUBLIC ROOT::RIO
         PUBLIC ROOT::Tree
 )
-
-add_subdirectory(thermoDAQ2RootConverter)
