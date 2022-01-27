@@ -481,13 +481,13 @@ void ThermoDAQ2StreamReader::process()
   otree_->Branch("u525wCWInletTemperature", &measurement_.u525wCWInletTemperature_, "u525wCWInletTemperature/F");
   otree_->Branch("u525wCWOutletTemperature", &measurement_.u525wCWOutletTemperature_, "u525wCWOutletTemperature/F");
   otree_->Branch("u525wAutoPID", &measurement_.u525wAutoPID_, "u525wAutoPID/O");
-  otree_->Branch("u525wKpInternal", &measurement_.u525wKpInternal_, "u525wKpInternal/i");
+  otree_->Branch("u525wKpInternal", &measurement_.u525wKpInternal_, "u525wKpInternal/I");
   otree_->Branch("u525wTnInternal", &measurement_.u525wTnInternal_, "u525wTnInternal/F");
   otree_->Branch("u525wTvInternal", &measurement_.u525wTvInternal_, "u525wTvInternal/F");
-  otree_->Branch("u525wKpJacket", &measurement_.u525wKpJacket_, "u525wKpJacket/i");
+  otree_->Branch("u525wKpJacket", &measurement_.u525wKpJacket_, "u525wKpJacket/I");
   otree_->Branch("u525wTnJacket", &measurement_.u525wTnJacket_, "u525wTnJacket/F");
   otree_->Branch("u525wTvJacket", &measurement_.u525wTvJacket_, "u525wTvJacket/F");
-  otree_->Branch("u525wKpProcess", &measurement_.u525wKpProcess_, "u525wKpProcess/i");
+  otree_->Branch("u525wKpProcess", &measurement_.u525wKpProcess_, "u525wKpProcess/I");
   otree_->Branch("u525wTnProcess", &measurement_.u525wTnProcess_, "u525wTnProcess/F");
   otree_->Branch("u525wTvProcess", &measurement_.u525wTvProcess_, "u525wTvProcess/F");
 
@@ -528,14 +528,14 @@ void ThermoDAQ2StreamReader::process()
   otree_->Branch("martaSpeedSetpoint", &measurement_.martaSpeedSetpoint_, "martaSpeedSetpoint/F");
   otree_->Branch("martaFlowSetpoint", &measurement_.martaFlowSetpoint_, "martaFlowSetpoint/F");
   otree_->Branch("martaTemperatureSetpoint", &measurement_.martaTemperatureSetpoint_, "martaTemperatureSetpoint/F");
-  otree_->Branch("martaStatus", &measurement_.martaStatus_, "martaStatus/i");
+  otree_->Branch("martaStatus", &measurement_.martaStatus_, "martaStatus/s");
   otree_->Branch("martaSpeedSetpoint2", &measurement_.martaSpeedSetpoint2_, "martaSpeedSetpoint2/F");
   otree_->Branch("martaFlowSetpoint2", &measurement_.martaFlowSetpoint2_, "martaFlowSetpoint2/F");
   otree_->Branch("martaTemperatureSetpoint2", &measurement_.martaTemperatureSetpoint2_, "martaTemperatureSetpoint2/F");
-  otree_->Branch("martaAlarms0", &measurement_.martaAlarms_[0], "martaAlarms0/i");
-  otree_->Branch("martaAlarms1", &measurement_.martaAlarms_[1], "martaAlarms1/i");
-  otree_->Branch("martaAlarms2", &measurement_.martaAlarms_[2], "martaAlarms2/i");
-  otree_->Branch("martaAlarms3", &measurement_.martaAlarms_[3], "martaAlarms3/i");
+  otree_->Branch("martaAlarms0", &measurement_.martaAlarms_[0], "martaAlarms0/s");
+  otree_->Branch("martaAlarms1", &measurement_.martaAlarms_[1], "martaAlarms1/s");
+  otree_->Branch("martaAlarms2", &measurement_.martaAlarms_[2], "martaAlarms2/s");
+  otree_->Branch("martaAlarms3", &measurement_.martaAlarms_[3], "martaAlarms3/s");
 
   otree_->Branch("agilentState", &measurement_.agilentState_, "agilentState/O");
   otree_->Branch("agilentPumpState", &measurement_.agilentPumpState_, "agilentPumpState/O");
