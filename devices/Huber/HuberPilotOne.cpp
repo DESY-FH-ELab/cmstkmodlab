@@ -61,7 +61,7 @@ bool HuberPilotOne::SetTemperatureSetPoint(const float temperatureSetPoint)
   usleep(uDelay_);
   StripBuffer(buffer);
   
-  float ret = ToFloat(buffer);
+  float ret = ToFloat(buffer)/100.;
 
   if (temperatureSetPoint != ret) {
     std::cerr << " [HuberPilotOne::SetTemperatureSetPoint] ** ERROR: check failed."
@@ -94,7 +94,7 @@ float HuberPilotOne::GetTemperatureSetPoint()
 
   StripBuffer(buffer);
 
-  return ToFloat(buffer);
+  return ToFloat(buffer)/100.;
 }
 
 float HuberPilotOne::GetBathTemperature()
@@ -113,7 +113,7 @@ float HuberPilotOne::GetBathTemperature()
 
   StripBuffer(buffer);
 
-  return ToFloat(buffer);
+  return ToFloat(buffer)/100.;
 }
 
 float HuberPilotOne::GetReturnTemperature()
@@ -132,7 +132,7 @@ float HuberPilotOne::GetReturnTemperature()
 
   StripBuffer(buffer);
 
-  return ToFloat(buffer);
+  return ToFloat(buffer)/100.;
 }
 
 float HuberPilotOne::GetPumpPressure()
@@ -357,7 +357,7 @@ float HuberPilotOne::GetCoolingWaterInletTemperature()
 
   StripBuffer(buffer);
 
-  return ToFloat(buffer);
+  return ToFloat(buffer)/100.;
 }
 
 float HuberPilotOne::GetCoolingWaterOutletTemperature()
@@ -376,7 +376,7 @@ float HuberPilotOne::GetCoolingWaterOutletTemperature()
 
   StripBuffer(buffer);
 
-  return ToFloat(buffer);
+  return ToFloat(buffer)/100.;
 }
 
 bool HuberPilotOne::SetAutoPID(bool autoPID)
@@ -518,7 +518,7 @@ bool HuberPilotOne::SetTnInternal(float Tn)
   theCommand << "{M1E"
       << std::setfill('0') << std::setw(4)
   << std::hex << std::uppercase
-  << (int)(Tn * 10);
+  << (int)(Tn * 10.);
 
   comHandler_->SendCommand(theCommand.str().c_str());
   usleep(uDelay_);
@@ -562,7 +562,7 @@ float HuberPilotOne::GetTnInternal()
 
   StripBuffer(buffer);
 
-  return ToFloat(buffer);
+  return ToFloat(buffer)/10.;
 }
 
 bool HuberPilotOne::SetTvInternal(float Tv)
@@ -627,7 +627,7 @@ float HuberPilotOne::GetTvInternal()
 
   StripBuffer(buffer);
 
-  return ToFloat(buffer);
+  return ToFloat(buffer)/10.;
 }
 
 bool HuberPilotOne::SetKpJacket(int Kp)
@@ -757,7 +757,7 @@ float HuberPilotOne::GetTnJacket()
 
   StripBuffer(buffer);
 
-  return ToFloat(buffer);
+  return ToFloat(buffer)/10.;
 }
 
 bool HuberPilotOne::SetTvJacket(float Tv)
@@ -822,7 +822,7 @@ float HuberPilotOne::GetTvJacket()
 
   StripBuffer(buffer);
 
-  return ToFloat(buffer);
+  return ToFloat(buffer)/10.;
 }
 
 bool HuberPilotOne::SetKpProcess(int Kp)
@@ -952,7 +952,7 @@ float HuberPilotOne::GetTnProcess()
 
   StripBuffer(buffer);
 
-  return ToFloat(buffer);
+  return ToFloat(buffer)/10.;
 }
 
 bool HuberPilotOne::SetTvProcess(float Tv)
@@ -1046,7 +1046,7 @@ int HuberPilotOne::ToInteger(const char* buffer) const
 float HuberPilotOne::ToFloat(const char* buffer) const
 {
   float temp = ToInteger(buffer);
-  return temp/100.;
+  return temp;
 }
 
 void HuberPilotOne::Device_Init()
