@@ -176,19 +176,19 @@ void Thermo2DAQModel::createDAQStatusMessage(QString &buffer, bool start)
     xml.writeStartElement("HuberUnistat525wPIDInternal");
     xml.writeAttribute("Kp", QString::number(huberModel_->getKpInternal()));
     xml.writeAttribute("Tn", QString::number(huberModel_->getTnInternal(), 'f', 1));
-    xml.writeAttribute("Tv", QString::number(huberModel_->getTnInternal(), 'f', 1));
+    xml.writeAttribute("Tv", QString::number(huberModel_->getTvInternal(), 'f', 1));
     xml.writeEndElement();
 
     xml.writeStartElement("HuberUnistat525wPIDJacket");
     xml.writeAttribute("Kp", QString::number(huberModel_->getKpJacket()));
     xml.writeAttribute("Tn", QString::number(huberModel_->getTnJacket(), 'f', 1));
-    xml.writeAttribute("Tv", QString::number(huberModel_->getTnJacket(), 'f', 1));
+    xml.writeAttribute("Tv", QString::number(huberModel_->getTvJacket(), 'f', 1));
     xml.writeEndElement();
 
     xml.writeStartElement("HuberUnistat525wPIDProcess");
     xml.writeAttribute("Kp", QString::number(huberModel_->getKpProcess()));
     xml.writeAttribute("Tn", QString::number(huberModel_->getTnProcess(), 'f', 1));
-    xml.writeAttribute("Tv", QString::number(huberModel_->getTnProcess(), 'f', 1));
+    xml.writeAttribute("Tv", QString::number(huberModel_->getTvProcess(), 'f', 1));
     xml.writeEndElement();
 
     xml.writeEndElement();
