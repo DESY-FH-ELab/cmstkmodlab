@@ -106,7 +106,7 @@ bool HuberPilotOneFake::SetTemperatureControlMode(bool process)
 
 bool HuberPilotOneFake::GetTemperatureControlMode()
 {
-  return externalTemperatureControl_;
+  return processTemperatureControl_;
 }
 
 bool HuberPilotOneFake::SetTemperatureControlEnabled(bool enabled)
