@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -124,21 +124,22 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   }
 
   daqModel_ = new Thermo2DAQModel(huberModel_,
-		  martaModel_,
-		  agilentModel_,
-		  leyboldModel_,
-		  nge103BModel_,
-		  keithleyModel_,
-		  this);
+				  martaModel_,
+				  agilentModel_,
+				  leyboldModel_,
+				  nge103BModel_,
+				  keithleyModel_,
+				  this);
 
   // SCRIPT MODEL
   scriptModel_ = new Thermo2ScriptModel(daqModel_,
-		  huberModel_,
-		  martaModel_,
-		  nge103BModel_,
-		  keithleyModel_,
-		  throughPlaneModel_,
-		  this);
+					leyboldModel_,
+					huberModel_,
+					martaModel_,
+					nge103BModel_,
+					keithleyModel_,
+					throughPlaneModel_,
+					this);
 
   daqStreamer_ = new Thermo2DAQStreamer(daqModel_, this);
 

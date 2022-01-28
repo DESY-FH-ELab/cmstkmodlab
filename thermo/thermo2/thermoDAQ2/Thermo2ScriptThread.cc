@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -19,6 +19,7 @@
 
 #include "Thermo2ScriptableGlobals.h"
 
+#include "ScriptableLeyboldGraphixOne.h"
 #include "ScriptableHuberUnistat525w.h"
 #include "ScriptableMarta.h"
 #include "ScriptableRohdeSchwarzNGE103B.h"
@@ -28,19 +29,21 @@
 #include "Thermo2ScriptThread.h"
 
 Thermo2ScriptThread::Thermo2ScriptThread(Thermo2ScriptModel* scriptModel,
-    HuberUnistat525wModel* huberModel,
-    MartaModel* martaModel,
-    RohdeSchwarzNGE103BModel* nge103BModel,
-    KeithleyDAQ6510Model* keithleyModel,
-    Thermo2ThroughPlaneModel* t2tpModel,
-    QObject *parent)
-: QThread(parent),
-  scriptModel_(scriptModel),
-  huberModel_(huberModel),
-  martaModel_(martaModel),
-  nge103BModel_(nge103BModel),
-  keithleyModel_(keithleyModel),
-  t2tpModel_(t2tpModel)
+					 LeyboldGraphixOneModel* leyboldModel,
+					 HuberUnistat525wModel* huberModel,
+					 MartaModel* martaModel,
+					 RohdeSchwarzNGE103BModel* nge103BModel,
+					 KeithleyDAQ6510Model* keithleyModel,
+					 Thermo2ThroughPlaneModel* t2tpModel,
+					 QObject *parent)
+  : QThread(parent),
+    scriptModel_(scriptModel),
+    leyboldModel_(leyboldModel),
+    huberModel_(huberModel),
+    martaModel_(martaModel),
+    nge103BModel_(nge103BModel),
+    keithleyModel_(keithleyModel),
+    t2tpModel_(t2tpModel)
 {
 
 }
@@ -55,6 +58,12 @@ void Thermo2ScriptThread::executeScript(const QString & script)
   globalsObj_ = new Thermo2ScriptableGlobals(scriptModel_, this);
   QScriptValue globalsValue = engine_->newQObject(globalsObj_);
   engine_->globalObject().setProperty("thermo", globalsValue);
+
+  if (leyboldModel_) {
+    leyboldObj_ = new ScriptableLeyboldGraphixOne(leyboldModel_, this);
+    QScriptValue leyboldValue = engine_->newQObject(leyboldObj_);
+    engine_->globalObject().setProperty("leybold", leyboldValue);
+  }
 
   if (huberModel_) {
     huberObj_ = new ScriptableHuberUnistat525w(huberModel_, this);
@@ -91,6 +100,7 @@ void Thermo2ScriptThread::abortScript()
     engine_->abortEvaluation();
     
     globalsObj_->abort();
+    if (leyboldModel_) leyboldObj_->abort();
     if (huberModel_) huberObj_->abort();
     if (martaModel_) martaObj_->abort();
     keithleyObj_->abort();

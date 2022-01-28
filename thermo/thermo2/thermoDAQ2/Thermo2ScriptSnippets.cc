@@ -31,6 +31,9 @@ Thermo2ScriptSnippets::Thermo2ScriptSnippets(QWidget *parent)
   addItem("thermo - execution time", "etime = thermo.uTime();\n");
   addItem("thermo - make unix time", "utime = thermo.mkUTime(year, month, day, hour, minute, second);\n");
 
+  addItem("leybold - get pressure", "pressure = leybold.getPressure();\n");
+  addItem("leybold - wait for pressure below", "leybold.waitForPressureBelow(pressure, timeout);\n");
+
   addItem("huber - set temperature set point", "huber.setTemperatureSetPoint(temperature);\n");
   addItem("huber - get temperature set point", "temperature = huber.getTemperatureSetPoint();\n");
   addItem("huber - get auto PID", "autoPID = huber.getAutoPID();\n");

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -18,6 +18,8 @@
 #include <QTextDocument>
 
 #include "Thermo2DAQModel.h"
+
+#include "LeyboldGraphixOneModel.h"
 #include "HuberUnistat525wModel.h"
 #include "MartaModel.h"
 #include "RohdeSchwarzNGE103BModel.h"
@@ -31,13 +33,14 @@ class Thermo2ScriptModel : public QObject
   Q_OBJECT
 public:
 
-	explicit Thermo2ScriptModel(Thermo2DAQModel* daqModel,
-			HuberUnistat525wModel* huberModel,
-			MartaModel* martaModel,
-			RohdeSchwarzNGE103BModel* nge103BModel,
-			KeithleyDAQ6510Model* keithleyModel,
-			Thermo2ThroughPlaneModel* t2tpModel,
-			QObject *parent = 0);
+  explicit Thermo2ScriptModel(Thermo2DAQModel* daqModel,
+			      LeyboldGraphixOneModel* leyboldModel,
+			      HuberUnistat525wModel* huberModel,
+			      MartaModel* martaModel,
+			      RohdeSchwarzNGE103BModel* nge103BModel,
+			      KeithleyDAQ6510Model* keithleyModel,
+			      Thermo2ThroughPlaneModel* t2tpModel,
+			      QObject *parent = 0);
 
   QTextDocument* scriptDocument() { return script_; }
   const QString& currentScriptFilename() const { return currentScriptFilename_; }
@@ -75,6 +78,7 @@ protected:
 
   Thermo2DAQModel* daqModel_;
 
+  LeyboldGraphixOneModel* leyboldModel_;
   HuberUnistat525wModel* huberModel_;
   MartaModel* martaModel_;
   RohdeSchwarzNGE103BModel* nge103BModel_;

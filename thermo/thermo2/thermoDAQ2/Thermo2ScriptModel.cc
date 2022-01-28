@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -22,19 +22,21 @@
 #include "Thermo2ScriptModel.h"
 
 Thermo2ScriptModel::Thermo2ScriptModel(Thermo2DAQModel* daqModel,
-		HuberUnistat525wModel* huberModel,
-		MartaModel* martaModel,
-		RohdeSchwarzNGE103BModel* nge103BModel,
-		KeithleyDAQ6510Model* keithleyModel,
-		Thermo2ThroughPlaneModel* t2tpModel,
-		QObject *parent)
+				       LeyboldGraphixOneModel* leyboldModel,
+				       HuberUnistat525wModel* huberModel,
+				       MartaModel* martaModel,
+				       RohdeSchwarzNGE103BModel* nge103BModel,
+				       KeithleyDAQ6510Model* keithleyModel,
+				       Thermo2ThroughPlaneModel* t2tpModel,
+				       QObject *parent)
 : QObject(parent),
-	daqModel_(daqModel),
-	huberModel_(huberModel),
-	martaModel_(martaModel),
-	nge103BModel_(nge103BModel),
-	keithleyModel_(keithleyModel),
-    t2tpModel_(t2tpModel)
+  daqModel_(daqModel),
+  leyboldModel_(leyboldModel),
+  huberModel_(huberModel),
+  martaModel_(martaModel),
+  nge103BModel_(nge103BModel),
+  keithleyModel_(keithleyModel),
+  t2tpModel_(t2tpModel)
 {
   script_ = new QTextDocument(this);
   script_->setDocumentLayout(new QPlainTextDocumentLayout(script_));
@@ -43,6 +45,7 @@ Thermo2ScriptModel::Thermo2ScriptModel(Thermo2DAQModel* daqModel,
   currentScriptFilename_ = QString();
 
   scriptThread_ = new Thermo2ScriptThread(this,
+					  leyboldModel_,
                                           huberModel_,
                                           martaModel_,
                                           nge103BModel_,
@@ -51,6 +54,13 @@ Thermo2ScriptModel::Thermo2ScriptModel(Thermo2DAQModel* daqModel,
                                           this);
   connect(scriptThread_, SIGNAL(started()), this, SLOT(executionStarted()));
   connect(scriptThread_, SIGNAL(finished()), this, SLOT(executionFinished()));
+
+  if (leyboldModel_) {
+    connect(leyboldModel_, SIGNAL(message(const QString &)),
+	    this, SLOT(doAppendMessageText(const QString &)));
+    connect(leyboldModel_, SIGNAL(log(const QString &)),
+	    this, SLOT(log(const QString &)));
+  }
 
   if (huberModel_) {
     connect(huberModel_, SIGNAL(message(const QString &)),
