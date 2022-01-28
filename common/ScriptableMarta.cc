@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -16,14 +16,24 @@
 #include <cmath>
 #include <QMutexLocker>
 
+#include <nqlogger.h>
+
 #include "ScriptableMarta.h"
 
 ScriptableMarta::ScriptableMarta(MartaModel* model,
                                  QObject *parent)
- : QObject(parent),
-   model_(model)
+ : VScriptableDevice(parent),
+   model_(model),
+   abortRequested_(false)
 {
 
+}
+
+void ScriptableMarta::abort()
+{
+  NQLogDebug("ScriptableMarta") << "abort()";
+
+  abortRequested_ = true;
 }
 
 void ScriptableMarta::setTemperatureSetPoint(double temperature)
@@ -75,6 +85,14 @@ void ScriptableMarta::waitForTemperatureAbove(float temperature,
 
     if (temp>temperature) break;
 
+    if (abortRequested_) {
+      abortRequested_ = false;
+      
+      NQLogMessage("ScriptableMarta") << "execution aborted";
+
+      break;
+    }
+
     std::this_thread::sleep_for(60s);
   }
 }
@@ -91,6 +109,14 @@ void ScriptableMarta::waitForTemperatureBelow(float temperature,
     locker.unlock();
 
     if (temp<temperature) break;
+
+    if (abortRequested_) {
+      abortRequested_ = false;
+      
+      NQLogMessage("ScriptableMarta") << "execution aborted";
+
+      break;
+    }
 
     std::this_thread::sleep_for(60s);
   }
@@ -113,6 +139,14 @@ void ScriptableMarta::waitForStableTemperature(float deltaT,
     if (fabs(oldTemp-temp)<=deltaT) count++;
     oldTemp = temp;
     if (count>=delay) break;
+
+    if (abortRequested_) {
+      abortRequested_ = false;
+      
+      NQLogMessage("ScriptableMarta") << "execution aborted";
+
+      break;
+    }
 
     std::this_thread::sleep_for(60s);
   }

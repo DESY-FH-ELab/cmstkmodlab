@@ -17,7 +17,6 @@
 
 #include <nqlogger.h>
 
-#include "Thermo2ScriptThread.h"
 #include "Thermo2ScriptableGlobals.h"
 
 #include "ScriptableHuberUnistat525w.h"
@@ -25,6 +24,8 @@
 #include "ScriptableRohdeSchwarzNGE103B.h"
 #include "ScriptableKeithleyDAQ6510.h"
 #include "ScriptableThermo2ThroughPlane.h"
+
+#include "Thermo2ScriptThread.h"
 
 Thermo2ScriptThread::Thermo2ScriptThread(Thermo2ScriptModel* scriptModel,
     HuberUnistat525wModel* huberModel,
@@ -51,19 +52,19 @@ void Thermo2ScriptThread::executeScript(const QString & script)
   engine_ = new QScriptEngine();
   engine_->setProcessEventsInterval(10);
 
-  Thermo2ScriptableGlobals *globalsObj = new Thermo2ScriptableGlobals(scriptModel_, this);
-  QScriptValue globalsValue = engine_->newQObject(globalsObj);
+  globalsObj_ = new Thermo2ScriptableGlobals(scriptModel_, this);
+  QScriptValue globalsValue = engine_->newQObject(globalsObj_);
   engine_->globalObject().setProperty("thermo", globalsValue);
 
   if (huberModel_) {
-    ScriptableHuberUnistat525w* huberobj = new ScriptableHuberUnistat525w(huberModel_, this);
-    QScriptValue huberValue = engine_->newQObject(huberobj);
+    huberObj_ = new ScriptableHuberUnistat525w(huberModel_, this);
+    QScriptValue huberValue = engine_->newQObject(huberObj_);
     engine_->globalObject().setProperty("huber", huberValue);
   }
 
   if (martaModel_) {
-    ScriptableMarta* martaobj = new ScriptableMarta(martaModel_, this);
-    QScriptValue martaValue = engine_->newQObject(martaobj);
+    martaObj_ = new ScriptableMarta(martaModel_, this);
+    QScriptValue martaValue = engine_->newQObject(martaObj_);
     engine_->globalObject().setProperty("marta", martaValue);
   }
 
@@ -71,8 +72,8 @@ void Thermo2ScriptThread::executeScript(const QString & script)
   QScriptValue nge103BValue = engine_->newQObject(nge103BObj);
   engine_->globalObject().setProperty("nge103b", nge103BValue);
 
-  ScriptableKeithleyDAQ6510 *keithleyObj = new ScriptableKeithleyDAQ6510(keithleyModel_, this);
-  QScriptValue keithleyValue = engine_->newQObject(keithleyObj);
+  keithleyObj_ = new ScriptableKeithleyDAQ6510(keithleyModel_, this);
+  QScriptValue keithleyValue = engine_->newQObject(keithleyObj_);
   engine_->globalObject().setProperty("keithley", keithleyValue);
 
   ScriptableThermo2ThroughPlane *t2tpObj = new ScriptableThermo2ThroughPlane(t2tpModel_, this);
@@ -88,9 +89,11 @@ void Thermo2ScriptThread::abortScript()
   if (engine_) {
     NQLogMessage("Thermo2ScriptThread") << "abort " << (int)engine_->isEvaluating();
     engine_->abortEvaluation();
-    //delete engine_;
-    //engine_ = 0;
-    //terminate();
+    
+    globalsObj_->abort();
+    if (huberModel_) huberObj_->abort();
+    if (martaModel_) martaObj_->abort();
+    keithleyObj_->abort();
   }
 }
 

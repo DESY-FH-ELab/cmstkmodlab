@@ -19,6 +19,7 @@ add_library(Common SHARED
         ApplicationConfigWriter.cc
         ApplicationConfigItemModel.cc
         ApplicationConfigViewer.cc
+        VScriptableDevice.cc
         SlackBot.cc
         MattermostBot.cc
         JulaboModel.cc

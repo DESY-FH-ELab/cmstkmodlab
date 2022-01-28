@@ -19,6 +19,11 @@
 
 class Thermo2ScriptModel;
 
+class Thermo2ScriptableGlobals;
+class ScriptableHuberUnistat525w;
+class ScriptableMarta;
+class ScriptableKeithleyDAQ6510;
+
 #include "HuberUnistat525wModel.h"
 #include "MartaModel.h"
 #include "RohdeSchwarzNGE103BModel.h"
@@ -46,6 +51,11 @@ protected:
   QString script_;
   QScriptEngine* engine_;
 
+  Thermo2ScriptableGlobals *globalsObj_;
+  ScriptableHuberUnistat525w *huberObj_;
+  ScriptableMarta *martaObj_;
+  ScriptableKeithleyDAQ6510 *keithleyObj_;
+  
   Thermo2ScriptModel* scriptModel_;
   HuberUnistat525wModel* huberModel_;
   MartaModel* martaModel_;

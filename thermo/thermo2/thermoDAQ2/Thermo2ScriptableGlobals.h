@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2019 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -17,15 +17,19 @@
 #include <QMutex>
 #include <QScriptValue>
 
+#include <VScriptableDevice.h>
+
 #include "Thermo2ScriptModel.h"
 
-class Thermo2ScriptableGlobals : public QObject
+class Thermo2ScriptableGlobals : public VScriptableDevice
 {
   Q_OBJECT
 
 public:
   explicit Thermo2ScriptableGlobals(Thermo2ScriptModel* scriptModel, QObject *parent = 0);
 
+  void abort();
+  
 public slots:
 
   void startMeasurement();
@@ -50,6 +54,8 @@ protected:
 
   Thermo2ScriptModel* scriptModel_;
 
+  bool abortRequested_;
+  
   // For thread safety
   QMutex mutex_;
 };

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -17,14 +17,18 @@
 #include <QMutex>
 #include <QScriptValue>
 
+#include <VScriptableDevice.h>
+
 #include <HuberUnistat525wModel.h>
 
-class ScriptableHuberUnistat525w : public QObject
+class ScriptableHuberUnistat525w : public VScriptableDevice
 {
   Q_OBJECT
 public:
   explicit ScriptableHuberUnistat525w(HuberUnistat525wModel* model,
                                       QObject *parent = 0);
+
+  void abort();
 
 public slots:
 
@@ -79,6 +83,8 @@ public slots:
 protected:
 
   HuberUnistat525wModel* model_;
+
+  bool abortRequested_;
 
   // For thread safety
   QMutex mutex_;

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -26,10 +26,18 @@
 
 ScriptableKeithleyDAQ6510::ScriptableKeithleyDAQ6510(KeithleyDAQ6510Model* keithleyModel,
                                                      QObject *parent)
- : QObject(parent),
-   keithleyModel_(keithleyModel)
+ : VScriptableDevice(parent),
+   keithleyModel_(keithleyModel),
+   abortRequested_(false)
 {
 
+}
+
+void ScriptableKeithleyDAQ6510::abort()
+{
+  NQLogDebug("ScriptableKeithleyDAQ6510") << "abort()";
+
+  abortRequested_ = true;
 }
 
 QScriptValue ScriptableKeithleyDAQ6510::state(unsigned int sensor)
@@ -132,6 +140,14 @@ void ScriptableKeithleyDAQ6510::waitForStableTemperature(const QString & sensors
     }
     if (stable) break;
 
+    if (abortRequested_) {
+      abortRequested_ = false;
+      
+      NQLogMessage("ScriptableKeithleyDAQ6510") << "execution aborted";
+
+      return;
+    }
+
     std::this_thread::sleep_for(60s);
 
     t++;
@@ -158,6 +174,14 @@ void ScriptableKeithleyDAQ6510::waitForTemperatureAbove(unsigned int sensor,
 
     if (temp>temperature) break;
 
+    if (abortRequested_) {
+      abortRequested_ = false;
+      
+      NQLogMessage("ScriptableKeithleyDAQ6510") << "execution aborted";
+
+      return;
+    }
+
     std::this_thread::sleep_for(60s);
   }
 
@@ -181,6 +205,14 @@ void ScriptableKeithleyDAQ6510::waitForTemperatureBelow(unsigned int sensor,
     locker.unlock();
 
     if (temp<temperature) break;
+
+    if (abortRequested_) {
+      abortRequested_ = false;
+      
+      NQLogMessage("ScriptableKeithleyDAQ6510") << "execution aborted";
+
+      return;
+    }
 
     std::this_thread::sleep_for(60s);
   }
