@@ -21,6 +21,8 @@
 
 #include <QApplication>
 
+#include <nqlogger.h>
+
 #include <nvector3D.h>
 #include <npoint3D.h>
 #include <ndirection3D.h>
@@ -54,6 +56,9 @@ double imageScale(double focalLength)
 
 int main(int argc, char ** argv)
 {
+  NQLogger::instance()->addActiveModule("*");
+  NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
+
   {
     QApplication app(argc, argv);
 
