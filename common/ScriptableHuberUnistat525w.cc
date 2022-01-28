@@ -110,6 +110,102 @@ QScriptValue ScriptableHuberUnistat525w::getCoolingWaterOutletTemperature()
   return QScriptValue(model_->getCoolingWaterOutletTemperature());
 }
 
+QScriptValue ScriptableHuberUnistat525w::getControlMode()
+{
+  QMutexLocker locker(&mutex_);
+  return QScriptValue(model_->getTemperatureControlMode());
+}
+
+void ScriptableHuberUnistat525w::setControlMode(bool process)
+{
+  QMutexLocker locker(&mutex_);
+  model_->setTemperatureControlMode(process);
+}
+
+QScriptValue ScriptableHuberUnistat525w::getAutoPID()
+{
+  QMutexLocker locker(&mutex_);
+  return QScriptValue(model_->getAutoPID());
+}
+
+void ScriptableHuberUnistat525w::setAutoPID(bool autoPID)
+{
+  QMutexLocker locker(&mutex_);
+  model_->setAutoPID(autoPID);
+}
+
+QScriptValue ScriptableHuberUnistat525w::getKpInternal()
+{
+  QMutexLocker locker(&mutex_);
+  return QScriptValue(model_->getKpInternal());
+}
+
+void ScriptableHuberUnistat525w::setKpInternal(int Kp)
+{
+  QMutexLocker locker(&mutex_);
+  model_->setKpInternal(Kp);
+}
+
+QScriptValue ScriptableHuberUnistat525w::getTnInternal()
+{
+  QMutexLocker locker(&mutex_);
+  return QScriptValue(model_->getTnInternal());
+}
+
+void ScriptableHuberUnistat525w::setTnInternal(double Tn)
+{
+  QMutexLocker locker(&mutex_);
+  model_->setTnInternal(Tn);
+}
+
+QScriptValue ScriptableHuberUnistat525w::getTvInternal()
+{
+  QMutexLocker locker(&mutex_);
+  return QScriptValue(model_->getTvInternal());
+}
+
+void ScriptableHuberUnistat525w::setTvInternal(double Tv)
+{
+  QMutexLocker locker(&mutex_);
+  model_->setTvInternal(Tv);
+}
+
+QScriptValue ScriptableHuberUnistat525w::getKpProcess()
+{
+  QMutexLocker locker(&mutex_);
+  return QScriptValue(model_->getKpProcess());
+}
+
+void ScriptableHuberUnistat525w::setKpProcess(int Kp)
+{
+  QMutexLocker locker(&mutex_);
+  model_->setKpProcess(Kp);
+}
+
+QScriptValue ScriptableHuberUnistat525w::getTnProcess()
+{
+  QMutexLocker locker(&mutex_);
+  return QScriptValue(model_->getTnProcess());
+}
+
+void ScriptableHuberUnistat525w::setTnProcess(double Tn)
+{
+  QMutexLocker locker(&mutex_);
+  model_->setTnProcess(Tn);
+}
+
+QScriptValue ScriptableHuberUnistat525w::getTvProcess()
+{
+  QMutexLocker locker(&mutex_);
+  return QScriptValue(model_->getTvProcess());
+}
+
+void ScriptableHuberUnistat525w::setTvProcess(double Tv)
+{
+  QMutexLocker locker(&mutex_);
+  model_->setTvProcess(Tv);
+}
+
 void ScriptableHuberUnistat525w::waitForTemperatureAbove(float temperature,
                                                          int timeout)
 {

@@ -33,6 +33,22 @@ Thermo2ScriptSnippets::Thermo2ScriptSnippets(QWidget *parent)
 
   addItem("huber - set temperature set point", "huber.setTemperatureSetPoint(temperature);\n");
   addItem("huber - get temperature set point", "temperature = huber.getTemperatureSetPoint();\n");
+  addItem("huber - get auto PID", "autoPID = huber.getAutoPID();\n");
+  addItem("huber - set auto PID", "huber.setAutoPID(autoPID);\n");
+  addItem("huber - get control mode", "controlMode = huber.getControlMode();\n");
+  addItem("huber - set control mode", "huber.setControlMode(controlMode);\n");
+  addItem("huber - get Kp internal", "KpInternal = huber.getKpInternal();\n");
+  addItem("huber - set Kp internal", "huber.setKpInternal(KpInternal);\n");
+  addItem("huber - get Tn internal", "TnInternal = huber.getTnInternal();\n");
+  addItem("huber - set Tn internal", "huber.setTnInternal(TnInternal);\n");
+  addItem("huber - get Tv internal", "TvInternal = huber.getTvInternal();\n");
+  addItem("huber - set Tv internal", "huber.setTvInternal(TvInternal);\n");
+  addItem("huber - get Kp process", "KpProcess = huber.getKpProcess();\n");
+  addItem("huber - set Kp process", "huber.setKpProcess(KpProcess);\n");
+  addItem("huber - get Tn process", "TnProcess = huber.getTnProcess();\n");
+  addItem("huber - set Tn process", "huber.setTnProcess(TnProcess);\n");
+  addItem("huber - get Tv process", "TvProcess = huber.getTvProcess();\n");
+  addItem("huber - set Tv process", "huber.setTvProcess(TvProcess);\n");
 
   addItem("marta - set temperature set point", "marta.setTemperatureSetPoint(temperature);\n");
   addItem("marta - get temperature set point", "temperature = marta.getTemperatureSetPoint();\n");

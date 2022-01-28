@@ -48,6 +48,26 @@ public slots:
   QScriptValue getCoolingWaterInletTemperature();
   QScriptValue getCoolingWaterOutletTemperature();
 
+  QScriptValue getControlMode();
+  void setControlMode(bool process);
+
+  QScriptValue getAutoPID();
+  void setAutoPID(bool autoPID);
+
+  QScriptValue getKpInternal();
+  void setKpInternal(int Kp);
+  QScriptValue getTnInternal();
+  void setTnInternal(double Tn);
+  QScriptValue getTvInternal();
+  void setTvInternal(double Tv);
+
+  QScriptValue getKpProcess();
+  void setKpProcess(int Kp);
+  QScriptValue getTnProcess();
+  void setTnProcess(double Tn);
+  QScriptValue getTvProcess();
+  void setTvProcess(double Tv);
+
   void waitForTemperatureAbove(float temperature,
                                int timeout);
   void waitForTemperatureBelow(float temperature,
