@@ -54,11 +54,13 @@ void RohdeSchwarzNGE103B::SelectChannel(unsigned int ch)
 {
   if (DeviceAvailable()) {
     char cmd[100];
-    sprintf(cmd, "INST:NSEL %d", ch);
+    sprintf(cmd, "INST:SEL OUT%d", ch);
     comHandler_->SendCommand(cmd);
 
     while (!OperationCompleted()) { usleep(10); } 
   }
+
+  usleep(10000);
 }
 
 unsigned int RohdeSchwarzNGE103B::SelectedChannel() const
@@ -251,6 +253,8 @@ void RohdeSchwarzNGE103B::SetOutputState(bool s)
 
     while (!OperationCompleted()) { usleep(10); } 
   }
+
+  usleep(10000);
 }
 
 bool RohdeSchwarzNGE103B::GetOutputState() const
