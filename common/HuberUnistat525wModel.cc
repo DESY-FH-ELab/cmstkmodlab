@@ -147,9 +147,37 @@ bool HuberUnistat525wModel::getAutoPID() const
   return autoPID_;
 }
 
+void HuberUnistat525wModel::setAutoPID(bool autoPID)
+{
+  if (state_ == READY) {
+
+    if (autoPID_!=autoPID) {
+
+      if (controller_->SetAutoPID(autoPID)) {
+        autoPID_ = autoPID;
+        emit informationChanged();
+      }
+    }
+  }
+}
+
 int HuberUnistat525wModel::getKpInternal() const
 {
   return KpInternal_;
+}
+
+void HuberUnistat525wModel::setKpInternal(int Kp)
+{
+  if (state_ == READY) {
+
+    if (KpInternal_!=Kp) {
+
+      if (controller_->SetKpInternal(Kp)) {
+        KpInternal_ = Kp;
+        emit informationChanged();
+      }
+    }
+  }
 }
 
 double HuberUnistat525wModel::getTnInternal() const
@@ -157,9 +185,37 @@ double HuberUnistat525wModel::getTnInternal() const
   return TnInternal_;
 }
 
+void HuberUnistat525wModel::setTnInternal(double Tn)
+{
+  if (state_ == READY) {
+
+    if (TnInternal_!=Tn) {
+
+      if (controller_->SetTnInternal(Tn)) {
+        TnInternal_ = Tn;
+        emit informationChanged();
+      }
+    }
+  }
+}
+
 double HuberUnistat525wModel::getTvInternal() const
 {
   return TvInternal_;
+}
+
+void HuberUnistat525wModel::setTvInternal(double Tv)
+{
+  if (state_ == READY) {
+
+    if (TvInternal_!=Tv) {
+
+      if (controller_->SetTvInternal(Tv)) {
+        TvInternal_ = Tv;
+        emit informationChanged();
+      }
+    }
+  }
 }
 
 int HuberUnistat525wModel::getKpJacket() const
@@ -167,9 +223,37 @@ int HuberUnistat525wModel::getKpJacket() const
   return KpJacket_;
 }
 
+void HuberUnistat525wModel::setKpJacket(int Kp)
+{
+  if (state_ == READY) {
+
+    if (KpJacket_!=Kp) {
+
+      if (controller_->SetKpJacket(Kp)) {
+        KpJacket_ = Kp;
+        emit informationChanged();
+      }
+    }
+  }
+}
+
 double HuberUnistat525wModel::getTnJacket() const
 {
   return TnJacket_;
+}
+
+void HuberUnistat525wModel::setTnJacket(double Tn)
+{
+  if (state_ == READY) {
+
+    if (TnJacket_!=Tn) {
+
+      if (controller_->SetTnJacket(Tn)) {
+        TnJacket_ = Tn;
+        emit informationChanged();
+      }
+    }
+  }
 }
 
 double HuberUnistat525wModel::getTvJacket() const
@@ -177,9 +261,37 @@ double HuberUnistat525wModel::getTvJacket() const
   return TvJacket_;
 }
 
+void HuberUnistat525wModel::setTvJacket(double Tv)
+{
+  if (state_ == READY) {
+
+    if (TvJacket_!=Tv) {
+
+      if (controller_->SetTvJacket(Tv)) {
+        TvJacket_ = Tv;
+        emit informationChanged();
+      }
+    }
+  }
+}
+
 int HuberUnistat525wModel::getKpProcess() const
 {
   return KpProcess_;
+}
+
+void HuberUnistat525wModel::setKpProcess(int Kp)
+{
+  if (state_ == READY) {
+
+    if (KpProcess_!=Kp) {
+
+      if (controller_->SetKpProcess(Kp)) {
+        KpProcess_ = Kp;
+        emit informationChanged();
+      }
+    }
+  }
 }
 
 double HuberUnistat525wModel::getTnProcess() const
@@ -187,9 +299,70 @@ double HuberUnistat525wModel::getTnProcess() const
   return TnProcess_;
 }
 
+void HuberUnistat525wModel::setTnProcess(double Tn)
+{
+  if (state_ == READY) {
+
+    if (TnProcess_!=Tn) {
+
+      if (controller_->SetTnProcess(Tn)) {
+        TnProcess_ = Tn;
+        emit informationChanged();
+      }
+    }
+  }
+}
+
 double HuberUnistat525wModel::getTvProcess() const
 {
   return TvProcess_;
+}
+
+void HuberUnistat525wModel::setTvProcess(double Tv)
+{
+  if (state_ == READY) {
+
+    if (TvProcess_!=Tv) {
+
+      if (controller_->SetTvProcess(Tv)) {
+        TvProcess_ = Tv;
+        emit informationChanged();
+      }
+    }
+  }
+}
+
+void HuberUnistat525wModel::setKp(int Kp)
+{
+  if (autoPID_) return;
+
+  if (!temperatureControlMode_) {
+    setKpInternal(Kp);
+  } else {
+    setKpProcess(Kp);
+  }
+}
+
+void HuberUnistat525wModel::setTn(double Tn)
+{
+  if (autoPID_) return;
+
+  if (!temperatureControlMode_) {
+    setTnInternal(Tn);
+  } else {
+    setTnProcess(Tn);
+  }
+}
+
+void HuberUnistat525wModel::setTv(double Tv)
+{
+  if (autoPID_) return;
+
+  if (!temperatureControlMode_) {
+    setTvInternal(Tv);
+  } else {
+    setTvProcess(Tv);
+  }
 }
 
 void HuberUnistat525wModel::initialize()

@@ -77,6 +77,24 @@ public slots:
   void setTemperatureControlEnabled(bool enabled);
   void setCirculatorEnabled(bool enabled);
 
+  void setAutoPID(bool autoPID);
+
+  void setKpInternal(int Kp);
+  void setTnInternal(double Tn);
+  void setTvInternal(double Tv);
+
+  void setKpJacket(int Kp);
+  void setTnJacket(double Tn);
+  void setTvJacket(double Tv);
+
+  void setKpProcess(int Kp);
+  void setTnProcess(double Tn);
+  void setTvProcess(double Tv);
+
+  void setKp(int Kp);
+  void setTn(double Tn);
+  void setTv(double Tn);
+
 protected:
 
   const QString HuberUnistat525w_PORT;
