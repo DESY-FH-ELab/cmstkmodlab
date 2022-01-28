@@ -55,6 +55,7 @@ add_library(Common SHARED
         LeyboldGraphixThreeModel.cc
         LeyboldGraphixOneModel.cc
         LeyboldGraphixOneWidget.cc
+        ScriptableLeyboldGraphixOne.cc
         RohdeSchwarzNGE103BModel.cc
         RohdeSchwarzNGE103BWidget.cc
         ScriptableRohdeSchwarzNGE103B.cc
