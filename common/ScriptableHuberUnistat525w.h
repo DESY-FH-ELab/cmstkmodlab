@@ -72,13 +72,13 @@ public slots:
   QScriptValue getTvProcess();
   void setTvProcess(double Tv);
 
-  void waitForTemperatureAbove(float temperature,
-                               int timeout);
-  void waitForTemperatureBelow(float temperature,
-                               int timeout);
-  void waitForStableTemperature(float deltaT,
-                                int delay,
-                                int timeout);
+  void waitForBathTemperatureAbove(float temperature,
+                                   int timeout);
+  void waitForBathTemperatureBelow(float temperature,
+                                   int timeout);
+  void waitForStableBathTemperature(float deltaT,
+                                    int delay,
+                                    int timeout);
 
 protected:
 

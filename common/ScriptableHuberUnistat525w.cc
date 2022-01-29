@@ -216,12 +216,17 @@ void ScriptableHuberUnistat525w::setTvProcess(double Tv)
   model_->setTvProcess(Tv);
 }
 
-void ScriptableHuberUnistat525w::waitForTemperatureAbove(float temperature,
-                                                         int timeout)
+void ScriptableHuberUnistat525w::waitForBathTemperatureAbove(float temperature,
+                                                             int timeout)
 {
   using namespace std::chrono_literals;
 
-  for (int m=0;m<=timeout;++m) {
+  model_->statusMessage(QString("wait for bath T > deg C ...").arg(temperature));
+  NQLog("ScriptableHuberUnistat525w") << QString("wait for bath T > deg C ...").arg(temperature);
+
+  int t = 0;
+
+  while (1) {
 
     QMutexLocker locker(&mutex_);
     double temp = model_->getBathTemperature();
@@ -229,24 +234,43 @@ void ScriptableHuberUnistat525w::waitForTemperatureAbove(float temperature,
 
     if (temp>temperature) break;
 
-    if (abortRequested_) {
-      abortRequested_ = false;
-      
-      NQLogMessage("ScriptableHuberUnistat525w") << "execution aborted";
+    for (int s=0;s<60;++s) {
+      if (abortRequested_) {
+        abortRequested_ = false;
 
-      break;
+        model_->statusMessage("execution aborted");
+        NQLogMessage("ScriptableHuberUnistat525w") << "execution aborted";
+
+        return;
+      }
+
+      std::this_thread::sleep_for(1s);
+
+      t++;
+      if (t>timeout) {
+        model_->statusMessage("timeout");
+        NQLog("ScriptableHuberUnistat525w") << "timeout";
+
+        return;
+      }
     }
-
-    std::this_thread::sleep_for(60s);
   }
+
+  model_->statusMessage("done");
+  NQLogMessage("ScriptableHuberUnistat525w") << "done";
 }
 
-void ScriptableHuberUnistat525w::waitForTemperatureBelow(float temperature,
-                                                         int timeout)
+void ScriptableHuberUnistat525w::waitForBathTemperatureBelow(float temperature,
+                                                             int timeout)
 {
   using namespace std::chrono_literals;
 
-  for (int m=0;m<=timeout;++m) {
+  model_->statusMessage(QString("wait for bath T > deg C ...").arg(temperature));
+  NQLog("ScriptableHuberUnistat525w") << QString("wait for bath T > deg C ...").arg(temperature);
+
+  int t = 0;
+
+  while (1) {
 
     QMutexLocker locker(&mutex_);
     double temp = model_->getBathTemperature();
@@ -254,45 +278,85 @@ void ScriptableHuberUnistat525w::waitForTemperatureBelow(float temperature,
 
     if (temp<temperature) break;
 
-    if (abortRequested_) {
-      abortRequested_ = false;
-      
-      NQLogMessage("ScriptableHuberUnistat525w") << "execution aborted";
+    for (int s=0;s<60;++s) {
+      if (abortRequested_) {
+        abortRequested_ = false;
 
-      break;
+        model_->statusMessage("execution aborted");
+        NQLogMessage("ScriptableHuberUnistat525w") << "execution aborted";
+
+        return;
+      }
+
+      std::this_thread::sleep_for(1s);
+
+      t++;
+      if (t>timeout) {
+        model_->statusMessage("timeout");
+        NQLog("ScriptableHuberUnistat525w") << "timeout";
+
+        return;
+      }
     }
-
-    std::this_thread::sleep_for(60s);
   }
+
+  model_->statusMessage("done");
+  NQLogMessage("ScriptableHuberUnistat525w") << "done";
 }
 
-void ScriptableHuberUnistat525w::waitForStableTemperature(float deltaT,
-                                                          int delay,
-                                                          int timeout)
+void ScriptableHuberUnistat525w::waitForStableBathTemperature(float deltaT,
+                                                              int delay,
+                                                              int timeout)
 {
   using namespace std::chrono_literals;
 
+  model_->statusMessage(QString("wait for stable bath T (%1)").arg(deltaT));
+  NQLog("ScriptableHuberUnistat525w") << QString("wait for stable bath T (%1)").arg(deltaT);
+
+  QMutexLocker locker(&mutex_);
+  double oldTemp = model_->getBathTemperature();
+  locker.unlock();
+
+  int t = 0;
   int count = 0;
-  double oldTemp = -999;
-  for (int m=0;m<=timeout;++m) {
+
+  while (1) {
+
+    for (int s=0;s<60;++s) {
+      if (abortRequested_) {
+        abortRequested_ = false;
+
+        model_->statusMessage("execution aborted");
+        NQLogMessage("ScriptableHuberUnistat525w") << "execution aborted";
+
+        return;
+      }
+
+      std::this_thread::sleep_for(1s);
+
+      t++;
+      if (t>timeout) {
+        model_->statusMessage("timeout");
+        NQLogMessage("ScriptableHuberUnistat525w") << "timeout";
+
+        return;
+      }
+    }
 
     QMutexLocker locker(&mutex_);
     double temp = model_->getBathTemperature();
     locker.unlock();
 
-    if (fabs(oldTemp-temp)<=deltaT) count++;
+    if (fabs(oldTemp-temp)<=deltaT) {
+      count += 60;
+    } else {
+      count = 0;
+    }
     oldTemp = temp;
     if (count>=delay) break;
-
-    if (abortRequested_) {
-      abortRequested_ = false;
-      
-      NQLogMessage("ScriptableHuberUnistat525w") << "execution aborted";
-
-      break;
-    }
- 
-    std::this_thread::sleep_for(60s);
   }
+
+  model_->statusMessage("done");
+  NQLog("ScriptableHuberUnistat525w") << "done";
 }
 
