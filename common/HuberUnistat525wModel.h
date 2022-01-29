@@ -67,6 +67,8 @@ public:
   double getTnProcess() const;
   double getTvProcess() const;
 
+  void statusMessage(const QString & text);
+
 public slots:
 
   void setDeviceEnabled(bool enabled);

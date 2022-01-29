@@ -521,3 +521,8 @@ void HuberUnistat525wModel::setControlsEnabled(bool enabled)
 {
   emit controlStateChanged(enabled);
 }
+
+void HuberUnistat525wModel::statusMessage(const QString & text)
+{
+  emit message(text);
+}
