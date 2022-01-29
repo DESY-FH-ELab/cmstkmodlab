@@ -72,8 +72,8 @@ void Thermo2ScriptableGlobals::wait(int seconds)
   this->message(message);
   NQLogMessage("Thermo2ScriptableGlobals") << message;
 
-  for (int ts=0;ts<seconds;++ts) {
-
+  for (int ts=0;ts<seconds;ts++) {
+    
     if (abortRequested_) {
       abortRequested_ = false;
 
@@ -84,7 +84,9 @@ void Thermo2ScriptableGlobals::wait(int seconds)
       return;
     }
     
-    std::this_thread::sleep_for(60s);
+    std::this_thread::sleep_for(1s);
+
+    if (QDateTime::currentDateTime()>=dt) break;
   }
 
   this->message("done");
