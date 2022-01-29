@@ -47,22 +47,41 @@ void ScriptableLeyboldGraphixOne::waitForPressureBelow(float pressure,
 {
   using namespace std::chrono_literals;
 
-  for (int m=0;m<=timeout;++m) {
+  model_->statusMessage(QString("wait for pressure < %1 ...").arg(pressure));
+  NQLogMessage("ScriptableLeyboldGraphixOne") << QString("wait for pressure < %1 ...").arg(pressure);
+
+  int t = 0;
+
+  while (1) {
 
     QMutexLocker locker(&mutex_);
     double temp = model_->getPressure();
     locker.unlock();
 
-    if (temp<pressure) break;
+    if (temp<temperature) break;
 
-    if (abortRequested_) {
-      abortRequested_ = false;
-      
-      NQLogMessage("ScriptableLeyboldGraphixOne") << "execution aborted";
+    for (int s=0;s<60;++s) {
+      if (abortRequested_) {
+        abortRequested_ = false;
 
-      break;
+        model_->statusMessage("execution aborted");
+        NQLogMessage("ScriptableLeyboldGraphixOne") << "execution aborted";
+
+        return;
+      }
+
+      std::this_thread::sleep_for(1s);
+
+      t++;
+      if (t>timeout) {
+        model_->statusMessage("timeout");
+        NQLogMessage("ScriptableLeyboldGraphixOne") << "timeout";
+
+        return;
+      }
     }
-
-    std::this_thread::sleep_for(60s);
   }
+
+  model_->statusMessage("done");
+  NQLogMessage("ScriptableLeyboldGraphixOne") << "done";
 }
