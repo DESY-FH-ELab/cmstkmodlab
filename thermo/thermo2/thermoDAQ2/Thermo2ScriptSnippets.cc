@@ -72,9 +72,9 @@ Thermo2ScriptSnippets::Thermo2ScriptSnippets(QWidget *parent)
   addItem("keithley - get sensor state", "state = keithley.state(sensor);\n");
   addItem("keithley - get temperature", "temperature = keithley.temperature(sensor);\n");
   addItem("keithley - get temperature as string", "temperature = keithley.temperatureAsString(sensor);\n");
-  addItem("keithley - wait for stable temperatures", "keithley.waitForStableTemperature(sensors, timeout);\n");
-  addItem("keithley - wait for temperature above", "keithley.waitForTemperatureAbove(sensor, temperature, timeout);\n");
-  addItem("keithley - wait for temperature below", "keithley.waitForTemperatureBelow(sensor, temperature, timeout);\n");
+  addItem("keithley - wait for temperature above", "keithley.waitForTemperatureAbove(sensor, temperature, timeout [s]);\n");
+  addItem("keithley - wait for temperature below", "keithley.waitForTemperatureBelow(sensor, temperature, timeout [s]);\n");
+  addItem("keithley - wait for stable temperatures", "keithley.waitForStableTemperature(sensors, timeout [s]);\n");
 
   addItem("t2tp - get sink temperature", "temperature = t2tp.getSinkTemperature();\n");
   addItem("t2tp - set sink temperature", "t2tp.setSinkTemperature(temperature);\n");

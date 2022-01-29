@@ -31,8 +31,6 @@ ScriptableHuberUnistat525w::ScriptableHuberUnistat525w(HuberUnistat525wModel* mo
 
 void ScriptableHuberUnistat525w::abort()
 {
-  NQLogDebug("ScriptableHuberUnistat525w") << "abort()";
-
   abortRequested_ = true;
 }
 

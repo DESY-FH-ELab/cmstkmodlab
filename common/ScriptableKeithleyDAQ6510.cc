@@ -35,8 +35,6 @@ ScriptableKeithleyDAQ6510::ScriptableKeithleyDAQ6510(KeithleyDAQ6510Model* keith
 
 void ScriptableKeithleyDAQ6510::abort()
 {
-  NQLogDebug("ScriptableKeithleyDAQ6510") << "abort()";
-
   abortRequested_ = true;
 }
 

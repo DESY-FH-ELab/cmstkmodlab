@@ -31,8 +31,6 @@ ScriptableLeyboldGraphixOne::ScriptableLeyboldGraphixOne(LeyboldGraphixOneModel*
 
 void ScriptableLeyboldGraphixOne::abort()
 {
-  NQLogDebug("ScriptableLeyboldGraphixOne") << "abort()";
-
   abortRequested_ = true;
 }
 

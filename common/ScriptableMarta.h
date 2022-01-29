@@ -26,7 +26,7 @@ class ScriptableMarta : public VScriptableDevice
   Q_OBJECT
 public:
   explicit ScriptableMarta(MartaModel* model,
-                                      QObject *parent = 0);
+      QObject *parent = 0);
 
   void abort();
 

@@ -31,8 +31,6 @@ ScriptableMarta::ScriptableMarta(MartaModel* model,
 
 void ScriptableMarta::abort()
 {
-  NQLogDebug("ScriptableMarta") << "abort()";
-
   abortRequested_ = true;
 }
 
