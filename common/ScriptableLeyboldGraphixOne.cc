@@ -58,7 +58,7 @@ void ScriptableLeyboldGraphixOne::waitForPressureBelow(float pressure,
     double temp = model_->getPressure();
     locker.unlock();
 
-    if (temp<temperature) break;
+    if (temp<pressure) break;
 
     for (int s=0;s<60;++s) {
       if (abortRequested_) {
