@@ -35,7 +35,7 @@ public slots:
   QScriptValue getPressure();
 
   void waitForPressureBelow(float pressure,
-			    int timeout);
+			                int timeout);
 
 protected:
 

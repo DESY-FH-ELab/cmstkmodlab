@@ -221,8 +221,8 @@ void ScriptableHuberUnistat525w::waitForBathTemperatureAbove(float temperature,
 {
   using namespace std::chrono_literals;
 
-  model_->statusMessage(QString("wait for bath T > deg C ...").arg(temperature));
-  NQLog("ScriptableHuberUnistat525w") << QString("wait for bath T > deg C ...").arg(temperature);
+  model_->statusMessage(QString("wait for bath T > %1 deg C ...").arg(temperature));
+  NQLog("ScriptableHuberUnistat525w") << QString("wait for bath T > %1 deg C ...").arg(temperature);
 
   int t = 0;
 
@@ -265,8 +265,8 @@ void ScriptableHuberUnistat525w::waitForBathTemperatureBelow(float temperature,
 {
   using namespace std::chrono_literals;
 
-  model_->statusMessage(QString("wait for bath T > deg C ...").arg(temperature));
-  NQLog("ScriptableHuberUnistat525w") << QString("wait for bath T > deg C ...").arg(temperature);
+  model_->statusMessage(QString("wait for bath T > %1 deg C ...").arg(temperature));
+  NQLog("ScriptableHuberUnistat525w") << QString("wait for bath T > %1 deg C ...").arg(temperature);
 
   int t = 0;
 

@@ -43,7 +43,7 @@ QScriptValue ScriptableLeyboldGraphixOne::getPressure()
 }
 
 void ScriptableLeyboldGraphixOne::waitForPressureBelow(float pressure,
-						       int timeout)
+						                               int timeout)
 {
   using namespace std::chrono_literals;
 
