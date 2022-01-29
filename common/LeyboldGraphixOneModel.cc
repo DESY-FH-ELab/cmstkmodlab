@@ -202,3 +202,8 @@ void LeyboldGraphixOneModel::setControlsEnabled(bool enabled)
 {
   emit controlStateChanged(enabled);
 }
+
+void LeyboldGraphixOneModel::statusMessage(const QString & text)
+{
+  emit message(text);
+}
