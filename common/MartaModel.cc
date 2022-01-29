@@ -272,6 +272,11 @@ void MartaModel::setControlsEnabled(bool enabled)
   emit controlStateChanged(enabled);
 }
 
+void MartaModel::statusMessage(const QString & text)
+{
+  emit message(text);
+}
+
 void MartaModel::setStartChiller(bool value)
 {
   if (state_!=READY) return;

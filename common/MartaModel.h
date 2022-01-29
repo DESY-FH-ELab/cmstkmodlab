@@ -102,6 +102,8 @@ public:
   double getSpeedSetpoint2() const { return SpeedSetpoint2_; }
   double getFlowSetpoint2() const { return FlowSetpoint2_; }
 
+  void statusMessage(const QString & text);
+
 public slots:
 
   // Methods for control and status querying of the device itself, as specified
