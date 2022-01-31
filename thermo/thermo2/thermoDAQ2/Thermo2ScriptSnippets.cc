@@ -21,6 +21,8 @@ Thermo2ScriptSnippets::Thermo2ScriptSnippets(QWidget *parent)
   addItem("for loop", "for (var i = 0; i < 5; i++) {\n  // do something with i\n}\n");
   addItem("for loop array", "var array = [0, 1, 2];\nfor (var i=0;i<array.length;i++) {\n  // do something with array[i]\n}\n");
   
+  insertSeparator(999);
+
   addItem("thermo - start measurement", "thermo.startMeasurement();\n");
   addItem("thermo - stop measurement", "thermo.stopMeasurement();\n");
   addItem("thermo - wait", "thermo.wait(seconds);\n");
@@ -31,8 +33,12 @@ Thermo2ScriptSnippets::Thermo2ScriptSnippets(QWidget *parent)
   addItem("thermo - execution time", "etime = thermo.uTime();\n");
   addItem("thermo - make unix time", "utime = thermo.mkUTime(year, month, day, hour, minute, second);\n");
 
+  insertSeparator(999);
+
   addItem("leybold - get pressure", "pressure = leybold.getPressure();\n");
-  addItem("leybold - wait for pressure below", "leybold.waitForPressureBelow(pressure, timeout);\n");
+  addItem("leybold - wait for pressure below", "leybold.waitForPressureBelow(pressure, timeout [s]);\n");
+
+  insertSeparator(999);
 
   addItem("huber - set temperature set point", "huber.setTemperatureSetPoint(temperature);\n");
   addItem("huber - get temperature set point", "temperature = huber.getTemperatureSetPoint();\n");
@@ -52,6 +58,11 @@ Thermo2ScriptSnippets::Thermo2ScriptSnippets(QWidget *parent)
   addItem("huber - set Tn process", "huber.setTnProcess(TnProcess);\n");
   addItem("huber - get Tv process", "TvProcess = huber.getTvProcess();\n");
   addItem("huber - set Tv process", "huber.setTvProcess(TvProcess);\n");
+  addItem("huber - wait for bath temperature above", "huber.waitForBathTemperatureAbove(temperature, timeout [s]);\n");
+  addItem("huber - wait for bath temperature below", "huber.waitForBathTemperatureBelow(temperature, timeout [s]);\n");
+  addItem("huber - wait for stable bath temperature", "huber.waitForStableBathTemperature(temperature, delay [s], timeout [s]);\n");
+
+  insertSeparator(999);
 
   addItem("marta - set temperature set point", "marta.setTemperatureSetPoint(temperature);\n");
   addItem("marta - get temperature set point", "temperature = marta.getTemperatureSetPoint();\n");
@@ -59,6 +70,8 @@ Thermo2ScriptSnippets::Thermo2ScriptSnippets(QWidget *parent)
   addItem("marta - get speed set point", "speed = marta.getSpeedSetPoint();\n");
   addItem("marta - set flow set point", "marta.setFlowSetPoint(flow);\n");
   addItem("marta - get flow set point", "flow = marta.getFlowSetPoint();\n");
+
+  insertSeparator(999);
 
   addItem("nge103b - get output state", "state = nge103b.getOutputState(channel);\n");
   addItem("nge103b - set output state", "nge103b.setOutputState(channel, state);\n");
@@ -69,12 +82,16 @@ Thermo2ScriptSnippets::Thermo2ScriptSnippets(QWidget *parent)
   addItem("nge103b - set current", "nge103b.setCurrent(channel, current);\n");
   addItem("nge103b - get measured current", "nge103b.getMeasuredCurrent(channel);\n");
 
+  insertSeparator(999);
+
   addItem("keithley - get sensor state", "state = keithley.state(sensor);\n");
   addItem("keithley - get temperature", "temperature = keithley.temperature(sensor);\n");
   addItem("keithley - get temperature as string", "temperature = keithley.temperatureAsString(sensor);\n");
   addItem("keithley - wait for temperature above", "keithley.waitForTemperatureAbove(sensor, temperature, timeout [s]);\n");
   addItem("keithley - wait for temperature below", "keithley.waitForTemperatureBelow(sensor, temperature, timeout [s]);\n");
   addItem("keithley - wait for stable temperatures", "keithley.waitForStableTemperature(sensors, timeout [s]);\n");
+
+  insertSeparator(999);
 
   addItem("t2tp - get sink temperature", "temperature = t2tp.getSinkTemperature();\n");
   addItem("t2tp - set sink temperature", "t2tp.setSinkTemperature(temperature);\n");
