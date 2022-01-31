@@ -331,9 +331,11 @@ void KeithleyDAQ6510TemperatureWidget::updateWidgets()
   if (sensorState == READY) {
     currentTempLabel_->setEnabled( true );
     currentTempDisplay_->setEnabled( true );
+    sensorMode_->setEnabled( true );
   } else {
     currentTempLabel_->setEnabled( false );
     currentTempDisplay_->setEnabled( false );
+    sensorMode_->setEnabled( false );
   }
 }
 
