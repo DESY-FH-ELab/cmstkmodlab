@@ -1038,9 +1038,28 @@ void HuberPilotOne::StripBuffer(char* buffer) const
 
 int HuberPilotOne::ToInteger(const char* buffer) const
 {
+  
   std::string temp(buffer);
   temp.erase(0, 4);
-  return std::stoi(temp, 0, 16);
+
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::ToInteger] -- | " << buffer << "|" << std::endl;
+  std::cout << "[HuberPilotOne::ToInteger] -- |" << temp << "|" << std::endl;  
+#endif
+  
+  try {
+    return std::stoi(temp, 0, 16);
+  }
+  catch (const std::invalid_argument& ia) {
+    std::cerr << "[HuberPilotOne::ToInteger] -- Invalid argument: " << ia.what() << std::endl;
+    return 0;
+  }
+  catch (const std::exception& e) {
+    std::cerr << "[HuberPilotOne::ToInteger] -- Undefined error: " << e.what() << std::endl;
+    return 0;
+  }
+
+  return 0;
 }
 
 float HuberPilotOne::ToFloat(const char* buffer) const
