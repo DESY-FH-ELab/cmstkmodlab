@@ -332,6 +332,19 @@ void HuberUnistat525wModel::setTvProcess(double Tv)
   }
 }
 
+int HuberUnistat525wModel::getKp() const
+{
+  if (autoPID_) return 0;
+
+  if (!temperatureControlMode_) {
+    return getKpInternal();
+  } else {
+    return getKpProcess();
+  }
+
+  return 0;
+}
+
 void HuberUnistat525wModel::setKp(int Kp)
 {
   if (autoPID_) return;
@@ -343,6 +356,19 @@ void HuberUnistat525wModel::setKp(int Kp)
   }
 }
 
+double HuberUnistat525wModel::getTn() const
+{
+  if (autoPID_) return 0;
+
+  if (!temperatureControlMode_) {
+    return getTnInternal();
+  } else {
+    return getTnProcess();
+  }
+
+  return 0;
+}
+
 void HuberUnistat525wModel::setTn(double Tn)
 {
   if (autoPID_) return;
@@ -352,6 +378,19 @@ void HuberUnistat525wModel::setTn(double Tn)
   } else {
     setTnProcess(Tn);
   }
+}
+
+double HuberUnistat525wModel::getTv() const
+{
+  if (autoPID_) return 0;
+
+  if (!temperatureControlMode_) {
+    return getTvInternal();
+  } else {
+    return getTvProcess();
+  }
+
+  return 0;
 }
 
 void HuberUnistat525wModel::setTv(double Tv)

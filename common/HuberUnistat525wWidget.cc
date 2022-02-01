@@ -75,6 +75,35 @@ HuberUnistat525wWidget::HuberUnistat525wWidget(HuberUnistat525wModel* model,
   operationLayout->addRow(QString::fromUtf8("Temperature Control Mode"),
                           temperatureControlModeBox_);
 
+  kpSpinBox_ = new QSpinBox();
+  kpSpinBox_->setSingleStep(1);
+  kpSpinBox_->setKeyboardTracking(false);
+  kpSpinBox_->setMinimum(20);
+  kpSpinBox_->setMaximum(1000);
+  kpSpinBox_->setAlignment(Qt::AlignRight);
+  operationLayout->addRow(QString::fromUtf8("Kp"),
+                          kpSpinBox_);
+
+  tnSpinBox_ = new QDoubleSpinBox();
+  tnSpinBox_->setSingleStep(1);
+  tnSpinBox_->setKeyboardTracking(false);
+  tnSpinBox_->setMinimum(20);
+  tnSpinBox_->setMaximum(1000);
+  tnSpinBox_->setDecimals(1);
+  tnSpinBox_->setAlignment(Qt::AlignRight);
+  operationLayout->addRow(QString::fromUtf8("Tn"),
+                          tnSpinBox_);
+
+  tvSpinBox_ = new QDoubleSpinBox();
+  tvSpinBox_->setSingleStep(1);
+  tvSpinBox_->setKeyboardTracking(false);
+  tvSpinBox_->setMinimum(0);
+  tvSpinBox_->setMaximum(1000);
+  tvSpinBox_->setDecimals(1);
+  tvSpinBox_->setAlignment(Qt::AlignRight);
+  operationLayout->addRow(QString::fromUtf8("Tv"),
+                          tvSpinBox_);
+
   temperatureControlCheckBox_ = new QCheckBox("enabled");
   operationLayout->addRow("Temperature Control",
                           temperatureControlCheckBox_);
@@ -138,6 +167,15 @@ HuberUnistat525wWidget::HuberUnistat525wWidget(HuberUnistat525wModel* model,
   connect(temperatureControlCheckBox_, SIGNAL(toggled(bool)),
           model_, SLOT(setTemperatureControlEnabled(bool)));
 
+  connect(kpSpinBox_, SIGNAL(valueChanged(int)),
+          model_, SLOT(setKp(int)));
+
+  connect(tnSpinBox_, SIGNAL(valueChanged(double)),
+          model_, SLOT(setTn(double)));
+
+  connect(tvSpinBox_, SIGNAL(valueChanged(double)),
+          model_, SLOT(setTv(double)));
+
   connect(circulatorCheckBox_, SIGNAL(toggled(bool)),
           model_, SLOT(setCirculatorEnabled(bool)));
 
@@ -171,6 +209,15 @@ void HuberUnistat525wWidget::updateInfo()
 {
   if (!temperatureSetPointSpinner_->hasFocus())
     temperatureSetPointSpinner_->setValue(model_->getTemperatureSetPoint());
+
+  if (!kpSpinBox_->hasFocus())
+    kpSpinBox_->setValue(model_->getKp());
+
+  if (!tnSpinBox_->hasFocus())
+    tnSpinBox_->setValue(model_->getTn());
+
+  if (!tvSpinBox_->hasFocus())
+    tvSpinBox_->setValue(model_->getTv());
 
   temperatureControlCheckBox_->setChecked(model_->getTemperatureControlEnabled());
   circulatorCheckBox_->setChecked(model_->getCirculatorEnabled());

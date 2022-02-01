@@ -66,6 +66,9 @@ public:
   int getKpProcess() const;
   double getTnProcess() const;
   double getTvProcess() const;
+  int getKp() const;
+  double getTn() const;
+  double getTv() const;
 
   void statusMessage(const QString & text);
 

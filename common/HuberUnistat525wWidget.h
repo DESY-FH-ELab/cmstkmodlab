@@ -14,6 +14,7 @@
 #define HUBERUNISTAT525WWIDGET_H
 
 #include <QCheckBox>
+#include <QSpinBox>
 #include <QDoubleSpinBox>
 #include <QFormLayout>
 #include <QHBoxLayout>
@@ -68,6 +69,11 @@ protected:
   QDoubleSpinBox* temperatureSetPointSpinner_;
   HuberUnistat525wTemperatureControlModeBox* temperatureControlModeBox_;
   QCheckBox* temperatureControlCheckBox_;
+
+  QSpinBox* kpSpinBox_;
+  QDoubleSpinBox* tnSpinBox_;
+  QDoubleSpinBox* tvSpinBox_;
+
   QCheckBox* circulatorCheckBox_;
 
   QLCDNumber* bathTempLCD_;
