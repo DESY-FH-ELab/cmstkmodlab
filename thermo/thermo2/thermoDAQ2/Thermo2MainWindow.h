@@ -27,7 +27,7 @@
 #include "Thermo2DAQModel.h"
 #include "Thermo2DAQThread.h"
 #include "Thermo2DAQStreamer.h"
-//#include "ThermoDAQWebInfo.h"
+#include "Thermo2CommunicationServer.h"
 #include "Thermo2DAQServer.h"
 #include "Thermo2ScriptModel.h"
 #include "Thermo2ThroughPlaneModel.h"
@@ -64,7 +64,7 @@ protected:
   Thermo2DAQModel* daqModel_;
   Thermo2DAQThread* daqThread_;
   Thermo2DAQStreamer* daqStreamer_;
-  //ThermoDAQWebInfo* daqWebInfo_;
+  Thermo2CommunicationServer* commServer_;
   Thermo2DAQServer* daqServer_;
   Thermo2ScriptModel* scriptModel_;
 
