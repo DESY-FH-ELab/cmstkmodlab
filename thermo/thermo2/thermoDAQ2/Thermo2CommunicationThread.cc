@@ -54,21 +54,23 @@ void Thermo2CommunicationThread::readData()
   os.setAutoDetectUnicode(true);
   
   QString line;
-  if (socket_->canReadLine()) {
+  // if (socket_->canReadLine()) {
     line = socket_->readLine();
     QStringList tokens = line.split(QRegExp("[ \r\n][ \r\n]*"));
     if (tokens[0] == "GET") {
       
-      std::cout << "GET " << tokens[1].toStdString() << std::endl;
+      NQLogDebug("Thermo2CommunicationThread") << "GET " << tokens[1].toStdString();
       
       os << "HTTP/1.0 200 Ok\r\n"
       "Content-Type: text/html; charset=\"utf-8\"\r\n"
       "\r\n"
       "<h1>Nothing to see here</h1>\n";
     } else {
-      std::cout << line.toStdString();
+       NQLogDebug("Thermo2CommunicationThread") << line.toStdString();
+
+       os << "blah";
     }
-  }
+  //}
   
   socket_->close();
   

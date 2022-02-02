@@ -14,6 +14,7 @@
 
 #include <QDataStream>
 #include <QTcpSocket>
+#include <QHostInfo>
 
 #include <nqlogger.h>
 #include <ApplicationConfig.h>
@@ -27,7 +28,19 @@ Thermo2CommunicationServer::Thermo2CommunicationServer(QObject *parent)
 {
   ApplicationConfig* config = ApplicationConfig::instance();
 
-  QString ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
+  QString ipAddress = ApplicationConfig::instance()->getValue<std::string>("CommServerIP").c_str();
+  if (ipAddress.isEmpty()) {
+    QHostInfo hostinfo = QHostInfo::fromName(ApplicationConfig::instance()->getValue<std::string>("CommServerHostname", "localhost").c_str());
+    if (!hostinfo.addresses().isEmpty()) {
+      QHostAddress address = hostinfo.addresses().first();
+      // use the first IP address
+
+      ipAddress = address.toString();
+    } else {
+      ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
+    }
+  }
+  
   quint16 port = config->getValue<unsigned int>("CommServerPort", 56666);
   
   if (!listen(QHostAddress(ipAddress), port)) {

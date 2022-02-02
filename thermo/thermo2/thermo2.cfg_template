@@ -31,6 +31,8 @@ PlotSaveDirectory                      /home/cmsdaf/public/thermoDAQ2/plots
 #
 # Communication Server settings
 #
+CommServerHostname                     cmssectortest01
+CommServerIP                           131.169.43.223
 CommServerPort                         56666
 
 #

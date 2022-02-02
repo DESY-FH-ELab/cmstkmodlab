@@ -14,6 +14,7 @@
 
 #include <QtCore>
 #include <QtNetwork>
+#include <QHostInfo>
 
 #include <nqlogger.h>
 #include <ApplicationConfig.h>
@@ -23,20 +24,23 @@
 Controller::Controller(QStringList& arguments)
  : arguments_(arguments)
 {
-  // find out which IP to connect to
-  QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
-  // use the first non-localhost IPv4 address
-  for (int i = 0; i < ipAddressesList.size(); ++i) {
-    if (ipAddressesList.at(i) != QHostAddress::LocalHost &&
-        ipAddressesList.at(i).toIPv4Address()) {
-      ipAddress = ipAddressesList.at(i).toString();
-      break;
+  ipAddress_ = ApplicationConfig::instance()->getValue<std::string>("CommServerIP").c_str();
+  if (ipAddress_.isEmpty()) {
+    QHostInfo hostinfo = QHostInfo::fromName(ApplicationConfig::instance()->getValue<std::string>("CommServerHostname", "localhost").c_str());
+    if (!hostinfo.addresses().isEmpty()) {
+      QHostAddress address = hostinfo.addresses().first();
+      // use the first IP address
+
+      ipAddress_ = address.toString();
+    } else {
+      ipAddress_ = QHostAddress(QHostAddress::LocalHost).toString();
     }
   }
-  // if we did not find one, use IPv4 localhost
-  if (ipAddress.isEmpty())
-    ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
 
+  port_ = ApplicationConfig::instance()->getValue<unsigned int>("CommServerPort", 56666);
+
+  NQLogDebug("Controller") << ipAddress_ << ":" << port_;
+  
   socket_ = new QTcpSocket(this);
 
   connect(socket_, SIGNAL(connected()), this, SLOT(sendCommand()));
@@ -47,10 +51,8 @@ void Controller::connectToServer()
 {
   NQLogDebug("Controller") << "void Controller::connectToServer()";
 
-  quint16 port = ApplicationConfig::instance()->getValue<unsigned int>("CommServerPort", 56666);
-
   socket_->abort();
-  socket_->connectToHost(ipAddress, port);
+  socket_->connectToHost(ipAddress_, port_);
 
   if (!socket_->waitForConnected(500)) {
     NQLogDebug("Controller") << "The following error occurred: " << socket_->errorString().toStdString();
@@ -72,16 +74,14 @@ void Controller::sendCommand()
     if (i>0) command += " ";
     command += arguments_.at(i);
   }
+  
+  NQLogDebug("Controller") << "command (" << command.length() << ") = |" << command.toStdString() << "|";
 
-  NQLogDebug("Controller") << "command.length() = " << command.length();
+  QTextStream os(socket_);
+  os.setAutoDetectUnicode(true);
 
-  QByteArray block;
-  QDataStream out(&block, QIODevice::WriteOnly);
-  out.setVersion(QDataStream::Qt_4_0);
-  out << (quint16)command.length();
-  out << command;
-
-  socket_->write(block);
+  os << command;
+  
   socket_->flush();
 }
 
@@ -95,15 +95,13 @@ void Controller::readResponse()
   quint16 blockSize = 0;
   in >> blockSize;
 
-  NQLogDebug("Controller") << "blockSize = " << blockSize;
-
   QString response;
   in >> response;
 
-  NQLogDebug("Controller") << "response: (" << blockSize << ") |" << response.toStdString() << "|";
+  NQLogDebug("Controller") << "response (" << blockSize << ") |" << response.toStdString() << "|";
 
   std::cout << response.toStdString() << std::endl;
-
+  
   socket_->close();
 
   QCoreApplication::quit();

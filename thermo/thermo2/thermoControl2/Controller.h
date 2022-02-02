@@ -36,7 +36,8 @@ private:
 
   QStringList arguments_;
   QTcpSocket *socket_;
-  QString ipAddress;
+  QString ipAddress_;
+  quint16 port_;
 };
 
 #endif
