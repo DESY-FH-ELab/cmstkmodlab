@@ -15,14 +15,29 @@
 
 #include <QThread>
 #include <QMutex>
+#include <QMutexLocker>
 #include <QTcpSocket>
+
+#include <HuberUnistat525wModel.h>
+#include <MartaModel.h>
+#include <AgilentTwisTorr304Model.h>
+#include <LeyboldGraphixOneModel.h>
+#include <RohdeSchwarzNGE103BModel.h>
+#include <KeithleyDAQ6510Model.h>
+#include <Thermo2ThroughPlaneModel.h>
 
 class Thermo2CommunicationThread : public QThread
 {
   Q_OBJECT
 public:
   
-  Thermo2CommunicationThread(qintptr socketDescriptor, QObject *parent = 0);
+  Thermo2CommunicationThread(HuberUnistat525wModel* huberModel,
+      MartaModel* martaModel,
+      AgilentTwisTorr304Model* agilentModel,
+      LeyboldGraphixOneModel* leyboldModel,
+      RohdeSchwarzNGE103BModel* nge103BModel,
+      KeithleyDAQ6510Model* keithleyModel,
+      qintptr socketDescriptor, QObject *parent = 0);
   ~Thermo2CommunicationThread();
   
   void run() override;
@@ -32,9 +47,20 @@ protected slots:
   void readData();
 
 protected:
-  
+
+  bool handleCommand(QStringList& tokens, QTextStream& os);
+
+  HuberUnistat525wModel* huberModel_;
+  MartaModel* martaModel_;
+  AgilentTwisTorr304Model* agilentModel_;
+  LeyboldGraphixOneModel* leyboldModel_;
+  RohdeSchwarzNGE103BModel* nge103BModel_;
+  KeithleyDAQ6510Model* keithleyModel_;
+
   qintptr socketDescriptor_;
   QTcpSocket* socket_;
+
+  QMutex mutex_;
 };
 
 #endif // THERMO2COMMUNICATIONTHREAD_H

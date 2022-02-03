@@ -13,8 +13,8 @@
 #include <iostream>
 
 #include <QCoreApplication>
-#include <QtCore>
-#include <QtNetwork>
+#include <QCommandLineParser>
+#include <QTimer>
 
 #include <nqlogger.h>
 #include <ApplicationConfig.h>
@@ -24,27 +24,105 @@
 int main(int argc, char *argv[])
 {
   QCoreApplication app(argc, argv);
+  QCoreApplication::setApplicationName("thermoControl2");
+  QCoreApplication::setApplicationVersion("1.0");
 
-  QStringList arguments = QCoreApplication::arguments();
-  arguments.removeAt(0);
+  QCommandLineParser parser;
+  parser.setApplicationDescription("Remote control for thermoDAQ2");
+  parser.addHelpOption();
 
-  if (arguments.contains("--debug")) {
-    NQLogger::instance()->addActiveModule("*");
-    NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
+  parser.addOption(QCommandLineOption({"d", "debug"} , "Switch to debugging mode."));
 
-    arguments.removeOne("--debug");
+  parser.addPositionalArgument("<command>",
+      "One of the following commands:\n"
+      "   getKp\n"
+      "   setKp\n"
+      "   getTn\n"
+      "   setTn\n"
+      "   getTv\n"
+      "   setTv\n"
+      "   setPID");
+
+  parser.parse(app.arguments());
+
+  const QStringList args = parser.positionalArguments();
+
+  if (args.count()<1) {
+    parser.showHelp(0);
   }
 
+  const QString command = args.first();
+
+  if (command == "getKp") {
+    parser.clearPositionalArguments();
+    parser.addPositionalArgument("getKp", "Get chiller Kp PID parameter");
+    if (args.count()!=1) parser.showHelp(0);
+
+  } else if (command == "setKp") {
+    parser.clearPositionalArguments();
+    parser.addPositionalArgument("setKp", "Set chiller Kp PID parameter");
+    parser.addPositionalArgument("<Kp>", "Kp");
+    if (args.count()!=2) parser.showHelp(0);
+
+  } else if (command == "getTn") {
+    parser.clearPositionalArguments();
+    parser.addPositionalArgument("getTn", "Get chiller Tn PID parameter");
+    if (args.count()!=1) parser.showHelp(0);
+
+  } else if (command == "setTn") {
+    parser.clearPositionalArguments();
+    parser.addPositionalArgument("setTn", "Set chiller Tn PID parameter");
+    parser.addPositionalArgument("<Tn>", "Tn");
+    if (args.count()!=2) parser.showHelp(0);
+
+  } else if (command == "getTv") {
+    parser.clearPositionalArguments();
+    parser.addPositionalArgument("getTv", "Get chiller Tv PID parameter");
+    if (args.count()!=1) parser.showHelp(0);
+
+  } else if (command == "setTv") {
+    parser.clearPositionalArguments();
+    parser.addPositionalArgument("setTv", "Set chiller Tv PID parameter");
+    parser.addPositionalArgument("<Tv>", "Tv");
+    if (args.count()!=2) parser.showHelp(0);
+
+  } else if (command == "setPID") {
+    parser.clearPositionalArguments();
+    parser.addPositionalArgument("setPID", "Set chiller PID parameters");
+    parser.addPositionalArgument("<Kp>", "Kp");
+    parser.addPositionalArgument("<Tn>", "Tn");
+    parser.addPositionalArgument("<Tv>", "Tv");
+    if (args.count()!=4) parser.showHelp(0);
+
+  } else {
+    parser.showHelp(0);
+  }
+
+  parser.process(app);
+
+  if (parser.isSet("d")) {
+    NQLogger::instance()->addActiveModule("*");
+    NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
+  }
+
+  QStringList parameters;
+
+  if (command == "setKp") {
+    parameters << args.last();
+  } else if (command == "setTn") {
+    parameters << args.last();
+  } else if (command == "setTv") {
+    parameters << args.last();
+  } else if (command == "setPID") {
+    parameters << args[args.count()-3];
+    parameters << args[args.count()-2];
+    parameters << args[args.count()-1];
+  }
 
   ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2/thermo2.cfg");
 
-  Controller controller(arguments);
-
-  if (arguments.contains("--help")) {
-    QTimer::singleShot(0, &controller, SLOT(printHelp()));
-  } else {
-    QTimer::singleShot(0, &controller, SLOT(connectToServer()));
-  }
+  Controller controller(command, parameters);
+  QTimer::singleShot(0, &controller, SLOT(connectToServer()));
 
   return app.exec();
 }

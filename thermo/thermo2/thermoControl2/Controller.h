@@ -23,18 +23,19 @@ class Controller : public QObject
 
 public:
 
-  Controller(QStringList& arguments);
+  Controller(const QString& command, const QStringList& parameters);
 
 public slots:
 
-  void printHelp();
   void connectToServer();
   void sendCommand();
   void readResponse();
 
 private:
 
-  QStringList arguments_;
+  const QString command_;
+  const QStringList parameters_;
+
   QTcpSocket *socket_;
   QString ipAddress_;
   quint16 port_;

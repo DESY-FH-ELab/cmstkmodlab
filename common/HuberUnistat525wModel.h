@@ -98,7 +98,8 @@ public slots:
 
   void setKp(int Kp);
   void setTn(double Tn);
-  void setTv(double Tn);
+  void setTv(double Tv);
+  void setPID(int Kp, double Tn, double Tv);
 
 protected:
 
