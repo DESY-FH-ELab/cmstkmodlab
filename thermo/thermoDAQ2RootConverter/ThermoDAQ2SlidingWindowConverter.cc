@@ -22,10 +22,14 @@
 
 #include "ThermoDAQ2SlidingWindowConverter.h"
 
-ThermoDAQ2SlidingWindowConverter::ThermoDAQ2SlidingWindowConverter(QStringList arguments,
+ThermoDAQ2SlidingWindowConverter::ThermoDAQ2SlidingWindowConverter(int windowSize,
+    const QString& ifilename,
+    const QString& ofilename,
     QObject* parent)
 : QObject(parent),
-  arguments_(arguments)
+  windowSize_(windowSize),
+  ifilename_(ifilename),
+  ofilename_(ofilename)
 {
 
 }
@@ -38,17 +42,11 @@ void ThermoDAQ2SlidingWindowConverter::run()
 
 void ThermoDAQ2SlidingWindowConverter::process()
 {
-  if (arguments_.size()!=5) return;
-
-  int windowSize = arguments_.at(2).toInt();
-  std::string ifilename = arguments_.at(3).toStdString();
-  std::string ofilename = arguments_.at(4).toStdString();
-
   char branchName[40];
   char branchLeafList[40];
   Long64_t nentries;
 
-  ifile_ = new TFile(ifilename.c_str(), "READ");
+  ifile_ = new TFile(ifilename_.toStdString().c_str(), "READ");
 
   itree_ = ifile_->Get<TTree>("thermoDAQ2");
 
@@ -160,7 +158,7 @@ void ThermoDAQ2SlidingWindowConverter::process()
   std::string *message = &log_.message;
   ilogtree_->SetBranchAddress("message", &message);
 
-  ofile_ = new TFile(ofilename.c_str(), "RECREATE");
+  ofile_ = new TFile(ofilename_.toStdString().c_str(), "RECREATE");
 
   otree_ = new TTree("thermoDAQ2", "thermoDAQ2");
 
@@ -293,7 +291,7 @@ void ThermoDAQ2SlidingWindowConverter::process()
 
     windowSteps += currentUTime - previousUTime;
 
-    if (windowSteps>=windowSize) {
+    if (windowSteps>=windowSize_) {
         firstEntry = ientry;
         break;
     }
@@ -318,7 +316,7 @@ void ThermoDAQ2SlidingWindowConverter::process()
 
         Long64_t currentUTime = omeasurement_.uTime;
 
-        if (entryUTime-currentUTime>=windowSize) {
+        if (entryUTime-currentUTime>=windowSize_) {
             lastEntry = jentry;
             break;
         }
@@ -356,20 +354,6 @@ void ThermoDAQ2SlidingWindowConverter::process()
 
     otree_->Fill();
   }
-
-  /*
-  for (Long64_t ientry=0; ientry<nentries ; ientry++) {
-    itree_->GetEntry(ientry);
-
-    for (int i=0;i<2;++i) {
-      for (int j=0;j<10;++j) {
-          omeasurement_.keithleyTemperature[i][j] = imeasurement_.keithleyTemperature[i][j];
-      }
-    }
-
-    otree_->Fill();
-  }
-  */
 
   ofile_->Write();
   delete ofile_;
