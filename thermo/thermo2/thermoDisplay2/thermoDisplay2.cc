@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2019 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -11,6 +11,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <QApplication>
+#include <QCommandLineParser>
 #include <QTcpSocket>
 #include <QProcess>
 #include <QFile>
@@ -23,8 +24,8 @@
 
 #include <nqlogger.h>
 
-#include "SingletonApplication.h"
-#include "ApplicationConfig.h"
+#include <SingletonApplication.h>
+#include <ApplicationConfig.h>
 
 #include "ThermoDisplay2MainWindow.h"
 #include "ThermoDAQ2NetworkReader.h"
@@ -35,8 +36,33 @@
 
 int main( int argc, char** argv )
 {
-  NQLogger::instance()->addActiveModule("*");
-  NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
+#ifdef SINGLETON
+  SingletonApplication app(argc, argv, thermoDisplay2GUID);
+  if(!app.lock()){
+    NQLogMessage("thermoDisplay2") << "Application instance already running!";
+    exit(1);
+  }
+#else
+  QApplication app( argc, argv );
+#endif
+
+  QApplication::setApplicationName("thermoDisplay2");
+  QCoreApplication::setApplicationVersion(APPLICATIONVERSIONSTR);
+
+  QCommandLineParser parser;
+  parser.addHelpOption();
+
+  parser.addOption(QCommandLineOption("debug" , "Switch to debugging mode."));
+  parser.addOption(QCommandLineOption("nogui" ,
+      "Don't startup display application\n"
+      "Just read status over network."));
+
+  parser.process(app);
+
+  if (parser.isSet("debug")) {
+    NQLogger::instance()->addActiveModule("*");
+    NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
+  }
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   QString logdir = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
@@ -56,33 +82,20 @@ int main( int argc, char** argv )
     NQLogger::instance()->addDestiniation(logfile, NQLog::Debug);
   }
 
-#ifdef SINGLETON
-  SingletonApplication app(argc, argv, thermoDisplay2GUID);
-  if(!app.lock()){
-    NQLogMessage("thermoDisplay2") << "Application instance already running!";
-    exit(1);
-  }
-#else
-  QApplication app( argc, argv );
-#endif
-
   app.setStyle("cleanlooks");
 
   ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2/thermo2.cfg");
 
-  if (app.arguments().size()==2 &&
-      app.arguments().at(1)=="--nogui") {
-
+  if (parser.isSet("nogui")) {
     ThermoDAQ2Client * client = new ThermoDAQ2Client(ApplicationConfig::instance()->getValue<unsigned int>("ServerPort"));
     ThermoDAQ2NetworkReader * reader = new ThermoDAQ2NetworkReader(&app);
 
     QObject::connect(client, SIGNAL(handleMessage(QString&)),
-                     reader, SLOT(run(QString&)));
+        reader, SLOT(run(QString&)));
     QObject::connect(reader, SIGNAL(finished()),
-                     &app, SLOT(quit()));
+        &app, SLOT(quit()));
 
     client->readDAQStatus();
-
   } else {
     ThermoDisplay2MainWindow * mainWindow = new ThermoDisplay2MainWindow();
     mainWindow->show();

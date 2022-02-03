@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2019 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -11,6 +11,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <QApplication>
+#include <QCommandLineParser>
 #include <QProcess>
 #include <QFile>
 #include <QDir>
@@ -22,58 +23,72 @@
 
 #include <nqlogger.h>
 
-#include "SingletonApplication.h"
-#include "ApplicationConfig.h"
+#include <SingletonApplication.h>
+#include <ApplicationConfig.h>
 
 #include "Thermo2MainWindow.h"
 #include "TestWindow.h"
 
 //static const char* thermoDAQ2GUID = "{2F9BC7D7-44A2-4625-A7C6-2EBE3C27C7F5}";
 //#define SINGLETON 1
-//#define AUTOSTARTTHERMODISPLAY 1
 
 int main( int argc, char** argv )
 {
+#ifdef SINGLETON
+  SingletonApplication app(argc, argv, thermoDAQ2GUID);
+  if(!app.lock()){
+    NQLogMessage("thermoDAQ2") << "Application instance already running!";
+    exit(1);
+  }
+#else
+  QApplication app( argc, argv );
+#endif
+
+  QApplication::setApplicationName("thermoDAQ2");
+  QCoreApplication::setApplicationVersion(APPLICATIONVERSIONSTR);
+
+  QCommandLineParser parser;
+  parser.addHelpOption();
+
+  parser.addOption(QCommandLineOption("debug" , "Switch to debugging mode."));
+  parser.addOption(QCommandLineOption("display" , "Autostart display application."));
+
+  parser.process(app);
+
+  if (parser.isSet("debug")) {
     NQLogger::instance()->addActiveModule("*");
     NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
+  }
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    QString logdir = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
+  QString logdir = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
 #else
-    QString logdir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+  QString logdir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
 #endif
-    QDir dir(logdir);
-    if (!dir.exists()) dir.mkpath(".");
-    QString logfilename = logdir + "/thermoDAQ2.log";
+  QDir dir(logdir);
+  if (!dir.exists()) dir.mkpath(".");
+  QString logfilename = logdir + "/thermoDAQ2.log";
 
-    NQLog("thermoDAQ2") << "version " << APPLICATIONVERSIONSTR;
+  NQLogMessage("thermoDAQ2") << "version " << APPLICATIONVERSIONSTR;
 
-    NQLog("thermoDAQ2") << "using " << logfilename << " for logging";
+  NQLogMessage("thermoDAQ2") << "using " << logfilename << " for logging";
 
-    QFile * logfile = new QFile(logfilename);
-    if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
-        NQLogger::instance()->addDestiniation(logfile, NQLog::Debug);
-    }
+  QFile * logfile = new QFile(logfilename);
+  if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
+    NQLogger::instance()->addDestiniation(logfile, NQLog::Debug);
+  }
 
-    qRegisterMetaType<State>("State");
-
-#ifdef SINGLETON
-    SingletonApplication app(argc, argv, thermoDAQ2GUID);
-    if(!app.lock()){
-        NQLog("thermoDAQ2") << "Application instance already running!";
-        exit(1);
-    }
-#else
-    QApplication app( argc, argv );
-#endif
+  qRegisterMetaType<State>("State");
 
   app.setStyle("cleanlooks");
 
-#ifdef AUTOSTARTTHERMODISPLAY
-  std::string thermoDisplay = std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2/thermoDisplay2/thermoDisplay2";
-  QProcess myProcess(&app);
-  myProcess.start(thermoDisplay.c_str());
-#endif
+  if (parser.isSet("display")) {
+    QStringList arguments;
+    if (parser.isSet("debug")) arguments << "--debug";
+    std::string thermoDisplay = std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2/thermoDisplay2/thermoDisplay2";
+    QProcess myProcess(&app);
+    myProcess.start(thermoDisplay.c_str(), arguments);
+  }
 
   ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2/thermo2.cfg");
 
