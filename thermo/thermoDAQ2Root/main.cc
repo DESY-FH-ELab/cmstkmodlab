@@ -32,18 +32,33 @@ int main(int argc, char *argv[])
   parser.setApplicationDescription("Converts thermalDAQ XML data files to root files.");
   parser.addHelpOption();
 
-  parser.addOption(QCommandLineOption("v", "File version to process. Must be either 1 or 2.", "version", "2"));
-  parser.addOption(QCommandLineOption("p", "File version parameters.", "parameters"));
+  parser.addOption(QCommandLineOption("v",
+      "File version to process. Must be either 1 or 2.\n"
+      "Version 2 is the default",
+      "version", "2"));
   parser.addPositionalArgument("filename", "XML data file to process");
+
+  parser.parse(app.arguments());
+
+  const QString version = parser.value("v");
+
+  if (version=="2") {
+    parser.addOption(QCommandLineOption("Keithley",
+        "multimeter data triggers filling of root tree (default)"));
+    parser.addOption(QCommandLineOption("Huber",
+        "chiller data triggers filling of root tree"));
+  }
 
   parser.process(app.arguments());
 
   if (parser.positionalArguments().count()!=1) {
-    parser.showHelp(0);
+      parser.showHelp(0);
   }
 
-  const QString version = parser.value("v");
-  const QStringList parameters = parser.values("p");
+  QStringList parameters;
+  if (parser.isSet("Keithley")) parameters << "Keithley";
+  if (parser.isSet("Huber")) parameters << "Huber";
+
   const QString filename = parser.positionalArguments().last();
 
   std::cout << "file version: " << version.toStdString() << std::endl;

@@ -31,7 +31,10 @@ int main(int argc, char *argv[])
   parser.setApplicationDescription("Converts thermalDAQ root files.");
   parser.addHelpOption();
 
-  parser.addPositionalArgument("algorithm", "Conversion algorithm to apply.");
+  QString algorithm = "One of the following conversion algorithms to apply:\n"
+      "   slw - Sliding window averager";
+  parser.addPositionalArgument("algorithm", algorithm);
+
   parser.addPositionalArgument("input", "Filename of input.");
   parser.addPositionalArgument("output", "Filename of output.");
 
