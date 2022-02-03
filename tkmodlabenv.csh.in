@@ -9,6 +9,7 @@ setenv PATH "@basepath@/thermo/thermo1/thermoDisplay:$PATH"
 setenv PATH "@basepath@/thermo/thermo1/thermoDAQ2Log:$PATH"
 setenv PATH "@basepath@/thermo/thermo2/thermoDAQ2:$PATH"
 setenv PATH "@basepath@/thermo/thermo2/thermoDisplay2:$PATH"
+setenv PATH "@basepath@/thermo/thermo2/thermoControl2:$PATH"
 
 setenv PATH "@basepath@/defo/defoDAQ:$PATH"
 setenv PATH "@basepath@/defo/defoReco:$PATH"
