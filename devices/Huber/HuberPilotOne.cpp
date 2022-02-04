@@ -151,7 +151,7 @@ float HuberPilotOne::GetPumpPressure()
 
   StripBuffer(buffer);
 
-  return ToFloat(buffer)/1000.;
+  return ToFloat(buffer)/1000. - 1000.;
 }
 
 int HuberPilotOne::GetPower()
