@@ -67,13 +67,15 @@ protected:
   QWidget* operationPanel_;
 
   QDoubleSpinBox* temperatureSetPointSpinner_;
+  
+  QCheckBox* autoPIDCheckBox_;
   HuberUnistat525wTemperatureControlModeBox* temperatureControlModeBox_;
-  QCheckBox* temperatureControlCheckBox_;
 
   QSpinBox* kpSpinBox_;
   QDoubleSpinBox* tnSpinBox_;
   QDoubleSpinBox* tvSpinBox_;
 
+  QCheckBox* temperatureControlCheckBox_;
   QCheckBox* circulatorCheckBox_;
 
   QLCDNumber* bathTempLCD_;

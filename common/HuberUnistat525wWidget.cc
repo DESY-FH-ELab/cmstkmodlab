@@ -40,6 +40,8 @@ void HuberUnistat525wTemperatureControlModeBox::currentItemChanged(int idx)
 
 void HuberUnistat525wTemperatureControlModeBox::updateInformation()
 {
+  if (hasFocus()) return;
+  
   int idx = findData(model_->getTemperatureControlMode());
   if (idx!=-1) setCurrentIndex(idx);
 }
@@ -70,6 +72,10 @@ HuberUnistat525wWidget::HuberUnistat525wWidget(HuberUnistat525wModel* model,
 
   operationLayout->addRow(QString::fromUtf8("Temperature Setpoint [°C]"),
                           temperatureSetPointSpinner_);
+
+  autoPIDCheckBox_ = new QCheckBox("enabled");
+  operationLayout->addRow("auto PID",
+                          autoPIDCheckBox_);
 
   temperatureControlModeBox_ = new HuberUnistat525wTemperatureControlModeBox(model_);
   operationLayout->addRow(QString::fromUtf8("Temperature Control Mode"),
@@ -164,6 +170,9 @@ HuberUnistat525wWidget::HuberUnistat525wWidget(HuberUnistat525wModel* model,
   connect(temperatureSetPointSpinner_, SIGNAL(valueChanged(double)),
           model_, SLOT(setTemperatureSetPoint(double)));
 
+  connect(autoPIDCheckBox_, SIGNAL(toggled(bool)),
+          model_, SLOT(setAutoPID(bool)));
+
   connect(temperatureControlCheckBox_, SIGNAL(toggled(bool)),
           model_, SLOT(setTemperatureControlEnabled(bool)));
 
@@ -191,6 +200,20 @@ void HuberUnistat525wWidget::updateDeviceState(State newState)
   bool ready = (newState == READY || newState == INITIALIZING);
   huberUnistat525wCheckBox_->setChecked(ready);
   operationPanel_->setEnabled(ready);
+
+  bool autoPID = model_->getAutoPID();
+  if (autoPID) {
+    temperatureControlModeBox_->setEnabled(false);
+    kpSpinBox_->setEnabled(false);
+    tnSpinBox_->setEnabled(false);
+    tvSpinBox_->setEnabled(false);
+
+  } else {
+    temperatureControlModeBox_->setEnabled(true);
+    kpSpinBox_->setEnabled(true);
+    tnSpinBox_->setEnabled(true);
+    tvSpinBox_->setEnabled(true);
+  }
 }
 
 void HuberUnistat525wWidget::controlStateChanged(bool enabled)
@@ -210,15 +233,32 @@ void HuberUnistat525wWidget::updateInfo()
   if (!temperatureSetPointSpinner_->hasFocus())
     temperatureSetPointSpinner_->setValue(model_->getTemperatureSetPoint());
 
-  if (!kpSpinBox_->hasFocus())
-    kpSpinBox_->setValue(model_->getKp());
+  bool autoPID = model_->getAutoPID();
+  
+  autoPIDCheckBox_->setChecked(autoPID);
 
-  if (!tnSpinBox_->hasFocus())
-    tnSpinBox_->setValue(model_->getTn());
+  if (autoPID) {
+    temperatureControlModeBox_->setEnabled(false);
+    kpSpinBox_->setEnabled(false);
+    tnSpinBox_->setEnabled(false);
+    tvSpinBox_->setEnabled(false);
 
-  if (!tvSpinBox_->hasFocus())
-    tvSpinBox_->setValue(model_->getTv());
-
+  } else {
+    temperatureControlModeBox_->setEnabled(true);
+    kpSpinBox_->setEnabled(true);
+    tnSpinBox_->setEnabled(true);
+    tvSpinBox_->setEnabled(true);
+    
+    if (!kpSpinBox_->hasFocus())
+      kpSpinBox_->setValue(model_->getKp());
+    
+    if (!tnSpinBox_->hasFocus())
+      tnSpinBox_->setValue(model_->getTn());
+    
+    if (!tvSpinBox_->hasFocus())
+      tvSpinBox_->setValue(model_->getTv());
+  }
+  
   temperatureControlCheckBox_->setChecked(model_->getTemperatureControlEnabled());
   circulatorCheckBox_->setChecked(model_->getCirculatorEnabled());
 
