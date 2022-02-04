@@ -15,16 +15,37 @@
 
 #include <QTcpServer>
 
+#include <HuberUnistat525wModel.h>
+#include <MartaModel.h>
+#include <AgilentTwisTorr304Model.h>
+#include <LeyboldGraphixOneModel.h>
+#include <RohdeSchwarzNGE103BModel.h>
+#include <KeithleyDAQ6510Model.h>
+#include <Thermo2ThroughPlaneModel.h>
+
 class Thermo2CommunicationServer : public QTcpServer
 {
   Q_OBJECT
 public:
 
-  Thermo2CommunicationServer(QObject *parent = 0);
+  Thermo2CommunicationServer(HuberUnistat525wModel* huberModel,
+      MartaModel* martaModel,
+      AgilentTwisTorr304Model* agilentModel,
+      LeyboldGraphixOneModel* leyboldModel,
+      RohdeSchwarzNGE103BModel* nge103BModel,
+      KeithleyDAQ6510Model* keithleyModel,
+      QObject *parent = 0);
 
 protected:
 
   void incomingConnection(qintptr socketDescriptor);
+
+  HuberUnistat525wModel* huberModel_;
+  MartaModel* martaModel_;
+  AgilentTwisTorr304Model* agilentModel_;
+  LeyboldGraphixOneModel* leyboldModel_;
+  RohdeSchwarzNGE103BModel* nge103BModel_;
+  KeithleyDAQ6510Model* keithleyModel_;
 };
 
 #endif // THERMO2COMMUNICATIONSERVER_H

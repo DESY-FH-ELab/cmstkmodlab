@@ -18,8 +18,20 @@
 
 #include "Thermo2CommunicationThread.h"
 
-Thermo2CommunicationThread::Thermo2CommunicationThread(qintptr socketDescriptor, QObject *parent)
+Thermo2CommunicationThread::Thermo2CommunicationThread(HuberUnistat525wModel* huberModel,
+    MartaModel* martaModel,
+    AgilentTwisTorr304Model* agilentModel,
+    LeyboldGraphixOneModel* leyboldModel,
+    RohdeSchwarzNGE103BModel* nge103BModel,
+    KeithleyDAQ6510Model* keithleyModel,
+    qintptr socketDescriptor, QObject *parent)
 : QThread(parent),
+  huberModel_(huberModel),
+  martaModel_(martaModel),
+  agilentModel_(agilentModel),
+  leyboldModel_(leyboldModel),
+  nge103BModel_(nge103BModel),
+  keithleyModel_(keithleyModel),
   socketDescriptor_(socketDescriptor)
 {
   NQLogDebug("Thermo2CommunicationThread") << "Thermo2CommunicationThread()";
@@ -48,29 +60,38 @@ void Thermo2CommunicationThread::run()
 
 void Thermo2CommunicationThread::readData()
 {
-  NQLogDebug("Thermo2CommunicationThread") << "readData()";
-  
   QTextStream os(socket_);
   os.setAutoDetectUnicode(true);
   
   QString line;
-  // if (socket_->canReadLine()) {
+  if (socket_->canReadLine()) {
     line = socket_->readLine();
+
     QStringList tokens = line.split(QRegExp("[ \r\n][ \r\n]*"));
+    if (tokens.last().isEmpty()) tokens.takeLast();
+
     if (tokens[0] == "GET") {
       
-      NQLogDebug("Thermo2CommunicationThread") << "GET " << tokens[1].toStdString();
+      NQLogDebug("Thermo2CommunicationThread::readData()") << "GET " << tokens[1].toStdString();
       
       os << "HTTP/1.0 200 Ok\r\n"
       "Content-Type: text/html; charset=\"utf-8\"\r\n"
       "\r\n"
       "<h1>Nothing to see here</h1>\n";
-    } else {
-       NQLogDebug("Thermo2CommunicationThread") << line.toStdString();
 
-       os << "blah";
+    } else if (tokens[0] == "COM") {
+
+      bool ret = handleCommand(tokens, os);
+      if (ret) {
+        os << "OK\r\n";
+      } else {
+        os << "ERR\r\n";
+      }
+
+    } else {
+      os << "ERR\r\n";
     }
-  //}
+  }
   
   socket_->close();
   
@@ -78,4 +99,52 @@ void Thermo2CommunicationThread::readData()
   socket_->waitForDisconnected();
   
   quit();
+}
+
+bool Thermo2CommunicationThread::handleCommand(QStringList& tokens, QTextStream& os)
+{
+  QMutexLocker locker(&mutex_);
+
+  QStringList pars;
+
+  int idx = 0;
+  QString buffer;
+  for (auto t : tokens) {
+    buffer = buffer + "|" + t + "| ";
+    if (idx>1) pars << t;
+    idx++;
+  }
+  NQLogDebug("Thermo2CommunicationThread::handleCommand()") << buffer.toStdString();
+
+  if (tokens[1] == "getKp") {
+    if (pars.count()!=0) return false;
+    os << QString::number(huberModel_->getKp()) << " ";
+
+  } else if (tokens[1] == "setKp") {
+    if (pars.count()!=1) return false;
+    huberModel_->setKp(pars[0].toInt());
+
+  } else if (tokens[1] == "getTn") {
+    if (pars.count()!=0) return false;
+    os << QString::number(huberModel_->getTn(), 'f', 1) << " ";
+
+  } else if (tokens[1] == "setTn") {
+    if (pars.count()!=1) return false;
+    huberModel_->setTn(pars[0].toFloat());
+
+  } else if (tokens[1] == "getTv") {
+    if (pars.count()!=0) return false;
+    os << QString::number(huberModel_->getTv(), 'f', 1) << " ";
+
+  } else if (tokens[1] == "setTv") {
+    if (pars.count()!=1) return false;
+    huberModel_->setTv(pars[0].toFloat());
+
+  } else if (tokens[1] == "setPID") {
+    if (pars.count()!=3) return false;
+    huberModel_->setPID(pars[0].toInt(), pars[1].toFloat(), pars[2].toFloat());
+
+  }
+
+  return true;
 }

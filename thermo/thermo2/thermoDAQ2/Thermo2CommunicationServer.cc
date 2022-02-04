@@ -23,8 +23,20 @@
 
 #include "Thermo2CommunicationServer.h"
 
-Thermo2CommunicationServer::Thermo2CommunicationServer(QObject *parent)
- : QTcpServer(parent)
+Thermo2CommunicationServer::Thermo2CommunicationServer(HuberUnistat525wModel* huberModel,
+    MartaModel* martaModel,
+    AgilentTwisTorr304Model* agilentModel,
+    LeyboldGraphixOneModel* leyboldModel,
+    RohdeSchwarzNGE103BModel* nge103BModel,
+    KeithleyDAQ6510Model* keithleyModel,
+    QObject *parent)
+ : QTcpServer(parent),
+   huberModel_(huberModel),
+   martaModel_(martaModel),
+   agilentModel_(agilentModel),
+   leyboldModel_(leyboldModel),
+   nge103BModel_(nge103BModel),
+   keithleyModel_(keithleyModel)
 {
   ApplicationConfig* config = ApplicationConfig::instance();
 
@@ -58,7 +70,13 @@ void Thermo2CommunicationServer::incomingConnection(qintptr socketDescriptor)
 {
   NQLogDebug("Thermo2CommunicationServer") << "incomingConnection(qintptr socketDescriptor)";
 
-  Thermo2CommunicationThread* commthread = new Thermo2CommunicationThread(socketDescriptor, this);
+  Thermo2CommunicationThread* commthread = new Thermo2CommunicationThread(huberModel_,
+      martaModel_,
+      agilentModel_,
+      leyboldModel_,
+      nge103BModel_,
+      keithleyModel_,
+      socketDescriptor, this);
   connect(commthread, &Thermo2CommunicationThread::finished,
           commthread, &Thermo2CommunicationThread::deleteLater);
   commthread->start();

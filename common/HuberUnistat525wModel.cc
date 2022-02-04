@@ -404,6 +404,21 @@ void HuberUnistat525wModel::setTv(double Tv)
   }
 }
 
+void HuberUnistat525wModel::setPID(int Kp, double Tn, double Tv)
+{
+  if (autoPID_) return;
+
+  if (!temperatureControlMode_) {
+    setKpInternal(Kp);
+    setTnInternal(Tn);
+    setTvInternal(Tv);
+  } else {
+    setKpProcess(Kp);
+    setTnProcess(Tn);
+    setTvProcess(Tv);
+  }
+}
+
 void HuberUnistat525wModel::initialize()
 {
   NQLog("HuberUnistat525wModel", NQLog::Message) << "initialize()";

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -21,8 +21,9 @@
 
 #include "Controller.h"
 
-Controller::Controller(QStringList& arguments)
- : arguments_(arguments)
+Controller::Controller(const QString& command, const QStringList& parameters)
+ : command_(command),
+   parameters_(parameters)
 {
   ipAddress_ = ApplicationConfig::instance()->getValue<std::string>("CommServerIP").c_str();
   if (ipAddress_.isEmpty()) {
@@ -40,7 +41,7 @@ Controller::Controller(QStringList& arguments)
   port_ = ApplicationConfig::instance()->getValue<unsigned int>("CommServerPort", 56666);
 
   NQLogDebug("Controller") << ipAddress_ << ":" << port_;
-  
+
   socket_ = new QTcpSocket(this);
 
   connect(socket_, SIGNAL(connected()), this, SLOT(sendCommand()));
@@ -61,6 +62,7 @@ void Controller::connectToServer()
 
     socket_->close();
     socket_->deleteLater();
+
     QCoreApplication::quit();
   }
 }
@@ -69,18 +71,20 @@ void Controller::sendCommand()
 {
   NQLogDebug("Controller") << "void Controller::sendCommand()";
 
-  QString command = "COM ";
-  for (int i=0; i<arguments_.size(); ++i) {
-    if (i>0) command += " ";
-    command += arguments_.at(i);
+  QString buffer = "COM ";
+  buffer += command_;
+  buffer += " ";
+  for (int i=0; i<parameters_.size(); ++i) {
+    if (i>0) buffer += " ";
+    buffer += parameters_.at(i);
   }
   
-  NQLogDebug("Controller") << "command (" << command.length() << ") = |" << command.toStdString() << "|";
+  NQLogDebug("Controller") << "command (" << buffer.length() << ") = |" << buffer.toStdString() << "|";
 
   QTextStream os(socket_);
   os.setAutoDetectUnicode(true);
 
-  os << command;
+  os << buffer << "\r\n";
   
   socket_->flush();
 }
@@ -88,34 +92,15 @@ void Controller::sendCommand()
 void Controller::readResponse()
 {
   NQLogDebug("Controller") << "void Controller::readResponse()";
-
-  QDataStream in(socket_);
-  in.setVersion(QDataStream::Qt_4_0);
-
-  quint16 blockSize = 0;
-  in >> blockSize;
-
-  QString response;
-  in >> response;
-
-  NQLogDebug("Controller") << "response (" << blockSize << ") |" << response.toStdString() << "|";
-
-  std::cout << response.toStdString() << std::endl;
   
+  QString response;
+  if (socket_->canReadLine()) {
+    response = socket_->readLine();
+  }
+
+  std::cout << response.toStdString();
+
   socket_->close();
-
-  QCoreApplication::quit();
-}
-
-void Controller::printHelp()
-{
-  std::cout <<
-      "\n  Help\n"
-      " ------\n\n"
-      // " writeConfig                                      write server configuration file\n"
-      // " setPumpState <pump (1/2)> <state (0/1)>          set the state of a pump\n"
-      // " getPumpState <pump (1/2)>                        get the state of a pump\n"
-      << std::endl;
 
   QCoreApplication::quit();
 }

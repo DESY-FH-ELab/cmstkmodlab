@@ -120,7 +120,10 @@ class ThermoDAQ2SlidingWindowConverter : public QObject
 {
   Q_OBJECT
 public:
-  explicit ThermoDAQ2SlidingWindowConverter(QStringList arguments, QObject* parent);
+  explicit ThermoDAQ2SlidingWindowConverter(int windowSize,
+      const QString& ifilename,
+      const QString& ofilename,
+      QObject* parent);
 
 public slots:
   void run();
@@ -129,7 +132,11 @@ signals:
   void finished();
 
 protected:
-  QStringList arguments_;
+
+  int windowSize_;
+  const QString ifilename_;
+  const QString ofilename_;
+
   void process();
 
   Measurement2_t imeasurement_;

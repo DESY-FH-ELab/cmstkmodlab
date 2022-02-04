@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2019 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -22,10 +22,12 @@
 
 #include "ThermoDAQ2StreamReader.h"
 
-ThermoDAQ2StreamReader::ThermoDAQ2StreamReader(QStringList arguments,
-                                               QObject* parent)
+ThermoDAQ2StreamReader::ThermoDAQ2StreamReader(const QStringList &parameters,
+    const QString &filename,
+    QObject* parent)
   : QObject(parent),
-    arguments_(arguments),
+    parameters_(parameters),
+    filename_(filename),
     measurementValid_(false)
 {
   log_.message = "";
@@ -456,25 +458,19 @@ void ThermoDAQ2StreamReader::processFile(QFile* file)
 
 void ThermoDAQ2StreamReader::process()
 {
-  if (arguments_.size()<3 || arguments_.size()>4) return;
-
-  if (arguments_.size()==4) {
-    QString trigger = arguments_.at(2);
-
-    if (trigger.contains("Keithley")) {
+  for (auto p : parameters_) {
+    if (p.contains("Keithley")) {
       triggerKeithley_ = true;
     }
-    if (trigger.contains("Huber")) {
+    if (p.contains("Huber")) {
       triggerHuber_ = true;
     }
-    if (!triggerKeithley_ && !triggerHuber_) {
-      triggerKeithley_ = true;
-    }
-  } else {
+  }
+  if (!triggerKeithley_ && !triggerHuber_) {
     triggerKeithley_ = true;
   }
 
-  QFile file(arguments_.last());
+  QFile file(filename_);
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) return;
 
   QFileInfo fi(file);

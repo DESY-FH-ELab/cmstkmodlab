@@ -157,7 +157,13 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   daqThread_->start();
   daqModel_->myMoveToThread(daqThread_);
 
-  commServer_ = new Thermo2CommunicationServer(this);
+  commServer_ = new Thermo2CommunicationServer(huberModel_,
+      martaModel_,
+      agilentModel_,
+      leyboldModel_,
+      nge103BModel_,
+      keithleyModel_,
+      this);
 
   tabWidget_ = new QTabWidget(this);
   tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
