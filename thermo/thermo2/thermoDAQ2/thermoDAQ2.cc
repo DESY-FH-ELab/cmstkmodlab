@@ -50,14 +50,19 @@ int main( int argc, char** argv )
   QCommandLineParser parser;
   parser.addHelpOption();
 
-  parser.addOption(QCommandLineOption("debug" , "Switch to debugging mode."));
+  parser.addOption(QCommandLineOption("spam" , "Set log level to spam."));
+  parser.addOption(QCommandLineOption("debug" , "Set log level to debug."));
   parser.addOption(QCommandLineOption("display" , "Autostart display application."));
 
   parser.process(app);
 
+  NQLogger::instance()->addActiveModule("*");
   if (parser.isSet("debug")) {
-    NQLogger::instance()->addActiveModule("*");
     NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
+  } else if (parser.isSet("spam")) {
+    NQLogger::instance()->addDestiniation(stdout, NQLog::Spam);
+  } else {
+    NQLogger::instance()->addDestiniation(stdout, NQLog::Message);
   }
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
@@ -75,7 +80,13 @@ int main( int argc, char** argv )
 
   QFile * logfile = new QFile(logfilename);
   if (logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
-    NQLogger::instance()->addDestiniation(logfile, NQLog::Debug);
+    if (parser.isSet("debug")) {
+      NQLogger::instance()->addDestiniation(logfile, NQLog::Debug);
+    } else if (parser.isSet("spam")) {
+      NQLogger::instance()->addDestiniation(logfile, NQLog::Spam);
+    } else {
+      NQLogger::instance()->addDestiniation(logfile, NQLog::Message);
+    }
   }
 
   qRegisterMetaType<State>("State");
@@ -84,6 +95,7 @@ int main( int argc, char** argv )
 
   if (parser.isSet("display")) {
     QStringList arguments;
+    if (parser.isSet("spam")) arguments << "--spam";
     if (parser.isSet("debug")) arguments << "--debug";
     std::string thermoDisplay = std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2/thermoDisplay2/thermoDisplay2";
     QProcess myProcess(&app);
