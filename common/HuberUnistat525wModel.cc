@@ -482,8 +482,7 @@ void HuberUnistat525wModel::updateInformation()
     // double newCWOutletTemperature = controller_->GetCoolingWaterOutletTemperature();
     double newCWOutletTemperature = 0.0;
 
-    // double newPumpPressure = controller_->GetPumpPressure();
-    double newPumpPressure = 0.0;
+    double newPumpPressure = controller_->GetPumpPressure();
 
     // int newPower = controller_->GetPower();
     int newPower = 0.0;
