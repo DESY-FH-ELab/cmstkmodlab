@@ -56,10 +56,16 @@ int main( int argc, char** argv )
 
   parser.process(app);
 
+  bool spamLogLevel = parser.isSet("spam");
+  bool debugLogLevel = parser.isSet("debug");
+
+  // make 'spam' log level the default for now
+  if (!debugLogLevel) spamLogLevel = true;
+  
   NQLogger::instance()->addActiveModule("*");
-  if (parser.isSet("debug")) {
+  if (debugLogLevel) {
     NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
-  } else if (parser.isSet("spam")) {
+  } else if (spamLogLevel) {
     NQLogger::instance()->addDestiniation(stdout, NQLog::Spam);
   } else {
     NQLogger::instance()->addDestiniation(stdout, NQLog::Message);
