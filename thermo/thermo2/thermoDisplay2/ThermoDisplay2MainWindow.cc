@@ -762,7 +762,7 @@ void ThermoDisplay2MainWindow::requestData()
 
 void ThermoDisplay2MainWindow::updateInfo()
 {
-  NQLogDebug("ThermoDisplay2MainWindow") << "updateInfo()";
+  NQLogSpam("ThermoDisplay2MainWindow") << "updateInfo()";
 
   const Measurement_t& m = reader_->getMeasurement();
 
@@ -795,9 +795,6 @@ void ThermoDisplay2MainWindow::updateInfo()
 
   if (chillerAndVacuumActive_) {
     bool updateLegend = false;
-
-    NQLogDebug("ThermoDisplay2MainWindow") << "updateInfo() " << m.leyboldState_;
-    NQLogDebug("ThermoDisplay2MainWindow") << "updateInfo() " << m.leyboldPressure_;
 
     if (VacuumPressureSeries_->isEnabled()!=m.leyboldState_) updateLegend = true;
     VacuumPressureSeries_->setEnabled(m.leyboldState_);
