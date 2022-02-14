@@ -7,7 +7,10 @@ Makefile
 *.o
 *~
 moc_*
+
 thermoDisplay2
 thermoDisplay2.app
 thermoDisplay2.desktop
 startThermoDisplay2.sh
+
+plots
