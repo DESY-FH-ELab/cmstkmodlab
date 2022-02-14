@@ -192,8 +192,7 @@ bool VAgilentTwisTorr304::GetBooleanValue(std::string& reply) const
   std::string hexvalue;
 
   GetCommandAsHex(hexvalue, valuestring);
-  std::cout << hexvalue << std::endl;
-  std::cout << std::stoi(valuestring) << std::endl;
+  std::cout << "GetBooleanValue: " << hexvalue << ": " << std::stoi(valuestring) << std::endl;
 
   return std::stoi(valuestring);
 }
@@ -205,8 +204,7 @@ int VAgilentTwisTorr304::GetIntegerValue(std::string& reply) const
   std::string hexvalue;
 
   GetCommandAsHex(hexvalue, valuestring);
-  std::cout << hexvalue << std::endl;
-  std::cout << std::stoi(valuestring) << std::endl;
+  std::cout << "GetIntegerValue: " << hexvalue << ": " << std::stoi(valuestring) << std::endl;
 
   return std::stoi(valuestring);
 }
@@ -218,8 +216,7 @@ float VAgilentTwisTorr304::GetFloatValue(std::string& reply) const
   std::string hexvalue;
 
   GetCommandAsHex(hexvalue, valuestring);
-  std::cout << hexvalue << std::endl;
-  std::cout << std::stof(valuestring) << std::endl;
+  std::cout << "GetFloatValue: " << hexvalue << ": " << std::stof(valuestring) << std::endl;
 
   return std::stof(valuestring);
 }
@@ -231,9 +228,8 @@ std::string VAgilentTwisTorr304::GetStringValue(std::string& reply) const
   std::string hexvalue;
 
   GetCommandAsHex(hexvalue, valuestring);
-  std::cout << hexvalue << std::endl;
-  std::cout << valuestring << std::endl;
-
+  std::cout << "GetStringValue: " << hexvalue << ": " << valuestring << std::endl;
+  
   return valuestring;
 }
 
@@ -267,6 +263,8 @@ void VAgilentTwisTorr304::GetCommandAsHex(std::string& hexcommand, const std::st
     if (*i=='\0') break;
     ss << ", 0x" << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << (0xff&(unsigned int)*i);
   }
+
+  std::cout << "GetCommandAsHex: " << command << ": " << hexcommand << std::endl;
 
   hexcommand = ss.str();
 }

@@ -43,7 +43,6 @@ VAgilentTwisTorr304::StatusCode AgilentTwisTorr304::GetPumpStatus() const
   MakeReadCommand(command, VAgilentTwisTorr304::PumpStatus);
 
   GetCommandAsHex(hexcommand, command);
-  std::cout << hexcommand << std::endl;
 
   comHandler_->SendCommand(command.c_str());
 
@@ -56,7 +55,6 @@ VAgilentTwisTorr304::StatusCode AgilentTwisTorr304::GetPumpStatus() const
   std::string reply = buf;
 
   GetCommandAsHex(hexcommand, reply);
-  std::cout << hexcommand << std::endl;
 
   return static_cast<VAgilentTwisTorr304::StatusCode>(GetIntegerValue(reply));
 }
@@ -68,7 +66,6 @@ unsigned int AgilentTwisTorr304::GetErrorCode() const
   MakeReadCommand(command, VAgilentTwisTorr304::ErrorCode);
 
   GetCommandAsHex(hexcommand, command);
-  std::cout << hexcommand << std::endl;
 
   comHandler_->SendCommand(command.c_str());
 
@@ -81,7 +78,6 @@ unsigned int AgilentTwisTorr304::GetErrorCode() const
   std::string reply = buf;
 
   GetCommandAsHex(hexcommand, reply);
-  std::cout << hexcommand << std::endl;
 
   return GetIntegerValue(reply);
 }
@@ -93,7 +89,6 @@ bool AgilentTwisTorr304::GetPumpState() const
   MakeReadCommand(command, VAgilentTwisTorr304::StartStop);
 
   GetCommandAsHex(hexcommand, command);
-  std::cout << hexcommand << std::endl;
 
   comHandler_->SendCommand(command.c_str());
 
@@ -106,7 +101,6 @@ bool AgilentTwisTorr304::GetPumpState() const
   std::string reply = buf;
 
   GetCommandAsHex(hexcommand, reply);
-  std::cout << hexcommand << std::endl;
 
   return GetBooleanValue(reply);
 }
@@ -118,7 +112,6 @@ void AgilentTwisTorr304::SwitchPumpOn()
   MakeWriteCommand(command, VAgilentTwisTorr304::StartStop, true);
 
   GetCommandAsHex(hexcommand, command);
-  std::cout << hexcommand << std::endl;
 
   comHandler_->SendCommand(command.c_str());
 
@@ -131,7 +124,6 @@ void AgilentTwisTorr304::SwitchPumpOn()
   std::string reply = buf;
 
   GetCommandAsHex(hexcommand, reply);
-  std::cout << hexcommand << std::endl;
 }
 
 void AgilentTwisTorr304::SwitchPumpOff()
@@ -141,7 +133,6 @@ void AgilentTwisTorr304::SwitchPumpOff()
   MakeWriteCommand(command, VAgilentTwisTorr304::StartStop, false);
 
   GetCommandAsHex(hexcommand, command);
-  std::cout << hexcommand << std::endl;
 
   comHandler_->SendCommand(command.c_str());
 
@@ -154,7 +145,6 @@ void AgilentTwisTorr304::SwitchPumpOff()
   std::string reply = buf;
 
   GetCommandAsHex(hexcommand, reply);
-  std::cout << hexcommand << std::endl;
 }
 
 ///
@@ -194,7 +184,6 @@ void AgilentTwisTorr304::Device_Init()
   MakeReadCommand(command, VAgilentTwisTorr304::CRCEprom);
 
   GetCommandAsHex(hexcommand, command);
-  std::cout << hexcommand << std::endl;
 
   comHandler_->SendCommand(command.c_str());
 
@@ -207,9 +196,6 @@ void AgilentTwisTorr304::Device_Init()
   std::string reply = buf;
 
   GetCommandAsHex(hexcommand, reply);
-  std::cout << hexcommand << std::endl;
-
-  std::cout << GetStringValue(reply) << std::endl;
 
   reply = GetStringValue(reply);
   if (reply.compare(0, 3, "QE8")!=0) {
