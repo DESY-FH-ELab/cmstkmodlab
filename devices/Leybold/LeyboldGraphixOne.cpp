@@ -223,11 +223,18 @@ VLeyboldGraphix::SensorStatus LeyboldGraphixOne::GetSensorStatus() const
   std::string buffer;
   bool isACK = ReceiveData(buffer);
 
-  return GetSensorStatusByStatusText(buffer);
+  sensorStatus_ = GetSensorStatusByStatusText(buffer);
+  
+  return sensorStatus_;
 }
 
 double LeyboldGraphixOne::GetPressure() const
 {
+  if (GetSensorStatus()!=SensorStatus_ok) {
+    std::cout << "sensor not OK" << std::endl;
+    return 1000.;
+  }
+  
   std::string command;
 
   command += SI;
@@ -239,11 +246,6 @@ double LeyboldGraphixOne::GetPressure() const
 
   std::string buffer;
   bool isACK = ReceiveData(buffer);
-
-  if (sensorStatus_!=SensorStatus_ok) {
-    // std::cout << "sensor " << sensor << " not OK" << std::endl;
-    return -1;
-  }
 
   return std::atof(buffer.c_str());
 }

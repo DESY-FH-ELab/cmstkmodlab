@@ -44,6 +44,8 @@ int main(int argc, char* argv[])
     std::cout << "version:                 " << leybold.GetVersion() << std::endl;
     std::cout << "serial number:           " << leybold.GetSerialNumber() << std::endl;
     std::cout << "item number:             " << leybold.GetItemNumber() << std::endl;
+
+    std::cout << "pressure:                " << leybold.GetPressure() << std::endl;
   }
 
   /*
