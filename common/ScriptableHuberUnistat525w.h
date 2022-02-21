@@ -43,7 +43,7 @@ public slots:
   void switchCirculatorOff();
   QScriptValue isCirculatorOn();
 
-  QScriptValue getBathTemperature();
+  QScriptValue getInternalTemperature();
   QScriptValue getReturnTemperature();
 
   QScriptValue getPumpPressure();
@@ -72,13 +72,13 @@ public slots:
   QScriptValue getTvProcess();
   void setTvProcess(double Tv);
 
-  void waitForBathTemperatureAbove(float temperature,
-                                   int timeout);
-  void waitForBathTemperatureBelow(float temperature,
-                                   int timeout);
-  void waitForStableBathTemperature(float deltaT,
-                                    int delay,
-                                    int timeout);
+  void waitForInternalTemperatureAbove(float temperature,
+				       int timeout);
+  void waitForInternalTemperatureBelow(float temperature,
+				       int timeout);
+  void waitForStableInternalTemperature(float deltaT,
+					int delay,
+					int timeout);
 
 protected:
 

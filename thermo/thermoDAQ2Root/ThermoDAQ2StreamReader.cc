@@ -67,14 +67,14 @@ void ThermoDAQ2StreamReader::processHuberUnistat525wControl(QXmlStreamReader& xm
 
 void ThermoDAQ2StreamReader::processHuberUnistat525wInfo(QXmlStreamReader& xml)
 {
-  float Bath = xml.attributes().value("Bath").toString().toFloat();
+  float Internal = xml.attributes().value("Internal").toString().toFloat();
   float Return = xml.attributes().value("Return").toString().toFloat();
   float Pressure = xml.attributes().value("Pressure").toString().toFloat();
   int Power = xml.attributes().value("Power").toString().toInt();
   float CWI = xml.attributes().value("CWI").toString().toFloat();
   float CWO = xml.attributes().value("CWO").toString().toFloat();
 
-  measurement_.u525wBathTemperature_ = Bath;
+  measurement_.u525wInternalTemperature_ = Internal;
   measurement_.u525wReturnTemperature_ = Return;
   measurement_.u525wPumpPressure_ = Pressure;
   measurement_.u525wPower_ = Power;
@@ -493,7 +493,8 @@ void ThermoDAQ2StreamReader::process()
   otree_->Branch("u525wTemperatureControlMode", &measurement_.u525wTemperatureControlMode_, "u525wTemperatureControlMode/O");
   otree_->Branch("u525wTemperatureControlEnabled", &measurement_.u525wTemperatureControlEnabled_, "u525wTemperatureControlEnabled/O");
   otree_->Branch("u525wCirculatorEnabled", &measurement_.u525wCirculatorEnabled_, "u525wCirculatorEnabled/O");
-  otree_->Branch("u525wBathTemperature", &measurement_.u525wBathTemperature_, "u525wBathTemperature/F");
+  otree_->Branch("u525wBathTemperature", &measurement_.u525wInternalTemperature_, "u525wBathTemperature/F");
+  otree_->Branch("u525wInternalTemperature", &measurement_.u525wInternalTemperature_, "u525wInternalTemperature/F");
   otree_->Branch("u525wReturnTemperature", &measurement_.u525wReturnTemperature_, "u525wReturnTemperature/F");
   otree_->Branch("u525wPumpPressure", &measurement_.u525wPumpPressure_, "u525wPumpPressure/F");
   otree_->Branch("u525wPower", &measurement_.u525wPower_, "u525wPower/I");

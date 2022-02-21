@@ -34,7 +34,7 @@ class VHuberPilotOne
   virtual bool SetTemperatureSetPoint(const float) = 0;
   virtual float GetTemperatureSetPoint() = 0;
 
-  virtual float GetBathTemperature() = 0;
+  virtual float GetInternalTemperature() = 0;
   virtual float GetReturnTemperature() = 0;
 
   virtual float GetPumpPressure() = 0;

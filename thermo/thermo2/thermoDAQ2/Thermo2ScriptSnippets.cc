@@ -58,8 +58,8 @@ Thermo2ScriptSnippets::Thermo2ScriptSnippets(QWidget *parent)
   addItem("huber - set Tn process", "huber.setTnProcess(TnProcess);\n");
   addItem("huber - get Tv process", "TvProcess = huber.getTvProcess();\n");
   addItem("huber - set Tv process", "huber.setTvProcess(TvProcess);\n");
-  addItem("huber - wait for bath temperature above", "huber.waitForBathTemperatureAbove(temperature, timeout [s]);\n");
-  addItem("huber - wait for bath temperature below", "huber.waitForBathTemperatureBelow(temperature, timeout [s]);\n");
+  addItem("huber - wait for internal temperature above", "huber.waitForInternalTemperatureAbove(temperature, timeout [s]);\n");
+  addItem("huber - wait for internal temperature below", "huber.waitForInternalTemperatureBelow(temperature, timeout [s]);\n");
   addItem("huber - wait for stable bath temperature", "huber.waitForStableBathTemperature(temperature, delay [s], timeout [s]);\n");
 
   insertSeparator(999);

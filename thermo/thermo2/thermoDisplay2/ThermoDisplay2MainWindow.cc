@@ -110,21 +110,10 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
 
     ChillerTSChart_ = new ThermoDisplay2TemperatureStateChart();
 
-    ChillerTBathSeries_ = new ThermoDisplay2LineSeries();
-    ChillerTBathSeries_->setName("Bath");
-    ChillerTSChart_->addSeries(ChillerTBathSeries_);
+    ChillerTInternalSeries_ = new ThermoDisplay2LineSeries();
+    ChillerTInternalSeries_->setName("Internal");
+    ChillerTSChart_->addSeries(ChillerTInternalSeries_);
 
-    /*
-      {
-      ChillerTBathSeries_->setEnabled(true);
-      QDateTime dtEnd = QDateTime::currentDateTime();
-      QDateTime dtStart = dtEnd.addSecs(-2 *  24 * 60 * 60);
-      while (dtStart<=dtEnd) {
-      ChillerTBathSeries_->append(dtStart.toMSecsSinceEpoch(), 1.23);
-      dtStart = dtStart.addSecs(60);
-      }
-      }
-    */
 
     ChillerTReturnSeries_ = new ThermoDisplay2LineSeries();
     ChillerTReturnSeries_->setName("Return");
@@ -769,8 +758,8 @@ void ThermoDisplay2MainWindow::updateInfo()
   if (chillerAndVacuumActive_) {
     bool updateLegend = false;
 
-    if (ChillerTBathSeries_->isEnabled()!=m.u525wState_) updateLegend = true;
-    ChillerTBathSeries_->setEnabled(m.u525wState_);
+    if (ChillerTInternalSeries_->isEnabled()!=m.u525wState_) updateLegend = true;
+    ChillerTInternalSeries_->setEnabled(m.u525wState_);
     ChillerTReturnSeries_->setEnabled(m.u525wState_);
     ChillerTCWISeries_->setEnabled(m.u525wState_);
     ChillerTCWOSeries_->setEnabled(m.u525wState_);
@@ -778,7 +767,7 @@ void ThermoDisplay2MainWindow::updateInfo()
     ChillerPressureSeries_->setEnabled(m.u525wState_);
     ChillerSTCSeries_->setEnabled(m.u525wState_);
     ChillerSCSeries_->setEnabled(m.u525wState_);
-    ChillerTBathSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wBathTemperature_);
+    ChillerTInternalSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wInternalTemperature_);
     ChillerTReturnSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wReturnTemperature_);
     ChillerTCWISeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wCWInletTemperature_);
     ChillerTCWOSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wCWOutletTemperature_);
@@ -925,7 +914,7 @@ void ThermoDisplay2MainWindow::updateInfo()
 
     if (ThroughPlaneTSink_->isEnabled()!=m.u525wState_) updateLegend = true;
     ThroughPlaneTSink_->setEnabled(m.u525wState_);
-    ThroughPlaneTSink_->append(m.dt.toMSecsSinceEpoch(), m.u525wBathTemperature_);
+    ThroughPlaneTSink_->append(m.dt.toMSecsSinceEpoch(), m.u525wInternalTemperature_);
 
     unsigned int card, channel;
     unsigned int countTop = 0;

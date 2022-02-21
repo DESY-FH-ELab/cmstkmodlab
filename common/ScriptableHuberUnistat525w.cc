@@ -82,10 +82,10 @@ QScriptValue ScriptableHuberUnistat525w::isCirculatorOn()
   return QScriptValue(model_->getCirculatorEnabled());
 }
 
-QScriptValue ScriptableHuberUnistat525w::getBathTemperature()
+QScriptValue ScriptableHuberUnistat525w::getInternalTemperature()
 {
   QMutexLocker locker(&mutex_);
-  return QScriptValue(model_->getBathTemperature());
+  return QScriptValue(model_->getInternalTemperature());
 }
 
 QScriptValue ScriptableHuberUnistat525w::getReturnTemperature()
@@ -214,20 +214,20 @@ void ScriptableHuberUnistat525w::setTvProcess(double Tv)
   model_->setTvProcess(Tv);
 }
 
-void ScriptableHuberUnistat525w::waitForBathTemperatureAbove(float temperature,
-                                                             int timeout)
+void ScriptableHuberUnistat525w::waitForInternalTemperatureAbove(float temperature,
+								 int timeout)
 {
   using namespace std::chrono_literals;
 
-  model_->statusMessage(QString("wait for bath T > %1 deg C ...").arg(temperature));
-  NQLog("ScriptableHuberUnistat525w") << QString("wait for bath T > %1 deg C ...").arg(temperature);
+  model_->statusMessage(QString("wait for internal T > %1 deg C ...").arg(temperature));
+  NQLog("ScriptableHuberUnistat525w") << QString("wait for internal T > %1 deg C ...").arg(temperature);
 
   int t = 0;
 
   while (1) {
 
     QMutexLocker locker(&mutex_);
-    double temp = model_->getBathTemperature();
+    double temp = model_->getInternalTemperature();
     locker.unlock();
 
     if (temp>temperature) break;
@@ -258,20 +258,20 @@ void ScriptableHuberUnistat525w::waitForBathTemperatureAbove(float temperature,
   NQLogMessage("ScriptableHuberUnistat525w") << "done";
 }
 
-void ScriptableHuberUnistat525w::waitForBathTemperatureBelow(float temperature,
-                                                             int timeout)
+void ScriptableHuberUnistat525w::waitForInternalTemperatureBelow(float temperature,
+								 int timeout)
 {
   using namespace std::chrono_literals;
 
-  model_->statusMessage(QString("wait for bath T > %1 deg C ...").arg(temperature));
-  NQLog("ScriptableHuberUnistat525w") << QString("wait for bath T > %1 deg C ...").arg(temperature);
+  model_->statusMessage(QString("wait for internal T > %1 deg C ...").arg(temperature));
+  NQLog("ScriptableHuberUnistat525w") << QString("wait for internal T > %1 deg C ...").arg(temperature);
 
   int t = 0;
 
   while (1) {
 
     QMutexLocker locker(&mutex_);
-    double temp = model_->getBathTemperature();
+    double temp = model_->getInternalTemperature();
     locker.unlock();
 
     if (temp<temperature) break;
@@ -302,17 +302,17 @@ void ScriptableHuberUnistat525w::waitForBathTemperatureBelow(float temperature,
   NQLogMessage("ScriptableHuberUnistat525w") << "done";
 }
 
-void ScriptableHuberUnistat525w::waitForStableBathTemperature(float deltaT,
-                                                              int delay,
-                                                              int timeout)
+void ScriptableHuberUnistat525w::waitForStableInternalTemperature(float deltaT,
+								  int delay,
+								  int timeout)
 {
   using namespace std::chrono_literals;
 
-  model_->statusMessage(QString("wait for stable bath T (%1)").arg(deltaT));
-  NQLog("ScriptableHuberUnistat525w") << QString("wait for stable bath T (%1)").arg(deltaT);
+  model_->statusMessage(QString("wait for stable internal T (%1)").arg(deltaT));
+  NQLog("ScriptableHuberUnistat525w") << QString("wait for stable internal T (%1)").arg(deltaT);
 
   QMutexLocker locker(&mutex_);
-  double oldTemp = model_->getBathTemperature();
+  double oldTemp = model_->getInternalTemperature();
   locker.unlock();
 
   int t = 0;
@@ -342,7 +342,7 @@ void ScriptableHuberUnistat525w::waitForStableBathTemperature(float deltaT,
     }
 
     QMutexLocker locker(&mutex_);
-    double temp = model_->getBathTemperature();
+    double temp = model_->getInternalTemperature();
     locker.unlock();
 
     if (fabs(oldTemp-temp)<=deltaT) {

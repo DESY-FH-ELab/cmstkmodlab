@@ -97,10 +97,10 @@ float HuberPilotOne::GetTemperatureSetPoint()
   return ToFloat(buffer)/100.;
 }
 
-float HuberPilotOne::GetBathTemperature()
+float HuberPilotOne::GetInternalTemperature()
 {
 #ifdef __HUBERPILOTONE_DEBUG
-  std::cout << "[HuberPilotOne::GetBathTemperature] -- DEBUG: Called." << std::endl;
+  std::cout << "[HuberPilotOne::GetInternalTemperature] -- DEBUG: Called." << std::endl;
 #endif
 
   comHandler_->SendCommand("{M01****");

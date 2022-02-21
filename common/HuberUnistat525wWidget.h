@@ -78,7 +78,7 @@ protected:
   QCheckBox* temperatureControlCheckBox_;
   QCheckBox* circulatorCheckBox_;
 
-  QLCDNumber* bathTempLCD_;
+  QLCDNumber* internalTempLCD_;
   QLCDNumber* returnTempLCD_;
 
   QLCDNumber* pumpPressureLCD_;

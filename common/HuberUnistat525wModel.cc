@@ -112,9 +112,9 @@ void HuberUnistat525wModel::setCirculatorEnabled(bool enabled)
   }
 }
 
-double HuberUnistat525wModel::getBathTemperature() const
+double HuberUnistat525wModel::getInternalTemperature() const
 {
-  return bathTemperature_;
+  return internalTemperature_;
 }
 
 double HuberUnistat525wModel::getReturnTemperature() const
@@ -471,7 +471,7 @@ void HuberUnistat525wModel::updateInformation()
     bool newTemperatureControlMode = controller_->GetTemperatureControlMode();
     bool newTemperatureControlEnabled = controller_->GetTemperatureControlEnabled();
     bool newCirculatorEnabled = controller_->GetCirculatorEnabled();
-    double newBathTemperature = controller_->GetBathTemperature();
+    double newInternalTemperature = controller_->GetInternalTemperature();
 
     // double newReturnTemperature = controller_->GetReturnTemperature();
     double newReturnTemperature = 0.0;
@@ -519,7 +519,7 @@ void HuberUnistat525wModel::updateInformation()
         newTemperatureControlMode != temperatureControlMode_ ||
         newTemperatureControlEnabled != temperatureControlEnabled_ ||
         newCirculatorEnabled != circulatorEnabled_ ||
-        newBathTemperature != bathTemperature_ ||
+        newInternalTemperature != internalTemperature_ ||
         newReturnTemperature != returnTemperature_ ||
         newCWInletTemperature != cwInletTemperature_ ||
         newCWOutletTemperature != cwOutletTemperature_ ||
@@ -540,7 +540,7 @@ void HuberUnistat525wModel::updateInformation()
       temperatureControlMode_ = newTemperatureControlMode;
       temperatureControlEnabled_ = newTemperatureControlEnabled;
       circulatorEnabled_ = newCirculatorEnabled;
-      bathTemperature_ = newBathTemperature;
+      internalTemperature_ = newInternalTemperature;
       returnTemperature_ = newReturnTemperature;
       pumpPressure_ = newPumpPressure;
       power_ = newPower;

@@ -47,7 +47,7 @@ public:
   bool getTemperatureControlEnabled() const;
   bool getCirculatorEnabled() const;
 
-  double getBathTemperature() const;
+  double getInternalTemperature() const;
   double getReturnTemperature() const;
 
   double getPumpPressure() const;
@@ -118,7 +118,7 @@ protected:
   bool temperatureControlEnabled_;
   bool circulatorEnabled_;
 
-  double bathTemperature_;
+  double internalTemperature_;
   double returnTemperature_;
 
   double pumpPressure_;

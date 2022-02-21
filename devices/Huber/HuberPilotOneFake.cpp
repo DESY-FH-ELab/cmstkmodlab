@@ -72,7 +72,7 @@ float HuberPilotOneFake::GetTemperatureSetPoint()
   return temperatureSetPoint_;
 }
 
-float HuberPilotOneFake::GetBathTemperature()
+float HuberPilotOneFake::GetInternalTemperature()
 {
   float temp = temperatureSetPoint_;
   temp += normalDistribution_(randomGenerator_);
@@ -82,9 +82,9 @@ float HuberPilotOneFake::GetBathTemperature()
 float HuberPilotOneFake::GetReturnTemperature()
 {
   if (circulatorEnabled_) {
-    return GetBathTemperature() + 2.0;
+    return GetInternalTemperature() + 2.0;
   } else {
-    return GetBathTemperature();
+    return GetInternalTemperature();
   }
 }
 

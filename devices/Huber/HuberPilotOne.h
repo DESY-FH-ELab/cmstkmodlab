@@ -28,7 +28,7 @@ class HuberPilotOne : public VHuberPilotOne
   bool SetTemperatureSetPoint(const float);
   float GetTemperatureSetPoint();
 
-  float GetBathTemperature();
+  float GetInternalTemperature();
   float GetReturnTemperature();
 
   float GetPumpPressure();

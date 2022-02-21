@@ -118,11 +118,11 @@ HuberUnistat525wWidget::HuberUnistat525wWidget(HuberUnistat525wModel* model,
   operationLayout->addRow("Circulator",
                           circulatorCheckBox_);
 
-  bathTempLCD_ = new QLCDNumber(LCD_SIZE);
-  bathTempLCD_->setSegmentStyle(QLCDNumber::Flat);
-  bathTempLCD_->setSmallDecimalPoint(true);
-  operationLayout->addRow(QString::fromUtf8("Bath Temperature [°C]"),
-                          bathTempLCD_);
+  internalTempLCD_ = new QLCDNumber(LCD_SIZE);
+  internalTempLCD_->setSegmentStyle(QLCDNumber::Flat);
+  internalTempLCD_->setSmallDecimalPoint(true);
+  operationLayout->addRow(QString::fromUtf8("Internal Temperature [°C]"),
+                          internalTempLCD_);
 
   returnTempLCD_ = new QLCDNumber(LCD_SIZE);
   returnTempLCD_->setSegmentStyle(QLCDNumber::Flat);
@@ -262,7 +262,7 @@ void HuberUnistat525wWidget::updateInfo()
   temperatureControlCheckBox_->setChecked(model_->getTemperatureControlEnabled());
   circulatorCheckBox_->setChecked(model_->getCirculatorEnabled());
 
-  bathTempLCD_->display(QString::number(model_->getBathTemperature(), 'f', 2));
+  internalTempLCD_->display(QString::number(model_->getInternalTemperature(), 'f', 2));
   returnTempLCD_->display(QString::number(model_->getReturnTemperature(), 'f', 2));
 
   pumpPressureLCD_->display(QString::number(model_->getPumpPressure(), 'f', 3));
