@@ -59,7 +59,8 @@ void ThermoDAQ2SlidingWindowConverter::process()
   itree_->SetBranchAddress("u525wTemperatureControlMode", &omeasurement_.u525wTemperatureControlMode_);
   itree_->SetBranchAddress("u525wTemperatureControlEnabled", &omeasurement_.u525wTemperatureControlEnabled_);
   itree_->SetBranchAddress("u525wCirculatorEnabled", &omeasurement_.u525wCirculatorEnabled_);
-  itree_->SetBranchAddress("u525wBathTemperature", &imeasurement_.u525wBathTemperature_);
+  itree_->SetBranchAddress("u525wInternalTemperature", &imeasurement_.u525wInternalTemperature_);
+  itree_->SetBranchAddress("u525wProcessTemperature", &imeasurement_.u525wProcessTemperature_);
   itree_->SetBranchAddress("u525wReturnTemperature", &omeasurement_.u525wReturnTemperature_);
   itree_->SetBranchAddress("u525wPumpPressure", &omeasurement_.u525wPumpPressure_);
   itree_->SetBranchAddress("u525wPower", &omeasurement_.u525wPower_);
@@ -170,7 +171,9 @@ void ThermoDAQ2SlidingWindowConverter::process()
   otree_->Branch("u525wTemperatureControlMode", &omeasurement_.u525wTemperatureControlMode_, "u525wTemperatureControlMode/O");
   otree_->Branch("u525wTemperatureControlEnabled", &omeasurement_.u525wTemperatureControlEnabled_, "u525wTemperatureControlEnabled/O");
   otree_->Branch("u525wCirculatorEnabled", &omeasurement_.u525wCirculatorEnabled_, "u525wCirculatorEnabled/O");
-  otree_->Branch("u525wBathTemperature", &omeasurement_.u525wBathTemperature_, "u525wBathTemperature/F");
+  otree_->Branch("u525wBathTemperature", &omeasurement_.u525wInternalTemperature_, "u525wBathTemperature/F");
+  otree_->Branch("u525wInternalTemperature", &omeasurement_.u525wInternalTemperature_, "u525wInternalTemperature/F");
+  otree_->Branch("u525wProcessTemperature", &omeasurement_.u525wProcessTemperature_, "u525wProcessTemperature/F");
   otree_->Branch("u525wReturnTemperature", &omeasurement_.u525wReturnTemperature_, "u525wReturnTemperature/F");
   otree_->Branch("u525wPumpPressure", &omeasurement_.u525wPumpPressure_, "u525wPumpPressure/F");
   otree_->Branch("u525wPower", &omeasurement_.u525wPower_, "u525wPower/I");
@@ -322,7 +325,8 @@ void ThermoDAQ2SlidingWindowConverter::process()
         }
     }
 
-    omeasurement_.u525wBathTemperature_ = 0;
+    omeasurement_.u525wInternalTemperature_ = 0;
+    omeasurement_.u525wProcessTemperature_ = 0;
     for (int i=0;i<2;++i) {
       for (int j=0;j<10;++j) {
           omeasurement_.keithleyTemperature[i][j] = 0;
@@ -335,7 +339,8 @@ void ThermoDAQ2SlidingWindowConverter::process()
 
         Long64_t currentUTime = omeasurement_.uTime;
 
-        omeasurement_.u525wBathTemperature_ += imeasurement_.u525wBathTemperature_;
+        omeasurement_.u525wInternalTemperature_ += imeasurement_.u525wInternalTemperature_;
+        omeasurement_.u525wProcessTemperature_ += imeasurement_.u525wProcessTemperature_;
 
         for (int i=0;i<2;++i) {
           for (int j=0;j<10;++j) {
@@ -345,7 +350,8 @@ void ThermoDAQ2SlidingWindowConverter::process()
         steps++;
     }
 
-    omeasurement_.u525wBathTemperature_ /= steps;
+    omeasurement_.u525wInternalTemperature_ /= steps;
+    omeasurement_.u525wProcessTemperature_ /= steps;
     for (int i=0;i<2;++i) {
       for (int j=0;j<10;++j) {
           omeasurement_.keithleyTemperature[i][j] /= steps;
