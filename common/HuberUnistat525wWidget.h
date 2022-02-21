@@ -79,6 +79,7 @@ protected:
   QCheckBox* circulatorCheckBox_;
 
   QLCDNumber* internalTempLCD_;
+  QLCDNumber* processTempLCD_;
   QLCDNumber* returnTempLCD_;
 
   QLCDNumber* pumpPressureLCD_;

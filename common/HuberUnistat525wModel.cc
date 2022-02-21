@@ -117,6 +117,11 @@ double HuberUnistat525wModel::getInternalTemperature() const
   return internalTemperature_;
 }
 
+double HuberUnistat525wModel::getProcessTemperature() const
+{
+  return processTemperature_;
+}
+
 double HuberUnistat525wModel::getReturnTemperature() const
 {
   return returnTemperature_;
@@ -472,6 +477,7 @@ void HuberUnistat525wModel::updateInformation()
     bool newTemperatureControlEnabled = controller_->GetTemperatureControlEnabled();
     bool newCirculatorEnabled = controller_->GetCirculatorEnabled();
     double newInternalTemperature = controller_->GetInternalTemperature();
+    double newProcessTemperature = controller_->GetProcessTemperature();
 
     // double newReturnTemperature = controller_->GetReturnTemperature();
     double newReturnTemperature = 0.0;
@@ -520,6 +526,7 @@ void HuberUnistat525wModel::updateInformation()
         newTemperatureControlEnabled != temperatureControlEnabled_ ||
         newCirculatorEnabled != circulatorEnabled_ ||
         newInternalTemperature != internalTemperature_ ||
+        newProcessTemperature != processTemperature_ ||
         newReturnTemperature != returnTemperature_ ||
         newCWInletTemperature != cwInletTemperature_ ||
         newCWOutletTemperature != cwOutletTemperature_ ||
@@ -541,6 +548,7 @@ void HuberUnistat525wModel::updateInformation()
       temperatureControlEnabled_ = newTemperatureControlEnabled;
       circulatorEnabled_ = newCirculatorEnabled;
       internalTemperature_ = newInternalTemperature;
+      processTemperature_ = newProcessTemperature;
       returnTemperature_ = newReturnTemperature;
       pumpPressure_ = newPumpPressure;
       power_ = newPower;

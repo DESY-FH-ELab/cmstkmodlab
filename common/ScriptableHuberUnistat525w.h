@@ -44,6 +44,7 @@ public slots:
   QScriptValue isCirculatorOn();
 
   QScriptValue getInternalTemperature();
+  QScriptValue getProcessTemperature();
   QScriptValue getReturnTemperature();
 
   QScriptValue getPumpPressure();
@@ -79,6 +80,14 @@ public slots:
   void waitForStableInternalTemperature(float deltaT,
 					int delay,
 					int timeout);
+
+  void waitForProcessTemperatureAbove(float temperature,
+				      int timeout);
+  void waitForProcessTemperatureBelow(float temperature,
+				      int timeout);
+  void waitForStableProcessTemperature(float deltaT,
+				       int delay,
+				       int timeout);
 
 protected:
 

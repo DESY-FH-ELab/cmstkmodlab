@@ -48,6 +48,7 @@ public:
   bool getCirculatorEnabled() const;
 
   double getInternalTemperature() const;
+  double getProcessTemperature() const;
   double getReturnTemperature() const;
 
   double getPumpPressure() const;
@@ -119,6 +120,7 @@ protected:
   bool circulatorEnabled_;
 
   double internalTemperature_;
+  double processTemperature_;
   double returnTemperature_;
 
   double pumpPressure_;

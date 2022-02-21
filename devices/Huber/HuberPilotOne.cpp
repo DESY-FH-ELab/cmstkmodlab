@@ -116,6 +116,25 @@ float HuberPilotOne::GetInternalTemperature()
   return ToFloat(buffer)/100.;
 }
 
+float HuberPilotOne::GetProcessTemperature()
+{
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetProcessTemperature] -- DEBUG: Called." << std::endl;
+#endif
+
+  comHandler_->SendCommand("{M07****");
+  usleep(uDelay_);
+
+  char buffer[1000];
+  memset(buffer, 0, sizeof(buffer));
+  comHandler_->ReceiveString(buffer);
+  usleep(uDelay_);
+
+  StripBuffer(buffer);
+
+  return ToFloat(buffer)/100.;
+}
+
 float HuberPilotOne::GetReturnTemperature()
 {
 #ifdef __HUBERPILOTONE_DEBUG

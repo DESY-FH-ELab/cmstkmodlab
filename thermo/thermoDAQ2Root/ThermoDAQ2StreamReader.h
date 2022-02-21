@@ -34,6 +34,7 @@ typedef struct {
   bool           u525wTemperatureControlEnabled_;
   bool           u525wCirculatorEnabled_;
   float          u525wInternalTemperature_;
+  float          u525wProcessTemperature_;
   float          u525wReturnTemperature_;
   float          u525wPumpPressure_;
   int            u525wPower_;

@@ -30,6 +30,7 @@ class HuberPilotOneFake : public VHuberPilotOne
   float GetTemperatureSetPoint();
 
   float GetInternalTemperature();
+  float GetProcessTemperature();
   float GetReturnTemperature();
 
   float GetPumpPressure();

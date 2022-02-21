@@ -79,6 +79,13 @@ float HuberPilotOneFake::GetInternalTemperature()
   return temp;
 }
 
+float HuberPilotOneFake::GetProcessTemperature()
+{
+  float temp = temperatureSetPoint_;
+  temp += normalDistribution_(randomGenerator_);
+  return temp;
+}
+
 float HuberPilotOneFake::GetReturnTemperature()
 {
   if (circulatorEnabled_) {

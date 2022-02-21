@@ -88,6 +88,12 @@ QScriptValue ScriptableHuberUnistat525w::getInternalTemperature()
   return QScriptValue(model_->getInternalTemperature());
 }
 
+QScriptValue ScriptableHuberUnistat525w::getProcessTemperature()
+{
+  QMutexLocker locker(&mutex_);
+  return QScriptValue(model_->getProcessTemperature());
+}
+
 QScriptValue ScriptableHuberUnistat525w::getReturnTemperature()
 {
   QMutexLocker locker(&mutex_);
@@ -313,6 +319,151 @@ void ScriptableHuberUnistat525w::waitForStableInternalTemperature(float deltaT,
 
   QMutexLocker locker(&mutex_);
   double oldTemp = model_->getInternalTemperature();
+  locker.unlock();
+
+  int t = 0;
+  int count = 0;
+
+  while (1) {
+
+    for (int s=0;s<60;++s) {
+      if (abortRequested_) {
+        abortRequested_ = false;
+
+        model_->statusMessage("execution aborted");
+        NQLogMessage("ScriptableHuberUnistat525w") << "execution aborted";
+
+        return;
+      }
+
+      std::this_thread::sleep_for(1s);
+
+      t++;
+      if (t>timeout) {
+        model_->statusMessage("timeout");
+        NQLogMessage("ScriptableHuberUnistat525w") << "timeout";
+
+        return;
+      }
+    }
+
+    QMutexLocker locker(&mutex_);
+    double temp = model_->getInternalTemperature();
+    locker.unlock();
+
+    if (fabs(oldTemp-temp)<=deltaT) {
+      count += 60;
+    } else {
+      count = 0;
+    }
+    oldTemp = temp;
+    if (count>=delay) break;
+  }
+
+  model_->statusMessage("done");
+  NQLog("ScriptableHuberUnistat525w") << "done";
+}
+
+
+void ScriptableHuberUnistat525w::waitForProcessTemperatureAbove(float temperature,
+								 int timeout)
+{
+  using namespace std::chrono_literals;
+
+  model_->statusMessage(QString("wait for process T > %1 deg C ...").arg(temperature));
+  NQLog("ScriptableHuberUnistat525w") << QString("wait for process T > %1 deg C ...").arg(temperature);
+
+  int t = 0;
+
+  while (1) {
+
+    QMutexLocker locker(&mutex_);
+    double temp = model_->getProcessTemperature();
+    locker.unlock();
+
+    if (temp>temperature) break;
+
+    for (int s=0;s<60;++s) {
+      if (abortRequested_) {
+        abortRequested_ = false;
+
+        model_->statusMessage("execution aborted");
+        NQLogMessage("ScriptableHuberUnistat525w") << "execution aborted";
+
+        return;
+      }
+
+      std::this_thread::sleep_for(1s);
+
+      t++;
+      if (t>timeout) {
+        model_->statusMessage("timeout");
+        NQLog("ScriptableHuberUnistat525w") << "timeout";
+
+        return;
+      }
+    }
+  }
+
+  model_->statusMessage("done");
+  NQLogMessage("ScriptableHuberUnistat525w") << "done";
+}
+
+void ScriptableHuberUnistat525w::waitForProcessTemperatureBelow(float temperature,
+								int timeout)
+{
+  using namespace std::chrono_literals;
+
+  model_->statusMessage(QString("wait for process T > %1 deg C ...").arg(temperature));
+  NQLog("ScriptableHuberUnistat525w") << QString("wait for process T > %1 deg C ...").arg(temperature);
+
+  int t = 0;
+
+  while (1) {
+
+    QMutexLocker locker(&mutex_);
+    double temp = model_->getProcessTemperature();
+    locker.unlock();
+
+    if (temp<temperature) break;
+
+    for (int s=0;s<60;++s) {
+      if (abortRequested_) {
+        abortRequested_ = false;
+
+        model_->statusMessage("execution aborted");
+        NQLogMessage("ScriptableHuberUnistat525w") << "execution aborted";
+
+        return;
+      }
+
+      std::this_thread::sleep_for(1s);
+
+      t++;
+      if (t>timeout) {
+        model_->statusMessage("timeout");
+        NQLog("ScriptableHuberUnistat525w") << "timeout";
+
+        return;
+      }
+    }
+  }
+
+  model_->statusMessage("done");
+  NQLogMessage("ScriptableHuberUnistat525w") << "done";
+}
+
+void ScriptableHuberUnistat525w::waitForStableProcessTemperature(float deltaT,
+								 int delay,
+								 int timeout)
+{
+  using namespace std::chrono_literals;
+
+  model_->statusMessage(QString("wait for stable process T (%1)").arg(deltaT));
+  NQLog("ScriptableHuberUnistat525w") << QString("wait for stable process T (%1)").arg(deltaT);
+
+  QMutexLocker locker(&mutex_);
+  double oldTemp = model_->getProcessTemperature();
   locker.unlock();
 
   int t = 0;

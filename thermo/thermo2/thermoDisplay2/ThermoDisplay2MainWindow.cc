@@ -114,6 +114,9 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
     ChillerTInternalSeries_->setName("Internal");
     ChillerTSChart_->addSeries(ChillerTInternalSeries_);
 
+    ChillerTProcessSeries_ = new ThermoDisplay2LineSeries();
+    ChillerTProcessSeries_->setName("Process");
+    ChillerTSChart_->addSeries(ChillerTProcessSeries_);
 
     ChillerTReturnSeries_ = new ThermoDisplay2LineSeries();
     ChillerTReturnSeries_->setName("Return");
@@ -760,6 +763,7 @@ void ThermoDisplay2MainWindow::updateInfo()
 
     if (ChillerTInternalSeries_->isEnabled()!=m.u525wState_) updateLegend = true;
     ChillerTInternalSeries_->setEnabled(m.u525wState_);
+    ChillerTProcessSeries_->setEnabled(m.u525wState_);
     ChillerTReturnSeries_->setEnabled(m.u525wState_);
     ChillerTCWISeries_->setEnabled(m.u525wState_);
     ChillerTCWOSeries_->setEnabled(m.u525wState_);
@@ -768,6 +772,7 @@ void ThermoDisplay2MainWindow::updateInfo()
     ChillerSTCSeries_->setEnabled(m.u525wState_);
     ChillerSCSeries_->setEnabled(m.u525wState_);
     ChillerTInternalSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wInternalTemperature_);
+    ChillerTProcessSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wProcessTemperature_);
     ChillerTReturnSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wReturnTemperature_);
     ChillerTCWISeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wCWInletTemperature_);
     ChillerTCWOSeries_->append(m.dt.toMSecsSinceEpoch(), m.u525wCWOutletTemperature_);

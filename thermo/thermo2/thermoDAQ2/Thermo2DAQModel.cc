@@ -94,6 +94,7 @@ void Thermo2DAQModel::startMeasurement()
   u525wTemperatureControlEnabled_ = false;
   u525wCirculatorEnabled_ = false;
   u525wInternalTemperature_ = 0.0;
+  u525wProcessTemperature_ = 0.0;
   u525wReturnTemperature_ = 0.0;
   u525wPumpPressure_ = 0.0;
   u525wPower_ = 0.0;
@@ -163,6 +164,7 @@ void Thermo2DAQModel::createDAQStatusMessage(QString &buffer, bool start)
 
     xml.writeStartElement("HuberUnistat525wInfo");
     xml.writeAttribute("Internal", QString::number(huberModel_->getInternalTemperature(), 'f', 2));
+    xml.writeAttribute("Process", QString::number(huberModel_->getProcessTemperature(), 'f', 2));
     xml.writeAttribute("Return", QString::number(huberModel_->getReturnTemperature(), 'f', 2));
     xml.writeAttribute("Pressure", QString::number(huberModel_->getPumpPressure(), 'f', 3));
     xml.writeAttribute("Power", QString::number(huberModel_->getPower()));
@@ -428,6 +430,7 @@ void Thermo2DAQModel::huberInfoChanged()
   changed |= updateIfChanged<bool>(u525wTemperatureControlEnabled_, huberModel_->getTemperatureControlEnabled());
   changed |= updateIfChanged<bool>(u525wCirculatorEnabled_, huberModel_->getCirculatorEnabled());
   changed |= updateIfChanged<float>(u525wInternalTemperature_, huberModel_->getInternalTemperature());
+  changed |= updateIfChanged<float>(u525wProcessTemperature_, huberModel_->getProcessTemperature());
   changed |= updateIfChanged<float>(u525wReturnTemperature_, huberModel_->getReturnTemperature());
   changed |= updateIfChanged<float>(u525wPumpPressure_, huberModel_->getPumpPressure());
   changed |= updateIfChanged<int>(u525wPower_, huberModel_->getPower());
@@ -461,6 +464,7 @@ void Thermo2DAQModel::huberInfoChanged()
 
     xml.writeStartElement("HuberUnistat525wInfo");
     xml.writeAttribute("Internal", QString::number(u525wInternalTemperature_, 'f', 2));
+    xml.writeAttribute("Process", QString::number(u525wProcessTemperature_, 'f', 2));
     xml.writeAttribute("Return", QString::number(u525wReturnTemperature_, 'f', 2));
     xml.writeAttribute("Pressure", QString::number(u525wPumpPressure_, 'f', 3));
     xml.writeAttribute("Power", QString::number(u525wPower_));

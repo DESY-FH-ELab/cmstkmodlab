@@ -124,6 +124,12 @@ HuberUnistat525wWidget::HuberUnistat525wWidget(HuberUnistat525wModel* model,
   operationLayout->addRow(QString::fromUtf8("Internal Temperature [°C]"),
                           internalTempLCD_);
 
+  processTempLCD_ = new QLCDNumber(LCD_SIZE);
+  processTempLCD_->setSegmentStyle(QLCDNumber::Flat);
+  processTempLCD_->setSmallDecimalPoint(true);
+  operationLayout->addRow(QString::fromUtf8("Process Temperature [°C]"),
+                          processTempLCD_);
+
   returnTempLCD_ = new QLCDNumber(LCD_SIZE);
   returnTempLCD_->setSegmentStyle(QLCDNumber::Flat);
   returnTempLCD_->setSmallDecimalPoint(true);
@@ -263,6 +269,7 @@ void HuberUnistat525wWidget::updateInfo()
   circulatorCheckBox_->setChecked(model_->getCirculatorEnabled());
 
   internalTempLCD_->display(QString::number(model_->getInternalTemperature(), 'f', 2));
+  processTempLCD_->display(QString::number(model_->getProcessTemperature(), 'f', 2));
   returnTempLCD_->display(QString::number(model_->getReturnTemperature(), 'f', 2));
 
   pumpPressureLCD_->display(QString::number(model_->getPumpPressure(), 'f', 3));

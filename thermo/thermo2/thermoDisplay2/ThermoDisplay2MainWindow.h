@@ -94,6 +94,7 @@ protected:
   ThermoDisplay2ChartView *ChillerTSChartView_;
   ThermoDisplay2TemperatureStateChart *ChillerTSChart_;
   ThermoDisplay2LineSeries *ChillerTInternalSeries_;
+  ThermoDisplay2LineSeries *ChillerTProcessSeries_;
   ThermoDisplay2LineSeries *ChillerTReturnSeries_;
   ThermoDisplay2LineSeries *ChillerTCWISeries_;
   ThermoDisplay2LineSeries *ChillerTCWOSeries_;

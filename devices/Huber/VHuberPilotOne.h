@@ -35,6 +35,7 @@ class VHuberPilotOne
   virtual float GetTemperatureSetPoint() = 0;
 
   virtual float GetInternalTemperature() = 0;
+  virtual float GetProcessTemperature() = 0;
   virtual float GetReturnTemperature() = 0;
 
   virtual float GetPumpPressure() = 0;
