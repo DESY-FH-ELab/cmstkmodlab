@@ -28,7 +28,7 @@ public:
   typedef T value_type;
   typedef size_t size_type;
   
-  explicit Ringbuffer(const T& value = value_type())
+  explicit Ringbuffer(const value_type& value = value_type())
   {
     size_ = N;
     for (size_t i=0;i<size_;++i) buffer_[i] = value;
@@ -93,11 +93,6 @@ public:
   virtual const value_type& back() const
   {
     return at(size_-1);
-  }
-
-  virtual const value_type& get() const
-  {
-    return front();
   }
 
   class iterator
