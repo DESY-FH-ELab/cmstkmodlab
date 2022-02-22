@@ -22,7 +22,6 @@
 #include <QTimer>
 
 #include "DeviceState.h"
-#include "Ringbuffer.h"
 
 #ifdef USE_FAKEIO
 #include "devices/Agilent/AgilentTwisTorr304Fake.h"
