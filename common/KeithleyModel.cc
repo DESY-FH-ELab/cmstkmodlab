@@ -187,8 +187,8 @@ void KeithleyModel::scanTemperatures()
     timeBuffer_.push_back(absoluteTime_);
     temperatureBuffer_.push_back(temperatures_);
 
-    std::chrono::time_point<std::chrono::system_clock> lastTime = timeBuffer_.get();
-    const std::vector<double> &lastTemperatures = temperatureBuffer_.get();
+    std::chrono::time_point<std::chrono::system_clock> lastTime = timeBuffer_.front();
+    const std::vector<double> &lastTemperatures = temperatureBuffer_.front();
     std::chrono::duration<double> dt = absoluteTime_ - lastTime;
     
     if (dt.count()>=30) {

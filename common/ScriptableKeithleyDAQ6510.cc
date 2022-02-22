@@ -132,7 +132,7 @@ void ScriptableKeithleyDAQ6510::waitForStableTemperature(const QString & sensors
       current[sensor] = temperature;
       buffer[sensor].push_back(temperature);
 
-      float delta = temperature-buffer[sensor].get();
+      float delta = temperature-buffer[sensor].front();
       NQLogMessage("ScriptableKeithleyDAQ6510") << QString("dT(%1) = %2").arg(sensor).arg(delta);
 
       if (std::fabs(delta)>=0.01) stable = false;
