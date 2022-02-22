@@ -35,6 +35,7 @@
 
 #include <MattermostBot.h>
 
+#include <Ringbuffer.h>
 #include <Fifo.h>
 #include <HistoryFifo.h>
 #include <ValueHistory.h>
@@ -60,6 +61,21 @@ int main(int argc, char ** argv)
   NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
 
   {
+    Ringbuffer<int,10> rb;
+    
+    for (auto i = 0;i<10;++i) {
+      rb.push_back(i);
+    }
+    rb.push_back(10);
+
+    for (auto & i : rb) {
+      std::cout << i << std::endl;
+    }
+
+  }
+  
+  /*
+  {
     QApplication app(argc, argv);
 
     app.setStyle("cleanlooks");
@@ -72,7 +88,7 @@ int main(int argc, char ** argv)
 
     return app.exec();
   }
-
+  */
   /*
   {
     MartaModel *marta = new MartaModel("10.255.21.224:502");
