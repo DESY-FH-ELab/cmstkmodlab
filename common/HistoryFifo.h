@@ -26,171 +26,193 @@ template <class T> class HistoryFifo
 {
 public:
 
-    typedef T      value_type;
+  typedef T value_type;
+  typedef size_t size_type;
 
-    HistoryFifo(int N) {
-    	timestamp_.resize(N);
-    	buffer_.resize(N);
-    	size_ = 0;
-    	capacity_ = N;
-    	currentFirstIndex_ = 0;
+  explicit HistoryFifo(size_type n, const value_type& value = value_type())
+  {
+    size_ = n;
+    timestamp_.resize(size_);
+    buffer_.resize(size_);
+    for (size_t i=0;i<size_;++i) {
+      timestamp_[i] = QDateTime::currentDateTime();
+      buffer_[i] = value;
     }
+  }
 
-    int size() const {
-    	return size_;
+  void resize(size_type n, const value_type& value = value_type())
+  {
+    size_ = n;
+    buffer_.resize(size_);
+    buffer_.resize(n);
+    for (size_t i=size_;i<n;++i) {
+      timestamp_[i] = QDateTime::currentDateTime();
+      buffer_[i] = value;
     }
+    size_ = n;
+  }
 
-    virtual void push(const T& value) {
-    	push(QDateTime::currentDateTime(), value);
+  size_type size()
+  {
+    return size_;
+  }
+
+  virtual void push_back(const value_type& value)
+  {
+    push_back(QDateTime::currentDateTime(), value);
+  }
+
+  virtual void push_back(const QDateTime& dt, const value_type& value)
+  {
+    currentIdx_++;
+    if (currentIdx_>=size_) currentIdx_ = 0;
+    timestamp_[currentIdx_] = dt;
+    buffer_[currentIdx_] = value;
+  }
+
+  virtual QDateTime & timeAt(size_type pos)
+  {
+    if (pos>=size_) throw std::out_of_range("HistoryFifo index out of range.");
+
+    size_type thePos;
+    if (currentIdx_>=pos) {
+      thePos = currentIdx_ - pos;
+    } else {
+      thePos = size_ + currentIdx_ - pos;
     }
+    
+    return timestamp_[thePos];
+  }
 
-    virtual void push(const QDateTime& dt, const T& value) {
-    	if (size_<capacity_) {
-    		timestamp_[size_] = dt;
-     		buffer_[size_] = value;
-    		size_++;
-    		currentFirstIndex_ = size_ - 1;
-    	} else {
-    		currentFirstIndex_++;
-    		if (currentFirstIndex_>=capacity_) currentFirstIndex_ = 0;
-    		timestamp_[currentFirstIndex_] = dt;
-    		buffer_[currentFirstIndex_] = value;
-    	}
+  virtual const QDateTime & timeAt(size_type pos) const
+  {
+    if (pos>=size_) throw std::out_of_range("HistoryFifo index out of range.");
+
+    size_type thePos;
+    if (currentIdx_>=pos) {
+      thePos = currentIdx_ - pos;
+    } else {
+      thePos = size_ + currentIdx_ - pos;
     }
+    
+    return timestamp_[thePos];
+  }
 
-    const QDateTime & timeAt(int i) const {
-    	if (i>=size_) return lastTime();
-    	int idx = currentFirstIndex_ - i;
-    	if (idx<0) idx += size_;
-    	return timestamp_[idx];
+  virtual value_type& at(size_type pos)
+  {
+    if (pos>=size_) throw std::out_of_range("HistoryFifo index out of range.");
+
+    size_type thePos;
+    if (currentIdx_>=pos) {
+      thePos = currentIdx_ - pos;
+    } else {
+      thePos = size_ + currentIdx_ - pos;
     }
+    
+    return buffer_[thePos];
+  }
 
-    QDateTime & firstTime() {
-    	return timestamp_[currentFirstIndex_];
+  virtual const value_type& at(size_type pos) const
+  {
+    if (pos>=size_) throw std::out_of_range("HistoryFifo index out of range.");
+
+    size_type thePos;
+    if (currentIdx_>=pos) {
+      thePos = currentIdx_ - pos;
+    } else {
+      thePos = size_ + currentIdx_ - pos;
     }
+    
+    return buffer_[thePos];
+  }
 
-    const QDateTime & firstTime() const {
-    	return timestamp_[currentFirstIndex_];
-    }
+  QDateTime & timeFront()
+  {
+    return timeAt(0);
+  }
 
-    QDateTime & lastTime() {
-    	int idx = currentFirstIndex_;
-    	if (size_<capacity_) {
-    		idx = 0;
-    	} else {
-    		idx++;
-    		if (idx>=capacity_) idx = 0;
-    	}
-    	return timestamp_[idx];
-    }
+  const QDateTime & timeFront() const
+  {
+    return timeAt(0);
+  }
 
-    const QDateTime & lastTime() const {
-    	int idx = currentFirstIndex_;
-    	if (size_<capacity_) {
-    		idx = 0;
-    	} else {
-    		idx++;
-    		if (idx>=capacity_) idx = 0;
-    	}
-    	return timestamp_[idx];
-    }
+  QDateTime & timeBack() {
+    return timeAt(size_-1);
+  }
 
-    qint64 sizeInSecs() const {
-    	const QDateTime & f = firstTime();
-    	const QDateTime & l = lastTime();
+  const QDateTime & timeBack() const
+  {
+    return timeAt(size_-1);
+  }
+  
+  virtual const value_type& front() const
+  {
+    return at(0);
+  }
 
-    	return l.secsTo(f);
-    }
+  virtual const value_type& back() const
+  {
+    return at(size_-1);
+  }
 
-    qint64 deltaTime() const {
-    	const QDateTime & f = firstTime();
-    	const QDateTime & l = lastTime();
+  qint64 sizeInSecs() const {
+    const QDateTime & f = timeFront();
+    const QDateTime & l = timeBack();
+    
+    return l.secsTo(f);
+  }
 
-    	return f.secsTo(l);
-    }
+  qint64 deltaTime() const {
+    const QDateTime & f = timeFront();
+    const QDateTime & l = timeBack();
+    
+    return f.secsTo(l);
+  }
+  
+  qint64 deltaTime(int i, int j) const {
+    const QDateTime & f = timeAt(i);
+    const QDateTime & l = timeAt(j);
+    
+    return f.secsTo(l);
+  }
 
-    qint64 deltaTime(int i, int j) const {
-    	const QDateTime & f = timeAt(i);
-    	const QDateTime & l = timeAt(j);
+  qint64 delta() const {
+    const T & f = front();
+    const T & l = back();
+    
+    return l - f;
+  }
 
-    	return f.secsTo(l);
-    }
+  qint64 delta(int i, int j) const {
+    const T & f = at(i);
+    const T & l = at(j);
+    
+    return l - f;
+  }
+  
+  const T gradient() const {
+    T d = delta();
+    double dt = deltaTime();
+    
+    return d/dt;
+  }
 
-    const T & at(int i) const {
-     	if (i>=size_) return last();
-     	int idx = currentFirstIndex_ - i;
-     	if (idx<0) idx += size_;
-     	return buffer_[idx];
-     }
-
-    T & first() {
-    	return buffer_[currentFirstIndex_];
-    }
-
-    const T & first() const {
-    	return buffer_[currentFirstIndex_];
-    }
-
-    T & last() {
-    	int idx = currentFirstIndex_;
-    	if (size_<capacity_) {
-    		idx = 0;
-    	} else {
-    		idx++;
-    		if (idx>=capacity_) idx = 0;
-    	}
-    	return buffer_[idx];
-    }
-
-    const T & last() const {
-    	int idx = currentFirstIndex_;
-    	if (size_<capacity_) {
-    		idx = 0;
-    	} else {
-    		idx++;
-    		if (idx>=capacity_) idx = 0;
-    	}
-    	return buffer_[idx];
-    }
-
-    qint64 delta() const {
-    	const T & f = first();
-    	const T & l = last();
-
-    	return l - f;
-    }
-
-    qint64 delta(int i, int j) const {
-    	const T & f = at(i);
-    	const T & l = at(j);
-
-    	return l - f;
-    }
-
-    const T gradient() const {
-    	T d = delta();
-    	double dt = deltaTime();
-
-    	return d/dt;
-    }
-
-    const T gradient(int i, int j) const {
-    	T d = delta(i, j);
-    	double dt = deltaTime(i, j);
-
-    	return d/dt;
-    }
+  const T gradient(int i, int j) const {
+    T d = delta(i, j);
+    double dt = deltaTime(i, j);
+    
+    return d/dt;
+  }
 
 protected:
 
-    int size_;
-    int capacity_;
-    int currentFirstIndex_;
+  size_type size_;
+  size_type currentIdx_;
 
-    QVector<QDateTime> timestamp_;
-    QVector<T> buffer_;
+  QVector<QDateTime> timestamp_;
+  QVector<T> buffer_;
 };
 
 /** @} */
 
-#endif // RINGBUFFER_H
+#endif // HISTORYFIFO_H
