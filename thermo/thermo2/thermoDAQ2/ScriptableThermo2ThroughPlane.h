@@ -51,6 +51,8 @@ public slots:
   QScriptValue getGradientBottom();
   QScriptValue getPowerBottom();
 
+  void waitForStableSampleTemperature(float FOMlimit, int delay, int timeout);
+
 signals:
 
   void changeSinkTemperature(double);
