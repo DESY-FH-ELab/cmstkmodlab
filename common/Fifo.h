@@ -28,7 +28,7 @@ public:
   typedef T value_type;
   typedef size_t size_type;
   
-  explicit Fifo(size_type n, const value_type& value = value_type())
+  explicit Fifo(size_type n = 1, const value_type& value = value_type())
   {
     size_ = n;
     buffer_.resize(size_);

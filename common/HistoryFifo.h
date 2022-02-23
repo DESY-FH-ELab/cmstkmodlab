@@ -31,7 +31,7 @@ public:
   typedef size_t size_type;
   typedef std::pair<QDateTime,value_type> storage_type;
 
-  explicit HistoryFifo(size_type n, const value_type& value = value_type())
+  explicit HistoryFifo(size_type n = 1, const value_type& value = value_type())
   {
     size_ = n;
     buffer_.resize(size_);
