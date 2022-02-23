@@ -24,6 +24,7 @@ class ScriptableLeyboldGraphixOne;
 class ScriptableHuberUnistat525w;
 class ScriptableMarta;
 class ScriptableKeithleyDAQ6510;
+class ScriptableThermo2ThroughPlane;
 
 #include "LeyboldGraphixOneModel.h"
 #include "HuberUnistat525wModel.h"
@@ -59,6 +60,7 @@ protected:
   ScriptableHuberUnistat525w *huberObj_;
   ScriptableMarta *martaObj_;
   ScriptableKeithleyDAQ6510 *keithleyObj_;
+  ScriptableThermo2ThroughPlane *t2tpObj_;
   
   Thermo2ScriptModel* scriptModel_;
   LeyboldGraphixOneModel* leyboldModel_;

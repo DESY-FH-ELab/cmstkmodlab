@@ -29,6 +29,11 @@ ScriptableThermo2ThroughPlane::ScriptableThermo2ThroughPlane(Thermo2ThroughPlane
           model_, SLOT(setSourcePower(double)));
 }
 
+void ScriptableThermo2ThroughPlane::abort()
+{
+  abortRequested_ = true;
+}
+
 QScriptValue ScriptableThermo2ThroughPlane::getSinkTemperature()
 {
   QMutexLocker locker(&mutex_);

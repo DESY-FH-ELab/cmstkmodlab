@@ -85,8 +85,8 @@ void Thermo2ScriptThread::executeScript(const QString & script)
   QScriptValue keithleyValue = engine_->newQObject(keithleyObj_);
   engine_->globalObject().setProperty("keithley", keithleyValue);
 
-  ScriptableThermo2ThroughPlane *t2tpObj = new ScriptableThermo2ThroughPlane(t2tpModel_, this);
-  QScriptValue t2tpValue = engine_->newQObject(t2tpObj);
+  t2tpObj_ = new ScriptableThermo2ThroughPlane(t2tpModel_, this);
+  QScriptValue t2tpValue = engine_->newQObject(t2tpObj_);
   engine_->globalObject().setProperty("t2tp", t2tpValue);
 
   start();
@@ -104,6 +104,7 @@ void Thermo2ScriptThread::abortScript()
     if (huberModel_) huberObj_->abort();
     if (martaModel_) martaObj_->abort();
     keithleyObj_->abort();
+    t2tpObj_->abort();
   }
 }
 

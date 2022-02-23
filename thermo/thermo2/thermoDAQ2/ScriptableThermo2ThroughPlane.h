@@ -24,7 +24,10 @@ class ScriptableThermo2ThroughPlane : public QObject
   Q_OBJECT
 public:
 
-  explicit ScriptableThermo2ThroughPlane(Thermo2ThroughPlaneModel* model, QObject *parent = 0);
+  explicit ScriptableThermo2ThroughPlane(Thermo2ThroughPlaneModel* model,
+      QObject *parent = 0);
+
+  void abort();
 
 public slots:
 
@@ -48,6 +51,8 @@ signals:
 protected:
 
   Thermo2ThroughPlaneModel* model_;
+
+  bool abortRequested_;
 
   // For thread safety
   QMutex mutex_;
