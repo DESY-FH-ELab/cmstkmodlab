@@ -76,7 +76,9 @@ void ThermoDAQ2StreamReader::processHuberUnistat525wInfo(QXmlStreamReader& xml)
   float CWO = xml.attributes().value("CWO").toString().toFloat();
 
   measurement_.u525wInternalTemperature_ = Internal;
+  measurement_.u525wSigmaInternalTemperature_ = 0.0;
   measurement_.u525wProcessTemperature_ = Process;
+  measurement_.u525wSigmaProcessTemperature_ = 0.0;
   measurement_.u525wReturnTemperature_ = Return;
   measurement_.u525wPumpPressure_ = Pressure;
   measurement_.u525wPower_ = Power;
@@ -315,6 +317,7 @@ void ThermoDAQ2StreamReader::processKeithleyDAQ6510Sensor(QXmlStreamReader& xml)
 
   measurement_.keithleyState[card][channel] = state;
   measurement_.keithleyTemperature[card][channel] = temp;
+  measurement_.keithleySigmaTemperature[card][channel] = 0.0;
 }
 
 void ThermoDAQ2StreamReader::processLog(QXmlStreamReader& xml)
@@ -497,7 +500,9 @@ void ThermoDAQ2StreamReader::process()
   otree_->Branch("u525wCirculatorEnabled", &measurement_.u525wCirculatorEnabled_, "u525wCirculatorEnabled/O");
   otree_->Branch("u525wBathTemperature", &measurement_.u525wInternalTemperature_, "u525wBathTemperature/F");
   otree_->Branch("u525wInternalTemperature", &measurement_.u525wInternalTemperature_, "u525wInternalTemperature/F");
+  otree_->Branch("u525wSigmaInternalTemperature", &measurement_.u525wSigmaInternalTemperature_, "u525wSigmaInternalTemperature/F");
   otree_->Branch("u525wProcessTemperature", &measurement_.u525wProcessTemperature_, "u525wProcessTemperature/F");
+  otree_->Branch("u525wSigmaProcessTemperature", &measurement_.u525wSigmaProcessTemperature_, "u525wSigmaProcessTemperature/F");
   otree_->Branch("u525wReturnTemperature", &measurement_.u525wReturnTemperature_, "u525wReturnTemperature/F");
   otree_->Branch("u525wPumpPressure", &measurement_.u525wPumpPressure_, "u525wPumpPressure/F");
   otree_->Branch("u525wPower", &measurement_.u525wPower_, "u525wPower/I");
@@ -591,6 +596,10 @@ void ThermoDAQ2StreamReader::process()
       sprintf(branchName, "KeithleyDAQ6510Temperature_%d%02d", i+1, j+1);
       sprintf(branchLeafList, "KeithleyDAQ6510Temperature_%d%02d/F", i+1, j+1);
       otree_->Branch(branchName, &measurement_.keithleyTemperature[i][j], branchLeafList);
+
+      sprintf(branchName, "KeithleyDAQ6510SigmaTemperature_%d%02d", i+1, j+1);
+      sprintf(branchLeafList, "KeithleyDAQ6510SigmaTemperature_%d%02d/F", i+1, j+1);
+      otree_->Branch(branchName, &measurement_.keithleySigmaTemperature[i][j], branchLeafList);
     }
   }
 

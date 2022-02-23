@@ -34,7 +34,9 @@ typedef struct {
   bool           u525wTemperatureControlEnabled_;
   bool           u525wCirculatorEnabled_;
   float          u525wInternalTemperature_;
+  float          u525wSigmaInternalTemperature_;
   float          u525wProcessTemperature_;
+  float          u525wSigmaProcessTemperature_;
   float          u525wReturnTemperature_;
   float          u525wPumpPressure_;
   int            u525wPower_;
@@ -108,6 +110,7 @@ typedef struct {
 
   bool           keithleyState[2][10];
   float          keithleyTemperature[2][10];
+  float          keithleySigmaTemperature[2][10];
 } Measurement2_t;
 
 typedef struct {
