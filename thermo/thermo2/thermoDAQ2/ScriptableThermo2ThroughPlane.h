@@ -43,6 +43,14 @@ public slots:
   QScriptValue getTopTemperature(unsigned int position);
   QScriptValue getBottomTemperature(unsigned int position);
 
+  QScriptValue getGradientTop();
+  QScriptValue getPowerTop();
+  QScriptValue getSampleTemperatureTop();
+  QScriptValue getSampleTemperatureMiddle();
+  QScriptValue getSampleTemperatureBottom();
+  QScriptValue getGradientBottom();
+  QScriptValue getPowerBottom();
+
 signals:
 
   void changeSinkTemperature(double);
