@@ -38,6 +38,8 @@ public:
     for (size_t i=0;i<size_;++i) {
       buffer_[i] = storage_type(QDateTime::currentDateTime(), value);
     }
+    currentIdx_ = size_-1;
+    fillLevel_ = 0;
   }
 
   void resize(size_type n, const value_type& value = value_type())
@@ -54,6 +56,11 @@ public:
     return size_;
   }
 
+  size_type fillLevel()
+  {
+    return fillLevel_;
+  }
+
   virtual void push_back(const value_type& value)
   {
     push_back(QDateTime::currentDateTime(), value);
@@ -64,17 +71,19 @@ public:
     currentIdx_++;
     if (currentIdx_>=size_) currentIdx_ = 0;
     buffer_[currentIdx_] = storage_type(dt, value);
+    if (fillLevel_<size_) fillLevel_++;
   }
 
   virtual storage_type& at(size_type pos)
   {
     if (pos>=size_) throw std::out_of_range("HistoryFifo index out of range.");
 
-    size_type thePos;
-    if (currentIdx_>=pos) {
-      thePos = currentIdx_ - pos;
+    size_type thePos = pos;
+    if (thePos>=fillLevel_) thePos = fillLevel_-1;
+    if (currentIdx_>=thePos) {
+      thePos = currentIdx_ - thePos;
     } else {
-      thePos = size_ + currentIdx_ - pos;
+      thePos = size_ + currentIdx_ - thePos;
     }
     
     return buffer_[thePos];
@@ -84,11 +93,12 @@ public:
   {
     if (pos>=size_) throw std::out_of_range("HistoryFifo index out of range.");
 
-    size_type thePos;
-    if (currentIdx_>=pos) {
-      thePos = currentIdx_ - pos;
+    size_type thePos = pos;
+    if (thePos>=fillLevel_) thePos = fillLevel_-1;
+    if (currentIdx_>=thePos) {
+      thePos = currentIdx_ - thePos;
     } else {
-      thePos = size_ + currentIdx_ - pos;
+      thePos = size_ + currentIdx_ - thePos;
     }
     
     return buffer_[thePos];
@@ -98,11 +108,12 @@ public:
   {
     if (pos>=size_) throw std::out_of_range("HistoryFifo index out of range.");
 
-    size_type thePos;
-    if (currentIdx_>=pos) {
-      thePos = currentIdx_ - pos;
+    size_type thePos = pos;
+    if (thePos>=fillLevel_) thePos = fillLevel_-1;
+    if (currentIdx_>=thePos) {
+      thePos = currentIdx_ - thePos;
     } else {
-      thePos = size_ + currentIdx_ - pos;
+      thePos = size_ + currentIdx_ - thePos;
     }
     
     return buffer_[thePos].first;
@@ -112,11 +123,12 @@ public:
   {
     if (pos>=size_) throw std::out_of_range("HistoryFifo index out of range.");
 
-    size_type thePos;
-    if (currentIdx_>=pos) {
-      thePos = currentIdx_ - pos;
+    size_type thePos = pos;
+    if (thePos>=fillLevel_) thePos = fillLevel_-1;
+    if (currentIdx_>=thePos) {
+      thePos = currentIdx_ - thePos;
     } else {
-      thePos = size_ + currentIdx_ - pos;
+      thePos = size_ + currentIdx_ - thePos;
     }
     
     return buffer_[thePos].first;
@@ -126,11 +138,12 @@ public:
   {
     if (pos>=size_) throw std::out_of_range("HistoryFifo index out of range.");
 
-    size_type thePos;
-    if (currentIdx_>=pos) {
-      thePos = currentIdx_ - pos;
+    size_type thePos = pos;
+    if (thePos>=fillLevel_) thePos = fillLevel_-1;
+    if (currentIdx_>=thePos) {
+      thePos = currentIdx_ - thePos;
     } else {
-      thePos = size_ + currentIdx_ - pos;
+      thePos = size_ + currentIdx_ - thePos;
     }
 
     return buffer_[thePos].second;
@@ -140,14 +153,20 @@ public:
   {
     if (pos>=size_) throw std::out_of_range("HistoryFifo index out of range.");
 
-    size_type thePos;
-    if (currentIdx_>=pos) {
-      thePos = currentIdx_ - pos;
+    size_type thePos = pos;
+    if (thePos>=fillLevel_) thePos = fillLevel_-1;
+    if (currentIdx_>=thePos) {
+      thePos = currentIdx_ - thePos;
     } else {
-      thePos = size_ + currentIdx_ - pos;
+      thePos = size_ + currentIdx_ - thePos;
     }
 
     return buffer_[thePos].second;
+  }
+
+  virtual storage_type& front()
+  {
+    return at(0);
   }
 
   virtual const storage_type& front() const
@@ -155,9 +174,14 @@ public:
     return at(0);
   }
 
+  virtual storage_type& back()
+  {
+    return at(fillLevel_-1);
+  }
+
   virtual const storage_type& back() const
   {
-    return at(size_-1);
+    return at(fillLevel_-1);
   }
 
   QDateTime & timeFront()
@@ -171,12 +195,12 @@ public:
   }
 
   QDateTime & timeBack() {
-    return timeAt(size_-1);
+    return timeAt(fillLevel_-1);
   }
 
   const QDateTime & timeBack() const
   {
-    return timeAt(size_-1);
+    return timeAt(fillLevel_-1);
   }
   
   virtual value_type& valueFront()
@@ -191,18 +215,18 @@ public:
 
   virtual value_type& valueBack()
   {
-    return valueAt(size_-1);
+    return valueAt(fillLevel_-1);
   }
 
   virtual const value_type& valueBack() const
   {
-    return valueAt(size_-1);
+    return valueAt(fillLevel_-1);
   }
 
   virtual const size_type indexInPast(const qint64& seconds) const
   {
     const QDateTime & f = timeAt(0);
-    for (size_type pos = 0;pos<size_;pos++) {
+    for (size_type pos = 0;pos<fillLevel_;pos++) {
       const QDateTime & l = timeAt(pos);
       if (l.secsTo(f)>=seconds) return pos;
     }
@@ -287,7 +311,7 @@ public:
     value_type temp = 0;
     size_type count = 0;
 
-    for (size_type pos=0;pos<size_;++pos) {
+    for (size_type pos=0;pos<fillLevel_;++pos) {
       temp += valueAt(pos);
       count++;
     }
@@ -302,7 +326,7 @@ public:
     value_type temp = 0;
     size_type count = 0;
     size_type max = i;
-    if (max>=size_) max = size_-1;
+    if (max>=fillLevel_) max = fillLevel_-1;
 
     for (size_type pos=0;pos<=max;++pos) {
       temp += valueAt(pos);
@@ -319,7 +343,7 @@ public:
     value_type temp = 0;
     size_type count = 0;
     size_type max = j;
-    if (max>=size_) max = size_-1;
+    if (max>=fillLevel_) max = fillLevel_-1;
 
     for (size_type pos=i;pos<=max;++pos) {
       temp += valueAt(pos);
@@ -337,7 +361,7 @@ public:
     value_type temp = 0;
     size_type count = 0;
 
-    for (size_type pos=0;pos<size_;++pos) {
+    for (size_type pos=0;pos<fillLevel_;++pos) {
       temp += std::pow(valueAt(pos)-m , 2);
       count++;
     }
@@ -353,7 +377,7 @@ public:
     value_type temp = 0;
     size_type count = 0;
     size_type max = i;
-    if (max>=size_) max = size_-1;
+    if (max>=fillLevel_) max = fillLevel_-1;
 
     for (size_type pos=0;pos<=max;++pos) {
       temp += std::pow(valueAt(pos)-m , 2);
@@ -371,7 +395,7 @@ public:
     value_type temp = 0;
     size_type count = 0;
     size_type max = j;
-    if (max>=size_) max = size_-1;
+    if (max>=fillLevel_) max = fillLevel_-1;
 
     for (size_type pos=i;pos<=max;++pos) {
       temp += std::pow(valueAt(pos)-m , 2);
@@ -428,13 +452,13 @@ public:
   iterator past(const qint64& seconds)
   {
     size_type pos = indexInPast(seconds) + 1;
-    if (pos>size_) pos = size_;
+    if (pos>fillLevel_) pos = fillLevel_;
     return iterator(pos, *this);
   }
 
   iterator end()
   {
-    return iterator(size_, *this);
+    return iterator(fillLevel_, *this);
   }
 
   class const_iterator
@@ -482,19 +506,20 @@ public:
   const const_iterator cpast(const qint64& seconds) const
   {
     size_type pos = indexInPast(seconds) + 1;
-    if (pos>size_) pos = size_;
+    if (pos>fillLevel_) pos = fillLevel_;
     return iterator(pos, *this);
   }
 
   const const_iterator cend() const
   {
-    return const_iterator(size_, *this);
+    return const_iterator(fillLevel_, *this);
   }
 
 protected:
 
   size_type size_;
   size_type currentIdx_;
+  size_type fillLevel_;
   QVector<std::pair<QDateTime,value_type> > buffer_;
 };
 

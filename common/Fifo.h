@@ -34,6 +34,7 @@ public:
     buffer_.resize(size_);
     for (size_t i=0;i<size_;++i) buffer_[i] = value;
     currentIdx_ = size_-1;
+    fillLevel_ = 0;
   }
 
   void resize(size_type n, const value_type& value = value_type())
@@ -54,17 +55,19 @@ public:
     currentIdx_++;
     if (currentIdx_>=size_) currentIdx_ = 0;
     buffer_[currentIdx_] = value;
+    if (fillLevel_<size_) fillLevel_++;
   }
 
   virtual value_type& at(size_type pos)
   {
     if (pos>=size_) throw std::out_of_range("Fifo index out of range.");
 
-    size_type thePos;
-    if (currentIdx_>=pos) {
-      thePos = currentIdx_ - pos;
+    size_type thePos = pos;
+    if (thePos>=fillLevel_) thePos = fillLevel_-1;
+    if (currentIdx_>=thePos) {
+      thePos = currentIdx_ - thePos;
     } else {
-      thePos = size_ + currentIdx_ - pos;
+      thePos = size_ + currentIdx_ - thePos;
     }
     
     return buffer_[thePos];
@@ -74,11 +77,12 @@ public:
   {
     if (pos>=size_) throw std::out_of_range("Fifo index out of range.");
 
-    size_type thePos;
-    if (currentIdx_>=pos) {
-      thePos = currentIdx_ - pos;
+    size_type thePos = pos;
+    if (thePos>=fillLevel_) thePos = fillLevel_-1;
+    if (currentIdx_>=thePos) {
+      thePos = currentIdx_ - thePos;
     } else {
-      thePos = size_ + currentIdx_ - pos;
+      thePos = size_ + currentIdx_ - thePos;
     }
     
     return buffer_[thePos];
@@ -101,7 +105,7 @@ public:
 
   virtual const value_type& back() const
   {
-    return at(size_-1);
+    return at(fillLevel_-1);
   }
 
   class iterator
@@ -148,7 +152,7 @@ public:
 
   iterator end()
   {
-    return iterator(size_, *this);
+    return iterator(fillLevel_, *this);
   }
 
   class const_iterator
@@ -195,14 +199,14 @@ public:
 
   const const_iterator cend() const
   {
-    return const_iterator(size_, *this);
+    return const_iterator(fillLevel_, *this);
   }
     
  protected:
 
   size_type size_;
   size_type currentIdx_;
-
+  size_type fillLevel_;
   QVector<T> buffer_;
 };
 
