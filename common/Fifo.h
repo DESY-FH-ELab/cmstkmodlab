@@ -110,8 +110,8 @@ public:
 
     typedef size_t size_type;
 
-    iterator(size_type position, Fifo& ringbuffer)
-      : position_(position), fifo_(ringbuffer) { }
+    iterator(size_type position, Fifo& fifo)
+      : position_(position), fifo_(fifo) { }
 
     iterator& operator++(int)
     {
@@ -157,8 +157,8 @@ public:
 
     typedef size_t size_type;
 
-    const_iterator(size_type position, const Fifo& ringbuffer)
-      : position_(position), fifo_(ringbuffer) { }
+    const_iterator(size_type position, const Fifo& fifo)
+      : position_(position), fifo_(fifo) { }
 
     const_iterator& operator++(int)
     {
