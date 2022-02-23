@@ -210,46 +210,177 @@ public:
     return size_-1;
   }
 
-  qint64 deltaTime() const {
+  const qint64 deltaTime() const
+  {
     const QDateTime & f = timeFront();
     const QDateTime & l = timeBack();
     
     return f.secsTo(l);
   }
   
-  const qint64 deltaTime(int i, int j) const {
+  const qint64 deltaTime(size_type i) const
+  {
+    const QDateTime & f = timeFront();
+    const QDateTime & l = timeAt(i);
+
+    return f.secsTo(l);
+  }
+
+  const qint64 deltaTime(size_type i, size_type j) const
+  {
     const QDateTime & f = timeAt(i);
     const QDateTime & l = timeAt(j);
     
     return f.secsTo(l);
   }
 
-  qint64 delta() const {
-    const T & f = valueFront();
-    const T & l = valueBack();
+  const value_type delta() const
+  {
+    const value_type & f = valueFront();
+    const value_type & l = valueBack();
     
     return l - f;
   }
 
-  qint64 delta(int i, int j) const {
-    const T & f = valueAt(i);
-    const T & l = valueAt(j);
+  const value_type delta(size_type i) const
+  {
+    const value_type & f = valueFront();
+    const value_type & l = valueAt(i);
+
+    return l - f;
+  }
+
+  const value_type delta(size_type i, size_type j) const
+  {
+    const value_type & f = valueAt(i);
+    const value_type & l = valueAt(j);
     
     return l - f;
   }
   
-  const T gradient() const {
-    T d = delta();
+  const value_type gradient() const
+  {
+    value_type d = delta();
     double dt = deltaTime();
     
     return d/dt;
   }
 
-  const T gradient(int i, int j) const {
-    T d = delta(i, j);
+  const value_type gradient(size_type i) const
+  {
+    value_type d = delta(i);
+    double dt = deltaTime(i);
+
+    return d/dt;
+  }
+
+  const value_type gradient(size_type i, size_type j) const
+  {
+    value_type d = delta(i, j);
     double dt = deltaTime(i, j);
     
     return d/dt;
+  }
+
+  const value_type mean() const
+  {
+    value_type temp = 0;
+    size_type count = 0;
+
+    for (size_type pos=0;pos<size_;++pos) {
+      temp += valueAt(pos);
+      count++;
+    }
+
+    if (count>0) temp/= count;
+
+    return temp;
+  }
+
+  const value_type mean(size_type i) const
+  {
+    value_type temp = 0;
+    size_type count = 0;
+    size_type max = i;
+    if (max>=size_) max = size_-1;
+
+    for (size_type pos=0;pos<=max;++pos) {
+      temp += valueAt(pos);
+      count++;
+    }
+
+    if (count>0) temp/= count;
+
+    return temp;
+  }
+
+  const value_type mean(size_type i, size_type j) const
+  {
+    value_type temp = 0;
+    size_type count = 0;
+    size_type max = j;
+    if (max>=size_) max = size_-1;
+
+    for (size_type pos=i;pos<=max;++pos) {
+      temp += valueAt(pos);
+      count++;
+    }
+
+    if (count>0) temp/= count;
+
+    return temp;
+  }
+
+  const std::pair<value_type,value_type> variance() const
+  {
+    value_type m = mean();
+    value_type temp = 0;
+    size_type count = 0;
+
+    for (size_type pos=0;pos<size_;++pos) {
+      temp += std::pow(valueAt(pos)-m , 2);
+      count++;
+    }
+
+    if (count>0) temp /= count;
+
+    return std::pair<value_type,value_type>(m, temp);
+  }
+
+  const std::pair<value_type,value_type> variance(size_type i) const
+  {
+    value_type m = mean(i);
+    value_type temp = 0;
+    size_type count = 0;
+    size_type max = i;
+    if (max>=size_) max = size_-1;
+
+    for (size_type pos=0;pos<=max;++pos) {
+      temp += std::pow(valueAt(pos)-m , 2);
+      count++;
+    }
+
+    if (count>0) temp /= count;
+
+    return std::pair<value_type,value_type>(m, temp);
+  }
+
+  const std::pair<value_type,value_type> variance(size_type i, size_type j) const
+  {
+    value_type m = mean(i, j);
+    value_type temp = 0;
+    size_type count = 0;
+    size_type max = j;
+    if (max>=size_) max = size_-1;
+
+    for (size_type pos=i;pos<=max;++pos) {
+      temp += std::pow(valueAt(pos)-m , 2);
+      count++;
+    }
+
+    if (count>0) temp /= count;
+
+    return std::pair<value_type,value_type>(m, temp);
   }
 
   class iterator
