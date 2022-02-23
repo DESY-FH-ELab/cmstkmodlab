@@ -134,6 +134,10 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
   gradientBottom_ = 0;
   powerBottom_ = 0;
 
+  // minimum Keithley readout frequency is 1/10s
+  // storage for at least 1800 s
+  sampleTMiddleHistory_ = HistoryFifo<double>(1800/10);
+
   connect(huberModel_, SIGNAL(informationChanged()),
           this, SLOT(huberInfoChanged()));
 
@@ -301,6 +305,30 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
       NQLogDebug("Thermo2ThroughPlaneModel") << "powerBottom_ = " << powerBottom_;
 
       sampleTMiddle_ = 0.5*(sampleTTop_ + sampleTBottom_);
+
+      sampleTMiddleHistory_.push_back(sampleTMiddle_);
+
+      size_t pos = sampleTMiddleHistory_.indexInPast(900);
+      double deltaTime = sampleTMiddleHistory_.deltaTime(pos); // [s]
+
+      if (deltaTime>0) {
+        NQLogSpam("Thermo2ThroughPlaneModel") << "sampleTMiddleHistory " << sampleTMiddleHistory_.fillLevel();
+        NQLogSpam("Thermo2ThroughPlaneModel") << "fillLevel = " << sampleTMiddleHistory_.fillLevel();
+        NQLogSpam("Thermo2ThroughPlaneModel") << "deltaTime = " << sampleTMiddleHistory_.deltaTime() << " s";
+
+        double delta = sampleTMiddleHistory_.delta(pos); // [K]
+        double gradient = sampleTMiddleHistory_.gradient(pos); // [K/s]
+
+        std::pair<double,double> stats = sampleTMiddleHistory_.stats(pos);
+        double mean = stats.first; // [K]
+        double variance = stats.second; // [K^2]
+
+        NQLogSpam("Thermo2ThroughPlaneModel") << "deltaTime = " << sampleTMiddleHistory_.deltaTime() << " s";
+        NQLogSpam("Thermo2ThroughPlaneModel") << "delta =     " << delta << " K";
+        NQLogSpam("Thermo2ThroughPlaneModel") << "gradient =  " << gradient << " K/s";
+        NQLogSpam("Thermo2ThroughPlaneModel") << "mean =      " << mean << " K";
+        NQLogSpam("Thermo2ThroughPlaneModel") << "variance =  " << variance << " K^2";
+      }
 
     } else {
       calculationState_ = false;

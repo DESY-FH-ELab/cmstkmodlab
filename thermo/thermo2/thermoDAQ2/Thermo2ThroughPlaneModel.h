@@ -24,6 +24,8 @@
 #include <QMutex>
 #include <QMutexLocker>
 
+#include <HistoryFifo.h>
+
 #include "Thermo2ThroughPlaneFitter.h"
 
 #include "HuberUnistat525wModel.h"
@@ -69,6 +71,8 @@ public:
   double getSampleTemperatureBottom() const { return sampleTBottom_; }
   double getGradientBottom() const { return gradientBottom_; }
   double getPowerBottom() const { return powerBottom_; }
+
+  const HistoryFifo<double>& getSampleTemperatureMiddleHistory() const { return sampleTMiddleHistory_; }
 
   void statusMessage(const QString & text);
 
@@ -154,6 +158,8 @@ protected:
   double sampleTBottom_;
   double gradientBottom_;
   double powerBottom_;
+
+  HistoryFifo<double> sampleTMiddleHistory_;
 
 signals:
 
