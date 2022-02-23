@@ -136,7 +136,9 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
 
   // minimum Keithley readout frequency is 1/10s
   // storage for at least 1800 s
+  sampleTTopHistory_ = HistoryFifo<double>(1800/10);
   sampleTMiddleHistory_ = HistoryFifo<double>(1800/10);
+  sampleTBottomHistory_ = HistoryFifo<double>(1800/10);
 
   connect(huberModel_, SIGNAL(informationChanged()),
           this, SLOT(huberInfoChanged()));
@@ -306,7 +308,9 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
 
       sampleTMiddle_ = 0.5*(sampleTTop_ + sampleTBottom_);
 
+      sampleTTopHistory_.push_back(sampleTTop_);
       sampleTMiddleHistory_.push_back(sampleTMiddle_);
+      sampleTBottomHistory_.push_back(sampleTBottom_);
 
       size_t pos = sampleTMiddleHistory_.indexInPast(900);
       double deltaTime = sampleTMiddleHistory_.deltaTime(pos); // [s]

@@ -72,7 +72,9 @@ public:
   double getGradientBottom() const { return gradientBottom_; }
   double getPowerBottom() const { return powerBottom_; }
 
+  const HistoryFifo<double>& getSampleTemperatureTopHistory() const { return sampleTTopHistory_; }
   const HistoryFifo<double>& getSampleTemperatureMiddleHistory() const { return sampleTMiddleHistory_; }
+  const HistoryFifo<double>& getSampleTemperatureBottomHistory() const { return sampleTBottomHistory_; }
 
   void statusMessage(const QString & text);
 
@@ -159,7 +161,9 @@ protected:
   double gradientBottom_;
   double powerBottom_;
 
+  HistoryFifo<double> sampleTTopHistory_;
   HistoryFifo<double> sampleTMiddleHistory_;
+  HistoryFifo<double> sampleTBottomHistory_;
 
 signals:
 
