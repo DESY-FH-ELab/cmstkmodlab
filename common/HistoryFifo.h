@@ -231,7 +231,7 @@ public:
       if (l.secsTo(f)>=seconds) return pos;
     }
 
-    return size_-1;
+    return fillLevel_-1;
   }
 
   const qint64 deltaTime() const
@@ -287,7 +287,8 @@ public:
     value_type d = delta();
     double dt = deltaTime();
     
-    return d/dt;
+    if (dt!=0.) d /= dt;
+    return d;
   }
 
   const value_type gradient(size_type i) const
@@ -295,7 +296,8 @@ public:
     value_type d = delta(i);
     double dt = deltaTime(i);
 
-    return d/dt;
+    if (dt!=0.) d /= dt;
+    return d;
   }
 
   const value_type gradient(size_type i, size_type j) const
@@ -303,7 +305,8 @@ public:
     value_type d = delta(i, j);
     double dt = deltaTime(i, j);
     
-    return d/dt;
+    if (dt!=0.) d /= dt;
+    return d;
   }
 
   const value_type mean() const
