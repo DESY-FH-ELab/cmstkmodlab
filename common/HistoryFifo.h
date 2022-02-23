@@ -358,7 +358,7 @@ public:
     return temp;
   }
 
-  const std::pair<value_type,value_type> variance() const
+  const std::pair<value_type,value_type> stats() const
   {
     value_type m = mean();
     value_type temp = 0;
@@ -374,7 +374,7 @@ public:
     return std::pair<value_type,value_type>(m, temp);
   }
 
-  const std::pair<value_type,value_type> variance(size_type i) const
+  const std::pair<value_type,value_type> stats(size_type i) const
   {
     value_type m = mean(i);
     value_type temp = 0;
@@ -392,7 +392,7 @@ public:
     return std::pair<value_type,value_type>(m, temp);
   }
 
-  const std::pair<value_type,value_type> variance(size_type i, size_type j) const
+  const std::pair<value_type,value_type> stats(size_type i, size_type j) const
   {
     value_type m = mean(i, j);
     value_type temp = 0;
