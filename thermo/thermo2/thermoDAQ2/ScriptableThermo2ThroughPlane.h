@@ -24,7 +24,10 @@ class ScriptableThermo2ThroughPlane : public QObject
   Q_OBJECT
 public:
 
-  explicit ScriptableThermo2ThroughPlane(Thermo2ThroughPlaneModel* model, QObject *parent = 0);
+  explicit ScriptableThermo2ThroughPlane(Thermo2ThroughPlaneModel* model,
+      QObject *parent = 0);
+
+  void abort();
 
 public slots:
 
@@ -40,6 +43,16 @@ public slots:
   QScriptValue getTopTemperature(unsigned int position);
   QScriptValue getBottomTemperature(unsigned int position);
 
+  QScriptValue getGradientTop();
+  QScriptValue getPowerTop();
+  QScriptValue getSampleTemperatureTop();
+  QScriptValue getSampleTemperatureMiddle();
+  QScriptValue getSampleTemperatureBottom();
+  QScriptValue getGradientBottom();
+  QScriptValue getPowerBottom();
+
+  void waitForStableSampleTemperature(float FOMlimit, int delay, int timeout);
+
 signals:
 
   void changeSinkTemperature(double);
@@ -48,6 +61,8 @@ signals:
 protected:
 
   Thermo2ThroughPlaneModel* model_;
+
+  bool abortRequested_;
 
   // For thread safety
   QMutex mutex_;

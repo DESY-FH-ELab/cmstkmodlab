@@ -173,7 +173,9 @@ void ThermoDAQ2SlidingWindowConverter::process()
   otree_->Branch("u525wCirculatorEnabled", &omeasurement_.u525wCirculatorEnabled_, "u525wCirculatorEnabled/O");
   otree_->Branch("u525wBathTemperature", &omeasurement_.u525wInternalTemperature_, "u525wBathTemperature/F");
   otree_->Branch("u525wInternalTemperature", &omeasurement_.u525wInternalTemperature_, "u525wInternalTemperature/F");
+  otree_->Branch("u525wSigmaInternalTemperature", &omeasurement_.u525wSigmaInternalTemperature_, "u525wSigmaInternalTemperature/F");
   otree_->Branch("u525wProcessTemperature", &omeasurement_.u525wProcessTemperature_, "u525wProcessTemperature/F");
+  otree_->Branch("u525wSigmaProcessTemperature", &omeasurement_.u525wSigmaProcessTemperature_, "u525wSigmaProcessTemperature/F");
   otree_->Branch("u525wReturnTemperature", &omeasurement_.u525wReturnTemperature_, "u525wReturnTemperature/F");
   otree_->Branch("u525wPumpPressure", &omeasurement_.u525wPumpPressure_, "u525wPumpPressure/F");
   otree_->Branch("u525wPower", &omeasurement_.u525wPower_, "u525wPower/I");
@@ -267,6 +269,10 @@ void ThermoDAQ2SlidingWindowConverter::process()
       sprintf(branchName, "KeithleyDAQ6510Temperature_%d%02d", i+1, j+1);
       sprintf(branchLeafList, "KeithleyDAQ6510Temperature_%d%02d/F", i+1, j+1);
       otree_->Branch(branchName, &omeasurement_.keithleyTemperature[i][j], branchLeafList);
+
+      sprintf(branchName, "KeithleyDAQ6510SigmaTemperature_%d%02d", i+1, j+1);
+      sprintf(branchLeafList, "KeithleyDAQ6510SigmaTemperature_%d%02d/F", i+1, j+1);
+      otree_->Branch(branchName, &omeasurement_.keithleySigmaTemperature[i][j], branchLeafList);
     }
   }
 
@@ -326,28 +332,31 @@ void ThermoDAQ2SlidingWindowConverter::process()
     }
 
     omeasurement_.u525wInternalTemperature_ = 0;
+    omeasurement_.u525wSigmaInternalTemperature_ = 0;
     omeasurement_.u525wProcessTemperature_ = 0;
+    omeasurement_.u525wSigmaProcessTemperature_ = 0;
     for (int i=0;i<2;++i) {
       for (int j=0;j<10;++j) {
-          omeasurement_.keithleyTemperature[i][j] = 0;
+        omeasurement_.keithleyTemperature[i][j] = 0;
+        omeasurement_.keithleySigmaTemperature[i][j] = 0;
       }
     }
 
     Double_t steps = 0;
     for (Long64_t jentry=lastEntry; jentry<=ientry ; jentry++) {
-        itree_->GetEntry(jentry);
+      itree_->GetEntry(jentry);
 
-        Long64_t currentUTime = omeasurement_.uTime;
+      Long64_t currentUTime = omeasurement_.uTime;
 
-        omeasurement_.u525wInternalTemperature_ += imeasurement_.u525wInternalTemperature_;
-        omeasurement_.u525wProcessTemperature_ += imeasurement_.u525wProcessTemperature_;
+      omeasurement_.u525wInternalTemperature_ += imeasurement_.u525wInternalTemperature_;
+      omeasurement_.u525wProcessTemperature_ += imeasurement_.u525wProcessTemperature_;
 
-        for (int i=0;i<2;++i) {
-          for (int j=0;j<10;++j) {
-              omeasurement_.keithleyTemperature[i][j] += imeasurement_.keithleyTemperature[i][j];
-          }
+      for (int i=0;i<2;++i) {
+        for (int j=0;j<10;++j) {
+          omeasurement_.keithleyTemperature[i][j] += imeasurement_.keithleyTemperature[i][j];
         }
-        steps++;
+      }
+      steps++;
     }
 
     omeasurement_.u525wInternalTemperature_ /= steps;
@@ -356,6 +365,21 @@ void ThermoDAQ2SlidingWindowConverter::process()
       for (int j=0;j<10;++j) {
           omeasurement_.keithleyTemperature[i][j] /= steps;
       }
+    }
+
+    steps = 0;
+    for (Long64_t jentry=lastEntry; jentry<=ientry ; jentry++) {
+      itree_->GetEntry(jentry);
+
+      omeasurement_.u525wSigmaInternalTemperature_ += std::pow(imeasurement_.u525wInternalTemperature_ - omeasurement_.u525wInternalTemperature_, 2);
+      omeasurement_.u525wSigmaProcessTemperature_ += std::pow(imeasurement_.u525wProcessTemperature_ - omeasurement_.u525wProcessTemperature_, 2);
+
+      for (int i=0;i<2;++i) {
+        for (int j=0;j<10;++j) {
+          omeasurement_.keithleySigmaTemperature[i][j] += std::pow(imeasurement_.keithleyTemperature[i][j] - omeasurement_.keithleyTemperature[i][j], 2);
+        }
+      }
+      steps++;
     }
 
     otree_->Fill();
