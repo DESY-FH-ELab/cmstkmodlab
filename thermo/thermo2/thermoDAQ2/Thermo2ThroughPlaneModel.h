@@ -44,7 +44,9 @@ public:
   bool getMattermostStatus() const { return mattermostStatus_; }
 
   bool getHuberState() const { return huberState_; }
-  double getSinkTemperature() const { return huberTemperatureSetPoint_; }
+  double getTemperatureSetPoint() const { return huberTemperatureSetPoint_; }
+  double getInternalTemperature() const { return huberInternalTemperature_; }
+  double getProcessTemperature() const { return huberProcessTemperature_; }
 
   bool getNGE103BState() const { return nge103BState_; }
   bool getNGE103BChannelState() const { return nge103BChannelState_; }
@@ -74,7 +76,7 @@ public:
 
 public slots:
 
-  void setSinkTemperature(double temperature);
+  void setTemperatureSetPoint(double temperature);
   void setSourcePower(double power);
 
 protected slots:
@@ -114,6 +116,8 @@ protected:
 
   bool huberState_;
   double huberTemperatureSetPoint_;
+  double huberInternalTemperature_;
+  double huberProcessTemperature_;
 
   unsigned int nge103BChannel_;
   bool nge103BState_;

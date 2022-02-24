@@ -111,6 +111,8 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
 
   huberState_ = false;
   huberTemperatureSetPoint_ = 0;
+  huberInternalTemperature_ = 0;
+  huberProcessTemperature_ = 0;
 
   nge103BState_ = false;
   nge103BChannelState_ = false;
@@ -172,7 +174,7 @@ void Thermo2ThroughPlaneModel::configurationChanged()
   keithleyBottomCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor2");
 }
 
-void Thermo2ThroughPlaneModel::setSinkTemperature(double temperature)
+void Thermo2ThroughPlaneModel::setTemperatureSetPoint(double temperature)
 {
   QMutexLocker locker(&mutex_);
 
@@ -197,6 +199,8 @@ void Thermo2ThroughPlaneModel::huberInfoChanged()
   bool changed = false;
   changed |= updateIfChanged<bool>(huberState_, huberModel_->getDeviceState()==READY ? true : false);
   changed |= updateIfChanged<double>(huberTemperatureSetPoint_, huberModel_->getTemperatureSetPoint());
+  changed |= updateIfChanged<double>(huberInternalTemperature_, huberModel_->getInternalTemperature());
+  changed |= updateIfChanged<double>(huberProcessTemperature_, huberModel_->getProcessTemperature());
 
   if (changed) {
     emit informationChanged();

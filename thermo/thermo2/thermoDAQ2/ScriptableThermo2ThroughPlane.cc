@@ -24,7 +24,7 @@ ScriptableThermo2ThroughPlane::ScriptableThermo2ThroughPlane(Thermo2ThroughPlane
     model_(model)
 {
   connect(this, SIGNAL(changeSinkTemperature(double)),
-          model_, SLOT(setSinkTemperature(double)));
+          model_, SLOT(setTemperatureSetPoint(double)));
   connect(this, SIGNAL(changeSourcePower(double)),
           model_, SLOT(setSourcePower(double)));
 }
@@ -32,7 +32,7 @@ ScriptableThermo2ThroughPlane::ScriptableThermo2ThroughPlane(Thermo2ThroughPlane
 QScriptValue ScriptableThermo2ThroughPlane::getSinkTemperature()
 {
   QMutexLocker locker(&mutex_);
-  double value = model_->getSinkTemperature();
+  double value = model_->getTemperatureSetPoint();
   return QScriptValue(value);
 }
 
