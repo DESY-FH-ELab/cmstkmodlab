@@ -319,11 +319,8 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
       size_t pos = sampleTMiddleHistory_.indexInPast(900);
       double deltaTime = sampleTMiddleHistory_.deltaTime(pos); // [s]
 
-      if (deltaTime>0) {
-        NQLogSpam("Thermo2ThroughPlaneModel") << "sampleTMiddleHistory " << sampleTMiddleHistory_.fillLevel();
-        NQLogSpam("Thermo2ThroughPlaneModel") << "fillLevel = " << sampleTMiddleHistory_.fillLevel();
-        NQLogSpam("Thermo2ThroughPlaneModel") << "deltaTime = " << sampleTMiddleHistory_.deltaTime() << " s";
-
+      if (deltaTime!=0) {
+        
         double delta = sampleTMiddleHistory_.delta(pos); // [K]
         double gradient = sampleTMiddleHistory_.gradient(pos); // [K/s]
 
@@ -331,6 +328,8 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
         double mean = stats.first; // [K]
         double variance = stats.second; // [K^2]
 
+        NQLogSpam("Thermo2ThroughPlaneModel") << "sampleTMiddleHistory " << sampleTMiddleHistory_.fillLevel();
+        NQLogSpam("Thermo2ThroughPlaneModel") << "fillLevel = " << sampleTMiddleHistory_.fillLevel();
         NQLogSpam("Thermo2ThroughPlaneModel") << "deltaTime = " << sampleTMiddleHistory_.deltaTime() << " s";
         NQLogSpam("Thermo2ThroughPlaneModel") << "delta =     " << delta << " K";
         NQLogSpam("Thermo2ThroughPlaneModel") << "gradient =  " << gradient << " K/s";
