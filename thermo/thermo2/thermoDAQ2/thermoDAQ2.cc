@@ -78,10 +78,19 @@ int main( int argc, char** argv )
 #endif
   QDir dir(logdir);
   if (!dir.exists()) dir.mkpath(".");
-  QString logfilename = logdir + "/thermoDAQ2.log";
+
+  QDateTime dt = QDateTime::currentDateTime().toUTC();
+  QString logfilename("thermoDAQ2_%1-%2.log");
+  logfilename = logfilename.arg(dt.toString("yyyyMMdd"));
+
+  int i = 1;
+  while (dir.exists(logfilename.arg(i))) ++i;
+  logfilename = logfilename.arg(i);
+
+  logfilename = dir.absoluteFilePath(logfilename);
 
   NQLogMessage("thermoDAQ2") << "version " << APPLICATIONVERSIONSTR;
-
+ 
   NQLogMessage("thermoDAQ2") << "using " << logfilename << " for logging";
 
   QFile * logfile = new QFile(logfilename);
