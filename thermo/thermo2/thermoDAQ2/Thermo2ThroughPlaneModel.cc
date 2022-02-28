@@ -125,6 +125,11 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
     keithleyBottomSensorStates_[c] = false;
     keithleyTopTemperatures_[c] = 0;
     keithleyBottomTemperatures_[c] = 0;
+
+    // minimum Keithley readout frequency is 1/10s
+    // storage for at least 1800 s
+    keithleyTopTemperatureHistory_[c] = HistoryFifo<double>(1800/10);
+    keithleyBottomTemperatureHistory_[c] = HistoryFifo<double>(1800/10);
   }
 
   calculationState_ = false;
@@ -135,12 +140,6 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
   sampleTBottom_ = 0;
   gradientBottom_ = 0;
   powerBottom_ = 0;
-
-  // minimum Keithley readout frequency is 1/10s
-  // storage for at least 1800 s
-  sampleTTopHistory_ = HistoryFifo<double>(1800/10);
-  sampleTMiddleHistory_ = HistoryFifo<double>(1800/10);
-  sampleTBottomHistory_ = HistoryFifo<double>(1800/10);
 
   connect(huberModel_, SIGNAL(informationChanged()),
           this, SLOT(huberInfoChanged()));
@@ -272,6 +271,49 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
         keithleyModel_->getTemperature(keithleyAmbientSensor_));
   }
 
+  const QDateTime dt(QDateTime::currentDateTime());
+  for (unsigned int i=0;i<6;++i) {
+    keithleyTopTemperatureHistory_[i].push_back(dt, keithleyTopTemperatures_[i]);
+    keithleyBottomTemperatureHistory_[i].push_back(dt, keithleyBottomTemperatures_[i]);
+  }
+
+  size_t pos = keithleyTopTemperatureHistory_[0].indexInPast(900);
+  double deltaTime = keithleyTopTemperatureHistory_[0].deltaTime(pos); // [s]
+
+  if (deltaTime!=0) {
+
+    NQLogMessage("Thermo2ThroughPlaneModel") << "stats " << dt.toSecsSinceEpoch();
+    NQLogMessage("Thermo2ThroughPlaneModel") << "fillLevel " << keithleyTopTemperatureHistory_[0].fillLevel();
+    NQLogMessage("Thermo2ThroughPlaneModel") << "deltaTime " << keithleyTopTemperatureHistory_[0].deltaTime();
+
+    double delta, gradient, mean, variance;
+    std::pair<double,double> stats;
+    for (unsigned int i=0;i<6;++i) {
+      delta = keithleyTopTemperatureHistory_[i].delta(pos); // [K]
+      gradient = keithleyTopTemperatureHistory_[i].gradient(pos); // [K/s]
+      stats = keithleyTopTemperatureHistory_[i].stats(pos);
+      mean = stats.first; // [K]
+      variance = stats.second; // [K^2]
+
+      NQLogMessage("Thermo2ThroughPlaneModel") << "delta_top " << i << " " << delta;
+      NQLogMessage("Thermo2ThroughPlaneModel") << "gradient_top " << i << " " << gradient;
+      NQLogMessage("Thermo2ThroughPlaneModel") << "mean_top " << i << " " << mean;
+      NQLogMessage("Thermo2ThroughPlaneModel") << "variance_top " << i << " " << variance;
+    }
+    for (unsigned int i=0;i<6;++i) {
+      delta = keithleyBottomTemperatureHistory_[i].delta(pos); // [K]
+      gradient = keithleyBottomTemperatureHistory_[i].gradient(pos); // [K/s]
+      stats = keithleyBottomTemperatureHistory_[i].stats(pos);
+      mean = stats.first; // [K]
+      variance = stats.second; // [K^2]
+
+      NQLogMessage("Thermo2ThroughPlaneModel") << "delta_bot " << i << " " << delta;
+      NQLogMessage("Thermo2ThroughPlaneModel") << "gradient_bot " << i << " " << gradient;
+      NQLogMessage("Thermo2ThroughPlaneModel") << "mean_bot " << i << " " << mean;
+      NQLogMessage("Thermo2ThroughPlaneModel") << "variance_bot " << i << " " << variance;
+    }
+  }
+
   if (changed) {
 
     if (countTop>=2 && countBottom>=2) {
@@ -312,6 +354,7 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
 
       sampleTMiddle_ = 0.5*(sampleTTop_ + sampleTBottom_);
 
+      /*
       sampleTTopHistory_.push_back(sampleTTop_);
       sampleTMiddleHistory_.push_back(sampleTMiddle_);
       sampleTBottomHistory_.push_back(sampleTBottom_);
@@ -336,6 +379,7 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
         NQLogMessage("Thermo2ThroughPlaneModel") << "mean =      " << mean << " K";
         NQLogMessage("Thermo2ThroughPlaneModel") << "variance =  " << variance << " K^2";
       }
+      */
 
     } else {
       calculationState_ = false;

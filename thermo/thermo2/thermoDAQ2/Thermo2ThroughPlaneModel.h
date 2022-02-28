@@ -62,7 +62,9 @@ public:
   bool getKeithleyBottomSensorState(unsigned int position) const { return keithleyBottomSensorStates_[position]; }
   bool getKeithleyAmbientSensorState() const { return keithleyAmbientSensorState_; }
   double getKeithleyTopTemperature(unsigned int position) const { return keithleyTopTemperatures_[position]; }
+  const HistoryFifo<double>& getKeithleyTopTemperatureHistory(unsigned int position) const { return keithleyTopTemperatureHistory_[position]; }
   double getKeithleyBottomTemperature(unsigned int position) const { return keithleyBottomTemperatures_[position]; }
+  const HistoryFifo<double>& getKeithleyBottomTemperatureHistory(unsigned int position) const { return keithleyBottomTemperatureHistory_[position]; }
   double getKeithleyAmbientTemperature() const { return keithleyAmbientTemperature_; }
 
   bool getCalculationState() const { return calculationState_; }
@@ -73,10 +75,6 @@ public:
   double getSampleTemperatureBottom() const { return sampleTBottom_; }
   double getGradientBottom() const { return gradientBottom_; }
   double getPowerBottom() const { return powerBottom_; }
-
-  const HistoryFifo<double>& getSampleTemperatureTopHistory() const { return sampleTTopHistory_; }
-  const HistoryFifo<double>& getSampleTemperatureMiddleHistory() const { return sampleTMiddleHistory_; }
-  const HistoryFifo<double>& getSampleTemperatureBottomHistory() const { return sampleTBottomHistory_; }
 
   void statusMessage(const QString & text);
 
@@ -149,7 +147,9 @@ protected:
   std::array<bool,6> keithleyBottomSensorStates_;
   bool keithleyAmbientSensorState_;
   std::array<double,6> keithleyTopTemperatures_;
+  std::array<HistoryFifo<double>,6> keithleyTopTemperatureHistory_;
   std::array<double,6> keithleyBottomTemperatures_;
+  std::array<HistoryFifo<double>,6> keithleyBottomTemperatureHistory_;
   double keithleyAmbientTemperature_;
 
   double sourcePower_;
@@ -164,10 +164,6 @@ protected:
   double sampleTBottom_;
   double gradientBottom_;
   double powerBottom_;
-
-  HistoryFifo<double> sampleTTopHistory_;
-  HistoryFifo<double> sampleTMiddleHistory_;
-  HistoryFifo<double> sampleTBottomHistory_;
 
 signals:
 
