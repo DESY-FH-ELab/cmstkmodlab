@@ -328,13 +328,13 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
         double mean = stats.first; // [K]
         double variance = stats.second; // [K^2]
 
-        NQLogSpam("Thermo2ThroughPlaneModel") << "sampleTMiddleHistory " << sampleTMiddleHistory_.fillLevel();
-        NQLogSpam("Thermo2ThroughPlaneModel") << "fillLevel = " << sampleTMiddleHistory_.fillLevel();
-        NQLogSpam("Thermo2ThroughPlaneModel") << "deltaTime = " << sampleTMiddleHistory_.deltaTime() << " s";
-        NQLogSpam("Thermo2ThroughPlaneModel") << "delta =     " << delta << " K";
-        NQLogSpam("Thermo2ThroughPlaneModel") << "gradient =  " << gradient << " K/s";
-        NQLogSpam("Thermo2ThroughPlaneModel") << "mean =      " << mean << " K";
-        NQLogSpam("Thermo2ThroughPlaneModel") << "variance =  " << variance << " K^2";
+        NQLogMessage("Thermo2ThroughPlaneModel") << "sampleTMiddleHistory " << sampleTMiddleHistory_.fillLevel();
+        NQLogMessage("Thermo2ThroughPlaneModel") << "fillLevel = " << sampleTMiddleHistory_.fillLevel();
+        NQLogMessage("Thermo2ThroughPlaneModel") << "deltaTime = " << sampleTMiddleHistory_.deltaTime() << " s";
+        NQLogMessage("Thermo2ThroughPlaneModel") << "delta =     " << delta << " K";
+        NQLogMessage("Thermo2ThroughPlaneModel") << "gradient =  " << gradient << " K/s";
+        NQLogMessage("Thermo2ThroughPlaneModel") << "mean =      " << mean << " K";
+        NQLogMessage("Thermo2ThroughPlaneModel") << "variance =  " << variance << " K^2";
       }
 
     } else {
