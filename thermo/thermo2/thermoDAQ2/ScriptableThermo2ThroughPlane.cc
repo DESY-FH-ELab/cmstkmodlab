@@ -183,6 +183,7 @@ void ScriptableThermo2ThroughPlane::waitForStableSampleTemperature(float FOMlimi
 
     QMutexLocker locker(&mutex_);
 
+    /*
     const HistoryFifo<double>& sampleTMiddleHistory = model_->getSampleTemperatureMiddleHistory();
     size_t pos = sampleTMiddleHistory.indexInPast(900);
     double deltaTime = sampleTMiddleHistory.deltaTime(pos); // [s]
@@ -196,13 +197,17 @@ void ScriptableThermo2ThroughPlane::waitForStableSampleTemperature(float FOMlimi
       mean = stats.first; // [K]
       variance = stats.second; // [K^2]
     }
+    */
+
     locker.unlock();
 
+    /*
     if (deltaTime>0) {
       double FOM = 999;
 
       if (FOM<FOMlimit) break;
     }
+    */
   }
 
   model_->statusMessage("done");
