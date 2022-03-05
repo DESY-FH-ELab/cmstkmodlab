@@ -277,7 +277,7 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
     keithleyBottomTemperatureHistory_[i].push_back(dt, keithleyBottomTemperatures_[i]);
   }
 
-  size_t pos = keithleyTopTemperatureHistory_[0].indexInPast(900);
+  size_t pos = keithleyTopTemperatureHistory_[0].indexInPast(1800);
   double deltaTime = keithleyTopTemperatureHistory_[0].deltaTime(pos); // [s]
 
   if (deltaTime!=0) {
