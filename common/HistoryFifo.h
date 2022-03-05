@@ -14,6 +14,7 @@
 #define HISTORYFIFO_H
 
 #include <iostream>
+#include <cmath>
 #include <utility>
 
 #include <QVector>
