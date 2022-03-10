@@ -60,6 +60,7 @@ int main(int argc, char ** argv)
   NQLogger::instance()->addActiveModule("*");
   NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
 
+  /*
   {
     Ringbuffer<int,10> rb;
     
@@ -73,6 +74,7 @@ int main(int argc, char ** argv)
     }
 
   }
+  */
   
   /*
   {
@@ -144,30 +146,42 @@ int main(int argc, char ** argv)
   }
   */
 
-  /*
   {
     HistoryFifo<double> fifo(5);
 
-    fifo.push(QDateTime::fromString("2017-06-13T09:09:11", Qt::ISODate), 10);
-    fifo.push(QDateTime::fromString("2017-06-13T09:09:12", Qt::ISODate), 20);
-    fifo.push(QDateTime::fromString("2017-06-13T09:09:13", Qt::ISODate), 30);
-    fifo.push(QDateTime::fromString("2017-06-13T09:09:14", Qt::ISODate), 40);
-    fifo.push(QDateTime::fromString("2017-06-13T09:09:15", Qt::ISODate), 50);
-    fifo.push(QDateTime::fromString("2017-06-13T09:09:16", Qt::ISODate), 60);
-    fifo.push(QDateTime::fromString("2017-06-13T09:09:17", Qt::ISODate), 70);
-    fifo.push(QDateTime::fromString("2017-06-13T09:09:18", Qt::ISODate), 80);
-    fifo.push(QDateTime::fromString("2017-06-13T09:09:19", Qt::ISODate), 90);
+    fifo.push_back(QDateTime::fromString("2017-06-13T09:09:11", Qt::ISODate), 10);
+    fifo.push_back(QDateTime::fromString("2017-06-13T09:09:12", Qt::ISODate), 20);
+    fifo.push_back(QDateTime::fromString("2017-06-13T09:09:13", Qt::ISODate), 30);
+    fifo.push_back(QDateTime::fromString("2017-06-13T09:09:14", Qt::ISODate), 40);
+    fifo.push_back(QDateTime::fromString("2017-06-13T09:09:15", Qt::ISODate), 50);
+    fifo.push_back(QDateTime::fromString("2017-06-13T09:09:16", Qt::ISODate), 60);
+    fifo.push_back(QDateTime::fromString("2017-06-13T09:09:17", Qt::ISODate), 70);
+    fifo.push_back(QDateTime::fromString("2017-06-13T09:09:18", Qt::ISODate), 80);
+    fifo.push_back(QDateTime::fromString("2017-06-13T09:09:19", Qt::ISODate), 90);
 
-    for (int i=0;i<fifo.size();++i) {
-      std::cout << fifo.timeAt(i).toString(Qt::ISODate).toStdString() << " : " << fifo.at(i) << std::endl;
+    /*
+    for (auto & i : fifo) {
+      std::cout << i.first.toString(Qt::ISODate).toStdString() << " : " << i.second << std::endl;
+    }
+    */
+
+    for (auto it = fifo.begin(); it!=fifo.past(2);++it) {
+      std::cout << (*it).first.toString(Qt::ISODate).toStdString() << " : " << (*it).second << std::endl;
     }
 
-    std::cout << fifo.sizeInSecs() << std::endl;
-    std::cout << fifo.deltaTime(0, 4) << std::endl;
-    std::cout << fifo.delta(0, 4) << std::endl;
-    std::cout << fifo.gradient(0, 4) << std::endl;
+    std::cout << fifo.deltaTime(2) << std::endl;
+    std::cout << fifo.delta(2) << std::endl;
+    std::cout << fifo.gradient(2) << std::endl;
+
+    std::pair<double,double> stats = fifo.stats(2);
+    std::cout << stats.first << " : " << stats.second << std::endl;
+
+    /*
+    std::cout << fifo.deltaTime(2) << std::endl;
+    std::cout << fifo.delta(2) << std::endl;
+    std::cout << fifo.gradient(2) << std::endl;
+    */
   }
-  */
 
   /*
   {
