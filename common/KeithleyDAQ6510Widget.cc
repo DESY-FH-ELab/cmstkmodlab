@@ -361,7 +361,7 @@ void KeithleyDAQ6510TemperatureWidget::controlStateChanged(bool enabled)
     updateWidgets();
   } else {
     enabledCheckBox_->setEnabled(false);
-    currentTempLabel_->setEnabled( false );
+    currentTempLabel_->setEnabled(false);
     currentTempDisplay_->setEnabled(false);
   }
 }
@@ -370,7 +370,7 @@ void KeithleyDAQ6510TemperatureWidget::controlStateChanged(bool enabled)
 void KeithleyDAQ6510TemperatureWidget::sensorStateChanged(unsigned int sensor,
                                                           State /* state */)
 {
-  if ( sensor_ == sensor )
+  if (sensor_ == sensor)
       updateWidgets();
 }
 
