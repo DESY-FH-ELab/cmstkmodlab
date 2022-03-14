@@ -103,6 +103,45 @@ int main(int argc, char *argv[])
     parser.addPositionalArgument("<Tv>", "Tv");
     if (args.count()!=4) parser.showHelp(0);
 
+  } else if (command == "setSetPoint") {
+    parser.clearPositionalArguments();
+    parser.addPositionalArgument("setSetPoint", "Set chiller temperature set point");
+    parser.addPositionalArgument("<temperature>", "temperature");
+    if (args.count()!=2) parser.showHelp(0);
+
+  } else if (command == "setTemperatureControl") {
+    parser.clearPositionalArguments();
+    parser.addPositionalArgument("setTemperatureControl", "Set state of chiller temperature control");
+    parser.addPositionalArgument("<state>", "1 = on / 0 = off");
+    if (args.count()!=2) parser.showHelp(0);
+
+  } else if (command == "setTemperatureControl") {
+    parser.clearPositionalArguments();
+    parser.addPositionalArgument("setTemperatureControl", "Set state of chiller temperature control");
+    parser.addPositionalArgument("<state>", "1 = on / 0 = off");
+    if (args.count()!=2) parser.showHelp(0);
+
+  } else if (command == "setOutputState") {
+    parser.clearPositionalArguments();
+    parser.addPositionalArgument("setOutputState", "Set power supply output state");
+    parser.addPositionalArgument("<channel>", "channel 1-3");
+    parser.addPositionalArgument("<state>", "1 = on / 0 = off");
+    if (args.count()!=3) parser.showHelp(0);
+
+  } else if (command == "setVoltage") {
+    parser.clearPositionalArguments();
+    parser.addPositionalArgument("setVoltage", "Set voltage");
+    parser.addPositionalArgument("<channel>", "channel 1-3");
+    parser.addPositionalArgument("<voltage>", "voltage");
+    if (args.count()!=3) parser.showHelp(0);
+
+  } else if (command == "setCurrent") {
+    parser.clearPositionalArguments();
+    parser.addPositionalArgument("setCurrent", "Set current");
+    parser.addPositionalArgument("<channel>", "channel 1-3");
+    parser.addPositionalArgument("<current>", "current");
+    if (args.count()!=3) parser.showHelp(0);
+
   } else {
     parser.showHelp(0);
   }
@@ -115,7 +154,7 @@ int main(int argc, char *argv[])
   }
 
   QStringList parameters;
-
+    
   if (command == "setKp") {
     parameters << args.last();
   } else if (command == "setTn") {
@@ -124,6 +163,19 @@ int main(int argc, char *argv[])
     parameters << args.last();
   } else if (command == "setPID") {
     parameters << args[args.count()-3];
+    parameters << args[args.count()-2];
+    parameters << args[args.count()-1];
+  } else if (command == "setSetPoint") {
+    parameters << args.last();
+  } else if (command == "setTemperatureControl") {
+    parameters << args.last();
+  } else if (command == "setOutputState") {
+    parameters << args[args.count()-2];
+    parameters << args[args.count()-1];
+  } else if (command == "setVoltage") {
+    parameters << args[args.count()-2];
+    parameters << args[args.count()-1];
+  } else if (command == "setCurrent") {
     parameters << args[args.count()-2];
     parameters << args[args.count()-1];
   }
