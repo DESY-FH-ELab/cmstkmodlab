@@ -144,6 +144,26 @@ bool Thermo2CommunicationThread::handleCommand(QStringList& tokens, QTextStream&
     if (pars.count()!=3) return false;
     huberModel_->setPID(pars[0].toInt(), pars[1].toFloat(), pars[2].toFloat());
 
+  } else if (tokens[1] == "setSetPoint") {
+    if (pars.count()!=1) return false;
+    huberModel_->setTemperatureSetPoint(pars[0].toFloat());
+
+  } else if (tokens[1] == "setTemperatureControl") {
+    if (pars.count()!=1) return false;
+    huberModel_->setTemperatureControlEnabled(pars[0].toInt());
+
+  } else if (tokens[1] == "setOutputState") {
+    if (pars.count()!=2) return false;
+    nge103BModel_->setOutputState(pars[0].toInt(), pars[1].toInt());
+
+  } else if (tokens[1] == "setVoltage") {
+    if (pars.count()!=2) return false;
+    nge103BModel_->setVoltage(pars[0].toInt(), pars[1].toFloat());
+
+  } else if (tokens[1] == "setCurrent") {
+    if (pars.count()!=2) return false;
+    nge103BModel_->setCurrent(pars[0].toInt(), pars[1].toFloat());
+
   }
 
   return true;

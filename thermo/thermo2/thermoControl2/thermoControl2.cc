@@ -35,13 +35,22 @@ int main(int argc, char *argv[])
 
   parser.addPositionalArgument("<command>",
       "One of the following commands:\n"
+      " Huber Unistat\n"
+      " -------------\n"
       "   getKp\n"
       "   setKp\n"
       "   getTn\n"
       "   setTn\n"
       "   getTv\n"
       "   setTv\n"
-      "   setPID");
+      "   setPID\n"
+      "   setSetPoint\n"
+      "   setTemperatureControl\n"
+      " Rohde & Schwartz NGE103B\n"
+      " ------------------------\n"
+      "   setOutputState\n"
+      "   setVoltage\n"
+      "   setCurrent");
 
   parser.parse(app.arguments());
 
