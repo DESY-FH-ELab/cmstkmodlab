@@ -67,8 +67,14 @@ void ThermoDAQ2StreamReader::processHuberUnistat525wControl(QXmlStreamReader& xm
 
 void ThermoDAQ2StreamReader::processHuberUnistat525wInfo(QXmlStreamReader& xml)
 {
-  float Internal = xml.attributes().value("Internal").toString().toFloat();
-  float Process = xml.attributes().value("Process").toString().toFloat();
+  float Internal, Process;
+  if (xml.attributes().hasAttribute("Bath")) {
+    Internal = xml.attributes().value("Bath").toString().toFloat();
+    Process = Internal;
+  } else {
+    Internal = xml.attributes().value("Internal").toString().toFloat();
+    Process = xml.attributes().value("Process").toString().toFloat();
+  }
   float Return = xml.attributes().value("Return").toString().toFloat();
   float Pressure = xml.attributes().value("Pressure").toString().toFloat();
   int Power = xml.attributes().value("Power").toString().toInt();
