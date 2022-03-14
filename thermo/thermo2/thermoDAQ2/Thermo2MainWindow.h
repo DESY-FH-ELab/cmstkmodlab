@@ -24,6 +24,13 @@
 #include "RohdeSchwarzNGE103BModel.h"
 #include "KeithleyDAQ6510Model.h"
 
+#include "HuberUnistat525wWidget.h"
+#include "MartaWidget.h"
+#include "AgilentTwisTorr304Widget.h"
+#include "LeyboldGraphixOneWidget.h"
+#include "RohdeSchwarzNGE103BWidget.h"
+#include "KeithleyDAQ6510Widget.h"
+
 #include "Thermo2DAQModel.h"
 #include "Thermo2DAQThread.h"
 #include "Thermo2DAQStreamer.h"
@@ -43,6 +50,7 @@ public:
 public slots:
 
   void quit();
+  void controlStateChanged(bool);  
 
 protected:
 
@@ -61,6 +69,13 @@ protected:
   RohdeSchwarzNGE103BModel* nge103BModel_;
   KeithleyDAQ6510Model* keithleyModel_;
 
+  HuberUnistat525wWidget* huberWidget_;
+  MartaWidget* martaWidget_;
+  AgilentTwisTorr304Widget* agilentWidget_;
+  LeyboldGraphixOneWidget* leyboldWidget_;
+  RohdeSchwarzNGE103BWidget* nge103BWidget_;
+  KeithleyDAQ6510Widget* keithleyWidget_;
+  
   Thermo2DAQModel* daqModel_;
   Thermo2DAQThread* daqThread_;
   Thermo2DAQStreamer* daqStreamer_;

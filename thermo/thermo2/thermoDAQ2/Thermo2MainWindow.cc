@@ -24,12 +24,7 @@
 
 #include <nqlogger.h>
 
-#include "HuberUnistat525wWidget.h"
 #include "MartaWidget.h"
-#include "AgilentTwisTorr304Widget.h"
-#include "LeyboldGraphixOneWidget.h"
-#include "RohdeSchwarzNGE103BWidget.h"
-#include "KeithleyDAQ6510Widget.h"
 
 #include "Thermo2DAQWidget.h"
 #include "Thermo2ScriptWidget.h"
@@ -181,9 +176,9 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   	gbox->setLayout(vlayout2);
 
   	// HUBER MODEL
-  	HuberUnistat525wWidget* huberWidget = new HuberUnistat525wWidget(huberModel_, widget);
-  	huberWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  	vlayout2->addWidget(huberWidget);
+  	huberWidget_ = new HuberUnistat525wWidget(huberModel_, widget);
+  	huberWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  	vlayout2->addWidget(huberWidget_);
 
   	hlayout->addWidget(gbox);
 
@@ -192,14 +187,14 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   	gbox->setLayout(vlayout2);
 
   	// AGILET MODEL
-  	AgilentTwisTorr304Widget* agilentWidget = new AgilentTwisTorr304Widget(agilentModel_, widget);
-  	agilentWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  	vlayout2->addWidget(agilentWidget);
+  	agilentWidget_ = new AgilentTwisTorr304Widget(agilentModel_, widget);
+  	agilentWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  	vlayout2->addWidget(agilentWidget_);
 
   	// LEYBOLD MODEL
-  	LeyboldGraphixOneWidget* leyboldWidget = new LeyboldGraphixOneWidget(leyboldModel_, widget);
-  	leyboldWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  	vlayout2->addWidget(leyboldWidget);
+  	leyboldWidget_ = new LeyboldGraphixOneWidget(leyboldModel_, widget);
+  	leyboldWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  	vlayout2->addWidget(leyboldWidget_);
 
   	vlayout2->addWidget(new QWidget());
 
@@ -212,20 +207,20 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 
   if (martaActive_) {
   	// MARTA MODEL
-  	MartaWidget* martaWidget = new MartaWidget(martaModel_);
-  	martaWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  	tabWidget_->addTab(martaWidget, "Marta");
+  	martaWidget_ = new MartaWidget(martaModel_);
+  	martaWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  	tabWidget_->addTab(martaWidget_, "Marta");
   }
 
   // Rohde & Schwarz NGE130B Widget
-  RohdeSchwarzNGE103BWidget* nge103BWidget = new RohdeSchwarzNGE103BWidget(nge103BModel_);
+  nge103BWidget_ = new RohdeSchwarzNGE103BWidget(nge103BModel_);
   //nge103BWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  tabWidget_->addTab(nge103BWidget, "Power Supply");
+  tabWidget_->addTab(nge103BWidget_, "Power Supply");
 
   // KEITHLEY MODEL
-  KeithleyDAQ6510Widget* keithleyWidget = new KeithleyDAQ6510Widget(keithleyModel_);
-  keithleyWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  tabWidget_->addTab(keithleyWidget, "Multimeter");
+  keithleyWidget_ = new KeithleyDAQ6510Widget(keithleyModel_);
+  keithleyWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  tabWidget_->addTab(keithleyWidget_, "Multimeter");
 
   if (chillerAndVacuumActive_ && throughPlaneActive_) {
   	// THROUGH PLANE MODEL
@@ -257,6 +252,9 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   configViewer_ = new ApplicationConfigViewer(false, this);
   tabWidget_->addTab(configViewer_, "Configuration");
 
+  connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
+          this, SLOT(controlStateChanged(bool)));
+
   setCentralWidget(tabWidget_);
   updateGeometry();
 }
@@ -269,4 +267,14 @@ void Thermo2MainWindow::quit()
     daqThread_->quit();
     daqThread_->wait();
   }
+}
+
+void Thermo2MainWindow::controlStateChanged(bool state)
+{
+  huberWidget_->controlStateChanged(state);
+  if (martaModel_) martaWidget_->controlStateChanged(state);  
+  agilentWidget_->controlStateChanged(state);  
+  leyboldWidget_->controlStateChanged(state);  
+  nge103BWidget_->controlStateChanged(state);  
+  keithleyWidget_->controlStateChanged(state);  
 }

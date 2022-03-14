@@ -225,9 +225,7 @@ void HuberUnistat525wWidget::updateDeviceState(State newState)
 void HuberUnistat525wWidget::controlStateChanged(bool enabled)
 {
   huberUnistat525wCheckBox_->setEnabled(enabled);
-  if (enabled) {
-    //State state = model_->getDeviceState();
-  }
+  operationPanel_->setEnabled(enabled);
 }
 
 /**
