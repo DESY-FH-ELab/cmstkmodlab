@@ -282,10 +282,12 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
 
   if (deltaTime!=0) {
 
+    /*
     NQLogMessage("Thermo2ThroughPlaneModel") << "stats " << dt.toSecsSinceEpoch();
     NQLogMessage("Thermo2ThroughPlaneModel") << "fillLevel " << keithleyTopTemperatureHistory_[0].fillLevel();
     NQLogMessage("Thermo2ThroughPlaneModel") << "deltaTime " << keithleyTopTemperatureHistory_[0].deltaTime();
-
+    */
+    
     double delta, gradient, mean, variance;
     std::pair<double,double> stats;
     for (unsigned int i=0;i<6;++i) {
@@ -295,10 +297,12 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
       mean = stats.first; // [K]
       variance = stats.second; // [K^2]
 
+      /*
       NQLogMessage("Thermo2ThroughPlaneModel") << "delta_top " << i << " " << delta;
       NQLogMessage("Thermo2ThroughPlaneModel") << "gradient_top " << i << " " << gradient;
       NQLogMessage("Thermo2ThroughPlaneModel") << "mean_top " << i << " " << mean;
       NQLogMessage("Thermo2ThroughPlaneModel") << "variance_top " << i << " " << variance;
+      */
     }
     for (unsigned int i=0;i<6;++i) {
       delta = keithleyBottomTemperatureHistory_[i].delta(pos); // [K]
@@ -307,10 +311,12 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
       mean = stats.first; // [K]
       variance = stats.second; // [K^2]
 
+      /*
       NQLogMessage("Thermo2ThroughPlaneModel") << "delta_bot " << i << " " << delta;
       NQLogMessage("Thermo2ThroughPlaneModel") << "gradient_bot " << i << " " << gradient;
       NQLogMessage("Thermo2ThroughPlaneModel") << "mean_bot " << i << " " << mean;
       NQLogMessage("Thermo2ThroughPlaneModel") << "variance_bot " << i << " " << variance;
+      */
     }
   }
 
@@ -353,33 +359,6 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
       NQLogDebug("Thermo2ThroughPlaneModel") << "powerBottom_ = " << powerBottom_;
 
       sampleTMiddle_ = 0.5*(sampleTTop_ + sampleTBottom_);
-
-      /*
-      sampleTTopHistory_.push_back(sampleTTop_);
-      sampleTMiddleHistory_.push_back(sampleTMiddle_);
-      sampleTBottomHistory_.push_back(sampleTBottom_);
-
-      size_t pos = sampleTMiddleHistory_.indexInPast(900);
-      double deltaTime = sampleTMiddleHistory_.deltaTime(pos); // [s]
-
-      if (deltaTime!=0) {
-        
-        double delta = sampleTMiddleHistory_.delta(pos); // [K]
-        double gradient = sampleTMiddleHistory_.gradient(pos); // [K/s]
-
-        std::pair<double,double> stats = sampleTMiddleHistory_.stats(pos);
-        double mean = stats.first; // [K]
-        double variance = stats.second; // [K^2]
-
-        NQLogMessage("Thermo2ThroughPlaneModel") << "sampleTMiddleHistory " << sampleTMiddleHistory_.fillLevel();
-        NQLogMessage("Thermo2ThroughPlaneModel") << "fillLevel = " << sampleTMiddleHistory_.fillLevel();
-        NQLogMessage("Thermo2ThroughPlaneModel") << "deltaTime = " << sampleTMiddleHistory_.deltaTime() << " s";
-        NQLogMessage("Thermo2ThroughPlaneModel") << "delta =     " << delta << " K";
-        NQLogMessage("Thermo2ThroughPlaneModel") << "gradient =  " << gradient << " K/s";
-        NQLogMessage("Thermo2ThroughPlaneModel") << "mean =      " << mean << " K";
-        NQLogMessage("Thermo2ThroughPlaneModel") << "variance =  " << variance << " K^2";
-      }
-      */
 
     } else {
       calculationState_ = false;
