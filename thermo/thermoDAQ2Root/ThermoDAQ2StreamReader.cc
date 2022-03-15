@@ -297,12 +297,18 @@ void ThermoDAQ2StreamReader::processRohdeSchwarzNGE103BChannel(QXmlStreamReader&
 {
   int id = xml.attributes().value("id").toString().toInt();
   bool state = xml.attributes().value("State").toString().toInt();
+  int mode = xml.attributes().value("Mode").toString().toInt();
+  float U = xml.attributes().value("U").toString().toFloat();
   float mU = xml.attributes().value("mU").toString().toFloat();
+  float I = xml.attributes().value("I").toString().toFloat();
   float mI = xml.attributes().value("mI").toString().toFloat();
 
   measurement_.nge103BState[id-1] = state;
-  measurement_.nge103BVoltage[id-1] = mU;
-  measurement_.nge103BCurrent[id-1] = mI;
+  measurement_.nge103BMode[id-1] = mode;
+  measurement_.nge103BVoltage[id-1] = U;
+  measurement_.nge103BMVoltage[id-1] = mU;
+  measurement_.nge103BCurrent[id-1] = I;
+  measurement_.nge103BMCurrent[id-1] = mI;
 }
 
 void ThermoDAQ2StreamReader::processKeithleyDAQ6510(QXmlStreamReader& xml)
@@ -584,13 +590,25 @@ void ThermoDAQ2StreamReader::process()
     sprintf(branchLeafList, "nge103BState_%d/O", i+1);
     otree_->Branch(branchName, &measurement_.nge103BState[i], branchLeafList);
 
+    sprintf(branchName, "nge103BMode_%d", i+1);
+    sprintf(branchLeafList, "nge103BMode_%d/O", i+1);
+    otree_->Branch(branchName, &measurement_.nge103BMode[i], branchLeafList);
+
     sprintf(branchName, "nge103BVoltage_%d", i+1);
     sprintf(branchLeafList, "nge103BVoltage_%d/F", i+1);
     otree_->Branch(branchName, &measurement_.nge103BVoltage[i], branchLeafList);
 
+    sprintf(branchName, "nge103BMVoltage_%d", i+1);
+    sprintf(branchLeafList, "nge103BMVoltage_%d/F", i+1);
+    otree_->Branch(branchName, &measurement_.nge103BMVoltage[i], branchLeafList);
+
     sprintf(branchName, "nge103BCurrent_%d", i+1);
     sprintf(branchLeafList, "nge103BCurrent_%d/F", i+1);
     otree_->Branch(branchName, &measurement_.nge103BCurrent[i], branchLeafList);
+
+    sprintf(branchName, "nge103BMCurrent_%d", i+1);
+    sprintf(branchLeafList, "nge103BMCurrent_%d/F", i+1);
+    otree_->Branch(branchName, &measurement_.nge103BMCurrent[i], branchLeafList);
   }
 
   for (int i=0;i<2;++i) {

@@ -105,8 +105,11 @@ typedef struct {
   float          leyboldPressure_;
 
   bool           nge103BState[3];
+  int            nge103BMode[3];
   float          nge103BVoltage[3];
+  float          nge103BMVoltage[3];
   float          nge103BCurrent[3];
+  float          nge103BMCurrent[3];
 
   bool           keithleyState[2][10];
   float          keithleyTemperature[2][10];
