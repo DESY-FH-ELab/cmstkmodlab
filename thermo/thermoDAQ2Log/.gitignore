@@ -1,0 +1,9 @@
+thermoDAQ2Log.pro
+thermoDAQ2Log.pro.user
+.qmake.stash
+.qmake.cache
+Makefile
+*.d
+*.o
+moc_*
+thermoDAQ2Log

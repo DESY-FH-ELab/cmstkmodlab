@@ -8,3 +8,4 @@ endif()
 
 add_subdirectory(thermoDAQ2Root)
 add_subdirectory(thermoDAQ2RootConverter)
+add_subdirectory(thermoDAQ2Log)
