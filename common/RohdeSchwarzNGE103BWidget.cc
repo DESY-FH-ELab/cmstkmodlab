@@ -283,6 +283,7 @@ void RohdeSchwarzNGE103BWidget::updateDeviceState(State newState)
 /// Updates the GUI when the power supply is enabled/disabled.
 void RohdeSchwarzNGE103BWidget::controlStateChanged(bool enabled)
 {
+  deviceCheckBox_->setEnabled(enabled);
   operationPanel_->setEnabled(enabled);
 }
 
