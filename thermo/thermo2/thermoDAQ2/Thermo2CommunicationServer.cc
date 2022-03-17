@@ -23,7 +23,8 @@
 
 #include "Thermo2CommunicationServer.h"
 
-Thermo2CommunicationServer::Thermo2CommunicationServer(HuberUnistat525wModel* huberModel,
+Thermo2CommunicationServer::Thermo2CommunicationServer(Thermo2DAQModel* daqModel,
+    HuberUnistat525wModel* huberModel,
     MartaModel* martaModel,
     AgilentTwisTorr304Model* agilentModel,
     LeyboldGraphixOneModel* leyboldModel,
@@ -31,6 +32,7 @@ Thermo2CommunicationServer::Thermo2CommunicationServer(HuberUnistat525wModel* hu
     KeithleyDAQ6510Model* keithleyModel,
     QObject *parent)
  : QTcpServer(parent),
+   daqModel_(daqModel),
    huberModel_(huberModel),
    martaModel_(martaModel),
    agilentModel_(agilentModel),
@@ -70,7 +72,8 @@ void Thermo2CommunicationServer::incomingConnection(qintptr socketDescriptor)
 {
   NQLogDebug("Thermo2CommunicationServer") << "incomingConnection(qintptr socketDescriptor)";
 
-  Thermo2CommunicationThread* commthread = new Thermo2CommunicationThread(huberModel_,
+  Thermo2CommunicationThread* commthread = new Thermo2CommunicationThread(daqModel_,
+      huberModel_,
       martaModel_,
       agilentModel_,
       leyboldModel_,

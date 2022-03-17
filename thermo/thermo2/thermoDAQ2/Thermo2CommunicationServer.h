@@ -15,6 +15,7 @@
 
 #include <QTcpServer>
 
+#include <Thermo2DAQModel.h>
 #include <HuberUnistat525wModel.h>
 #include <MartaModel.h>
 #include <AgilentTwisTorr304Model.h>
@@ -28,7 +29,8 @@ class Thermo2CommunicationServer : public QTcpServer
   Q_OBJECT
 public:
 
-  Thermo2CommunicationServer(HuberUnistat525wModel* huberModel,
+  Thermo2CommunicationServer(Thermo2DAQModel* daqModel,
+      HuberUnistat525wModel* huberModel,
       MartaModel* martaModel,
       AgilentTwisTorr304Model* agilentModel,
       LeyboldGraphixOneModel* leyboldModel,
@@ -40,6 +42,7 @@ protected:
 
   void incomingConnection(qintptr socketDescriptor);
 
+  Thermo2DAQModel* daqModel_;
   HuberUnistat525wModel* huberModel_;
   MartaModel* martaModel_;
   AgilentTwisTorr304Model* agilentModel_;

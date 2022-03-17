@@ -18,6 +18,7 @@
 #include <QMutexLocker>
 #include <QTcpSocket>
 
+#include <Thermo2DAQModel.h>
 #include <HuberUnistat525wModel.h>
 #include <MartaModel.h>
 #include <AgilentTwisTorr304Model.h>
@@ -31,7 +32,8 @@ class Thermo2CommunicationThread : public QThread
   Q_OBJECT
 public:
   
-  Thermo2CommunicationThread(HuberUnistat525wModel* huberModel,
+  Thermo2CommunicationThread(Thermo2DAQModel* daqModel,
+      HuberUnistat525wModel* huberModel,
       MartaModel* martaModel,
       AgilentTwisTorr304Model* agilentModel,
       LeyboldGraphixOneModel* leyboldModel,
@@ -50,6 +52,7 @@ protected:
 
   bool handleCommand(QStringList& tokens, QTextStream& os);
 
+  Thermo2DAQModel* daqModel_;
   HuberUnistat525wModel* huberModel_;
   MartaModel* martaModel_;
   AgilentTwisTorr304Model* agilentModel_;

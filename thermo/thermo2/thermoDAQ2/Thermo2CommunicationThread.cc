@@ -18,7 +18,8 @@
 
 #include "Thermo2CommunicationThread.h"
 
-Thermo2CommunicationThread::Thermo2CommunicationThread(HuberUnistat525wModel* huberModel,
+Thermo2CommunicationThread::Thermo2CommunicationThread(Thermo2DAQModel* daqModel,
+    HuberUnistat525wModel* huberModel,
     MartaModel* martaModel,
     AgilentTwisTorr304Model* agilentModel,
     LeyboldGraphixOneModel* leyboldModel,
@@ -26,6 +27,7 @@ Thermo2CommunicationThread::Thermo2CommunicationThread(HuberUnistat525wModel* hu
     KeithleyDAQ6510Model* keithleyModel,
     qintptr socketDescriptor, QObject *parent)
 : QThread(parent),
+  daqModel_(daqModel),
   huberModel_(huberModel),
   martaModel_(martaModel),
   agilentModel_(agilentModel),
@@ -116,7 +118,15 @@ bool Thermo2CommunicationThread::handleCommand(QStringList& tokens, QTextStream&
   }
   NQLogDebug("Thermo2CommunicationThread::handleCommand()") << buffer.toStdString();
 
-  if (tokens[1] == "getKp") {
+  if (tokens[1] == "start") {
+    if (pars.count()!=0) return false;
+    daqModel_->startMeasurement();
+
+  } else if (tokens[1] == "stop") {
+    if (pars.count()!=0) return false;
+    daqModel_->stopMeasurement();
+
+  } else if (tokens[1] == "getKp") {
     if (pars.count()!=0) return false;
     os << QString::number(huberModel_->getKp()) << " ";
 

@@ -152,7 +152,8 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   daqThread_->start();
   daqModel_->myMoveToThread(daqThread_);
 
-  commServer_ = new Thermo2CommunicationServer(huberModel_,
+  commServer_ = new Thermo2CommunicationServer(daqModel_,
+      huberModel_,
       martaModel_,
       agilentModel_,
       leyboldModel_,
