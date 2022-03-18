@@ -73,7 +73,8 @@ if(CMSTKMODLAB_FAKEUEYE)
         message(STATUS "Fake uEYE support: ON")
         add_compile_definitions(NOUEYE)
 else()
-        message(STATUS "Fake uEYE support: OFF")
+  message(STATUS "Fake uEYE support: OFF")
+  include(Findueyeapi)
 endif()
 
 find_package(CURL)
@@ -90,7 +91,7 @@ find_package(Qt5 COMPONENTS Core Gui Widgets OpenGL Script Xml Svg Network Chart
 
 set(ENV{ROOT_DIR} ENV{ROOTSYS}/cmake)
 find_package(ROOT 6.16 REQUIRED)
-message(STATUS ${ROOT_INCLUDE_DIRS})
+message(STATUS "Found ROOT (${ROOT_VERSION})")
 
 pkg_check_modules(LIBGPHOTO2 REQUIRED IMPORTED_TARGET libgphoto2)
 pkg_check_modules(OPENCV4 REQUIRED IMPORTED_TARGET opencv4)
