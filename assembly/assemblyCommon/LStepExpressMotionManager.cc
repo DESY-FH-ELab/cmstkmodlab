@@ -595,9 +595,15 @@ void LStepExpressMotionManager::set_movements_priorities_XYZA(const double x, co
     double dz = z;
     double da = a;
 
-    //-- Convert absolute to relative movements //Simpler to use a single convention (because e.g. moving to "0" has different meaning in abs/rel)
-    if(is_absolute_movements)
+    if(inMotion_ && is_absolute_movements)
     {
+        NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Absolute movement not executed, Motion Stage is still moving - calculation of smart relative motion not possible.";
+        return;
+
+    }
+    else if(is_absolute_movements)
+    {
+	//-- Convert absolute to relative movements //Simpler to use a single convention (because e.g. moving to "0" has different meaning in abs/rel)
         dx = (x - this->get_position_X());
         dy = (y - this->get_position_Y());
         dz = (z - this->get_position_Z());
