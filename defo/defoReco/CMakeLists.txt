@@ -69,6 +69,7 @@ set(CMAKE_CXX_FLAGS "${Qt5Svg_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Network_EXECUTABLE_COMPILE_FLAGS}")
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/common)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/defo/defoCommon)
 
 target_link_libraries(defoReco
@@ -84,3 +85,10 @@ target_link_libraries(defoReco
 target_compile_features(defoReco PRIVATE cxx_std_11)
 
 configure_file(defoReco.desktop.in defoReco.desktop)
+
+INSTALL(
+    TARGETS defoReco
+    EXPORT Defo
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)

@@ -13,7 +13,7 @@
 #ifndef ASSEMBLYUEYEMODEL_H
 #define ASSEMBLYUEYEMODEL_H
 
-#include <uEye.h>
+#include <ueye.h>
 
 #include <QObject>
 #include <QTimer>
