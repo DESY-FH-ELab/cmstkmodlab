@@ -45,10 +45,10 @@ set(CMAKE_CXX_FLAGS "${Qt5Script_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Svg_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Network_EXECUTABLE_COMPILE_FLAGS}")
 
-INCLUDE_DIRECTORIES(
-        ${CMAKE_SOURCE_DIR}/common
-        ${CMAKE_SOURCE_DIR}/thermo/thermo2/thermo2Common
-)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/thermo/thermo2/thermo2Common)
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/common)
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/thermo/thermo2/thermo2Common)
 
 target_link_libraries(thermoDisplay2
         PRIVATE Qt5::Core
@@ -63,3 +63,10 @@ target_link_libraries(thermoDisplay2
 )
 
 configure_file(thermoDisplay2.desktop.in thermoDisplay2.desktop)
+
+INSTALL(
+    TARGETS thermoDisplay2
+    EXPORT Thermo
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)
