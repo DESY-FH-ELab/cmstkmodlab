@@ -567,13 +567,6 @@ double LStepExpressMotionManager::get_position(const int axis) const
         }
 
         //-- Recurrent MS instability (returning incorrect pos vector) //Seems like the angle does not get returned, why and can it be fixed ?
-        //-- Debug printouts:
-    	// std::cout<<"this->model()->getPositions().size() = "<<this->model()->getPositions().size()<<std::endl;
-    	// for(unsigned int i=0; i<this->model()->getPositions().size(); i++)
-    	// {
-        //     std::cout<<"this->model()->getPositions().at("<<i<<") = "<<this->model()->getPositions().at(i)<<std::endl;
-        // }
-
         //-- Whenever the "positions vector has invalid size" error appears and the MS stops responding, the MS should be restarted (manually via the 'Restart Motion Stage' button in the 'HW Controllers' tab, or done automatically here)
         emit restartMotionStage_request();
       }
