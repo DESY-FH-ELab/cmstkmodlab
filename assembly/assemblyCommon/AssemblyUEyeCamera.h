@@ -14,7 +14,7 @@
 #define ASSEMBLYUEYECAMERA_H
 
 #include <AssemblyVUEyeCamera.h>
-#include <uEye.h>
+#include <ueye.h>
 
 #include <QThread>
 
