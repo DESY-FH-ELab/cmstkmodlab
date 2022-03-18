@@ -593,6 +593,7 @@ void LStepExpressModel::moveRelative(const std::vector<double>& values)
     NQLog("LStepExpressModel", NQLog::Spam) << "moveRelative(values)"
        << ": emitting signal \"motionFinished\"";
 
+    emit emergencyStop_request();
     emit motionFinished();
   }
 
@@ -606,6 +607,7 @@ void LStepExpressModel::moveRelative(const std::vector<double>& values)
        << "(x=" << values[0] << ", y=" << values[1] << ", z=" << values[2] << ", a=" << values[3] << ")"
        << ": emitting signal \"motionFinished\"";
 
+    emit emergencyStop_request();
     emit motionFinished();
   }
   else
@@ -642,6 +644,7 @@ void LStepExpressModel::moveRelative(const unsigned int axis, const double value
         << "(axis="  << axis << ", value=" << value << ")"
         << ": emitting signal \"motionFinished\"";
 
+    emit emergencyStop_request();
     emit motionFinished();
   }
   else
@@ -670,6 +673,7 @@ void LStepExpressModel::moveAbsolute(const std::vector<double>& values)
     NQLog("LStepExpressModel", NQLog::Spam) << "moveAbsolute(values)"
        << ": emitting signal \"motionFinished\"";
 
+    emit emergencyStop_request();
     emit motionFinished();
   }
 
@@ -683,6 +687,7 @@ void LStepExpressModel::moveAbsolute(const std::vector<double>& values)
        << "(x=" << values[0] << ", y=" << values[1] << ", z=" << values[2] << ", a=" << values[3] << ")"
        << ": emitting signal \"motionFinished\"";
 
+    emit emergencyStop_request();
     emit motionFinished();
   }
   else
@@ -719,6 +724,7 @@ void LStepExpressModel::moveAbsolute(const unsigned int axis, const double value
         << "(axis="  << axis << ", value=" << value << ")"
         << ": emitting signal \"motionFinished\"";
 
+    emit emergencyStop_request();
     emit motionFinished();
   }
   else

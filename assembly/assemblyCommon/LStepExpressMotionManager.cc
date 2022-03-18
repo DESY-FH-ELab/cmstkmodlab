@@ -603,9 +603,12 @@ void LStepExpressMotionManager::set_movements_priorities_XYZA(const double x, co
         da = (a - this->get_position_A());
     }
 
-    const bool move_xya = ((std::fabs(dx) < std::numeric_limits<double>::epsilon()) || (std::fabs(dy) < std::numeric_limits<double>::epsilon()) || (std::fabs(da) < std::numeric_limits<double>::epsilon()));
-    const bool move_z = ((std::fabs(dz) < std::numeric_limits<double>::epsilon()));
+    const bool move_xya = ((std::fabs(dx) > std::numeric_limits<double>::epsilon()) || (std::fabs(dy) > std::numeric_limits<double>::epsilon()) || (std::fabs(da) > std::numeric_limits<double>::epsilon()));
+    const bool move_z = ((std::fabs(dz) > std::numeric_limits<double>::epsilon()));
 
+    NQLog("LStepExpressMotionManager", NQLog::Message) << "Requested relative motion in xya: " << (move_xya ? "yes" : "no") << "  - Motion in z: " << (move_z ? "yes" : "no");
+        
+    
     if(!move_xya && !move_z) {return;} //No movement
     else if(move_xya && !move_z) {motions_.enqueue(LStepExpressMotion(dx, dy, 0, da, false));} //Only XYA movement
     else if(!move_xya && move_z) {motions_.enqueue(LStepExpressMotion(0, 0, dz, 0, false));} //Only Z movement
