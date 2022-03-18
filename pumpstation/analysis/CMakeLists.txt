@@ -44,10 +44,11 @@ target_link_libraries(PumpStationAnalysis
   Common
 )
 
+target_link_libraries(PumpStationAnalysis LINK_PUBLIC Qt5::Core Qt5::Xml ROOT::RIO ROOT::Tree)
+
 INSTALL(
     TARGETS PumpStationAnalysis
     EXPORT Pumpstation
     RUNTIME DESTINATION bin
-    RUNTIME DESTINATION /usr/bin
     ARCHIVE DESTINATION lib
 )
