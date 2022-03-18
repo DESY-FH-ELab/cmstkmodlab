@@ -606,8 +606,8 @@ QQueue<LStepExpressMotion> LStepExpressMotionManager::set_movements_priorities_X
         da = (a - this->get_position_A());
     }
 
-    const bool move_xya = ((dx != 0.) || (dy != 0.) || (da != 0.));
-    const bool move_z = ((dz != 0.));
+    const bool move_xya = ((std::fabs(dx) < std::numeric_limits<double>::epsilon()) || (std::fabs(dy) < std::numeric_limits<double>::epsilon()) || (std::fabs(da) < std::numeric_limits<double>::epsilon()));
+    const bool move_z = ((std::fabs(dz) < std::numeric_limits<double>::epsilon()));
 
     if(!move_xya && !move_z) {return motions;} //No movement
     else if(move_xya && !move_z) {motions.enqueue(LStepExpressMotion(dx, dy, 0, da, false));} //Only XYA movement
