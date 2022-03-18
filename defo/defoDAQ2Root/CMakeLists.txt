@@ -27,6 +27,7 @@ set(CMAKE_CXX_FLAGS "${Qt5Script_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Svg_EXECUTABLE_COMPILE_FLAGS}")
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/common)
 
 target_link_libraries(defoDAQ2Root
         PRIVATE Qt5::Core
@@ -35,4 +36,11 @@ target_link_libraries(defoDAQ2Root
         PRIVATE defoCommon
         PUBLIC ROOT::RIO
         PUBLIC ROOT::Tree
+)
+
+INSTALL(
+    TARGETS defoDAQ2Root
+    EXPORT Defo
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
 )

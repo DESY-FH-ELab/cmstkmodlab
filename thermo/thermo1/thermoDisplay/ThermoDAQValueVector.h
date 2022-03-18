@@ -43,7 +43,7 @@ public:
         return true;
     }
 
-    QDateTime& lastTime() { return QwtDate::toDateTime(QVector<double>::last()); }
+    QDateTime lastTime() { return QwtDate::toDateTime(QVector<double>::last()); }
     const QDateTime& lastTime() const { return QwtDate::toDateTime(QVector<double>::last()); }
     const T& valueAt(int idx) const { return values_.at(idx); }
     const T& lastValue() const { return values_.last(); }

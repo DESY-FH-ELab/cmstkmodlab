@@ -48,6 +48,7 @@ set(CMAKE_CXX_FLAGS "${Qt5Svg_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Network_EXECUTABLE_COMPILE_FLAGS}")
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/common)
 
 target_link_libraries(microDAQ
         PRIVATE Qt5::Core
@@ -56,4 +57,11 @@ target_link_libraries(microDAQ
         PRIVATE Qt5::Svg
         PRIVATE Qt5::Network
         PRIVATE Common
+)
+
+INSTALL(
+    TARGETS microDAQ
+    EXPORT Thermo
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
 )

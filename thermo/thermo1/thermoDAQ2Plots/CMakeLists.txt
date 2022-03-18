@@ -27,10 +27,18 @@ set(CMAKE_CXX_FLAGS "${Qt5Script_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Svg_EXECUTABLE_COMPILE_FLAGS}")
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/common)
 
 target_link_libraries(thermoDAQ2Plots 
         PRIVATE Qt5::Core
         PRIVATE Qt5::Widgets
         PRIVATE Common
         PUBLIC ROOT::Gpad
+)
+
+INSTALL(
+    TARGETS thermoDAQ2Plots
+    EXPORT Thermo
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
 )

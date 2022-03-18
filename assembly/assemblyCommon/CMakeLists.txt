@@ -83,6 +83,8 @@ include_directories(${Qt5Widgts_INCLUDE_DIRS})
 include_directories(${Qt5Script_INCLUDE_DIRS})
 include_directories(${Qt5Svg_INCLUDE_DIRS})
 
+include_directories(${UEYE_HEADER_DIR})
+
 add_definitions(${Qt5Core_DEFINITIONS})
 add_definitions(${Qt5Widgts_DEFINITIONS})
 add_definitions(${Qt5Script_DEFINITIONS})
@@ -99,6 +101,7 @@ target_compile_definitions(AssemblyCommon PRIVATE QT_NO_JAVA_STYLE_ITERATORS QT_
 target_compile_features(AssemblyCommon PUBLIC cxx_std_17)
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/common)
 
 target_link_libraries(AssemblyCommon
         PRIVATE Qt5::Core
@@ -107,4 +110,12 @@ target_link_libraries(AssemblyCommon
         PRIVATE Qt5::Svg
         PRIVATE Common
         PRIVATE ROOT::Gpad
+	PUBLIC  ${UEYE_LIBRARY}
+)
+
+INSTALL(
+    TARGETS AssemblyCommon
+    EXPORT Assembly
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
 )
