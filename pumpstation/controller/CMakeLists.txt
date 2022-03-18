@@ -56,6 +56,5 @@ INSTALL(
     TARGETS PumpStationControl
     EXPORT Pumpstation
     RUNTIME DESTINATION bin
-    RUNTIME DESTINATION /usr/bin
     ARCHIVE DESTINATION lib
 )

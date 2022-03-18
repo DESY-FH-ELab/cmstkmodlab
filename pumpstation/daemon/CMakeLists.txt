@@ -46,8 +46,6 @@ target_link_libraries(PumpStationDaemon
 
 configure_file(pumpstation.service.in pumpstation.service)
 
-install(TARGETS PumpStationDaemon DESTINATION /usr/bin)
-
 add_custom_target(restart
         COMMAND ${CMAKE_COMMAND} --build . --target install; systemctl stop pumpstation; chmod 664 pumpstation.service; cp pumpstation.service /etc/systemd/system; systemctl daemon-reload; systemctl enable pumpstation; systemctl start pumpstation
         COMMENT "restart pump station daemon ..."
