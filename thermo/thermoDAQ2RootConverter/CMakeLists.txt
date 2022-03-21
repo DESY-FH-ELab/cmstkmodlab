@@ -31,6 +31,7 @@ include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${ROOT_INCLUDE_DIRS})
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/common)
 
 target_link_libraries(thermoDAQ2RootConverter
         PRIVATE Qt5::Core
@@ -38,4 +39,11 @@ target_link_libraries(thermoDAQ2RootConverter
         PRIVATE Common
         PUBLIC ROOT::RIO
         PUBLIC ROOT::Tree
+)
+
+INSTALL(
+        TARGETS thermoDAQ2RootConverter
+        EXPORT Thermo
+        RUNTIME DESTINATION bin
+        ARCHIVE DESTINATION lib
 )

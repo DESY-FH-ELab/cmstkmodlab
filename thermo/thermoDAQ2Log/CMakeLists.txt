@@ -30,6 +30,7 @@ set(CMAKE_CXX_FLAGS "${Qt5Svg_EXECUTABLE_COMPILE_FLAGS}")
 include_directories(${PROJECT_SOURCE_DIR})
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/common)
 
 target_link_libraries(thermoDAQ2Log
         PRIVATE Qt5::Core
@@ -37,3 +38,9 @@ target_link_libraries(thermoDAQ2Log
         PRIVATE Common
 )
 
+INSTALL(
+        TARGETS thermoDAQ2Log
+        EXPORT Thermo
+        RUNTIME DESTINATION bin
+        ARCHIVE DESTINATION lib
+)
