@@ -81,3 +81,10 @@ elseif(CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
                 COMMENT "Running CMSPumpStationControl..."
         )
 endif()
+
+INSTALL(
+    TARGETS CMSPumpStationControl
+    EXPORT Pumpstation
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+)

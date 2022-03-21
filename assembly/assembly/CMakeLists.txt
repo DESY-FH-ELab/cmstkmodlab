@@ -38,7 +38,8 @@ set(CMAKE_CXX_FLAGS "${Qt5Svg_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Network_EXECUTABLE_COMPILE_FLAGS}")
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/assembly/AssemblyCommon)
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/common)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/assembly/assemblyCommon)
 
 target_link_libraries(assembly
         PRIVATE Qt5::Core
@@ -47,4 +48,11 @@ target_link_libraries(assembly
         PRIVATE Qt5::Svg
         PRIVATE Common
         PRIVATE AssemblyCommon
+)
+
+INSTALL(
+    TARGETS assembly
+    EXPORT Assembly
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
 )

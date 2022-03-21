@@ -33,9 +33,17 @@ set(CMAKE_CXX_FLAGS "${Qt5Core_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Widgts_EXECUTABLE_COMPILE_FLAGS}")
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/common)
 
 target_link_libraries(plasmacleaner
         PRIVATE Qt5::Core
         PRIVATE Qt5::Widgets
         PRIVATE Common
+)
+
+INSTALL(
+    TARGETS plasmacleaner
+    EXPORT Plasma
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
 )

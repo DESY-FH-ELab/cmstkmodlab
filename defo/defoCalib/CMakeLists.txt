@@ -39,6 +39,7 @@ set(CMAKE_CXX_FLAGS "${Qt5Svg_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Network_EXECUTABLE_COMPILE_FLAGS}")
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/common)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/defo/defoCommon)
 
 target_link_libraries(defoCalib
@@ -50,4 +51,11 @@ target_link_libraries(defoCalib
         PRIVATE Common
         PRIVATE defoCommon
         PUBLIC ${QWT_LIBRARY}
+)
+
+INSTALL(
+    TARGETS defoCalib
+    EXPORT Defo
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
 )

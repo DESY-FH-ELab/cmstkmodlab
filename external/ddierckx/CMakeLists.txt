@@ -93,3 +93,4 @@ add_library(ddierckx SHARED
 
 set_target_properties(ddierckx PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(ddierckx PROPERTIES LINKER_LANGUAGE Fortran)
+set_target_properties(ddierckx PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/external/lib)

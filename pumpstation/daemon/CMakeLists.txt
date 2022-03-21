@@ -33,6 +33,7 @@ set(CMAKE_CXX_FLAGS "${Qt5Core_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Network_EXECUTABLE_COMPILE_FLAGS}")
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/common)
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/common)
 
 target_link_libraries(PumpStationDaemon
         PRIVATE Qt5::Core
@@ -45,9 +46,14 @@ target_link_libraries(PumpStationDaemon
 
 configure_file(pumpstation.service.in pumpstation.service)
 
-install(TARGETS PumpStationDaemon DESTINATION /usr/bin)
-
 add_custom_target(restart
         COMMAND ${CMAKE_COMMAND} --build . --target install; systemctl stop pumpstation; chmod 664 pumpstation.service; cp pumpstation.service /etc/systemd/system; systemctl daemon-reload; systemctl enable pumpstation; systemctl start pumpstation
         COMMENT "restart pump station daemon ..."
+)
+
+INSTALL(
+    TARGETS PumpStationDaemon
+    EXPORT Pumpstation
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
 )
