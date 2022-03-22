@@ -94,11 +94,7 @@ set(ENV{ROOT_DIR} ENV{ROOTSYS}/cmake)
 find_package(ROOT 6.16 REQUIRED)
 message(STATUS "Found ROOT (${ROOT_VERSION})")
 
-if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
-        option(CMSTKMODLAB_MARTA "Build with support for MARTA CO2 chiller" OFF)
-else()
-        option(CMSTKMODLAB_MARTA "Build with support for MARTA CO2 chiller" ON)
-endif()
+option(CMSTKMODLAB_MARTA "Build with support for MARTA CO2 chiller" OFF)
 
 if(CMSTKMODLAB_MARTA)
         message(STATUS "Support for MARTA CO2 chiller: ON")
