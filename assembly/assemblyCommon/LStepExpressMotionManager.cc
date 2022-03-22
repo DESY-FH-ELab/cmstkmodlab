@@ -152,6 +152,7 @@ void LStepExpressMotionManager::run()
         << ", a=" << motion.getA()
         << ")\"";
 
+      emit deactivate();
       emit signalMoveAbsolute(motion.getX(), motion.getY(), motion.getZ(), motion.getA());
     }
     else
@@ -163,6 +164,7 @@ void LStepExpressMotionManager::run()
         << ", a=" << motion.getA()
         << ")\"";
 
+      emit deactivate();
       emit signalMoveRelative(motion.getX(), motion.getY(), motion.getZ(), motion.getA());
     }
 
@@ -434,6 +436,7 @@ void LStepExpressMotionManager::finish_motion()
      << ": setting \"inMotion=false\" and calling run() method";
 
   inMotion_ = false;
+  emit reactivate();
   this->run();
 }
 
