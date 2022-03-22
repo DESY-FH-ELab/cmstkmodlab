@@ -19,6 +19,8 @@ add_compile_definitions(__${CMAKE_HOST_SYSTEM_NAME}__)
 
 include_directories(${PROJECT_SOURCE_DIR})
 
+include_directories(${OPENCV4_INCLUDE_DIRS})
+
 include_directories(${Qt5Core_INCLUDE_DIRS})
 include_directories(${Qt5Widgts_INCLUDE_DIRS})
 include_directories(${Qt5Script_INCLUDE_DIRS})

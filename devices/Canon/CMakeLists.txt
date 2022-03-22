@@ -21,6 +21,7 @@ else()
       target_include_directories(TkModLabCanon SYSTEM PRIVATE ${OPENCV4_INCLUDE_DIRS})
       target_link_libraries(TkModLabCanon PkgConfig::LIBGPHOTO2 PkgConfig::EXIV2 ${OPENCV4_LIBRARIES})
 endif()
+
 target_compile_features(TkModLabCanon PRIVATE cxx_std_11)
 
 add_subdirectory(test)
