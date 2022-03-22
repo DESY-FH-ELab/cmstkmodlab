@@ -145,6 +145,8 @@ void LStepExpressMotionManager::run()
 
     if(motion.getMode() == true)
     {
+      NQLog("LStepExpressMotionManager", NQLog::Spam) << "run: emitting signal \"signalDeactivate()";
+      emit signalDeactivate();
       NQLog("LStepExpressMotionManager", NQLog::Spam) << "run: emitting signal \"signalMoveAbsolute("
         <<   "x=" << motion.getX()
         << ", y=" << motion.getY()
@@ -152,11 +154,13 @@ void LStepExpressMotionManager::run()
         << ", a=" << motion.getA()
         << ")\"";
 
-      emit deactivate();
       emit signalMoveAbsolute(motion.getX(), motion.getY(), motion.getZ(), motion.getA());
     }
     else
     {
+      
+      NQLog("LStepExpressMotionManager", NQLog::Spam) << "run: emitting signal \"signalDeactivate()";
+      emit signalDeactivate();
       NQLog("LStepExpressMotionManager", NQLog::Spam) << "run: emitting signal \"signalMoveRelative("
         <<   "x=" << motion.getX()
         << ", y=" << motion.getY()
@@ -164,7 +168,6 @@ void LStepExpressMotionManager::run()
         << ", a=" << motion.getA()
         << ")\"";
 
-      emit deactivate();
       emit signalMoveRelative(motion.getX(), motion.getY(), motion.getZ(), motion.getA());
     }
 

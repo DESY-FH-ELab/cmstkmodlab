@@ -104,8 +104,8 @@ class LStepExpressMotionManager : public QObject
 
     void motion_finished();
 
-    void deactivate();
-    void reactivate();
+    void signalDeactivate();
+    void signalReactivate();
 
     void signalMoveRelative(double x, double y, double z, double a);
     void signalMoveAbsolute(double x, double y, double z, double a);
