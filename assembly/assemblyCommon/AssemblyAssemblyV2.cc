@@ -2050,28 +2050,3 @@ void AssemblyAssemblyV2::switchToAlignmentTab_PSS()
   return;
 }
 // ----------------------------------------------------------------------------------------------------
-// ----------------------------------------------------------------------------------------------------
-// switchToAssemblyTab --------------------------------------------------------------------------------
-// ----------------------------------------------------------------------------------------------------
-void AssemblyAssemblyV2::switchToAssemblyTab()
-{
-  if(in_action_){
-
-    NQLog("AssemblyAssembly", NQLog::Warning) << "switchToAssemblyTab"
-       << ": logic error, an assembly step is still in progress, will not take further action";
-
-    return;
-  }
-
-  in_action_ = true;
-
-  NQLog("AssemblyAssembly", NQLog::Spam) << "switchToAssemblyTab"
-    << ": emitting signal \"switchToAssemblyTab_request\"";
-
-  emit switchToAssemblyTab_request();
-
-  in_action_ = false;
-
-  return;
-}
-// ----------------------------------------------------------------------------------------------------

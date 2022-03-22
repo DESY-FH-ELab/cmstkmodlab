@@ -83,7 +83,6 @@ class AssemblyMainWindow : public QMainWindow
       disconnect_otherSlots();
   }
   void switchAndUpdate_alignment_tab(bool);
-  void switch_assembly_tab();
 
  public slots:
 
@@ -216,8 +215,7 @@ class AssemblyMainWindow : public QMainWindow
   double testTimerCount_;
   QTimer* liveTimer_;
 
-  int idx_alignment_tab_;
-  int idx_assembly_tab_;
+  int idx_alignment_tab;
 };
 
 #endif // ASSEMBLYMAINWINDOW_H
