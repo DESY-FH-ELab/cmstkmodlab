@@ -466,16 +466,8 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
         msgBox->setInformativeText("Alignment routine completed successfully!");
 
         msgBox->setStandardButtons(QMessageBox::Ok);
-        msgBox->addButton("Return to Assembly window", QMessageBox::YesRole);
-        msgBox->setDefaultButton(QMessageBox::Yes);
 
         int ret = msgBox->exec();
-
-        switch(ret){
-          case QMessageBox::Ok: break;
-          case QMessageBox::Yes: emit switchToAssemblyTab_request();
-          default: break;
-        }
 
         emit execution_completed();
       }
@@ -577,16 +569,8 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
           msgBox->setInformativeText("Alignment routine completed successfully!");
 
           msgBox->setStandardButtons(QMessageBox::Ok);
-          msgBox->addButton("Return to Assembly window", QMessageBox::YesRole);
-          msgBox->setDefaultButton(QMessageBox::Yes);
 
           int ret = msgBox->exec();
-
-          switch(ret){
-            case QMessageBox::Ok: break;
-            case QMessageBox::Yes: emit switchToAssemblyTab_request();
-            default: break;
-          }
 
           emit execution_completed();
         }
@@ -634,16 +618,8 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
     msgBox->setInformativeText("Alignment routine completed successfully!");
 
     msgBox->setStandardButtons(QMessageBox::Ok);
-    msgBox->addButton("Return to Assembly window", QMessageBox::YesRole);
-    msgBox->setDefaultButton(QMessageBox::Yes);
 
     int ret = msgBox->exec();
-
-    switch(ret){
-      case QMessageBox::Ok: break;
-      case QMessageBox::Yes: emit switchToAssemblyTab_request();
-      default: break;
-    }
 
     emit execution_completed();
   }
