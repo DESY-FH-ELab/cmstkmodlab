@@ -439,8 +439,13 @@ void LStepExpressMotionManager::finish_motion()
      << ": setting \"inMotion=false\" and calling run() method";
 
   inMotion_ = false;
-  emit reactivate();
-  this->run();
+
+  if(motions_.empty())
+  {
+    emit signalReactivate();
+  } else {
+    this->run();
+  }
 }
 
 void LStepExpressMotionManager::read_position3D()
