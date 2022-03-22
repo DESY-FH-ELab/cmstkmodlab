@@ -124,6 +124,8 @@ class AssemblyObjectAligner : public QObject
     void execution_completed();
 
     void DBLogMessage(const QString);
+
+    void switchToAssemblyTab_request();
 };
 
 #endif // AssemblyObjectAligner_h

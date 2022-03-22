@@ -147,6 +147,8 @@ class AssemblyAssemblyV2 : public QObject
 
   void switchToAlignmentTab_PSP();
   void switchToAlignmentTab_PSS();
+
+  void switchToAssemblyTab();
   // ---------
 
  signals:
@@ -203,6 +205,7 @@ class AssemblyAssemblyV2 : public QObject
   void RegisterPSSPlusSpacersToMaPSAPosition_finished();
   void switchToAlignmentTab_PSP_request();
   void switchToAlignmentTab_PSS_request();
+  void switchToAssemblyTab_request();
   // ------
 
 

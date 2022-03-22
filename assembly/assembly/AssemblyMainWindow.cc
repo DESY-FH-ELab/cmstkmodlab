@@ -235,7 +235,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     const QString tabname_Alignm("Alignment");
 
     aligner_view_ = new AssemblyObjectAlignerView(assembly_tab);
-    idx_alignment_tab = assembly_tab->addTab(aligner_view_, tabname_Alignm);
+    idx_alignment_tab_ = assembly_tab->addTab(aligner_view_, tabname_Alignm);
 
     // aligner
     aligner_ = new AssemblyObjectAligner(motion_manager_);
@@ -267,7 +267,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
       assembly_ = new AssemblyAssembly(motion_manager_, relayCardManager_, smart_motion_);
 
       assembly_view_ = new AssemblyAssemblyView(assembly_, assembly_tab);
-      assembly_tab->addTab(assembly_view_, tabname_Assembly);
+      idx_assembly_tab_ = assembly_tab->addTab(assembly_view_, tabname_Assembly);
 
       NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly
          << " (assembly_sequence = " << assembly_sequence << ")";
@@ -277,10 +277,11 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
       assemblyV2_ = new AssemblyAssemblyV2(motion_manager_, relayCardManager_, smart_motion_);
 
       assemblyV2_view_ = new AssemblyAssemblyV2View(assemblyV2_, assembly_tab);
-      assembly_tab->addTab(assemblyV2_view_, tabname_Assembly);
+      idx_assembly_tab_ = assembly_tab->addTab(assemblyV2_view_, tabname_Assembly);
 
       connect(assemblyV2_, SIGNAL(switchToAlignmentTab_PSP_request()), this, SLOT(update_alignment_tab_psp()));
       connect(assemblyV2_, SIGNAL(switchToAlignmentTab_PSS_request()), this, SLOT(update_alignment_tab_pss()));
+      connect(assemblyV2_, SIGNAL(switchToAssemblyTab_request()), this, SLOT(switch_assembly_tab()));
 
       NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly
          << " (assembly_sequence = " << assembly_sequence << ")";
@@ -923,6 +924,7 @@ void AssemblyMainWindow::disconnect_otherSlots()
     disconnect(motion_manager_, SIGNAL(restartMotionStage_request()), this, SLOT(messageBox_restartMotionStage()));
     disconnect(assemblyV2_, SIGNAL(switchToAlignmentTab_PSP_request()), this, SLOT(update_alignment_tab_psp()));
     disconnect(assemblyV2_, SIGNAL(switchToAlignmentTab_PSS_request()), this, SLOT(update_alignment_tab_pss()));
+    disconnect(assemblyV2_, SIGNAL(switchToAssemblyTab_request()), this, SLOT(switch_assembly_tab()));
     disconnect(this, SIGNAL(set_alignmentMode_PSP_request()), aligner_view_, SLOT(set_alignmentMode_PSP()));
     disconnect(this, SIGNAL(set_alignmentMode_PSS_request()), aligner_view_, SLOT(set_alignmentMode_PSS()));
 
@@ -1023,6 +1025,13 @@ void AssemblyMainWindow::update_alignment_tab_pss()
 {
     this->switchAndUpdate_alignment_tab(false);
 }
+void AssemblyMainWindow::switch_assembly_tab()
+{
+  QList<QTabWidget*> widgets = main_tab->findChildren<QTabWidget*>();
+  QTabWidget* assemblyTab = widgets[1];
+
+  assemblyTab->setCurrentIndex(idx_assembly_tab_);
+}
 void AssemblyMainWindow::switchAndUpdate_alignment_tab(bool psp_mode)
 {
     // std::cout<<"There are "<<main_tab->count()<<" main tabs"<<std::endl; //Count main tabs
@@ -1031,7 +1040,7 @@ void AssemblyMainWindow::switchAndUpdate_alignment_tab(bool psp_mode)
     QTabWidget* assemblyTab = widgets[1]; //Get 'Module Assembly' main tab
     // std::cout<<"There are "<<assemblyTab->count()<<" sub-tabs"<<std::endl; //Count sub-tabs
 
-    assemblyTab->setCurrentIndex(idx_alignment_tab); //Switch to 'Alignment' sub-tab
+    assemblyTab->setCurrentIndex(idx_alignment_tab_); //Switch to 'Alignment' sub-tab
 
     //Emit signal to set either PSP or PSS alignment mode
     if(psp_mode) {emit set_alignmentMode_PSP_request();}
