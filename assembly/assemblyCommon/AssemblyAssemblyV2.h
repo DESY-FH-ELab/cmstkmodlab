@@ -138,6 +138,8 @@ class AssemblyAssemblyV2 : public QObject
 
   void DisableVacuumBaseplate_start();
   void DisableVacuumBaseplate_finish();
+
+  void AssemblyCompleted_start();
   // ---------
 
   // others
@@ -199,6 +201,8 @@ class AssemblyAssemblyV2 : public QObject
 
   void EnableVacuumBaseplate_finished();
   void DisableVacuumBaseplate_finished();
+
+  void AssemblyCompleted_finished();
   // ------
 
   // others

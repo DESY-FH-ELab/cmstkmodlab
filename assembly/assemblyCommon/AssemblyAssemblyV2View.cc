@@ -757,10 +757,12 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
   {
     ++assembly_step_N;
 
-    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->text()->setText("Remove PS Module from Assembly Platform");
+    tmp_wid->button()->setText("Remove PS Module from Assembly Platform");
     PSSToMaPSA_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(AssemblyCompleted_start()), SIGNAL(AssemblyCompleted_finished()));
   }
   // ----------
 

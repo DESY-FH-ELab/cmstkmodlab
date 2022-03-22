@@ -1975,7 +1975,30 @@ void AssemblyAssemblyV2::LiftUpPickupTool_finish()
   emit DBLogMessage("== Assembly step completed : [Lift up pickup tool]");
 }
 // ----------------------------------------------------------------------------------------------------
+void AssemblyAssemblyV2::AssemblyCompleted_start()
+{
+  if(in_action_){
 
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "AssemblyCompleted_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
+
+  in_action_ = true;
+
+  QMessageBox* msgBox = new QMessageBox;
+  msgBox->setInformativeText("The assembly is completed! Very well done!");
+
+  msgBox->setStandardButtons(QMessageBox::Ok);
+  msgBox->setDefaultButton(QMessageBox::Ok);
+
+  int ret = msgBox->exec();
+
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "AssemblyCompleted_start doing nothing";
+
+  emit AssemblyCompleted_finished();
+}
 // ----------------------------------------------------------------------------------------------------
 // switchToAlignmentTab_PSP ------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
