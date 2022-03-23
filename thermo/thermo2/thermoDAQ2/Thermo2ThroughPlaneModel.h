@@ -134,12 +134,14 @@ protected:
   std::array<double,6> keithleyTopCor0_;
   std::array<double,6> keithleyTopCor1_;
   std::array<double,6> keithleyTopCor2_;
+  std::array<double,6> keithleyTopCor3_;
   std::array<unsigned int,6> keithleyBottomSensors_;
   VKeithleyDAQ6510::ChannelMode_t keithleyBottomSensorTypes_;
   std::array<double,6> keithleyBottomPositions_;
   std::array<double,6> keithleyBottomCor0_;
   std::array<double,6> keithleyBottomCor1_;
   std::array<double,6> keithleyBottomCor2_;
+  std::array<double,6> keithleyBottomCor3_;
   unsigned int keithleyAmbientSensor_;
   VKeithleyDAQ6510::ChannelMode_t keithleyAmbientSensorType_;
   bool keithleyState_;

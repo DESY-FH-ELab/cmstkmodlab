@@ -55,11 +55,13 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
   keithleyTopCor0_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor0");
   keithleyTopCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor1");
   keithleyTopCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor2");
+  keithleyTopCor3_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor3");
   keithleyBottomSensors_ = config->getValueArray<unsigned int,6>("ThroughPlaneKeithleyBottomSensors");
   keithleyBottomPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomPositions");
   keithleyBottomCor0_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor0");
   keithleyBottomCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor1");
   keithleyBottomCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor2");
+  keithleyBottomCor3_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor3");
   keithleyAmbientSensor_ = config->getValue<double>("KeithleyAmbientSensor", 0);
 
   std::string sensorType;
@@ -173,10 +175,12 @@ void Thermo2ThroughPlaneModel::configurationChanged()
   keithleyTopCor0_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor0");
   keithleyTopCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor1");
   keithleyTopCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor2");
+  keithleyTopCor3_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor3");
   keithleyBottomPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomPositions");
   keithleyBottomCor0_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor0");
   keithleyBottomCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor1");
   keithleyBottomCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor2");
+  keithleyBottomCor3_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor3");
 }
 
 void Thermo2ThroughPlaneModel::setTemperatureSetPoint(double temperature)
@@ -250,6 +254,7 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
     tcor =  keithleyTopCor0_[i];
     tcor += keithleyTopCor1_[i] * temp;
     tcor += keithleyTopCor2_[i] * temp * temp;
+    tcor += keithleyTopCor3_[i] * temp * temp * temp;
     changed |= updateIfChanged<double>(keithleyTopTemperatures_[i], tcor);
     if (keithleyTopSensorStates_[i]) countTop++;
 
@@ -260,6 +265,7 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
     tcor =  keithleyBottomCor0_[i];
     tcor += keithleyBottomCor1_[i] * temp;
     tcor += keithleyBottomCor2_[i] * temp * temp;
+    tcor += keithleyBottomCor3_[i] * temp * temp * temp;
     changed |= updateIfChanged<double>(keithleyBottomTemperatures_[i], tcor);
     if (keithleyBottomSensorStates_[i]) countBottom++;
   }
