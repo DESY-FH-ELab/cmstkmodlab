@@ -1986,6 +1986,7 @@ void AssemblyAssemblyV2::AssemblyCompleted_start()
   }
 
   QMessageBox* msgBox = new QMessageBox;
+  msgBox->setStyleSheet("QLabel{min-width: 300px;}");
   msgBox->setInformativeText("The assembly is completed! Very well done!");
 
   msgBox->setStandardButtons(QMessageBox::Ok);
@@ -1993,7 +1994,7 @@ void AssemblyAssemblyV2::AssemblyCompleted_start()
 
   int ret = msgBox->exec();
 
-  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "AssemblyCompleted_start doing nothing";
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "AssemblyCompleted_start called - no action taken";
 
   emit AssemblyCompleted_finished();
 }
