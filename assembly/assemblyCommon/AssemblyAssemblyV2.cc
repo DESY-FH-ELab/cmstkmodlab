@@ -1985,8 +1985,6 @@ void AssemblyAssemblyV2::AssemblyCompleted_start()
     return;
   }
 
-  in_action_ = true;
-
   QMessageBox* msgBox = new QMessageBox;
   msgBox->setInformativeText("The assembly is completed! Very well done!");
 
