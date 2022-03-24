@@ -20,11 +20,11 @@
 
 VKeithleyDAQ6510::VKeithleyDAQ6510( ioport_t port )
 {
-	for (int card=1;card<=2;++card) {
-		for (int channel=1;channel<=10;++channel) {
-			channelModes_[card-1][channel-1] = FourWireRTD_PT100;
-		}
-	}
+  for (int card=1;card<=2;++card) {
+    for (int channel=1;channel<=10;++channel) {
+      channelModes_[card-1][channel-1] = FourWireRTD_PT100;
+    }
+  }
 
   channelModeNames_[UnknownMode] = "unknown";
   channelModeNames_[FourWireRTD_PT100] = "4-wire PT100";
@@ -78,7 +78,7 @@ VKeithleyDAQ6510::ChannelMode_t VKeithleyDAQ6510::GetChannelMode(unsigned int ca
 {
   if (card<1 || card>2) return UnknownMode;
   if (channel<1 || channel>10) return UnknownMode;
-	return channelModes_[card-1][channel-1];
+  return channelModes_[card-1][channel-1];
 }
 
 /*
