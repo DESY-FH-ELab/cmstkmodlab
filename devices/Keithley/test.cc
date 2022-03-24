@@ -23,13 +23,18 @@ typedef KeithleyDAQ6510Fake KeithleyDAQ6510_t;
 typedef KeithleyDAQ6510 KeithleyDAQ6510_t;
 #endif
 
-int main()
+int main(int argc, char* argv[])
 {
   using namespace std::chrono_literals;
 
   std::string buffer;
 
-  KeithleyDAQ6510_t daq("/dev/usbtmc0");
+  std::string ioPort = "/dev/usbtmc0";
+  if (argc==2) ioPort = argv[1];
+
+  std::cout << "test on " << ioPort << std::endl;
+
+  KeithleyDAQ6510_t daq(ioPort.c_str());
 
   std::cout << (int) daq.DeviceAvailable() << std::endl;
 
