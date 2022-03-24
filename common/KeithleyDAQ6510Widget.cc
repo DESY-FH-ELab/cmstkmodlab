@@ -215,8 +215,10 @@ void KeithleyDAQ6510SensorModeWidget::scanStateChanged(bool /* enabled */)
   updateWidgets();
 }
 
-void KeithleyDAQ6510SensorModeWidget::sensorModeChanged(uint /* sensor */, VKeithleyDAQ6510::ChannelMode_t /* mode */)
+void KeithleyDAQ6510SensorModeWidget::sensorModeChanged(uint sensor, VKeithleyDAQ6510::ChannelMode_t /* mode */)
 {
+  if (sensor!=sensor_) return;
+  
   int userValue = itemData(currentIndex()).toInt();
 
   if (model_->getSensorMode(sensor_)!=userValue) {
