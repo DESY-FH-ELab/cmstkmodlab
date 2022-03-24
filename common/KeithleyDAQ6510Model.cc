@@ -27,7 +27,6 @@ KeithleyDAQ6510Model::KeithleyDAQ6510Model(const char* port,
   for (int card=0;card<2;++card) {
     for (int channel=0;channel<10;++channel) {
       sensorStates_[card][channel] = OFF;
-      sensorModes_[card][channel] = VKeithleyDAQ6510::FourWireRTD_PT100;
       temperatures_[card][channel] = 0.0;
     }
   }
@@ -194,10 +193,10 @@ const State & KeithleyDAQ6510Model::getSensorState(unsigned int sensor) const
 
 VKeithleyDAQ6510::ChannelMode_t KeithleyDAQ6510Model::getSensorMode(unsigned int sensor) const
 {
-  unsigned int card = sensor / 100 - 1;
-  unsigned int channel = sensor % 100 - 1;
+  unsigned int card = sensor / 100;
+  unsigned int channel = sensor % 100;
 
-  return sensorModes_[card][channel];
+  return controller_->GetChannelMode(card, channel);
 }
 
 const std::map<VKeithleyDAQ6510::ChannelMode_t,std::string>& KeithleyDAQ6510Model::getSensorModeNames() const

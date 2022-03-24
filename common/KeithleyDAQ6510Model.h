@@ -76,7 +76,6 @@ protected:
 
   // cached config information
   std::array<std::array<State,10>,2> sensorStates_;
-  std::array<std::array<VKeithleyDAQ6510::ChannelMode_t,10>,2> sensorModes_;
   std::array<std::array<double,10>,2> temperatures_;
 
   void setDeviceState( State state );
