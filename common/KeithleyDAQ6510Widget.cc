@@ -329,15 +329,14 @@ void KeithleyDAQ6510TemperatureWidget::updateWidgets()
   enabledCheckBox_->setChecked(sensorState == READY || sensorState == INITIALIZING);
 
   enabledCheckBox_->setEnabled(!scanState);
+  sensorMode_->setEnabled(!scanState);
   
   if (sensorState == READY) {
     currentTempLabel_->setEnabled( true );
     currentTempDisplay_->setEnabled( true );
-    sensorMode_->setEnabled( true );
   } else {
     currentTempLabel_->setEnabled( false );
     currentTempDisplay_->setEnabled( false );
-    sensorMode_->setEnabled( false );
   }
 }
 
@@ -360,9 +359,11 @@ void KeithleyDAQ6510TemperatureWidget::controlStateChanged(bool enabled)
     State state = model_->getDeviceState();
     bool scanState = model_->getScanState();
     enabledCheckBox_->setEnabled((state == READY || state == INITIALIZING) && !scanState);
+    sensorMode_->setEnabled((state == READY || state == INITIALIZING) && !scanState);
     updateWidgets();
   } else {
     enabledCheckBox_->setEnabled(false);
+    sensorMode_->setEnabled(false);
     currentTempLabel_->setEnabled(false);
     currentTempDisplay_->setEnabled(false);
   }
