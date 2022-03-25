@@ -27,7 +27,8 @@ ApplicationConfigReader::~ApplicationConfigReader()
 {
 }
 
-void ApplicationConfigReader::fill(ApplicationConfig::storage_t &keyvalueMap)
+void ApplicationConfigReader::fill(ApplicationConfig::storage_t &keyvalueMap,
+    ApplicationConfig::configfile_t &configFileKeyMap)
 {
   std::ifstream file(inputFileName_.c_str(), std::ios::in);
 
@@ -62,6 +63,7 @@ void ApplicationConfigReader::fill(ApplicationConfig::storage_t &keyvalueMap)
       Values.push_back(Value);
     }
     keyvalueMap[Key] = Values;
+    configFileKeyMap.insert({ inputFileName_, Key });
   }
 
   file.close();

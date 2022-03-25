@@ -35,6 +35,8 @@ public:
   ~ApplicationConfigWriter();
 
   void write(ApplicationConfig::storage_t  &keyvalueMap);
+  void write(ApplicationConfig::storage_t  &keyvalueMap,
+      ApplicationConfig::configfile_t &configFileKeyMap);
   std::string getFileName( void ) { return outputFileName_; }
 
 private:

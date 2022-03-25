@@ -40,6 +40,30 @@ void ApplicationConfigWriter::write(ApplicationConfig::storage_t  &keyvalueMap)
   }
 }
 
+void ApplicationConfigWriter::write(ApplicationConfig::storage_t  &keyvalueMap,
+    ApplicationConfig::configfile_t &configFileKeyMap)
+{
+  ApplicationConfig::storage_t temp;
+
+  auto range = configFileKeyMap.equal_range(outputFileName_);
+
+  for (auto i = range.first; i != range.second; ++i) {
+    auto search = keyvalueMap.find(i->second);
+    if (search!=keyvalueMap.end()) {
+      temp.insert({ search->first, search->second });
+    }
+  }
+
+  std::ifstream file( outputFileName_.c_str(), std::ios::in );
+  if (file.good()) {
+    file.close();
+    writeMerge(temp);
+  } else {
+    file.close();
+    writeNew(temp);
+  }
+}
+
 void ApplicationConfigWriter::writeMerge(ApplicationConfig::storage_t  &keyvalueMap)
 {
   std::map<std::string,std::string> keyMap;

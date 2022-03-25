@@ -19,30 +19,64 @@ const std::string Config::CMSTkModLabBasePath("@basepath@");
 
 ApplicationConfig* ApplicationConfig::instance_ = NULL;
 
-ApplicationConfig::ApplicationConfig(const std::string filename, QObject *parent)
+ApplicationConfig::ApplicationConfig(QObject *parent)
  : QObject(parent)
 {
-  ApplicationConfigReader reader(filename);
-  reader.fill(keyvalueMap_);
-  
-  emit structureChanged();
-  emit valueChanged();
+
+}
+
+ApplicationConfig* ApplicationConfig::instance(QObject *parent)
+{
+  if (instance_==NULL) {
+    instance_ = new ApplicationConfig(parent);
+  }
+  return instance_;
 }
 
 ApplicationConfig* ApplicationConfig::instance(const std::string filename, QObject *parent)
 {
   if (instance_==NULL) {
+    instance_ = new ApplicationConfig(parent);
     if (!filename.empty()) {
-      instance_ = new ApplicationConfig(filename, parent);
+      instance_->append(filename);
     }
   }
   return instance_;
 }
 
-void ApplicationConfig::safe(const std::string filename)
+void ApplicationConfig::append(const std::string filename)
+{
+  ApplicationConfigReader reader(filename);
+  reader.fill(keyvalueMap_, configFileKeyMap_);
+  
+  emit structureChanged();
+  emit valueChanged();
+}
+
+void ApplicationConfig::safe()
+{
+  std::map<std::string,std::string> filemap;
+  for (const auto & cf : configFileKeyMap_) {
+  	filemap[cf.first] = cf.first;
+  }
+
+  for (const auto & cf : filemap) {
+  	ApplicationConfigWriter writer(cf.first);
+    writer.write(keyvalueMap_, configFileKeyMap_);
+  }
+}
+
+void ApplicationConfig::safeAs(const std::string filename)
 {
   ApplicationConfigWriter writer(filename);
   writer.write(keyvalueMap_);
+  
+  configFileKeyMap_.clear();
+  for (storage_t::const_iterator it=keyvalueMap_.begin();
+    it!=keyvalueMap_.end();
+  	++it) {
+    configFileKeyMap_.insert({ filename, it->first });
+  }
 }
 
 void ApplicationConfig::issueKeyError(std::string const& key) const

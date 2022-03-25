@@ -34,7 +34,8 @@ public:
   ApplicationConfigReader( const std::string & filename );
   ~ApplicationConfigReader();
 
-  void fill(ApplicationConfig::storage_t &keyvalueMap);
+  void fill(ApplicationConfig::storage_t &keyvalueMap,
+      ApplicationConfig::configfile_t &configFileKeyMap);
   std::string getFileName( void ) { return inputFileName_; }
 
 private:
