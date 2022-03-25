@@ -145,6 +145,7 @@ template <> std::vector<int> ApplicationConfig::getValueVector(std::string const
   	for (auto & v : it->second) {
   	  std::istringstream iss(v.c_str(), std::istringstream::in);
       iss >> std::setbase(0) >> returnValue;
+      returnVector.push_back(returnValue);
   	}
   } else {
     issueKeyError(key);
@@ -186,6 +187,7 @@ template <> std::vector<unsigned int> ApplicationConfig::getValueVector(std::str
   	for (auto & v : it->second) {
   	  std::istringstream iss(v.c_str(), std::istringstream::in);
       iss >> std::setbase(0) >> returnValue;
+      returnVector.push_back(returnValue);
   	}
   } else {
     issueKeyError(key);
