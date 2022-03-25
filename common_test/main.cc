@@ -35,7 +35,6 @@
 
 #include <MattermostBot.h>
 
-#include <Ringbuffer.h>
 #include <Fifo.h>
 #include <HistoryFifo.h>
 #include <ValueHistory.h>
@@ -59,21 +58,6 @@ int main(int argc, char ** argv)
 {
   NQLogger::instance()->addActiveModule("*");
   NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
-
-  /*
-  {
-    Ringbuffer<int,10> rb;
-    
-    for (auto i = 0;i<10;++i) {
-      rb.push_back(i);
-    }
-    rb.push_back(10);
-
-    for (auto & i : rb) {
-      std::cout << i << std::endl;
-    }
-  }
-  */
   
   /*
   {
@@ -108,85 +92,6 @@ int main(int argc, char ** argv)
 
       std::cout << i << "\t" << history.at(0) << "\t" << history.secondsAgo(30) << std::endl;
     }
-  }
-  */
-  
-  /*
-  {
-    ApplicationConfig * config = ApplicationConfig::instance("test.cfg");
-
-    double double1 = config->getValue<double>("double1");
-
-    std::cout << double1 << std::endl;
-
-    double1 = 4.3;
-
-    config->setValue<double>("double1", double1);
-
-    double1 = config->getValue<double>("double1");
-
-    config->safe("testout.cfg");
-  }
-  */
-
-  /*
-  {
-    ApplicationConfig * config = ApplicationConfig::instance("test.cfg");
-
-    std::vector<int> integer1 = config->getValueVector<int>("integer1");
-    std::cout << "integer1: ";
-    for (std::vector<int>::iterator it = integer1.begin();
-        it!=integer1.end();
-        ++it) {
-      std::cout << *it << " ";
-    }
-    std::cout << std::endl;
-
-    config->safe("testout.cfg");
-  }
-  */
-
-  /*
-  {
-    HistoryFifo<double> fifo(5);
-
-    fifo.push_back(QDateTime::fromString("2017-06-13T09:09:11", Qt::ISODate), 10);
-    fifo.push_back(QDateTime::fromString("2017-06-13T09:09:12", Qt::ISODate), 20);
-    fifo.push_back(QDateTime::fromString("2017-06-13T09:09:13", Qt::ISODate), 30);
-    fifo.push_back(QDateTime::fromString("2017-06-13T09:09:14", Qt::ISODate), 40);
-    fifo.push_back(QDateTime::fromString("2017-06-13T09:09:15", Qt::ISODate), 50);
-    fifo.push_back(QDateTime::fromString("2017-06-13T09:09:16", Qt::ISODate), 60);
-    fifo.push_back(QDateTime::fromString("2017-06-13T09:09:17", Qt::ISODate), 70);
-    fifo.push_back(QDateTime::fromString("2017-06-13T09:09:18", Qt::ISODate), 80);
-    fifo.push_back(QDateTime::fromString("2017-06-13T09:09:19", Qt::ISODate), 90);
-
-    for (int i=0;i<fifo.size();++i) {
-      std::cout << fifo.timeAt(i).toString(Qt::ISODate).toStdString() << " : " << fifo.valueAt(i) << std::endl;
-    }
-
-    std::cout << fifo.deltaTime(0, 4) << std::endl;
-    std::cout << fifo.delta(0, 4) << std::endl;
-    std::cout << fifo.gradient(0, 4) << std::endl;
-  }
-  */
-
-  /*
-  {
-    Fifo<int> fifo(5);
-
-    fifo.push_back(1);
-    fifo.push_back(2);
-    fifo.push_back(3);
-    fifo.push_back(4); // 0
-    fifo.push_back(5); // 1
-    fifo.push_back(6); // 2
-    fifo.push_back(7); // 3
-    fifo.push_back(8); // 4
-
-    for (auto & i : fifo) {
-      std::cout << i << " ";
-    }
-    std::cout << std::endl;
   }
   */
   
@@ -498,20 +403,4 @@ int main(int argc, char ** argv)
     bot.postMessage("message from cmstkmodlab");
   }
   */
-
-  {
-    ApplicationConfig * config = ApplicationConfig::instance();
-
-    config->append("test1.cfg");
-    config->append("test2.cfg");
-
-    const ApplicationConfig::storage_t& kvmap = config->getKeyValueMap();
-    for (auto & kv : kvmap) {
-      std::cout << kv.first << " ";
-      for (auto & v : kv.second) {
-        std::cout << " " << v;
-      }
-      std::cout << std::endl;
-    }
-  }
 }
