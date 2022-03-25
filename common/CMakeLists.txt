@@ -92,10 +92,29 @@ set(DEVICE_LIBRARIES
         TkModLabRohdeSchwarz
         TkModLabVelleman
 )
+
 if(CMSTKMODLAB_ASSEMBLY OR CMSTKMODLAB_DEFO)
-set(DEVICE_LIBRARIES
+	set(DEVICE_LIBRARIES
+        TkModLabAgilent
+        TkModLabArduino
+        TkModLabConrad
+        TkModLabCori
+        TkModLabGreisinger
+        TkModLabHameg
+        TkModLabHuber
+        TkModLabIota
+        TkModLabJulabo
+        TkModLabKeithley
+        TkModLabKeyence
+        TkModLabLang
+        TkModLabLeybold
+        TkModLabMarta
+        TkModLabNanotec
+        TkModLabPfeiffer
+        TkModLabRohdeSchwarz
+        TkModLabVelleman
         TkModLabCanon
-)
+	)
 endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
