@@ -90,6 +90,7 @@ int main(int argc, char ** argv)
     return app.exec();
   }
   */
+
   /*
   {
     MartaModel *marta = new MartaModel("10.255.21.224:502");
@@ -145,6 +146,7 @@ int main(int argc, char ** argv)
   }
   */
 
+  /*
   {
     HistoryFifo<double> fifo(5);
 
@@ -166,6 +168,7 @@ int main(int argc, char ** argv)
     std::cout << fifo.delta(0, 4) << std::endl;
     std::cout << fifo.gradient(0, 4) << std::endl;
   }
+  */
 
   /*
   {
@@ -495,4 +498,20 @@ int main(int argc, char ** argv)
     bot.postMessage("message from cmstkmodlab");
   }
   */
+
+  {
+    ApplicationConfig * config = ApplicationConfig::instance();
+
+    config->append("test1.cfg");
+    config->append("test2.cfg");
+
+    const ApplicationConfig::storage_t& kvmap = config->getKeyValueMap();
+    for (auto & kv : kvmap) {
+      std::cout << kv.first << " ";
+      for (auto & v : kv.second) {
+        std::cout << " " << v;
+      }
+      std::cout << std::endl;
+    }
+  }
 }
