@@ -564,7 +564,7 @@ void ThermoDisplay2MainWindow::savePlots()
   tabWidget_->setCurrentIndex(currentTab);
 
   config->setValue("PlotSaveDirectory", dir);
-  config->safe(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2/thermo2.cfg");
+  config->safe();
 
   QApplication::processEvents();
 
