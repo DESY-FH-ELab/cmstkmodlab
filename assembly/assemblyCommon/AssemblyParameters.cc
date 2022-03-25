@@ -190,16 +190,13 @@ void AssemblyParameters::read_from_file(const QString& f_path)
 
 void AssemblyParameters::read_from_file(const std::string& f_path)
 {
-  ApplicationConfigReader reader(f_path);
-
-  std::multimap<std::string, std::string> multimap_str;
-  reader.fill(multimap_str);
-
+  ApplicationConfig* config = new ApplicationConfig(f_path);
+  NQLog("AssemblyParameters", NQLog::Spam) << "read_from_file"
+					      << " - filename " << f_path;  
+  
   map_double_.clear();
 
-  for(const auto& i_pair : multimap_str)
-  {
-    const std::string& i_key = i_pair.first;
+  for(const auto& i_key : config->getKeys()) {
 
     if(map_double_.find(i_key) != map_double_.end())
     {
@@ -207,15 +204,15 @@ void AssemblyParameters::read_from_file(const std::string& f_path)
          << ": duplicate assembly parameter \"" << i_key << "\", parameter value will be overwritten";
     }
 
-    const QString i_val_qstr = QString::fromStdString(i_pair.second);
+    const QString i_val_qstr = QString::fromStdString(config->getValue(i_key));
 
     bool i_val_valid(false);
     const double i_val_double = i_val_qstr.toDouble(&i_val_valid);
 
     if(i_val_valid == false)
     {
-      NQLog("AssemblyParameters", NQLog::Warning) << "read_from_file"
-         << ": invalid format for input parameter \"" << i_val_qstr << "\", cannot be added to AssemblyParameters";
+	NQLog("AssemblyParameters", NQLog::Warning) << "read_from_file"
+	<< ": invalid format for input parameter \"" << i_val_qstr << "\", cannot be added to AssemblyParameters";
 
       continue;
     }
