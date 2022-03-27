@@ -63,6 +63,8 @@ public:
         iss >> returnValue;
         returnVector.push_back(returnValue);
       }
+    } else {
+      issueKeyError(key);
     }
     return returnVector;
   }
