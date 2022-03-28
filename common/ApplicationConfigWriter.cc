@@ -18,9 +18,11 @@
 
 #include "ApplicationConfigWriter.h"
 
-ApplicationConfigWriter::ApplicationConfigWriter( const std::string & outputFileName )
+ApplicationConfigWriter::ApplicationConfigWriter(const std::string& filename, const std::string& alias)
+  : filename_(filename),
+    alias_(alias)
 {
-  outputFileName_ = std::string( outputFileName );
+
 }
 
 ApplicationConfigWriter::~ApplicationConfigWriter()
@@ -28,9 +30,9 @@ ApplicationConfigWriter::~ApplicationConfigWriter()
 
 }
 
-void ApplicationConfigWriter::write(ApplicationConfig::storage_t  &keyvalueMap)
+void ApplicationConfigWriter::write(ApplicationConfig::storage_t &keyvalueMap)
 {
-  std::ifstream file( outputFileName_.c_str(), std::ios::in );
+  std::ifstream file(filename_.c_str(), std::ios::in);
   if (file.good()) {
     file.close();
     writeMerge(keyvalueMap);
@@ -40,32 +42,9 @@ void ApplicationConfigWriter::write(ApplicationConfig::storage_t  &keyvalueMap)
   }
 }
 
-void ApplicationConfigWriter::write(ApplicationConfig::storage_t  &keyvalueMap,
-    ApplicationConfig::configfile_t &configFileKeyMap)
+void ApplicationConfigWriter::writeMerge(ApplicationConfig::storage_t& keyvalueMap)
 {
-  ApplicationConfig::storage_t temp;
-
-  auto range = configFileKeyMap.equal_range(outputFileName_);
-
-  for (auto i = range.first; i != range.second; ++i) {
-    auto search = keyvalueMap.find(i->second);
-    if (search!=keyvalueMap.end()) {
-      temp.insert({ search->first, search->second });
-    }
-  }
-
-  std::ifstream file( outputFileName_.c_str(), std::ios::in );
-  if (file.good()) {
-    file.close();
-    writeMerge(temp);
-  } else {
-    file.close();
-    writeNew(temp);
-  }
-}
-
-void ApplicationConfigWriter::writeMerge(ApplicationConfig::storage_t  &keyvalueMap)
-{
+  /*
   std::map<std::string,std::string> keyMap;
   ApplicationConfig::storage_t tmap = keyvalueMap;
   std::ostringstream ostream;
@@ -159,10 +138,12 @@ void ApplicationConfigWriter::writeMerge(ApplicationConfig::storage_t  &keyvalue
   std::ofstream ofile(outputFileName_.c_str(), std::ios::trunc);
   ofile << ostream.str() << std::endl;
   ofile.close();
+  */
 }
 
-void ApplicationConfigWriter::writeNew(ApplicationConfig::storage_t  &keyvalueMap)
+void ApplicationConfigWriter::writeNew(ApplicationConfig::storage_t& keyvalueMap)
 {
+  /*
   int count = 0;
   std::map<std::string,std::string> keyMap;
   std::ofstream file(outputFileName_.c_str(), std::ios::out);
@@ -191,4 +172,5 @@ void ApplicationConfigWriter::writeNew(ApplicationConfig::storage_t  &keyvalueMa
       keyMap.insert(std::make_pair(kv.first, kv.first));
     }
   }
+  */
 }

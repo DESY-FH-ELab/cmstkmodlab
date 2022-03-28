@@ -51,7 +51,7 @@ signals:
 protected:
 
   bool isReadOnly_;
-  std::vector<std::pair<std::string,std::size_t> > keys_;
+  std::vector<std::pair<ApplicationConfig::ShortKey,std::size_t> > keys_;
 };
 
 #endif // APPLICATIONCONFIGITEMMODEL_H

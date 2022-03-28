@@ -41,14 +41,17 @@ void ApplicationConfigItemModel::structureChanged()
 
   keys_.clear();
 
-  for (ApplicationConfig::storage_t::const_iterator it=config->getKeyValueMap().begin();
-      it!=config->getKeyValueMap().end();
-      ++it) {
-    std::string key = it->first;
+  for (auto & kv : config->getKeyValueMap()) {
+
+    std::string alias = kv.first.alias;
+    std::string key = kv.first.key;
+
+    if (alias=="*") continue;
 
     std::size_t idx = 0;
-    for (auto & s : it->second) {
-      keys_.push_back(std::make_pair(key, idx));
+    for (auto & s : kv.second) {
+      ApplicationConfig::ShortKey sk = { alias, key };
+      keys_.push_back(std::make_pair(sk, idx));
       idx++;
     }
   }
@@ -63,15 +66,17 @@ int ApplicationConfigItemModel::rowCount(const QModelIndex & parent) const
 
 int ApplicationConfigItemModel::columnCount(const QModelIndex & parent) const
 {
-  return 3;
+  return 4;
 }
 
 QVariant ApplicationConfigItemModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
   if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
     if (section==0) {
-      return QString("Key");
+      return QString("Alias");
     } else if (section==1) {
+      return QString("Key");
+    } else if (section==2) {
       return QString("Index");
     } else {
       return QString("Value");
@@ -88,23 +93,27 @@ QVariant ApplicationConfigItemModel::data(const QModelIndex &index, int role) co
 
     if (index.column()==0) {
 
-      return keys_[index.row()].first.c_str();
+      return keys_[index.row()].first.alias.c_str();
 
     } else if (index.column()==1) {
+
+      return keys_[index.row()].first.key.c_str();
+
+    } else if (index.column()==2) {
 
       return QVariant((unsigned int)keys_[index.row()].second);
 
     }
 
-    std::string key = keys_[index.row()].first;
+    const ApplicationConfig::ShortKey& sk = keys_[index.row()].first;
     std::size_t idx = keys_[index.row()].second;
 
-    return QString(config->getValueByIndex(key, idx).c_str());
+    return QString(config->getValueByIndex(sk, idx).c_str());
   }
 
   if (role == Qt::TextAlignmentRole) {
 
-    if (index.column()==1) {
+    if (index.column()==2) {
 
       return int(Qt::AlignCenter | Qt::AlignVCenter);
 
@@ -116,10 +125,10 @@ QVariant ApplicationConfigItemModel::data(const QModelIndex &index, int role) co
   }
 
   if (role == Qt::EditRole) {
-    std::string key = keys_[index.row()].first;
+    const ApplicationConfig::ShortKey& sk = keys_[index.row()].first;
     std::size_t idx = keys_[index.row()].second;
 
-    return QString(config->getValueByIndex(key, idx).c_str());
+    return QString(config->getValueByIndex(sk, idx).c_str());
   }
 
   return QVariant();
@@ -136,14 +145,14 @@ bool ApplicationConfigItemModel::setData(const QModelIndex &index, const QVarian
       return false;
 #endif
     
-    std::string key = keys_[index.row()].first;
+    const ApplicationConfig::ShortKey& sk = keys_[index.row()].first;
     std::size_t idx = keys_[index.row()].second;
 
-    std::string oldValue = config->getValueByIndex(key, idx);
+    std::string oldValue = config->getValueByIndex(sk, idx);
     std::string newValue = value.toString().toStdString();
 
     if (newValue!=oldValue) {
-      config->setValueByIndex(key, idx, newValue);
+      config->setValueByIndex(sk, idx, newValue);
     }
 
     return true;
@@ -153,7 +162,7 @@ bool ApplicationConfigItemModel::setData(const QModelIndex &index, const QVarian
 
 Qt::ItemFlags ApplicationConfigItemModel::flags(const QModelIndex &index) const
 {
-  if (!isReadOnly_ && index.column()==2) {
+  if (!isReadOnly_ && index.column()==3) {
     return Qt::ItemIsEditable | QAbstractTableModel::flags(index);
   }
 
