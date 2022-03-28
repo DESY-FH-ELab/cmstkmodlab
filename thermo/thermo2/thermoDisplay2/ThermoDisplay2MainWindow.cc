@@ -32,26 +32,28 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
 {
   ApplicationConfig* config = ApplicationConfig::instance();
 
-  chillerAndVacuumActive_ = config->getValue<int>("ChillerAndVacuumActive");
-  martaActive_ = config->getValue<int>("MartaActive");
-  throughPlaneActive_ = config->getValue<int>("ThroughPlaneSetupActive");
+  chillerAndVacuumActive_ = config->getValue<int>("main", "ChillerAndVacuumActive");
+  martaActive_ = config->getValue<int>("main", "MartaActive");
+  throughPlaneActive_ = config->getValue<int>("main", "ThroughPlaneSetupActive");
 
-  resistance_ = config->getValue<double>("ThroughPlaneResistance");
-  cableResistance_ = config->getValue<double>("ThroughPlaneCableResistance");
-  kBlock_ = config->getValue<double>("ThroughPlaneKBlock");
-  ABlock_ = config->getValue<double>("ThroughPlaneABlock");
-  nge103BChannel_ = config->getValue<unsigned int>("ThroughPlaneNGE103BChannel");
-  keithleyTopSensors_ = config->getValueArray<unsigned int,6>("ThroughPlaneKeithleyTopSensors");
-  keithleyTopPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopPositions");
-  keithleyTopCor0_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor0");
-  keithleyTopCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor1");
-  keithleyTopCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor2");
-  keithleyBottomSensors_ = config->getValueArray<unsigned int,6>("ThroughPlaneKeithleyBottomSensors");
-  keithleyBottomPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomPositions");
-  keithleyBottomCor0_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor0");
-  keithleyBottomCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor1");
-  keithleyBottomCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor2");
-  keithleyAmbientSensor_ = config->getValue<double>("KeithleyAmbientSensor", 0);
+  resistance_ = config->getValue<double>("main", "ThroughPlaneResistance");
+  cableResistance_ = config->getValue<double>("main", "ThroughPlaneCableResistance");
+  kBlock_ = config->getValue<double>("main", "ThroughPlaneKBlock");
+  ABlock_ = config->getValue<double>("main", "ThroughPlaneABlock");
+  nge103BChannel_ = config->getValue<unsigned int>("main", "ThroughPlaneNGE103BChannel");
+  keithleyTopSensors_ = config->getValueArray<unsigned int,6>("main", "ThroughPlaneKeithleyTopSensors");
+  keithleyTopPositions_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopPositions");
+  keithleyTopCor0_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopCor0");
+  keithleyTopCor1_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopCor1");
+  keithleyTopCor2_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopCor2");
+  keithleyTopCor3_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopCor3");
+  keithleyBottomSensors_ = config->getValueArray<unsigned int,6>("main", "ThroughPlaneKeithleyBottomSensors");
+  keithleyBottomPositions_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomPositions");
+  keithleyBottomCor0_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor0");
+  keithleyBottomCor1_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor1");
+  keithleyBottomCor2_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor2");
+  keithleyBottomCor3_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor3");
+  keithleyAmbientSensor_ = config->getValue<double>("main", "KeithleyAmbientSensor");
 
   unsigned int sensor;
   unsigned int card;
@@ -470,7 +472,7 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   configViewer_ = new ApplicationConfigViewer(false, this);
   tabWidget_->addTab(configViewer_, "Configuration");
 
-  client_ = new ThermoDAQ2Client(config->getValue<unsigned int>("ServerPort"));
+  client_ = new ThermoDAQ2Client(config->getValue<unsigned int>("main", "ServerPort"));
   reader_ = new ThermoDAQ2NetworkReader(this);
 
   QObject::connect(client_, SIGNAL(handleMessage(QString&)),
@@ -508,18 +510,18 @@ void ThermoDisplay2MainWindow::configurationChanged()
 {
   ApplicationConfig* config = ApplicationConfig::instance();
 
-  resistance_ = config->getValue<double>("ThroughPlaneResistance");
-  cableResistance_ = config->getValue<double>("ThroughPlaneCableResistance");
-  kBlock_ = config->getValue<double>("ThroughPlaneKBlock");
-  ABlock_ = config->getValue<double>("ThroughPlaneABlock");
-  keithleyTopPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopPositions");
-  keithleyTopCor0_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor0");
-  keithleyTopCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor1");
-  keithleyTopCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor2");
-  keithleyBottomPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomPositions");
-  keithleyBottomCor0_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor0");
-  keithleyBottomCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor1");
-  keithleyBottomCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor2");
+  resistance_ = config->getValue<double>("main", "ThroughPlaneResistance");
+  cableResistance_ = config->getValue<double>("main", "ThroughPlaneCableResistance");
+  kBlock_ = config->getValue<double>("main", "ThroughPlaneKBlock");
+  ABlock_ = config->getValue<double>("main", "ThroughPlaneABlock");
+  keithleyTopPositions_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopPositions");
+  keithleyTopCor0_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopCor0");
+  keithleyTopCor1_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopCor1");
+  keithleyTopCor2_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopCor2");
+  keithleyBottomPositions_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomPositions");
+  keithleyBottomCor0_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor0");
+  keithleyBottomCor1_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor1");
+  keithleyBottomCor2_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor2");
 }
 
 void ThermoDisplay2MainWindow::clearData()
@@ -549,7 +551,7 @@ void ThermoDisplay2MainWindow::savePlots()
 
   ApplicationConfig* config = ApplicationConfig::instance();
 
-  QString startDir = config->getValue<std::string>("PlotSaveDirectory").c_str();
+  QString startDir = config->getValue<std::string>("main", "PlotSaveDirectory").c_str();
 
   QString dir = QFileDialog::getExistingDirectory(this, "Save Directory",
                                                   startDir,

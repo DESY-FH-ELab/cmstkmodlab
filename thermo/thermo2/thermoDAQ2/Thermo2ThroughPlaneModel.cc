@@ -35,8 +35,8 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
 {
   ApplicationConfig* config = ApplicationConfig::instance();
 
-  mattermostStatus_ = config->getValue<int>("ThroughPlaneMattermostStatus");
-  mattermostInterval_ = config->getValue<int>("ThroughPlaneMattermostInterval");
+  mattermostStatus_ = config->getValue<int>("main", "ThroughPlaneMattermostStatus");
+  mattermostInterval_ = config->getValue<int>("main", "ThroughPlaneMattermostInterval");
 
   mattermostStatusTime_ = QDateTime::currentDateTime();
   QTime time = mattermostStatusTime_.time();
@@ -45,28 +45,28 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
   time = time.addSecs(mattermostInterval_*60);
   mattermostStatusTime_.setTime(time);
 
-  resistance_ = config->getValue<double>("ThroughPlaneResistance");
-  cableResistance_ = config->getValue<double>("ThroughPlaneCableResistance");
-  kBlock_ = config->getValue<double>("ThroughPlaneKBlock");
-  ABlock_ = config->getValue<double>("ThroughPlaneABlock");
-  nge103BChannel_ = config->getValue<unsigned int>("ThroughPlaneNGE103BChannel");
-  keithleyTopSensors_ = config->getValueArray<unsigned int,6>("ThroughPlaneKeithleyTopSensors");
-  keithleyTopPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopPositions");
-  keithleyTopCor0_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor0");
-  keithleyTopCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor1");
-  keithleyTopCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor2");
-  keithleyTopCor3_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor3");
-  keithleyBottomSensors_ = config->getValueArray<unsigned int,6>("ThroughPlaneKeithleyBottomSensors");
-  keithleyBottomPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomPositions");
-  keithleyBottomCor0_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor0");
-  keithleyBottomCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor1");
-  keithleyBottomCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor2");
-  keithleyBottomCor3_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor3");
-  keithleyAmbientSensor_ = config->getValue<double>("KeithleyAmbientSensor", 0);
+  resistance_ = config->getValue<double>("main", "ThroughPlaneResistance");
+  cableResistance_ = config->getValue<double>("main", "ThroughPlaneCableResistance");
+  kBlock_ = config->getValue<double>("main", "ThroughPlaneKBlock");
+  ABlock_ = config->getValue<double>("main", "ThroughPlaneABlock");
+  nge103BChannel_ = config->getValue<unsigned int>("main", "ThroughPlaneNGE103BChannel");
+  keithleyTopSensors_ = config->getValueArray<unsigned int,6>("main", "ThroughPlaneKeithleyTopSensors");
+  keithleyTopPositions_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopPositions");
+  keithleyTopCor0_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopCor0");
+  keithleyTopCor1_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopCor1");
+  keithleyTopCor2_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopCor2");
+  keithleyTopCor3_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopCor3");
+  keithleyBottomSensors_ = config->getValueArray<unsigned int,6>("main", "ThroughPlaneKeithleyBottomSensors");
+  keithleyBottomPositions_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomPositions");
+  keithleyBottomCor0_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor0");
+  keithleyBottomCor1_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor1");
+  keithleyBottomCor2_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor2");
+  keithleyBottomCor3_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor3");
+  keithleyAmbientSensor_ = config->getValue<double>("main", "KeithleyAmbientSensor");
 
   std::string sensorType;
 
-  sensorType = config->getValue("ThroughPlaneKeithleyTopSensorTypes");
+  sensorType = config->getValue("main", "ThroughPlaneKeithleyTopSensorTypes");
   if (sensorType=="4WirePT100") {
     keithleyTopSensorTypes_ = VKeithleyDAQ6510::FourWireRTD_PT100;
   } else if (sensorType=="Therm10k") {
@@ -75,7 +75,7 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
     keithleyTopSensorTypes_ = VKeithleyDAQ6510::FourWireRTD_PT100;
   }
 
-  sensorType = config->getValue("ThroughPlaneKeithleyBottomSensorTypes");
+  sensorType = config->getValue("main", "ThroughPlaneKeithleyBottomSensorTypes");
   if (sensorType=="4WirePT100") {
     keithleyBottomSensorTypes_ = VKeithleyDAQ6510::FourWireRTD_PT100;
   } else if (sensorType=="Therm10k") {
@@ -85,7 +85,7 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
   }
 
   if (keithleyAmbientSensor_!=0) {
-    sensorType = config->getValue("KeithleyAmbientSensorType");
+    sensorType = config->getValue("main", "KeithleyAmbientSensorType");
     if (sensorType=="4WirePT100") {
       keithleyAmbientSensorType_ = VKeithleyDAQ6510::FourWireRTD_PT100;
     }else if (sensorType=="Therm10k") {
@@ -95,7 +95,7 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
     }
   }
 
-  bool throughPlaneAutoConfig = config->getValue<int>("ThroughPlaneAutoConfig");
+  bool throughPlaneAutoConfig = config->getValue<int>("main", "ThroughPlaneAutoConfig");
   if (throughPlaneAutoConfig) {
     for (unsigned int i=0;i<6;++i) {
       keithleyModel_->setSensorMode(keithleyTopSensors_[i], keithleyTopSensorTypes_);
@@ -167,20 +167,20 @@ void Thermo2ThroughPlaneModel::configurationChanged()
 
   ApplicationConfig* config = ApplicationConfig::instance();
 
-  resistance_ = config->getValue<double>("ThroughPlaneResistance");
-  cableResistance_ = config->getValue<double>("ThroughPlaneCableResistance");
-  kBlock_ = config->getValue<double>("ThroughPlaneKBlock");
-  ABlock_ = config->getValue<double>("ThroughPlaneABlock");
-  keithleyTopPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopPositions");
-  keithleyTopCor0_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor0");
-  keithleyTopCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor1");
-  keithleyTopCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor2");
-  keithleyTopCor3_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor3");
-  keithleyBottomPositions_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomPositions");
-  keithleyBottomCor0_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor0");
-  keithleyBottomCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor1");
-  keithleyBottomCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor2");
-  keithleyBottomCor3_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor3");
+  resistance_ = config->getValue<double>("main", "ThroughPlaneResistance");
+  cableResistance_ = config->getValue<double>("main", "ThroughPlaneCableResistance");
+  kBlock_ = config->getValue<double>("main", "ThroughPlaneKBlock");
+  ABlock_ = config->getValue<double>("main", "ThroughPlaneABlock");
+  keithleyTopPositions_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopPositions");
+  keithleyTopCor0_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopCor0");
+  keithleyTopCor1_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopCor1");
+  keithleyTopCor2_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopCor2");
+  keithleyTopCor3_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopCor3");
+  keithleyBottomPositions_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomPositions");
+  keithleyBottomCor0_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor0");
+  keithleyBottomCor1_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor1");
+  keithleyBottomCor2_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor2");
+  keithleyBottomCor3_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor3");
 }
 
 void Thermo2ThroughPlaneModel::setTemperatureSetPoint(double temperature)

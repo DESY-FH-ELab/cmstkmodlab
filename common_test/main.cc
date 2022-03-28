@@ -62,6 +62,41 @@ int main(int argc, char ** argv)
 
   /*
   {
+    std::map<ApplicationConfig::FullKey, std::string, std::less<>> example = {
+        { { "fn1", "a1", "k1" }, "fn1.a1.k1" },
+        { { "*", "*", "k1" }, "fn1.a1.k1" },
+        { { "fn1", "a1", "k2" }, "fn1.a1.k2" },
+        { { "*", "*", "k2" }, "fn1.a1.k2" },
+        { { "fn2", "a2", "k1" }, "fn2.a2.k1" },
+        { { "*", "*", "k1" }, "fn2.a2.k1" },
+        { { "fn2", "a2", "k2" }, "fn2.a2.k2" },
+        { { "*", "*", "k2" }, "fn2.a2.k2" },
+    };
+
+    for (auto & kv : example) {
+      std::cout << kv.first.filename << ": " << kv.second << std::endl;
+    }
+
+    ApplicationConfig::ShortKey sk1 = { "a2", "k1" };
+    auto search1 = example.find(sk1);
+    if (search1 != example.end()) {
+      std::cout << "found: " << search1->first.filename << ": " << search1->second << std::endl;
+    } else {
+      std::cout << "Not found\n";
+    }
+
+    ApplicationConfig::ShortKey sk2 = { "*", "k1" };
+    auto search2 = example.find(sk2);
+    if (search2 != example.end()) {
+      std::cout << "found: " << search2->first.filename << ": " << search2->second << std::endl;
+    } else {
+      std::cout << "Not found\n";
+    }
+  }
+  */
+
+  /*
+  {
     Ringbuffer<int,10> rb;
     
     for (auto i = 0;i<10;++i) {
@@ -81,7 +116,8 @@ int main(int argc, char ** argv)
 
     app.setStyle("cleanlooks");
 
-    ApplicationConfig * config = ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2/thermo2.cfg");
+    ApplicationConfig * config = ApplicationConfig::instance();
+    config->append(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2/thermo2.cfg", "main");
 
     CommonTestMainWindow mainWindow;
 
@@ -499,6 +535,7 @@ int main(int argc, char ** argv)
   }
   */
 
+  /*
   {
     ApplicationConfig * config = ApplicationConfig::instance();
 
@@ -514,4 +551,5 @@ int main(int argc, char ** argv)
       std::cout << std::endl;
     }
   }
+  */
 }

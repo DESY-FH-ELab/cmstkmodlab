@@ -192,7 +192,8 @@ int main(int argc, char *argv[])
     parameters << args[args.count()-1];
   }
 
-  ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2/thermo2.cfg");
+  ApplicationConfig::instance();
+  ApplicationConfig::instance()->append(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2/thermo2.cfg", "main");
 
   Controller controller(command, parameters);
   QTimer::singleShot(0, &controller, SLOT(connectToServer()));

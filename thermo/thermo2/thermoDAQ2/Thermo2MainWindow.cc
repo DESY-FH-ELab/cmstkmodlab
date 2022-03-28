@@ -46,17 +46,17 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   QBoxLayout * vlayout2;
   QBoxLayout * hlayout;
 
-  chillerAndVacuumActive_ = config->getValue<int>("ChillerAndVacuumActive");
-  martaActive_ = config->getValue<int>("MartaActive");
-  throughPlaneActive_ = config->getValue<int>("ThroughPlaneSetupActive");
+  chillerAndVacuumActive_ = config->getValue<int>("main", "ChillerAndVacuumActive");
+  martaActive_ = config->getValue<int>("main", "MartaActive");
+  throughPlaneActive_ = config->getValue<int>("main", "ThroughPlaneSetupActive");
 
   huberModel_ = 0;
   if (chillerAndVacuumActive_) {
 #ifdef USE_FAKEIO
-  	huberModel_ = new HuberUnistat525wModel(config->getValue<std::string>("HuberUnistatDevice").c_str(),
+  	huberModel_ = new HuberUnistat525wModel(config->getValue<std::string>("main", "HuberUnistatDevice").c_str(),
   			5, this);
 #else
-  	huberModel_ = new HuberUnistat525wModel(config->getValue<std::string>("HuberUnistatDevice").c_str(),
+  	huberModel_ = new HuberUnistat525wModel(config->getValue<std::string>("main", "HuberUnistatDevice").c_str(),
   			10, this);
 #endif
   }
@@ -64,10 +64,10 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   martaModel_ = 0;
   if (martaActive_) {
 #ifdef USE_FAKEIO
-  	martaModel_ = new MartaModel(config->getValue<std::string>("MartaIPAddress").c_str(),
+  	martaModel_ = new MartaModel(config->getValue<std::string>("main", "MartaIPAddress").c_str(),
   			5, this);
 #else
-  	martaModel_ = new MartaModel(config->getValue<std::string>("MartaIPAddress").c_str(),
+  	martaModel_ = new MartaModel(config->getValue<std::string>("main", "MartaIPAddress").c_str(),
   			10, this);
 #endif
   }
@@ -75,10 +75,10 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   agilentModel_ = 0;
   if (chillerAndVacuumActive_) {
 #ifdef USE_FAKEIO
-  	agilentModel_ = new AgilentTwisTorr304Model(config->getValue<std::string>("AgilentTwisTorr304Device").c_str(),
+  	agilentModel_ = new AgilentTwisTorr304Model(config->getValue<std::string>("main", "AgilentTwisTorr304Device").c_str(),
   			5, this);
 #else
-  	agilentModel_ = new AgilentTwisTorr304Model(config->getValue<std::string>("AgilentTwisTorr304Device").c_str(),
+  	agilentModel_ = new AgilentTwisTorr304Model(config->getValue<std::string>("main", "AgilentTwisTorr304Device").c_str(),
   			20, this);
 #endif
   }
@@ -86,27 +86,27 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   leyboldModel_ = 0;
   if (chillerAndVacuumActive_) {
 #ifdef USE_FAKEIO
-  	leyboldModel_ = new LeyboldGraphixOneModel(config->getValue<std::string>("LeyboldGraphixOneDevice").c_str(),
+  	leyboldModel_ = new LeyboldGraphixOneModel(config->getValue<std::string>("main", "LeyboldGraphixOneDevice").c_str(),
   			5, this);
 #else
-  	leyboldModel_ = new LeyboldGraphixOneModel(config->getValue<std::string>("LeyboldGraphixOneDevice").c_str(),
+  	leyboldModel_ = new LeyboldGraphixOneModel(config->getValue<std::string>("main", "LeyboldGraphixOneDevice").c_str(),
   			20, this);
 #endif
   }
 
 #ifdef USE_FAKEIO
-  nge103BModel_ = new RohdeSchwarzNGE103BModel(config->getValue<std::string>("RohdeSchwarzNGE103BDevice").c_str(),
+  nge103BModel_ = new RohdeSchwarzNGE103BModel(config->getValue<std::string>("main", "RohdeSchwarzNGE103BDevice").c_str(),
                                                5, this);
 #else
-  nge103BModel_ = new RohdeSchwarzNGE103BModel(config->getValue<std::string>("RohdeSchwarzNGE103BDevice").c_str(),
+  nge103BModel_ = new RohdeSchwarzNGE103BModel(config->getValue<std::string>("main", "RohdeSchwarzNGE103BDevice").c_str(),
                                                10, this);
 #endif
 
 #ifdef USE_FAKEIO
-  keithleyModel_ = new KeithleyDAQ6510Model(config->getValue<std::string>("KeithleyDAQ6510Device").c_str(),
+  keithleyModel_ = new KeithleyDAQ6510Model(config->getValue<std::string>("main", "KeithleyDAQ6510Device").c_str(),
                                             5, this);
 #else
-  keithleyModel_ = new KeithleyDAQ6510Model(config->getValue<std::string>("KeithleyDAQ6510Device").c_str(),
+  keithleyModel_ = new KeithleyDAQ6510Model(config->getValue<std::string>("main", "KeithleyDAQ6510Device").c_str(),
                                             30, this);
 #endif
 
@@ -144,7 +144,7 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 //  }
 
   daqServer_ = new Thermo2DAQServer(daqModel_, this);
-  daqServer_->listen(QHostAddress::LocalHost, config->getValue<unsigned int>("ServerPort"));
+  daqServer_->listen(QHostAddress::LocalHost, config->getValue<unsigned int>("main", "ServerPort"));
 
   daqThread_ = new Thermo2DAQThread(daqModel_, this);
   connect(QApplication::instance(), SIGNAL(aboutToQuit()),
