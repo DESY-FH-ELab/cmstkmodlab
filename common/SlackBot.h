@@ -25,9 +25,16 @@ class SlackBot : public QObject
 {
   Q_OBJECT
 public:
+
+
+  [[deprecated("Use SlackBot(QString username, QString webhook, QString channel, QObject *parent) instead.")]]
   explicit SlackBot(QObject *parent = 0);
+
+  [[deprecated("Use SlackBot(QString username, QString webhook, QString channel, QObject *parent) instead.")]]
   explicit SlackBot(QString username, QObject *parent = 0);
+
   explicit SlackBot(QString username, QString webhook, QString channel, QObject *parent = 0);
+
   ~SlackBot();
 
 public slots:
