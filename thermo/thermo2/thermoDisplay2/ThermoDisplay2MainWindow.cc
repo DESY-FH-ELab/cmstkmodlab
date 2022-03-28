@@ -518,10 +518,12 @@ void ThermoDisplay2MainWindow::configurationChanged()
   keithleyTopCor0_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopCor0");
   keithleyTopCor1_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopCor1");
   keithleyTopCor2_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopCor2");
+  keithleyTopCor3_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyTopCor3");
   keithleyBottomPositions_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomPositions");
   keithleyBottomCor0_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor0");
   keithleyBottomCor1_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor1");
   keithleyBottomCor2_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor2");
+  keithleyBottomCor3_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor3");
 }
 
 void ThermoDisplay2MainWindow::clearData()
@@ -940,6 +942,7 @@ void ThermoDisplay2MainWindow::updateInfo()
       tcor =  keithleyTopCor0_[c];
       tcor += keithleyTopCor1_[c] * temp;
       tcor += keithleyTopCor2_[c] * temp * temp;
+      tcor += keithleyTopCor3_[c] * temp * temp * temp;
       ThroughPlaneTopTSeries_[c]->append(m.dt.toMSecsSinceEpoch(), tcor);
 
       card = keithleyBottomCards_[c];
@@ -952,6 +955,7 @@ void ThermoDisplay2MainWindow::updateInfo()
       tcor =  keithleyBottomCor0_[c];
       tcor += keithleyBottomCor1_[c] * temp;
       tcor += keithleyBottomCor2_[c] * temp * temp;
+      tcor += keithleyBottomCor3_[c] * temp * temp * temp;
       ThroughPlaneBottomTSeries_[c]->append(m.dt.toMSecsSinceEpoch(),tcor);
     }
 
@@ -995,6 +999,7 @@ void ThermoDisplay2MainWindow::updateInfo()
           tcor =  keithleyTopCor0_[i];
           tcor += keithleyTopCor1_[i] * temp;
           tcor += keithleyTopCor2_[i] * temp * temp;
+          tcor += keithleyTopCor3_[i] * temp * temp * temp;
           values.push_back(std::pair<double,double>(keithleyTopPositions_[i], tcor));
         }
       }
@@ -1014,6 +1019,7 @@ void ThermoDisplay2MainWindow::updateInfo()
           tcor =  keithleyBottomCor0_[i];
           tcor += keithleyBottomCor1_[i] * temp;
           tcor += keithleyBottomCor2_[i] * temp * temp;
+          tcor += keithleyBottomCor3_[i] * temp * temp * temp;
           values.push_back(std::pair<double,double>(keithleyBottomPositions_[i], tcor));
         }
       }
