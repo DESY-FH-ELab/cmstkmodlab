@@ -52,6 +52,8 @@ ThermoDisplay2MainWindow::ThermoDisplay2MainWindow(QWidget *parent)
   keithleyBottomCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor1");
   keithleyBottomCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor2");
   keithleyAmbientSensor_ = config->getValue<double>("KeithleyAmbientSensor", 0);
+  keithleyTopCor3_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor3");
+  keithleyBottomCor3_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor3");
 
   unsigned int sensor;
   unsigned int card;
@@ -520,6 +522,8 @@ void ThermoDisplay2MainWindow::configurationChanged()
   keithleyBottomCor0_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor0");
   keithleyBottomCor1_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor1");
   keithleyBottomCor2_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor2");
+  keithleyTopCor3_ = config->getValueArray<double,6>("ThroughPlaneKeithleyTopCor3");
+  keithleyBottomCor3_ = config->getValueArray<double,6>("ThroughPlaneKeithleyBottomCor3");
 }
 
 void ThermoDisplay2MainWindow::clearData()
@@ -938,6 +942,7 @@ void ThermoDisplay2MainWindow::updateInfo()
       tcor =  keithleyTopCor0_[c];
       tcor += keithleyTopCor1_[c] * temp;
       tcor += keithleyTopCor2_[c] * temp * temp;
+      tcor += keithleyTopCor3_[c] * temp * temp * temp;
       ThroughPlaneTopTSeries_[c]->append(m.dt.toMSecsSinceEpoch(), tcor);
 
       card = keithleyBottomCards_[c];
@@ -950,6 +955,7 @@ void ThermoDisplay2MainWindow::updateInfo()
       tcor =  keithleyBottomCor0_[c];
       tcor += keithleyBottomCor1_[c] * temp;
       tcor += keithleyBottomCor2_[c] * temp * temp;
+      tcor += keithleyBottomCor3_[c] * temp * temp * temp;
       ThroughPlaneBottomTSeries_[c]->append(m.dt.toMSecsSinceEpoch(),tcor);
     }
 
