@@ -92,8 +92,9 @@ set(DEVICE_LIBRARIES
         TkModLabRohdeSchwarz
         TkModLabVelleman
 )
+
 if(CMSTKMODLAB_ASSEMBLY OR CMSTKMODLAB_DEFO)
-set(DEVICE_LIBRARIES
+	list(APPEND DEVICE_LIBRARIES
         TkModLabCanon
 )
 endif()
