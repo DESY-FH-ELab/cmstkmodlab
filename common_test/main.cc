@@ -535,21 +535,24 @@ int main(int argc, char ** argv)
   }
   */
 
-  /*
   {
     ApplicationConfig * config = ApplicationConfig::instance();
 
-    config->append("test1.cfg");
-    config->append("test2.cfg");
+    config->append("test1.cfg", "test1");
+    config->append("test2.cfg", "test2");
 
+    config->save();
+    config->saveAs("testout.cfg", "test");
+
+    /*
     const ApplicationConfig::storage_t& kvmap = config->getKeyValueMap();
     for (auto & kv : kvmap) {
-      std::cout << kv.first << " ";
+      std::cout << kv.first.alias << "." << kv.first.key << ": ";
       for (auto & v : kv.second) {
         std::cout << " " << v;
       }
       std::cout << std::endl;
     }
+    */
   }
-  */
 }
