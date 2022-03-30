@@ -82,10 +82,11 @@ void ApplicationConfig::append(const std::string& filename, const std::string& a
   emit valueChanged();
 }
 
-void ApplicationConfig::safe()
+void ApplicationConfig::save()
 {
   std::map<std::string,std::string> filemap;
   for (const auto & kv : keyvalueMap_) {
+  	if (kv.first.alias=="*") continue;
   	filemap[kv.first.filename] = kv.first.alias;
   }
 
@@ -95,10 +96,34 @@ void ApplicationConfig::safe()
   }
 }
 
-void ApplicationConfig::safeAs(const std::string& filename, const std::string& alias)
+void ApplicationConfig::saveAs(const std::string& filename, const std::string& alias)
 {
+  storage_t tempKeyValueMap;
+  
+  FullKey fk;
+  fk.filename = filename;
+  fk.alias = alias;
+  
+  for (const auto & kv : keyvalueMap_) {
+  	if (kv.first.alias!="*") continue;
+
+  	fk.key = kv.first.key;
+  	tempKeyValueMap[fk] = kv.second;
+  }
+
   ApplicationConfigWriter writer(filename, alias);
-  writer.write(keyvalueMap_);
+  writer.write(tempKeyValueMap);
+  
+  for (const auto & kv : tempKeyValueMap) {
+  	if (kv.first.alias!="*") continue;
+
+	fk.filename = "*";
+  	fk.alias = "*";
+  	fk.key = kv.first.key;
+  	tempKeyValueMap[fk] = kv.second;
+  }
+  
+  keyvalueMap_ = tempKeyValueMap;
 }
 
 void ApplicationConfig::issueKeyError(const ShortKey& sk) const

@@ -488,8 +488,8 @@ public:
     }
   }
 
-  void safe();
-  void safeAs(const std::string& filename, const std::string& alias);
+  void save();
+  void saveAs(const std::string& filename, const std::string& alias);
   
   const storage_t& getKeyValueMap() { return keyvalueMap_; }
   
