@@ -21,6 +21,7 @@
 #include <iomanip>
 
 #include <QObject>
+#include <QString>
 #include <QVariant>
 #include <QMessageBox>
 
@@ -530,6 +531,14 @@ template <>
 std::string ApplicationConfig::getValue(const std::string& key) const;
 template <>
 std::string ApplicationConfig::getValue(const std::string& alias, const std::string& key) const;
+
+template <>
+QString ApplicationConfig::getValue(const ApplicationConfig::ShortKey& sk) const;
+template <>
+[[deprecated("Use getValue(const ShortKey& sk) or getValue(const std::string& alias, const std::string& key) instead.")]]
+QString ApplicationConfig::getValue(const std::string& key) const;
+template <>
+QString ApplicationConfig::getValue(const std::string& alias, const std::string& key) const;
 
 template <>
 std::vector<std::string> ApplicationConfig::getValueVector(const ApplicationConfig::ShortKey& sk) const;

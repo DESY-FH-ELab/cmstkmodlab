@@ -177,6 +177,45 @@ std::string ApplicationConfig::getValue(const std::string& alias,
 }
 
 template <>
+QString ApplicationConfig::getValue(const ApplicationConfig::ShortKey& sk) const
+{
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    return QString(it->second.front().c_str());
+  } else {
+    issueKeyError(sk);
+  }
+  return QString();
+}
+
+template <>
+QString ApplicationConfig::getValue(const std::string& key) const
+{
+  ShortKey sk = { "*", key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    return QString(it->second.front().c_str());
+  } else {
+    issueKeyError(sk);
+  }
+  return QString();
+}
+
+template <>
+QString ApplicationConfig::getValue(const std::string& alias,
+    const std::string& key) const
+{
+  ShortKey sk = { alias, key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    return QString(it->second.front().c_str());
+  } else {
+    issueKeyError(sk);
+  }
+  return QString();
+}
+
+template <>
 std::vector<std::string> ApplicationConfig::getValueVector(const ShortKey& sk) const
 {
   std::vector<std::string> returnVector;
