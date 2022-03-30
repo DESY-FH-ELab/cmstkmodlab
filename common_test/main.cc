@@ -403,5 +403,5 @@ int main(int argc, char ** argv)
     config->save();
     config->saveAs("testout.cfg", "test");
   }
-  *
+  */
 }
