@@ -567,8 +567,8 @@ void ThermoDisplay2MainWindow::savePlots()
   }
   tabWidget_->setCurrentIndex(currentTab);
 
-  config->setValue("PlotSaveDirectory", dir);
-  config->safe();
+  config->setValue("main", "PlotSaveDirectory", dir);
+  config->save();
 
   QApplication::processEvents();
 

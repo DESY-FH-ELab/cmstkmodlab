@@ -25,12 +25,12 @@ int main(int argc, char ** argv)
   {
     ApplicationConfig * config = ApplicationConfig::instance();
 
-    config->append(std::string(Config::CMSTkModLabBasePath) + "/common_test/test1.cfg");
-    config->append(std::string(Config::CMSTkModLabBasePath) + "/common_test/test2.cfg");
+    config->append(std::string(Config::CMSTkModLabBasePath) + "/common_test/test1.cfg", "test1");
+    config->append(std::string(Config::CMSTkModLabBasePath) + "/common_test/test2.cfg", "test2");
 
     const ApplicationConfig::storage_t& kvmap = config->getKeyValueMap();
     for (auto & kv : kvmap) {
-      std::cout << kv.first << " ";
+      std::cout << kv.first.alias << "." << kv.first.key << ":";
       for (auto & v : kv.second) {
         std::cout << " " << v;
       }
@@ -42,10 +42,10 @@ int main(int argc, char ** argv)
     std::vector<int> integer2{ 5, 6, 7, 8 };
     double double2 = 3.4;
 
-    std::vector<int> integer1c = config->getValueVector<int>("integer1");
-    double double1c = config->getValue<double>("double1");
-    std::vector<int> integer2c = config->getValueVector<int>("integer2");
-    double double2c = config->getValue<double>("double2");
+    std::vector<int> integer1c = config->getValueVector<int>("test1", "integer1");
+    double double1c = config->getValue<double>("test1", "double1");
+    std::vector<int> integer2c = config->getValueVector<int>("test2", "integer2");
+    double double2c = config->getValue<double>("test2", "double2");
 
     if (integer1!=integer1c ||
         double1!=double1c ||
