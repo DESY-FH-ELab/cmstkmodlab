@@ -177,8 +177,8 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   // position: XYZA position of ref-point on assembly platform for calibration of baseplate
   ++row_index;
 
-  tmp_tag = "PlatformRefPointCalibrationBaseplate";
-  tmp_des = "[Calibration: Baseplate] Ref-Point :";
+  tmp_tag = "RefPointPlatform";
+  tmp_des = "Platform Ref-Point :";
 
   map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
@@ -197,30 +197,6 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
 
   button_moveAbsRefPos2_  = new QPushButton(tr("Move To Abs. Position"));
   posi_lay->addWidget(button_moveAbsRefPos2_, row_index, 9, Qt::AlignRight);
-
-  // position: XYZA position of ref-point on assembly platform for calibration of spacers
-  ++row_index;
-
-  tmp_tag = "PlatformRefPointCalibrationSpacers";
-  tmp_des = "[Calibration: Spacers] Ref-Point :";
-
-  map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
-  map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
-  map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
-  map_lineEdit_[tmp_tag+"_A"] = new QLineEdit(tr(""));
-
-  posi_lay->addWidget(new QLabel(tmp_des)    , row_index, 0, Qt::AlignLeft);
-  posi_lay->addWidget(new QLabel(tr("X"))    , row_index, 1, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_X"), row_index, 2, Qt::AlignRight);
-  posi_lay->addWidget(new QLabel(tr("Y"))    , row_index, 3, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_Y"), row_index, 4, Qt::AlignRight);
-  posi_lay->addWidget(new QLabel(tr("Z"))    , row_index, 5, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_Z"), row_index, 6, Qt::AlignRight);
-  posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
-
-  button_moveAbsRefPos3_  = new QPushButton(tr("Move To Abs. Position"));
-  posi_lay->addWidget(button_moveAbsRefPos3_, row_index, 9, Qt::AlignRight);
 
   // position: z-position where camera is focused on Assembly Stage surface
   ++row_index;
@@ -405,8 +381,8 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   // distance: from ref-point on assembly platform (for spacers' calibration) to spacer's edge
   ++row_index;
 
-  tmp_tag = "FromPlatformRefPointCalibrationSpacersToSpacerEdge";
-  tmp_des = "From Platform Ref-Point to Spacer's Edge :"; //Was: 'From Platform Ref-Point for Spacers-Calibration to Spacer's Edge'
+  tmp_tag = "FromRefPointPlatformToSpacerEdge";
+  tmp_des = "From Platform Ref-Point to Spacer's Edge :";
 
   map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
@@ -423,8 +399,8 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   // distance: from ref-point on assembly platform (for baseplate's calibration) to edge of PS-p sensor
   ++row_index;
 
-  tmp_tag = "FromPlatformRefPointCalibrationBaseplateToPSPEdge";
-  tmp_des = "From Platform Ref-Point to PS-p Edge :"; //Was: 'From Platform Ref-Point for Baseplate-Calibration to PS-p Edge'
+  tmp_tag = "FromRefPointPlatformToPSPEdge";
+  tmp_des = "From Platform Ref-Point to PS-p Edge :";
 
   map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
   map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
@@ -509,7 +485,6 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   //Connections
   connect(button_moveAbsRefPos1_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos1()));
   connect(button_moveAbsRefPos2_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos2()));
-  connect(button_moveAbsRefPos3_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos3()));
   connect(button_moveAbsRefPos4_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos4()));
   connect(button_moveAbsRefPos5_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos5()));
   connect(this , SIGNAL(click_moveToAbsRefPos(int)), this, SLOT(askConfirmMoveToAbsRefPoint(int)));
@@ -539,7 +514,6 @@ AssemblyParametersView::~AssemblyParametersView()
     //Disconnections
     disconnect(button_moveAbsRefPos1_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos1()));
     disconnect(button_moveAbsRefPos2_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos2()));
-    disconnect(button_moveAbsRefPos3_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos3()));
     disconnect(button_moveAbsRefPos4_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos4()));
     disconnect(button_moveAbsRefPos5_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos5()));
     disconnect(this , SIGNAL(click_moveToAbsRefPos(int)), this, SLOT(askConfirmMoveToAbsRefPoint(int)));
@@ -700,9 +674,7 @@ void AssemblyParametersView::askConfirmMoveToAbsRefPoint(int refPoint)
     {
         case 1: tmp_tag = "RefPointSensor";
             break;
-        case 2: tmp_tag = "PlatformRefPointCalibrationBaseplate";
-            break;
-        case 3: tmp_tag = "PlatformRefPointCalibrationSpacers";
+        case 2: tmp_tag = "RefPointPlatform";
             break;
         case 4: tmp_tag = "CameraFocusOnAssemblyStage";
             break;
@@ -760,9 +732,9 @@ void AssemblyParametersView::askConfirmMoveByRelRefDist(int refPoint)
             break;
         case 7: tmp_tag = "FromCameraBestFocusToPickupHeight";
             break;
-        case 8: tmp_tag = "FromPlatformRefPointCalibrationSpacersToSpacerEdge";
+        case 8: tmp_tag = "FromRefPointPlatformToSpacerEdge";
             break;
-        case 9: tmp_tag = "FromPlatformRefPointCalibrationBaseplateToPSPEdge";
+        case 9: tmp_tag = "FromRefPointPlatformToPSPEdge";
             break;
         case 10: tmp_tag = "AssemblyObjectAlignerView_PSP_deltaX";
             break;
