@@ -472,7 +472,12 @@ void Thermo2ThroughPlaneModel::sendMattermostStatus()
     msg += " |\n";
   }
 
-  MattermostBot bot;
+  MattermostBot bot(
+      ApplicationConfig::instance()->getValue<QString>("main", "mattermostchannel"),
+      ApplicationConfig::instance()->getValue<QString>("main", "mattermostusername"),
+      ApplicationConfig::instance()->getValue<QString>("main", "mattermostwebhook")
+  );
+
   bot.postMessage(msg);
 
   mattermostStatusTime_ = mattermostStatusTime_.addSecs(mattermostInterval_*60);
