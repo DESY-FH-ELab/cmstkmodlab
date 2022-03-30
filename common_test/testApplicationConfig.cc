@@ -67,7 +67,7 @@ int main(int argc, char ** argv)
       std::cout << std::endl;
       std::cout << "double2   " << double2 << std::endl;
 
-      std::cout << "Read from config file:" << std::endl;
+      std::cout << "Read from config files:" << std::endl;
       std::cout << "integer1 ";
       for (auto & v : integer1c) {
         std::cout << " " << v;
