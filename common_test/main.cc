@@ -61,56 +61,6 @@ int main(int argc, char ** argv)
 
   /*
   {
-    std::map<ApplicationConfig::FullKey, std::string, std::less<>> example = {
-        { { "fn1", "a1", "k1" }, "fn1.a1.k1" },
-        { { "*", "*", "k1" }, "fn1.a1.k1" },
-        { { "fn1", "a1", "k2" }, "fn1.a1.k2" },
-        { { "*", "*", "k2" }, "fn1.a1.k2" },
-        { { "fn2", "a2", "k1" }, "fn2.a2.k1" },
-        { { "*", "*", "k1" }, "fn2.a2.k1" },
-        { { "fn2", "a2", "k2" }, "fn2.a2.k2" },
-        { { "*", "*", "k2" }, "fn2.a2.k2" },
-    };
-
-    for (auto & kv : example) {
-      std::cout << kv.first.filename << ": " << kv.second << std::endl;
-    }
-
-    ApplicationConfig::ShortKey sk1 = { "a2", "k1" };
-    auto search1 = example.find(sk1);
-    if (search1 != example.end()) {
-      std::cout << "found: " << search1->first.filename << ": " << search1->second << std::endl;
-    } else {
-      std::cout << "Not found\n";
-    }
-
-    ApplicationConfig::ShortKey sk2 = { "*", "k1" };
-    auto search2 = example.find(sk2);
-    if (search2 != example.end()) {
-      std::cout << "found: " << search2->first.filename << ": " << search2->second << std::endl;
-    } else {
-      std::cout << "Not found\n";
-    }
-  }
-  */
-
-  /*
-  {
-    Ringbuffer<int,10> rb;
-    
-    for (auto i = 0;i<10;++i) {
-      rb.push_back(i);
-    }
-    rb.push_back(10);
-
-    for (auto & i : rb) {
-      std::cout << i << std::endl;
-    }
-  }
-  */
-
-  /*
-  {
     QApplication app(argc, argv);
 
     app.setStyle("cleanlooks");
@@ -131,18 +81,6 @@ int main(int argc, char ** argv)
     MartaModel *marta = new MartaModel("10.255.21.224:502");
 
     delete marta;
-  }
-  */
-  
-  /*
-  {
-    ValueHistory<float> history(10, 200);
-
-    for (int i=0;i<=40;++i) {
-      history.push(i);
-
-      std::cout << i << "\t" << history.at(0) << "\t" << history.secondsAgo(30) << std::endl;
-    }
   }
   */
   
@@ -455,6 +393,7 @@ int main(int argc, char ** argv)
   }
   */
 
+  /*
   {
     ApplicationConfig * config = ApplicationConfig::instance();
 
@@ -463,16 +402,6 @@ int main(int argc, char ** argv)
 
     config->save();
     config->saveAs("testout.cfg", "test");
-
-    /*
-    const ApplicationConfig::storage_t& kvmap = config->getKeyValueMap();
-    for (auto & kv : kvmap) {
-      std::cout << kv.first.alias << "." << kv.first.key << ": ";
-      for (auto & v : kv.second) {
-        std::cout << " " << v;
-      }
-      std::cout << std::endl;
-    }
-    */
   }
+  *
 }
