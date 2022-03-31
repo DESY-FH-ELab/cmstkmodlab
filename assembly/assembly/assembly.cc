@@ -66,9 +66,15 @@ int main(int argc, char** argv)
 
     parser.process(app);
 
+    // choose configuration file
+    auto relative_config_path = "/assembly/assembly_SiDummyPS.cfg";
+    if(parser.isSet("glass"))
+    {
+      relative_config_path = "/assembly/assembly_glass.cfg";
+    }
 
     // log output -----------
-    ApplicationConfig* config = ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath)+"/assembly/assembly.cfg");
+    ApplicationConfig* config = ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath)+relative_config_path);
 
     const NQLog::LogLevel nqloglevel_stdout  = ((NQLog::LogLevel) config->getValue<int>("LogLevel_stdout" , 2));
     const NQLog::LogLevel nqloglevel_logfile = ((NQLog::LogLevel) config->getValue<int>("LogLevel_logfile", 2));
