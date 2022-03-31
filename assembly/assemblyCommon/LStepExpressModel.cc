@@ -1254,9 +1254,9 @@ void LStepExpressModel::updateMotionInformation()
       if (inMotion_) {
         bool temp = true;
         for(int i = 0; i < 4; i++){
-          bool ifaxisenabled = ( (ivalues)[i] == LStepExpress_t::AXISSTANDSANDREADY || (ivalues)[i] == LStepExpress_t::AXISACKAFTERCALIBRATION) && (axis_)[i] == 1;
+          bool ifaxisenabledandready = ( (ivalues)[i] == LStepExpress_t::AXISSTANDSANDREADY || (ivalues)[i] == LStepExpress_t::AXISACKAFTERCALIBRATION) && (axis_)[i] == 1;
           bool ifaxisnotenabled = (axis_)[i] == 0;
-          temp = ifaxisenabled || ifaxisnotenabled;
+          temp *= ifaxisenabledandready || ifaxisnotenabled;
           //	    NQLog("LStepExpressModel", NQLog::Spam) <<" axis status =  "<<(ivalues)[i]<<" axis enabled = "<<(axis_)[i]<<" temp = "<<temp;
         }
         if(temp)
