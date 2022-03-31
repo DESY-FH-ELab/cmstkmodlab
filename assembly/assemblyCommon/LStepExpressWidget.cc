@@ -358,10 +358,10 @@ void LStepExpressWidget::restart()
           restart_step_ = 1;
         }
       }
-      else //if(axes_enabled == false)
+      else //if(axes_ready == false)
       {
         NQLog("LStepExpressWidget", NQLog::Spam) << "restart [step=" << restart_step_ << "]"
-           << ": axes NOT ENABLED (enabled"
+           << ": axes NOT READY (enabled"
            << ": x=" << x_enabled
            << ", y=" << y_enabled
            << ", z=" << z_enabled

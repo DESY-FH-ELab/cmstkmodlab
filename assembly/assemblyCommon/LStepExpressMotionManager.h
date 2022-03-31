@@ -90,7 +90,7 @@ class LStepExpressMotionManager : public QObject
 
     void emergency_stop();
 
-    QQueue<LStepExpressMotion> set_movements_priorities_XYZA(const double x, const double y, const double z, const double a, const bool is_absolute_movements);
+    void set_movements_priorities_XYZA(const double x, const double y, const double z, const double a, const bool is_absolute_movements);
 
   protected slots:
 
