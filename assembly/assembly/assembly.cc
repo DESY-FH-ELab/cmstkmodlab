@@ -23,6 +23,8 @@
 #include <QApplication>
 #include <QDateTime>
 #include <QFile>
+#include <QCommandLineParser>
+#include <QCoreApplication>
 
 #include <opencv2/opencv.hpp>
 
@@ -45,9 +47,25 @@ int main(int argc, char** argv)
     }
 #else
     QApplication app(argc, argv);
+    QCoreApplication::setApplicationName("Automated Assembly Software");
+    QCoreApplication::setApplicationVersion("1.0");
 #endif
 
     app.setStyle("cleanlooks");
+
+    QCommandLineParser parser;
+    parser.setApplicationDescription("Automated Assembly Software");
+    parser.addHelpOption();
+    parser.addVersionOption();
+
+    parser.addOptions({
+        {{"g", "glass"},
+            QCoreApplication::translate("main", "Use configuration for glass assembly")}
+          }
+        );
+
+    parser.process(app);
+
 
     // log output -----------
     ApplicationConfig* config = ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath)+"/assembly/assembly.cfg");
