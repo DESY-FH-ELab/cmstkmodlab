@@ -84,7 +84,7 @@ int main( int argc, char** argv )
   if (!dir.exists()) dir.mkpath(".");
 
   QDateTime dt = QDateTime::currentDateTime().toUTC();
-  QString logfilename("thermoDAQ2_%1-%2.log");
+  QString logfilename("thermoDisplay2_%1-%2.log");
   logfilename = logfilename.arg(dt.toString("yyyyMMdd"));
 
   int i = 1;
