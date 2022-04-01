@@ -18,24 +18,28 @@
 
 #include "ApplicationConfigReader.h"
 
-ApplicationConfigReader::ApplicationConfigReader( const std::string & inputFileName )
+ApplicationConfigReader::ApplicationConfigReader(const std::string & filename,
+    const std::string& alias)
+  : filename_(filename),
+    alias_(alias)
 {
-  inputFileName_ = std::string( inputFileName );
+
 }
 
 ApplicationConfigReader::~ApplicationConfigReader()
 {
+
 }
 
 void ApplicationConfigReader::fill(ApplicationConfig::storage_t &keyvalueMap)
 {
-  std::ifstream file(inputFileName_.c_str(), std::ios::in);
+  std::ifstream file(filename_.c_str(), std::ios::in);
 
   if (!file.good()) {
-    std::cerr << " [ApplicationConfigReader::openAndCheckFile] ** ERROR: failed to open file: " << inputFileName_ << "." << std::endl;
+    std::cerr << " [ApplicationConfigReader::openAndCheckFile] ** ERROR: failed to open file: " << filename_ << "." << std::endl;
 
     QMessageBox::critical(0, tr("[ApplicationConfigReader::fill]"),
-        QString("Failed to open configuration file: \"%1\". No chance!").arg(QString(inputFileName_.c_str())),
+        QString("Failed to open configuration file: \"%1\". No chance!").arg(QString(filename_.c_str())),
         QMessageBox::Abort
     );
 
@@ -61,7 +65,17 @@ void ApplicationConfigReader::fill(ApplicationConfig::storage_t &keyvalueMap)
     while (iss >> std::quoted(Value)) {
       Values.push_back(Value);
     }
-    keyvalueMap[Key] = Values;
+
+    ApplicationConfig::FullKey fk = { filename_, alias_, Key };
+    keyvalueMap[fk] = Values;
+    fk.filename = "*";
+    fk.alias = "*";
+    auto search = keyvalueMap.find(fk);
+    if (search!=keyvalueMap.end()) {
+      search->second = Values;
+    } else {
+      keyvalueMap[fk] = Values;
+    }
   }
 
   file.close();

@@ -25,7 +25,7 @@ TestWindow::TestWindow(QWidget *parent) :
   ApplicationConfig* config = ApplicationConfig::instance();
 
   // RohdeSchwarzNGE103B Model
-  nge103BModel_ = new RohdeSchwarzNGE103BModel(config->getValue<std::string>("RohdeSchwarzNGE103BDevice").c_str(),
+  nge103BModel_ = new RohdeSchwarzNGE103BModel(config->getValue<std::string>("main", "RohdeSchwarzNGE103BDevice").c_str(),
 					       10, this);
   RohdeSchwarzNGE103BWidget* nge103BWidget = new RohdeSchwarzNGE103BWidget(nge103BModel_, central);
   nge103BWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);

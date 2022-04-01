@@ -94,25 +94,7 @@ set(DEVICE_LIBRARIES
 )
 
 if(CMSTKMODLAB_ASSEMBLY OR CMSTKMODLAB_DEFO)
-	set(DEVICE_LIBRARIES
-        TkModLabAgilent
-        TkModLabArduino
-        TkModLabConrad
-        TkModLabCori
-        TkModLabGreisinger
-        TkModLabHameg
-        TkModLabHuber
-        TkModLabIota
-        TkModLabJulabo
-        TkModLabKeithley
-        TkModLabKeyence
-        TkModLabLang
-        TkModLabLeybold
-        TkModLabMarta
-        TkModLabNanotec
-        TkModLabPfeiffer
-        TkModLabRohdeSchwarz
-        TkModLabVelleman
+	list(APPEND DEVICE_LIBRARIES
         TkModLabCanon
 	)
 endif()

@@ -31,15 +31,19 @@ class ApplicationConfigReader : public QObject
   Q_OBJECT
 
 public:
-  ApplicationConfigReader( const std::string & filename );
+  ApplicationConfigReader( const std::string & filename,
+      const std::string& alias);
   ~ApplicationConfigReader();
 
   void fill(ApplicationConfig::storage_t &keyvalueMap);
-  std::string getFileName( void ) { return inputFileName_; }
+
+  const std::string& getFileName( void ) const { return filename_; }
+  const std::string& getAlias( void ) const { return alias_; }
 
 private:
 
-  std::string inputFileName_;
+  std::string filename_;
+  std::string alias_;
 };
 
 /** @} */

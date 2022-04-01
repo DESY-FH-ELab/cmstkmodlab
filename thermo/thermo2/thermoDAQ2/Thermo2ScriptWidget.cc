@@ -23,7 +23,7 @@ Thermo2ScriptWidget::Thermo2ScriptWidget(const QString& title,
     scriptModel_(scriptModel)
 {
   ApplicationConfig* config = ApplicationConfig::instance();
-  scriptDirectory_ = config->getValue<std::string>("ScriptDirectory").c_str();
+  scriptDirectory_ = config->getValue<std::string>("main", "ScriptDirectory").c_str();
 
   // Layouts to put everything into place
   QVBoxLayout* layout = new QVBoxLayout();

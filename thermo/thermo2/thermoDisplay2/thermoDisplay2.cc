@@ -110,10 +110,11 @@ int main( int argc, char** argv )
 
   app.setStyle("cleanlooks");
 
-  ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2/thermo2.cfg");
+  ApplicationConfig::instance();
+  ApplicationConfig::instance()->append(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2/thermo2.cfg", "main");
 
   if (parser.isSet("nogui")) {
-    ThermoDAQ2Client * client = new ThermoDAQ2Client(ApplicationConfig::instance()->getValue<unsigned int>("ServerPort"));
+    ThermoDAQ2Client * client = new ThermoDAQ2Client(ApplicationConfig::instance()->getValue<unsigned int>("main", "ServerPort"));
     ThermoDAQ2NetworkReader * reader = new ThermoDAQ2NetworkReader(&app);
 
     QObject::connect(client, SIGNAL(handleMessage(QString&)),

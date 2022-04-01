@@ -44,7 +44,7 @@ AssemblyObjectAligner::AssemblyObjectAligner(const LStepExpressMotionManager* co
     assembly::kill_application(tr("[AssemblyObjectAligner]"), tr("ApplicationConfig::instance() not initialized (null pointer), closing application"));
   }
   else {
-    max_numOfRotations_ = config->getValue<int>("AssemblyObjectAligner_maxNumberOfRotations", 10);
+    max_numOfRotations_ = config->getDefaultValue<int>("AssemblyObjectAligner_maxNumberOfRotations", 10);
   }
 
   qRegisterMetaType<AssemblyObjectAligner::Configuration>("AssemblyObjectAligner::Configuration"); //"After a type has been registered, you can create and destroy objects of that type dynamically at run-time"

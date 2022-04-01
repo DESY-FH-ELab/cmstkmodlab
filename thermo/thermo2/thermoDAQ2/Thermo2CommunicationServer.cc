@@ -42,9 +42,9 @@ Thermo2CommunicationServer::Thermo2CommunicationServer(Thermo2DAQModel* daqModel
 {
   ApplicationConfig* config = ApplicationConfig::instance();
 
-  QString ipAddress = ApplicationConfig::instance()->getValue<std::string>("CommServerIP").c_str();
+  QString ipAddress = ApplicationConfig::instance()->getValue<std::string>("main", "CommServerIP").c_str();
   if (ipAddress.isEmpty()) {
-    QHostInfo hostinfo = QHostInfo::fromName(ApplicationConfig::instance()->getValue<std::string>("CommServerHostname", "localhost").c_str());
+    QHostInfo hostinfo = QHostInfo::fromName(ApplicationConfig::instance()->getValue<std::string>("main", "CommServerHostname").c_str());
     if (!hostinfo.addresses().isEmpty()) {
       QHostAddress address = hostinfo.addresses().first();
       // use the first IP address
@@ -55,7 +55,7 @@ Thermo2CommunicationServer::Thermo2CommunicationServer(Thermo2DAQModel* daqModel
     }
   }
   
-  quint16 port = config->getValue<unsigned int>("CommServerPort", 56666);
+  quint16 port = config->getValue<unsigned int>("main", "CommServerPort");
   
   if (!listen(QHostAddress(ipAddress), port)) {
     NQLogMessage("Thermo2CommunicationServer") << "Unable to start the server: " << errorString().toStdString();

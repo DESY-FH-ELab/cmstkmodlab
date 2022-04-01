@@ -31,15 +31,18 @@ class ApplicationConfigWriter : public QObject
 
 public:
 
-  ApplicationConfigWriter( const std::string & filename );
+  ApplicationConfigWriter(const std::string& filename, const std::string& alias);
   ~ApplicationConfigWriter();
 
-  void write(ApplicationConfig::storage_t  &keyvalueMap);
-  std::string getFileName( void ) { return outputFileName_; }
+  void write(ApplicationConfig::storage_t& keyvalueMap);
+
+  const std::string& getFileName( void ) const { return filename_; }
+  const std::string& getAlias( void ) const { return alias_; }
 
 private:
 
-  std::string outputFileName_;
+  std::string filename_;
+  std::string alias_;
 
   void writeMerge(ApplicationConfig::storage_t  &keyvalueMap);
   void writeNew(ApplicationConfig::storage_t  &keyvalueMap);

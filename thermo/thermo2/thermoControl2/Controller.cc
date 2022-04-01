@@ -25,9 +25,9 @@ Controller::Controller(const QString& command, const QStringList& parameters)
  : command_(command),
    parameters_(parameters)
 {
-  ipAddress_ = ApplicationConfig::instance()->getValue<std::string>("CommServerIP").c_str();
+  ipAddress_ = ApplicationConfig::instance()->getValue<std::string>("main", "CommServerIP").c_str();
   if (ipAddress_.isEmpty()) {
-    QHostInfo hostinfo = QHostInfo::fromName(ApplicationConfig::instance()->getValue<std::string>("CommServerHostname", "localhost").c_str());
+    QHostInfo hostinfo = QHostInfo::fromName(ApplicationConfig::instance()->getValue<std::string>("main", "CommServerHostname").c_str());
     if (!hostinfo.addresses().isEmpty()) {
       QHostAddress address = hostinfo.addresses().first();
       // use the first IP address
@@ -38,7 +38,7 @@ Controller::Controller(const QString& command, const QStringList& parameters)
     }
   }
 
-  port_ = ApplicationConfig::instance()->getValue<unsigned int>("CommServerPort", 56666);
+  port_ = ApplicationConfig::instance()->getValue<unsigned int>("main", "CommServerPort");
 
   NQLogDebug("Controller") << ipAddress_ << ":" << port_;
 

@@ -28,15 +28,15 @@ CommonTestMainWindow::CommonTestMainWindow(QWidget *parent)
 
   ApplicationConfig* config = ApplicationConfig::instance();
 
+  /*
   RohdeSchwarzNGE103BModel *nge103BModel_ = new RohdeSchwarzNGE103BModel(config->getValue<std::string>("RohdeSchwarzNGE103BDevice").c_str(),
 									 10, this);
-
   RohdeSchwarzNGE103BWidget* nge103BWidget_ = new RohdeSchwarzNGE103BWidget(nge103BModel_);
   setCentralWidget(nge103BWidget_);
+  */
   
   /*
   viewer_ = new ApplicationConfigViewer(false, this);
-
   setCentralWidget(viewer_);
   */
   

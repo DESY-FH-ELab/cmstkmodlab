@@ -22,3 +22,31 @@ INSTALL(
     RUNTIME DESTINATION bin
     ARCHIVE DESTINATION lib
 )
+
+add_executable(testApplicationConfig testApplicationConfig.cc)
+target_link_libraries (testApplicationConfig
+	PRIVATE Qt5::Core
+	PRIVATE Qt5::Widgets
+	PRIVATE Common
+)
+
+add_executable(testRingbuffer testRingbuffer.cc)
+target_link_libraries (testRingbuffer
+	PRIVATE Qt5::Core
+	PRIVATE Qt5::Widgets
+	PRIVATE Common
+)
+
+add_executable(testFifo testFifo.cc)
+target_link_libraries (testFifo
+	PRIVATE Qt5::Core
+	PRIVATE Qt5::Widgets
+	PRIVATE Common
+)
+
+add_executable(testHistoryFifo testHistoryFifo.cc)
+target_link_libraries (testHistoryFifo
+	PRIVATE Qt5::Core
+	PRIVATE Qt5::Widgets
+	PRIVATE Common
+)
