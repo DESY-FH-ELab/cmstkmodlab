@@ -122,9 +122,10 @@ void ScriptableKeithleyDAQ6510::waitForStableTemperature(const QString & sensors
 
   int t = 0;
 
+  bool stable = false;
   while (!stable) {
 
-    bool stable = true;
+    stable = true;
     float temperature;
     for (unsigned int sensor : activeSensors) {
       temperature = keithleyModel_->getTemperature(sensor);
