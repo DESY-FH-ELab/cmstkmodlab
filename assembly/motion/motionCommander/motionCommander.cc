@@ -71,7 +71,7 @@ int main( int argc, char** argv )
 
     app.setStyle("cleanlooks");
 
-    ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/assembly/assembly.cfg");
+    ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/assembly/assembly.cfg", "main");
 
     MCommanderMainWindow mainWindow;
 

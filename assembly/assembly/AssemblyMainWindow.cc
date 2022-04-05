@@ -109,7 +109,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     /// Parameters
     ///   * instance created up here, so controllers can access it
-    params_ = AssemblyParameters::instance(config->getValue<std::string>("AssemblyParameters_file_path"), DBlogfile_path);
+    params_ = AssemblyParameters::instance(config->getValue<std::string>("main", "AssemblyParameters_file_path"), DBlogfile_path);
     if(params_->isValidConfig() == false)
     {
       NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
@@ -260,7 +260,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     smart_motion_ = new AssemblySmartMotionManager(motion_manager_);
 
-    const int assembly_sequence(config->getValue<int>("assembly_sequence", 1));
+    const int assembly_sequence(config->getDefaultValue<int>("assembly_sequence", 1));
 
     if(assembly_sequence == 1)
     {
@@ -337,7 +337,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     hwctr_view_->Vacuum_Widget()->updateVacuumChannelsStatus();
 
     // enable motion stage controllers at startup
-    const bool startup_motion_stage = config->getValue<bool>("startup_motion_stage", false);
+    const bool startup_motion_stage = config->getDefaultValue<bool>("startup_motion_stage", false);
 
     if(startup_motion_stage)
     {
@@ -506,7 +506,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     NQLog("AssemblyMainWindow", NQLog::Message) << "application initialized successfully";
 
     // enable camera at startup
-    const bool startup_camera = config->getValue<bool>("startup_camera", false);
+    const bool startup_camera = config->getDefaultValue<bool>("startup_camera", false);
 
     if(startup_camera)
     {
