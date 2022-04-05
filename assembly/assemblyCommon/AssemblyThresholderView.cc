@@ -142,7 +142,7 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
   imgbin_thresh_label_->setText("Threshold (pos int)");
 
   imgbin_thresh_linee_ = new QLineEdit(this);
-  assembly::QLineEdit_setText(imgbin_thresh_linee_, config->getDefaultValue<int>("AssemblyThresholderView_threshold", 30));
+  assembly::QLineEdit_setText(imgbin_thresh_linee_, config->getDefaultValue<int>("main", "AssemblyThresholderView_threshold", 30));
 
   imgbin_thresh_inputcfg->addWidget(imgbin_thresh_label_, 40);
   imgbin_thresh_inputcfg->addWidget(imgbin_thresh_linee_, 60);
@@ -161,7 +161,7 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
   "QSlider::handle:horizontal:disabled {background: #eee;border: 1px solid #aaa;border-radius: 4px;}"
 );
 
-  threshold_slider_->setValue(config->getDefaultValue<int>("AssemblyThresholderView_threshold", 30)); //Init to default value
+  threshold_slider_->setValue(config->getDefaultValue<int>("main", "AssemblyThresholderView_threshold", 30)); //Init to default value
   threshold_slider_->setMinimum(0); threshold_slider_->setMaximum(255); //Set range
   threshold_slider_->setSingleStep(5); //Step values when using left/right keys
   threshold_slider_->setTickPosition(QSlider::TicksBothSides); //Ticks above+below //Not working with this styleSheet
@@ -188,7 +188,7 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
   imgbin_adathr_label_->setText("Block Size (pos odd int)");
 
   imgbin_adathr_linee_ = new QLineEdit(this);
-  assembly::QLineEdit_setText(imgbin_adathr_linee_, config->getDefaultValue<int>("AssemblyThresholderView_adaptiveThreshold", 587));
+  assembly::QLineEdit_setText(imgbin_adathr_linee_, config->getDefaultValue<int>("main", "AssemblyThresholderView_adaptiveThreshold", 587));
 
   imgbin_adathr_inputcfg->addWidget(imgbin_adathr_label_, 40);
   imgbin_adathr_inputcfg->addWidget(imgbin_adathr_linee_, 60);

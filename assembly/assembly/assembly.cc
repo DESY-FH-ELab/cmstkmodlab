@@ -52,8 +52,8 @@ int main(int argc, char** argv)
     // log output -----------
     ApplicationConfig* config = ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath)+"/assembly/assembly.cfg", "main");
 
-    const NQLog::LogLevel nqloglevel_stdout  = ((NQLog::LogLevel) config->getDefaultValue<int>("LogLevel_stdout" , 2));
-    const NQLog::LogLevel nqloglevel_logfile = ((NQLog::LogLevel) config->getDefaultValue<int>("LogLevel_logfile", 2));
+    const NQLog::LogLevel nqloglevel_stdout  = ((NQLog::LogLevel) config->getDefaultValue<int>("main", "LogLevel_stdout" , 2));
+    const NQLog::LogLevel nqloglevel_logfile = ((NQLog::LogLevel) config->getDefaultValue<int>("main", "LogLevel_logfile", 2));
 
     NQLogger::instance()->addActiveModule("*");
     NQLogger::instance()->addDestiniation(stdout, nqloglevel_stdout);

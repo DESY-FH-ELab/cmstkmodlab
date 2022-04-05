@@ -36,14 +36,14 @@ LStepExpressMotionManager::LStepExpressMotionManager(LStepExpressModel* model, Q
     assembly::kill_application(tr("[LStepExpressMotionManager]"), tr("ApplicationConfig::instance() not initialized (null pointer), closing application"));
   }
 
-  x_lowerBound_ = config->getDefaultValue<double>("MotionStageLowerBound_X", -150.);
-  x_upperBound_ = config->getDefaultValue<double>("MotionStageUpperBound_X",  150.);
-  y_lowerBound_ = config->getDefaultValue<double>("MotionStageLowerBound_Y", -150.);
-  y_upperBound_ = config->getDefaultValue<double>("MotionStageUpperBound_Y",  150.);
-  z_lowerBound_ = config->getDefaultValue<double>("MotionStageLowerBound_Z", -150.);
-  z_upperBound_ = config->getDefaultValue<double>("MotionStageUpperBound_Z",  150.);
-  a_lowerBound_ = config->getDefaultValue<double>("MotionStageLowerBound_A", -180.);
-  a_upperBound_ = config->getDefaultValue<double>("MotionStageUpperBound_A",  180.);
+  x_lowerBound_ = config->getDefaultValue<double>("main", "MotionStageLowerBound_X", -150.);
+  x_upperBound_ = config->getDefaultValue<double>("main", "MotionStageUpperBound_X",  150.);
+  y_lowerBound_ = config->getDefaultValue<double>("main", "MotionStageLowerBound_Y", -150.);
+  y_upperBound_ = config->getDefaultValue<double>("main", "MotionStageUpperBound_Y",  150.);
+  z_lowerBound_ = config->getDefaultValue<double>("main", "MotionStageLowerBound_Z", -150.);
+  z_upperBound_ = config->getDefaultValue<double>("main", "MotionStageUpperBound_Z",  150.);
+  a_lowerBound_ = config->getDefaultValue<double>("main", "MotionStageLowerBound_A", -180.);
+  a_upperBound_ = config->getDefaultValue<double>("main", "MotionStageUpperBound_A",  180.);
 
   if(model_ == nullptr)
   {

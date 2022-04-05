@@ -38,12 +38,12 @@ AssemblyMultiPickupTester::AssemblyMultiPickupTester(const LStepExpressMotionMan
     return;
   }
 
-  pickup_vacuum_ = config->getValue<int>("Vacuum_PickupTool");
-  pickup_basepl_ = config->getValue<int>("Vacuum_Baseplate");
+  pickup_vacuum_ = config->getValue<int>("main", "Vacuum_PickupTool");
+  pickup_basepl_ = config->getValue<int>("main", "Vacuum_Baseplate");
 
-  pickup_deltaZ_ = config->getDefaultValue<double>("AssemblyMultiPickupTester_pickup_deltaZ", 20.);
+  pickup_deltaZ_ = config->getDefaultValue<double>("main", "AssemblyMultiPickupTester_pickup_deltaZ", 20.);
 
-  use_vacuumBP_  = config->getValue<bool>("AssemblyMultiPickupTester_useBaseplateVacuum");
+  use_vacuumBP_  = config->getValue<bool>("main", "AssemblyMultiPickupTester_useBaseplateVacuum");
 
   this->reset();
 

@@ -122,9 +122,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     /// Motion
     motion_model_ = new LStepExpressModel(
-      config->getValue<std::string>("LStepExpressDevice"),
-      config->getValue<std::string>("LStepExpressDevice_ver"),
-      config->getValue<std::string>("LStepExpressDevice_iver"),
+      config->getValue<std::string>("main", "LStepExpressDevice"),
+      config->getValue<std::string>("main", "LStepExpressDevice_ver"),
+      config->getValue<std::string>("main", "LStepExpressDevice_iver"),
       1000,
       1000
     );
@@ -155,12 +155,12 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     /// -------------------
 
     /// Vacuum Manager
-    std::string relayCardDevice = config->getValue<std::string>("RelayCardDevice");
+    std::string relayCardDevice = config->getValue<std::string>("main", "RelayCardDevice");
     if (relayCardDevice=="Velleman")
     {
-    	relayCardModel_ = new VellemanModel(config->getValue<std::string>("VellemanDevice"));
+    	relayCardModel_ = new VellemanModel(config->getValue<std::string>("main", "VellemanDevice"));
     } else {
-    	relayCardModel_ = new ConradModel(config->getValue<std::string>("ConradDevice"));
+    	relayCardModel_ = new ConradModel(config->getValue<std::string>("main", "ConradDevice"));
     }
 
     relayCardManager_ = new RelayCardManager(relayCardModel_);
@@ -260,7 +260,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     smart_motion_ = new AssemblySmartMotionManager(motion_manager_);
 
-    const int assembly_sequence(config->getDefaultValue<int>("assembly_sequence", 1));
+    const int assembly_sequence(config->getDefaultValue<int>("main", "assembly_sequence", 1));
 
     if(assembly_sequence == 1)
     {
@@ -337,7 +337,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     hwctr_view_->Vacuum_Widget()->updateVacuumChannelsStatus();
 
     // enable motion stage controllers at startup
-    const bool startup_motion_stage = config->getDefaultValue<bool>("startup_motion_stage", false);
+    const bool startup_motion_stage = config->getDefaultValue<bool>("main", "startup_motion_stage", false);
 
     if(startup_motion_stage)
     {
@@ -506,7 +506,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     NQLog("AssemblyMainWindow", NQLog::Message) << "application initialized successfully";
 
     // enable camera at startup
-    const bool startup_camera = config->getDefaultValue<bool>("startup_camera", false);
+    const bool startup_camera = config->getDefaultValue<bool>("main", "startup_camera", false);
 
     if(startup_camera)
     {

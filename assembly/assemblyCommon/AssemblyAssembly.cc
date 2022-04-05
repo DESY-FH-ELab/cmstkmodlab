@@ -57,14 +57,14 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
     assembly::kill_application(tr("[AssemblyAssembly]"), tr("ApplicationConfig::instance() not initialized (null pointer), closing application"));
   }
 
-  vacuum_pickup_ = config->getValue<int>("Vacuum_PickupTool");
-  vacuum_spacer_ = config->getValue<int>("Vacuum_Spacers");
-  vacuum_basepl_ = config->getValue<int>("Vacuum_Baseplate");
+  vacuum_pickup_ = config->getValue<int>("main", "Vacuum_PickupTool");
+  vacuum_spacer_ = config->getValue<int>("main", "Vacuum_Spacers");
+  vacuum_basepl_ = config->getValue<int>("main", "Vacuum_Baseplate");
 
   // absolute Z-position of motion stage for pickup of object after gluing
   // (1: PSs to Spacers, 2: PSs+Spacers to MaPSA)
-  pickup1_Z_ = config->getValue<double>("AssemblyAssembly_pickup1_Z");
-  pickup2_Z_ = config->getValue<double>("AssemblyAssembly_pickup2_Z");
+  pickup1_Z_ = config->getValue<double>("main", "AssemblyAssembly_pickup1_Z");
+  pickup2_Z_ = config->getValue<double>("main", "AssemblyAssembly_pickup2_Z");
 }
 
 const LStepExpressMotionManager* AssemblyAssembly::motion() const

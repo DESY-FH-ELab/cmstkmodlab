@@ -38,7 +38,7 @@ AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent
   }
 
   /// PICKUP TOOL
-  const int vacuum_pickup = config->getValue<int>("Vacuum_PickupTool");
+  const int vacuum_pickup = config->getValue<int>("main", "Vacuum_PickupTool");
 
   valuemap_[vacuum_pickup] = Entry();
 
@@ -51,7 +51,7 @@ AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent
   /// ------------------------------
 
   /// SPACERS
-  const int vacuum_spacer = config->getValue<int>("Vacuum_Spacers");
+  const int vacuum_spacer = config->getValue<int>("main", "Vacuum_Spacers");
 
   valuemap_[vacuum_spacer] = Entry();
 
@@ -64,7 +64,7 @@ AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent
   /// ------------------------------
 
   /// BASEPLATE
-  const int vacuum_basepl = config->getValue<int>("Vacuum_Baseplate");
+  const int vacuum_basepl = config->getValue<int>("main", "Vacuum_Baseplate");
 
   valuemap_[vacuum_basepl] = Entry();
 
