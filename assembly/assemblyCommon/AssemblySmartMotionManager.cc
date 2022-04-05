@@ -48,7 +48,7 @@ AssemblySmartMotionManager::AssemblySmartMotionManager(const LStepExpressMotionM
     assembly::kill_application(tr("[AssemblySmartMotionManager]"), tr("Null pointer to ApplicationConfig. Aborting Application."));
   }
 
-  const std::string smartMove_steps_dZ_str = config->getValue<std::string>("AssemblySmartMotionManager_steps_dZ", "");
+  const std::string smartMove_steps_dZ_str = config->getDefaultValue<std::string>("main", "AssemblySmartMotionManager_steps_dZ", "");
 
   const QStringList smartMove_steps_dZ_strlist = QString::fromStdString(smartMove_steps_dZ_str).split(",");
 

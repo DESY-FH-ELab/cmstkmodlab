@@ -58,13 +58,13 @@ AssemblyZFocusFinder::AssemblyZFocusFinder(const QString& output_dir_prepath, co
     return;
   }
 
-  focus_pointN_max_ = config->getDefaultValue<int>   ("AssemblyZFocusFinder_pointN_max", 200);
-  focus_pointN_     = config->getDefaultValue<int>   ("AssemblyZFocusFinder_pointN"    ,  50);
+  focus_pointN_max_ = config->getDefaultValue<int>   ("main", "AssemblyZFocusFinder_pointN_max", 200);
+  focus_pointN_     = config->getDefaultValue<int>   ("main", "AssemblyZFocusFinder_pointN"    ,  50);
 
-  focus_zrange_max_ = config->getDefaultValue<double>("AssemblyZFocusFinder_zrange_max", 3.0);
-  focus_zrange_     = config->getDefaultValue<double>("AssemblyZFocusFinder_zrange"    , 0.5);
+  focus_zrange_max_ = config->getDefaultValue<double>("main", "AssemblyZFocusFinder_zrange_max", 3.0);
+  focus_zrange_     = config->getDefaultValue<double>("main", "AssemblyZFocusFinder_zrange"    , 0.5);
 
-  focus_stepsize_min_ = config->getDefaultValue<double>("AssemblyZFocusFinder_stepsize_min", 0.005);
+  focus_stepsize_min_ = config->getDefaultValue<double>("main", "AssemblyZFocusFinder_stepsize_min", 0.005);
 
   v_zrelm_vals_.clear();
   v_focus_vals_.clear();

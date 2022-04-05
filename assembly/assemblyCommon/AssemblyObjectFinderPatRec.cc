@@ -67,8 +67,8 @@ AssemblyObjectFinderPatRec::AssemblyObjectFinderPatRec(AssemblyThresholder* cons
     return;
   }
 
-  mm_per_pixel_row_ = config->getValue<double>("mm_per_pixel_row");
-  mm_per_pixel_col_ = config->getValue<double>("mm_per_pixel_col");
+  mm_per_pixel_row_ = config->getValue<double>("main", "mm_per_pixel_row");
+  mm_per_pixel_col_ = config->getValue<double>("main", "mm_per_pixel_col");
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Debug) << "constructed";
 }

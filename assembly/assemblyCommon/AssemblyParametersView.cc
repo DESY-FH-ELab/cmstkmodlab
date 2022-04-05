@@ -666,13 +666,13 @@ void AssemblyParametersView::copy_values(const std::map<std::string, double>& ma
   ApplicationConfig* config = ApplicationConfig::instance(); //Read config file
 
   tmp = "AssemblyObjectAlignerView_PSP_deltaX";
-  ss << config->getValue<std::string>(tmp); ss >> d; //Convert string -> double
+  ss << config->getValue<std::string>("main", tmp); ss >> d; //Convert string -> double
   this->setText(tmp, d);
   this->setText(tmp+"_neg", -d); //Minus sign
 
   tmp = "AssemblyObjectAlignerView_PSS_deltaX";
   ss.str(std::string()); ss.clear(); //Clear previous value
-  ss << config->getValue<std::string>(tmp); ss >> d;
+  ss << config->getValue<std::string>("main", tmp); ss >> d;
   this->setText(tmp, d);
   this->setText(tmp+"_neg", -d); //Minus sign
 
