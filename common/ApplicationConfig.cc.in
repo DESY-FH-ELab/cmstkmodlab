@@ -19,14 +19,11 @@ const std::string Config::CMSTkModLabBasePath("@basepath@");
 
 bool operator<(const ApplicationConfig::FullKey& k1, const ApplicationConfig::FullKey& k2)
 {
-  if (k1.filename == k2.filename) {
-    if (k1.alias == k2.alias) {
-      return k1.key < k2.key;
-    } else {
-      return k1.alias < k2.alias;
-    }
+  if (k1.alias == k2.alias) {
+    return k1.key < k2.key;
+  } else {
+    return k1.alias < k2.alias;
   }
-  return k1.filename < k2.filename;
 }
 
 bool operator<(const ApplicationConfig::FullKey& fk, const ApplicationConfig::ShortKey& sk)
