@@ -57,6 +57,30 @@ public:
 
   void append(const std::string& filename, const std::string& alias);
 
+  bool hasKey(const ShortKey& sk) const
+  {
+    storage_t::const_iterator it = keyvalueMap_.find(sk);
+    if (it!=keyvalueMap_.end()) return true;
+    return false;
+  }
+
+  [[deprecated("Use hasKey(const ShortKey& sk) or hasKey(const std::string& alias, const std::string& key) instead.")]]
+  bool hasKey(const std::string& key) const
+  {
+    ShortKey sk = { "*", key };
+    storage_t::const_iterator it = keyvalueMap_.find(sk);
+    if (it!=keyvalueMap_.end()) return true;
+    return false;
+  }
+
+  bool hasKey(const std::string& alias, const std::string& key) const
+  {
+    ShortKey sk = { alias, key };
+    storage_t::const_iterator it = keyvalueMap_.find(sk);
+    if (it!=keyvalueMap_.end()) return true;
+    return false;
+  }
+
   template <class aType>
   aType getValue(const ShortKey& sk) const
   {
