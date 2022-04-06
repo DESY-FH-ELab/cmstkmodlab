@@ -26,6 +26,7 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
  , motion_(motion)
  , vacuum_(vacuum)
  , smart_motion_(smart_motion)
+ , config_(nullptr)
 
  , vacuum_pickup_(0)
  , vacuum_spacer_(0)
@@ -48,8 +49,8 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
   this->vacuum();
 
   // indices of vacuum lines
-  ApplicationConfig* config = ApplicationConfig::instance();
-  if(config == nullptr)
+  config_ = ApplicationConfig::instance();
+  if(config_ == nullptr)
   {
     NQLog("AssemblyAssemblyV2", NQLog::Fatal)
        << "ApplicationConfig::instance() not initialized (null pointer), stopped constructor";
@@ -57,14 +58,14 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
     assembly::kill_application(tr("[AssemblyAssemblyV2]"), tr("ApplicationConfig::instance() not initialized (null pointer), closing application"));
   }
 
-  vacuum_pickup_ = config->getValue<int>("main", "Vacuum_PickupTool");
-  vacuum_spacer_ = config->getValue<int>("main", "Vacuum_Spacers");
-  vacuum_basepl_ = config->getValue<int>("main", "Vacuum_Baseplate");
+  vacuum_pickup_ = config_->getValue<int>("main", "Vacuum_PickupTool");
+  vacuum_spacer_ = config_->getValue<int>("main", "Vacuum_Spacers");
+  vacuum_basepl_ = config_->getValue<int>("main", "Vacuum_Baseplate");
 
   // absolute Z-position of motion stage for pickup of object after gluing
   // (1: PSs to Spacers, 2: PSs+Spacers to MaPSA)
-  pickup1_Z_ = config->getValue<double>("main", "AssemblyAssembly_pickup1_Z");
-  pickup2_Z_ = config->getValue<double>("main", "AssemblyAssembly_pickup2_Z");
+  pickup1_Z_ = config_->getValue<double>("main", "AssemblyAssembly_pickup1_Z");
+  pickup2_Z_ = config_->getValue<double>("main", "AssemblyAssembly_pickup2_Z");
 
   alreadyClicked_LowerPickupToolOntoMaPSA = false; alreadyClicked_LowerPickupToolOntoPSS = false; alreadyClicked_LowerMaPSAOntoBaseplate = false; alreadyClicked_LowerPSSOntoSpacers = false; alreadyClicked_LowerPSSPlusSpacersOntoGluingStage = false; alreadyClicked_LowerPSSPlusSpacersOntoMaPSA = false;
 }
@@ -93,21 +94,6 @@ const RelayCardManager* AssemblyAssemblyV2::vacuum() const
   }
 
   return vacuum_;
-}
-
-AssemblyParameters* AssemblyAssemblyV2::parameters() const
-{
-  AssemblyParameters* const params = AssemblyParameters::instance();
-
-  if(params == nullptr)
-  {
-    NQLog("AssemblyAssemblyV2", NQLog::Fatal) << "parameters"
-       << ": pointer to AssemblyParameters is NULL, exiting constructor";
-
-    assembly::kill_application(tr("[AssemblyAssemblyV2]"), tr("pointer to AssemblyParameters is NULL, aborting"));
-  }
-
-  return params;
 }
 
 void AssemblyAssemblyV2::use_smartMove(const int state)
@@ -159,25 +145,10 @@ void AssemblyAssemblyV2::GoToSensorMarkerPreAlignment_start()
     return;
   }
 
-  const bool valid_params = this->parameters()->update();
-
-  if(valid_params == false)
-  {
-    NQLog("AssemblyAssemblyV2", NQLog::Critical) << "GoToSensorMarkerPreAlignment_start"
-       << ": failed to update content of AssemblyParameters, no action taken";
-
-    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "GoToSensorMarkerPreAlignment_finish"
-       << ": emitting signal \"GoToSensorMarkerPreAlignment_finished\"";
-
-    emit GoToSensorMarkerPreAlignment_finished();
-
-    return;
-  }
-
-  const double x0 = this->parameters()->get("RefPointSensor_X");
-  const double y0 = this->parameters()->get("RefPointSensor_Y");
-  const double z0 = this->parameters()->get("RefPointSensor_Z");
-  const double a0 = this->parameters()->get("RefPointSensor_A");
+  const double x0 = config_->getValue<double>("parameters", "RefPointSensor_X");
+  const double y0 = config_->getValue<double>("parameters", "RefPointSensor_Y");
+  const double z0 = config_->getValue<double>("parameters", "RefPointSensor_Z");
+  const double a0 = config_->getValue<double>("parameters", "RefPointSensor_A");
 
   connect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToSensorMarkerPreAlignment_finish()));
@@ -516,23 +487,8 @@ void AssemblyAssemblyV2::GoFromSensorMarkerToPickupXY_start()
     return;
   }
 
-  const bool valid_params = this->parameters()->update();
-
-  if(valid_params == false)
-  {
-    NQLog("AssemblyAssemblyV2", NQLog::Critical) << "GoFromSensorMarkerToPickupXY_start"
-       << ": failed to update content of AssemblyParameters, no action taken";
-
-    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "GoFromSensorMarkerToPickupXY_finish"
-       << ": emitting signal \"GoFromSensorMarkerToPickupXY_finished\"";
-
-    emit GoFromSensorMarkerToPickupXY_finished();
-
-    return;
-  }
-
-  const double dx0 = this->parameters()->get("FromSensorRefPointToSensorPickup_dX");
-  const double dy0 = this->parameters()->get("FromSensorRefPointToSensorPickup_dY");
+  const double dx0 = config_->getValue<double>("parameters", "FromSensorRefPointToSensorPickup_dX");
+  const double dy0 = config_->getValue<double>("parameters", "FromSensorRefPointToSensorPickup_dY");
   const double dz0 = 0.0;
   const double da0 = 0.0;
 
@@ -600,26 +556,11 @@ void AssemblyAssemblyV2::LowerPickupToolOntoMaPSA_start()
 
   if(use_smartMove_)
   {
-    const bool valid_params = this->parameters()->update();
-
-    if(valid_params == false)
-    {
-      NQLog("AssemblyAssemblyV2", NQLog::Critical) << "LowerPickupToolOntoMaPSA_start"
-         << ": failed to update content of AssemblyParameters, no action taken";
-
-      NQLog("AssemblyAssemblyV2", NQLog::Spam) << "LowerPickupToolOntoMaPSA_finish"
-         << ": emitting signal \"LowerPickupToolOntoMaPSA_finished\"";
-
-      emit LowerPickupToolOntoMaPSA_finished();
-
-      return;
-    }
-
     const double dx0 = 0.0;
     const double dy0 = 0.0;
     const double dz0 =
-        this->parameters()->get("FromCameraBestFocusToPickupHeight_dZ")
-      + this->parameters()->get("Thickness_MPA") //NB: focused on PS-p marker --> to get correct distance to MaPSA, only need to account for additional width due to MPAs (not that of PS-p itself)
+        config_->getValue<double>("parameters", "FromCameraBestFocusToPickupHeight_dZ")
+      + config_->getValue<double>("parameters", "Thickness_MPA") //NB: focused on PS-p marker --> to get correct distance to MaPSA, only need to account for additional width due to MPAs (not that of PS-p itself)
     ;
     const double da0 = 0.0;
 
@@ -704,24 +645,9 @@ void AssemblyAssemblyV2::LowerPickupToolOntoPSS_start()
 
   if(use_smartMove_)
   {
-    const bool valid_params = this->parameters()->update();
-
-    if(valid_params == false)
-    {
-      NQLog("AssemblyAssemblyV2", NQLog::Critical) << "LowerPickupToolOntoPSS_start"
-         << ": failed to update content of AssemblyParameters, no action taken";
-
-      NQLog("AssemblyAssemblyV2", NQLog::Spam) << "LowerPickupToolOntoPSS_finish"
-         << ": emitting signal \"LowerPickupToolOntoPSS_finished\"";
-
-      emit LowerPickupToolOntoPSS_finished();
-
-      return;
-    }
-
     const double dx0 = 0.0;
     const double dy0 = 0.0;
-    const double dz0 = this->parameters()->get("FromCameraBestFocusToPickupHeight_dZ");
+    const double dz0 = config_->getValue<double>("parameters", "FromCameraBestFocusToPickupHeight_dZ");
     const double da0 = 0.0;
 
     connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
@@ -904,39 +830,24 @@ void AssemblyAssemblyV2::GoToXYAPositionToGlueMaPSAToBaseplate_start()
     return;
   }
 
-  const bool valid_params = this->parameters()->update();
-
-  if(valid_params == false)
-  {
-    NQLog("AssemblyAssemblyV2", NQLog::Critical) << "GoToXYAPositionToGlueMaPSAToBaseplate_start"
-       << ": failed to update content of AssemblyParameters, no action taken";
-
-    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "GoToXYAPositionToGlueMaPSAToBaseplate_finish"
-       << ": emitting signal \"GoToXYAPositionToGlueMaPSAToBaseplate_finished\"";
-
-    emit GoToXYAPositionToGlueMaPSAToBaseplate_finished();
-
-    return;
-  }
-
   const double dx0 =
-     this->parameters()->get("PlatformRefPointCalibrationBaseplate_X")
-   + this->parameters()->get("FromPlatformRefPointCalibrationBaseplateToPSPEdge_dX")
-   + this->parameters()->get("FromPSPEdgeToPSPRefPoint_dX")
-   + this->parameters()->get("FromSensorRefPointToSensorPickup_dX")
+     config_->getValue<double>("parameters", "PlatformRefPointCalibrationBaseplate_X")
+   + config_->getValue<double>("parameters", "FromPlatformRefPointCalibrationBaseplateToPSPEdge_dX")
+   + config_->getValue<double>("parameters", "FromPSPEdgeToPSPRefPoint_dX")
+   + config_->getValue<double>("parameters", "FromSensorRefPointToSensorPickup_dX")
    - motion_->get_position_X();
 
   const double dy0 =
-     this->parameters()->get("PlatformRefPointCalibrationBaseplate_Y")
-   + this->parameters()->get("FromPlatformRefPointCalibrationBaseplateToPSPEdge_dY")
-   + this->parameters()->get("FromPSPEdgeToPSPRefPoint_dY")
-   + this->parameters()->get("FromSensorRefPointToSensorPickup_dY")
+     config_->getValue<double>("parameters", "PlatformRefPointCalibrationBaseplate_Y")
+   + config_->getValue<double>("parameters", "FromPlatformRefPointCalibrationBaseplateToPSPEdge_dY")
+   + config_->getValue<double>("parameters", "FromPSPEdgeToPSPRefPoint_dY")
+   + config_->getValue<double>("parameters", "FromSensorRefPointToSensorPickup_dY")
    - motion_->get_position_Y();
 
   const double dz0 = 0.0;
 
   const double da0 =
-     this->parameters()->get("PlatformRefPointCalibrationBaseplate_A")
+     config_->getValue<double>("parameters", "PlatformRefPointCalibrationBaseplate_A")
    - motion_->get_position_A();
 
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
@@ -1003,31 +914,16 @@ void AssemblyAssemblyV2::LowerMaPSAOntoBaseplate_start()
 
   if(use_smartMove_)
   {
-    const bool valid_params = this->parameters()->update();
-
-    if(valid_params == false)
-    {
-      NQLog("AssemblyAssemblyV2", NQLog::Critical) << "LowerMaPSAOntoBaseplate_start"
-         << ": failed to update content of AssemblyParameters, no action taken";
-
-      NQLog("AssemblyAssemblyV2", NQLog::Spam) << "LowerMaPSAOntoBaseplate_finish"
-         << ": emitting signal \"LowerMaPSAOntoBaseplate_finished\"";
-
-      emit LowerMaPSAOntoBaseplate_finished();
-
-      return;
-    }
-
     const double dx0 = 0.0;
     const double dy0 = 0.0;
 
     const double dz0 =
-        this->parameters()->get("CameraFocusOnAssemblyStage_Z")
-      + this->parameters()->get("FromCameraBestFocusToPickupHeight_dZ")
-      + this->parameters()->get("Thickness_MPA")
-      + this->parameters()->get("Thickness_PSP")
-      + this->parameters()->get("Thickness_GlueLayer")
-      + this->parameters()->get("Thickness_Baseplate")
+        config_->getValue<double>("parameters", "CameraFocusOnAssemblyStage_Z")
+      + config_->getValue<double>("parameters", "FromCameraBestFocusToPickupHeight_dZ")
+      + config_->getValue<double>("parameters", "Thickness_MPA")
+      + config_->getValue<double>("parameters", "Thickness_PSP")
+      + config_->getValue<double>("parameters", "Thickness_GlueLayer")
+      + config_->getValue<double>("parameters", "Thickness_Baseplate")
       - motion_->get_position_Z();
 
     const double da0 = 0.0;
@@ -1092,39 +988,24 @@ void AssemblyAssemblyV2::GoToXYAPositionToGluePSSToSpacers_start()
     return;
   }
 
-  const bool valid_params = this->parameters()->update();
-
-  if(valid_params == false)
-  {
-    NQLog("AssemblyAssemblyV2", NQLog::Critical) << "GoToXYAPositionToGluePSSToSpacers_start"
-       << ": failed to update content of AssemblyParameters, no action taken";
-
-    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "GoToXYAPositionToGluePSSToSpacers_finish"
-       << ": emitting signal \"GoToXYAPositionToGluePSSToSpacers_finished\"";
-
-    emit GoToXYAPositionToGluePSSToSpacers_finished();
-
-    return;
-  }
-
   const double dx0 =
-     this->parameters()->get("PlatformRefPointCalibrationSpacers_X")
-   + this->parameters()->get("FromPlatformRefPointCalibrationSpacersToSpacerEdge_dX")
-   + this->parameters()->get("FromSpacerEdgeToPSSRefPoint_dX")
-   + this->parameters()->get("FromSensorRefPointToSensorPickup_dX")
+     config_->getValue<double>("parameters", "PlatformRefPointCalibrationSpacers_X")
+   + config_->getValue<double>("parameters", "FromPlatformRefPointCalibrationSpacersToSpacerEdge_dX")
+   + config_->getValue<double>("parameters", "FromSpacerEdgeToPSSRefPoint_dX")
+   + config_->getValue<double>("parameters", "FromSensorRefPointToSensorPickup_dX")
    - motion_->get_position_X();
 
   const double dy0 =
-     this->parameters()->get("PlatformRefPointCalibrationSpacers_Y")
-   + this->parameters()->get("FromPlatformRefPointCalibrationSpacersToSpacerEdge_dY")
-   + this->parameters()->get("FromSpacerEdgeToPSSRefPoint_dY")
-   + this->parameters()->get("FromSensorRefPointToSensorPickup_dY")
+     config_->getValue<double>("parameters", "PlatformRefPointCalibrationSpacers_Y")
+   + config_->getValue<double>("parameters", "FromPlatformRefPointCalibrationSpacersToSpacerEdge_dY")
+   + config_->getValue<double>("parameters", "FromSpacerEdgeToPSSRefPoint_dY")
+   + config_->getValue<double>("parameters", "FromSensorRefPointToSensorPickup_dY")
    - motion_->get_position_Y();
 
   const double dz0 = 0.0;
 
   const double da0 =
-     this->parameters()->get("PlatformRefPointCalibrationSpacers_A")
+     config_->getValue<double>("parameters", "PlatformRefPointCalibrationSpacers_A")
    - motion_->get_position_A();
 
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
@@ -1191,31 +1072,16 @@ void AssemblyAssemblyV2::LowerPSSOntoSpacers_start()
 
   if(use_smartMove_)
   {
-    const bool valid_params = this->parameters()->update();
-
-    if(valid_params == false)
-    {
-      NQLog("AssemblyAssemblyV2", NQLog::Critical) << "LowerPSSOntoSpacers_start"
-         << ": failed to update content of AssemblyParameters, no action taken";
-
-      NQLog("AssemblyAssemblyV2", NQLog::Spam) << "LowerPSSOntoSpacers_finish"
-         << ": emitting signal \"LowerPSSOntoSpacers_finished\"";
-
-      emit LowerPSSOntoSpacers_finished();
-
-      return;
-    }
-
     const double dx0 = 0.0;
     const double dy0 = 0.0;
 
     const double dz0 =
-        this->parameters()->get("CameraFocusOnAssemblyStage_Z")
-      - this->parameters()->get("Depth_SpacerSlots")
-      + this->parameters()->get("Thickness_Spacer")
-      + this->parameters()->get("FromCameraBestFocusToPickupHeight_dZ")
-      + this->parameters()->get("Thickness_PSS")
-      + this->parameters()->get("Thickness_GlueLayer")
+        config_->getValue<double>("parameters", "CameraFocusOnAssemblyStage_Z")
+      - config_->getValue<double>("parameters", "Depth_SpacerSlots")
+      + config_->getValue<double>("parameters", "Thickness_Spacer")
+      + config_->getValue<double>("parameters", "FromCameraBestFocusToPickupHeight_dZ")
+      + config_->getValue<double>("parameters", "Thickness_PSS")
+      + config_->getValue<double>("parameters", "Thickness_GlueLayer")
       - motion_->get_position_Z();
 
     const double da0 = 0.0;
@@ -1280,38 +1146,23 @@ void AssemblyAssemblyV2::GoToPSPMarkerIdealPosition_start()
     return;
   }
 
-  const bool valid_params = this->parameters()->update();
-
-  if(valid_params == false)
-  {
-    NQLog("AssemblyAssemblyV2", NQLog::Critical) << "GoToPSPMarkerIdealPosition_start"
-       << ": failed to update content of AssemblyParameters, no action taken";
-
-    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "GoToPSPMarkerIdealPosition_finish"
-       << ": emitting signal \"GoToPSPMarkerIdealPosition_finished\"";
-
-    emit GoToPSPMarkerIdealPosition_finished();
-
-    return;
-  }
-
   const double x0 =
-     this->parameters()->get("PlatformRefPointCalibrationBaseplate_X")
-   + this->parameters()->get("FromPlatformRefPointCalibrationBaseplateToPSPEdge_dX")
-   + this->parameters()->get("FromPSPEdgeToPSPRefPoint_dX");
+     config_->getValue<double>("parameters", "PlatformRefPointCalibrationBaseplate_X")
+   + config_->getValue<double>("parameters", "FromPlatformRefPointCalibrationBaseplateToPSPEdge_dX")
+   + config_->getValue<double>("parameters", "FromPSPEdgeToPSPRefPoint_dX");
 
   const double y0 =
-     this->parameters()->get("PlatformRefPointCalibrationBaseplate_Y")
-   + this->parameters()->get("FromPlatformRefPointCalibrationBaseplateToPSPEdge_dY")
-   + this->parameters()->get("FromPSPEdgeToPSPRefPoint_dY");
+     config_->getValue<double>("parameters", "PlatformRefPointCalibrationBaseplate_Y")
+   + config_->getValue<double>("parameters", "FromPlatformRefPointCalibrationBaseplateToPSPEdge_dY")
+   + config_->getValue<double>("parameters", "FromPSPEdgeToPSPRefPoint_dY");
 
   const double z0 =
-     this->parameters()->get("CameraFocusOnAssemblyStage_Z")
-   + this->parameters()->get("Thickness_PSP") //NB: don't need to account for thickness of MPAs here, since we simply just to focus on the PS-p marker (no pickup)
-   + this->parameters()->get("Thickness_GlueLayer")
-   + this->parameters()->get("Thickness_Baseplate");
+     config_->getValue<double>("parameters", "CameraFocusOnAssemblyStage_Z")
+   + config_->getValue<double>("parameters", "Thickness_PSP") //NB: don't need to account for thickness of MPAs here, since we simply just to focus on the PS-p marker (no pickup)
+   + config_->getValue<double>("parameters", "Thickness_GlueLayer")
+   + config_->getValue<double>("parameters", "Thickness_Baseplate");
 
-  const double a0 = this->parameters()->get("PlatformRefPointCalibrationBaseplate_A");
+  const double a0 = config_->getValue<double>("parameters", "PlatformRefPointCalibrationBaseplate_A");
 
   connect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToPSPMarkerIdealPosition_finish()));
@@ -1354,23 +1205,8 @@ void AssemblyAssemblyV2::ApplyPSPToPSSXYOffset_start()
     return;
   }
 
-  const bool valid_params = this->parameters()->update();
-
-  if(valid_params == false)
-  {
-    NQLog("AssemblyAssemblyV2", NQLog::Critical) << "ApplyPSPToPSSXYOffset_start"
-       << ": failed to update content of AssemblyParameters, no action taken";
-
-    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "ApplyPSPToPSSXYOffset_finish"
-       << ": emitting signal \"ApplyPSPToPSSXYOffset_finished\"";
-
-    emit ApplyPSPToPSSXYOffset_finished();
-
-    return;
-  }
-
-  const double dx0 = this->parameters()->get("FromPSPRefPointToPSSRefPoint_dX");
-  const double dy0 = this->parameters()->get("FromPSPRefPointToPSSRefPoint_dY");
+  const double dx0 = config_->getValue<double>("parameters", "FromPSPRefPointToPSSRefPoint_dX");
+  const double dy0 = config_->getValue<double>("parameters", "FromPSPRefPointToPSSRefPoint_dY");
   const double dz0 = 0.0;
   const double da0 = 0.0;
 
@@ -1471,23 +1307,8 @@ void AssemblyAssemblyV2::GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPoin
 
   if(use_smartMove_)
   {
-    const bool valid_params = this->parameters()->update();
-
-    if(valid_params == false)
-    {
-      NQLog("AssemblyAssemblyV2", NQLog::Critical) << "GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start"
-         << ": failed to update content of AssemblyParameters, no action taken";
-
-      NQLog("AssemblyAssemblyV2", NQLog::Spam) << "GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finish"
-         << ": emitting signal \"GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished\"";
-
-      emit GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished();
-
-      return;
-    }
-
-    const double dx0 = this->parameters()->get("FromPSSPlusSpacersToMaPSAPositionToGluingStage_dX");
-    const double dy0 = this->parameters()->get("FromPSSPlusSpacersToMaPSAPositionToGluingStage_dY");
+    const double dx0 = config_->getValue<double>("parameters", "FromPSSPlusSpacersToMaPSAPositionToGluingStage_dX");
+    const double dy0 = config_->getValue<double>("parameters", "FromPSSPlusSpacersToMaPSAPositionToGluingStage_dY");
     const double dz0 = 0.0;
     const double da0 = 0.0;
 
@@ -1572,31 +1393,16 @@ void AssemblyAssemblyV2::LowerPSSPlusSpacersOntoGluingStage_start()
 
   if(use_smartMove_)
   {
-    const bool valid_params = this->parameters()->update();
-
-    if(valid_params == false)
-    {
-      NQLog("AssemblyAssemblyV2", NQLog::Critical) << "LowerPSSPlusSpacersOntoGluingStage_start"
-         << ": failed to update content of AssemblyParameters, no action taken";
-
-      NQLog("AssemblyAssemblyV2", NQLog::Spam) << "LowerPSSPlusSpacersOntoGluingStage_finish"
-         << ": emitting signal \"LowerPSSPlusSpacersOntoGluingStage_finished\"";
-
-      emit LowerPSSPlusSpacersOntoGluingStage_finished();
-
-      return;
-    }
-
     const double dx0 = 0.0;
     const double dy0 = 0.0;
 
     const double dz0 =
-        this->parameters()->get("CameraFocusOnGluingStage_Z")
-      + this->parameters()->get("FromCameraBestFocusToPickupHeight_dZ")
-      + this->parameters()->get("Thickness_PSS")
-      + this->parameters()->get("Thickness_GlueLayer")
-      + this->parameters()->get("Thickness_Spacer")
-      + this->parameters()->get("Thickness_GlueLayer")
+        config_->getValue<double>("parameters", "CameraFocusOnGluingStage_Z")
+      + config_->getValue<double>("parameters", "FromCameraBestFocusToPickupHeight_dZ")
+      + config_->getValue<double>("parameters", "Thickness_PSS")
+      + config_->getValue<double>("parameters", "Thickness_GlueLayer")
+      + config_->getValue<double>("parameters", "Thickness_Spacer")
+      + config_->getValue<double>("parameters", "Thickness_GlueLayer")
       - motion_->get_position_Z();
 
     const double da0 = 0.0;
@@ -1779,31 +1585,16 @@ void AssemblyAssemblyV2::LowerPSSPlusSpacersOntoMaPSA_start()
 
   if(use_smartMove_)
   {
-    const bool valid_params = this->parameters()->update();
-
-    if(valid_params == false)
-    {
-      NQLog("AssemblyAssemblyV2", NQLog::Critical) << "LowerPSSPlusSpacersOntoMaPSA_start"
-         << ": failed to update content of AssemblyParameters, no action taken";
-
-      NQLog("AssemblyAssemblyV2", NQLog::Spam) << "LowerPSSPlusSpacersOntoMaPSA_finish"
-         << ": emitting signal \"LowerPSSPlusSpacersOntoMaPSA_finished\"";
-
-      emit LowerPSSPlusSpacersOntoMaPSA_finished();
-
-      return;
-    }
-
     const double dx0 = 0.0;
     const double dy0 = 0.0;
 
     const double dz0 =
-        this->parameters()->get("FromCameraBestFocusToPickupHeight_dZ")
-      + this->parameters()->get("Thickness_PSS")
-      + this->parameters()->get("Thickness_GlueLayer")
-      + this->parameters()->get("Thickness_Spacer")
-      + this->parameters()->get("Thickness_GlueLayer")
-      + this->parameters()->get("Thickness_MPA"); //NB: focused on PS-p marker --> to get correct distance to MaPSA, only need to account for additional width due to MPAs (not that of PS-p itself)
+        config_->getValue<double>("parameters", "FromCameraBestFocusToPickupHeight_dZ")
+      + config_->getValue<double>("parameters", "Thickness_PSS")
+      + config_->getValue<double>("parameters", "Thickness_GlueLayer")
+      + config_->getValue<double>("parameters", "Thickness_Spacer")
+      + config_->getValue<double>("parameters", "Thickness_GlueLayer")
+      + config_->getValue<double>("parameters", "Thickness_MPA"); //NB: focused on PS-p marker --> to get correct distance to MaPSA, only need to account for additional width due to MPAs (not that of PS-p itself)
 
     const double da0 = 0.0;
 
