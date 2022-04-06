@@ -17,6 +17,7 @@
 #include <AssemblyUtilities.h>
 
 #include <QMessageBox>
+#include <QPushButton>
 
 #include <cmath>
 
