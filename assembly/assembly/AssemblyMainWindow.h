@@ -42,7 +42,6 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyMultiPickupTester.h>
 #include <AssemblyToolboxView.h>
 #include <AssemblySmartMotionManager.h>
-#include <AssemblyParameters.h>
 #include <AssemblyParametersView.h>
 #include <AssemblyHardwareControlView.h>
 #include <LStepExpressModel.h>
@@ -179,7 +178,6 @@ class AssemblyMainWindow : public QMainWindow
 
   AssemblySmartMotionManager* smart_motion_;
 
-  AssemblyParameters* params_;
 
   // Views
   QToolBar*   toolBar_;

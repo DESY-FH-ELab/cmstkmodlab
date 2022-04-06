@@ -19,7 +19,6 @@
 #include <AssemblyMainWindow.h>
 #include <AssemblyLogFileController.h>
 #include <AssemblyLogFileView.h>
-#include <AssemblyParameters.h>
 #include <AssemblyUtilities.h>
 
 #include <string>
@@ -61,8 +60,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   finder_thread_(nullptr),
 
   smart_motion_(nullptr),
-
-  params_(nullptr),
 
   // Views
   toolBar_(nullptr),
@@ -109,11 +106,11 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     /// Parameters
     ///   * instance created up here, so controllers can access it
-    params_ = AssemblyParameters::instance(config->getValue<std::string>("main", "AssemblyParameters_file_path"), DBlogfile_path);
-    if(params_->isValidConfig() == false)
-    {
+    try{
+      config->append(config->getValue<std::string>("main", "AssemblyParameters_file_path"), "parameters");
+    } catch (...) {
       NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
-      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31mInitialization error: AssemblyParameters::instance() is invalid ! Abort !\e[0m";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31mInitialization error: ApplicationConfig::append(\"parameters\") is invalid ! Abort !\e[0m";
       NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
 
       return;
@@ -359,10 +356,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     params_view_ = new AssemblyParametersView(controls_tab);
     controls_tab->addTab(params_view_, tabname_Parameters);
-
-    params_view_->copy_values(params_->map_double());
-
-    params_->set_view(params_view_);
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Parameters;
 
@@ -736,19 +729,6 @@ void AssemblyMainWindow::start_objectAligner(const AssemblyObjectAligner::Config
     return;
   }
 
-  if(params_ != nullptr)
-  {
-    const bool valid_params = params_->update();
-
-    if(valid_params == false)
-    {
-      NQLog("AssemblyMainWindow", NQLog::Warning) << "start_objectAligner"
-         << ": failed to update AssemblyParameters, no action taken";
-
-      return;
-    }
-  }
-
   // acquire image
   connect(aligner_, SIGNAL(image_request()), image_ctr_, SLOT(acquire_image()));
   connect(aligner_, SIGNAL(autofocused_image_request()), image_ctr_, SLOT(acquire_autofocused_image()));
@@ -842,19 +822,6 @@ void AssemblyMainWindow::start_multiPickupTest(const AssemblyMultiPickupTester::
        << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
 
     return;
-  }
-
-  if(params_ != nullptr)
-  {
-    const bool valid_params = params_->update();
-
-    if(valid_params == false)
-    {
-      NQLog("AssemblyMainWindow", NQLog::Warning) << "start_multiPickupTest"
-         << ": failed to update AssemblyParameters, no action taken";
-
-      return;
-    }
   }
 
   toolbox_view_->MultiPickupTester_Widget()->enable(false);
