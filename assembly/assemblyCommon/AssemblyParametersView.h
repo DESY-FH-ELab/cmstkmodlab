@@ -16,6 +16,7 @@
 #include <LStepExpressMotionManager.h>
 #include <AssemblyMultiPickupTesterWidget.h>
 #include <AssemblyPositionsRegistryWidget.h>
+#include <ApplicationConfig.h>
 
 #include <string>
 #include <map>
@@ -37,7 +38,7 @@ class AssemblyParametersView : public QWidget
   bool       has(const std::string&) const;
   QLineEdit* get(const std::string&) const;
 
-  void copy_values(const std::map<std::string, double>&);
+  void copy_values();
 
   void setText(const std::string&, const double);
 
@@ -57,6 +58,8 @@ class AssemblyParametersView : public QWidget
   QPushButton *button_moveRelRefDist1_, *button_moveRelRefDist2_, *button_moveRelRefDist3_, *button_moveRelRefDist4_, *button_moveRelRefDist5_, *button_moveRelRefDist6_, *button_moveRelRefDist7_, *button_moveRelRefDist8_, *button_moveRelRefDist9_, *button_moveRelRefDist10_, *button_moveRelRefDist11_, *button_moveRelRefDist12_, *button_moveRelRefDist13_;
 
   std::map<std::string, QLineEdit*> map_lineEdit_;
+
+  ApplicationConfig* config_;
 
  public slots:
 

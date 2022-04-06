@@ -11,7 +11,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <nqlogger.h>
-#include <ApplicationConfig.h>
 
 #include <AssemblyParametersView.h>
 #include <AssemblyUtilities.h>
@@ -34,7 +33,11 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
 
  , paramIO_button_read_ (nullptr)
  , paramIO_button_write_(nullptr)
+
+ , config_(nullptr)
 {
+  config_ = ApplicationConfig::instance();
+
   QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
 
@@ -490,6 +493,10 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
 
   //// ---------------------
 
+  copy_values();
+
+  //// ---------------------
+
   layout->addStretch(1);
 
   QHBoxLayout* paramIO_lay = new QHBoxLayout;
@@ -652,29 +659,30 @@ void AssemblyParametersView::transmit_entries()
   emit entries(map_str);
 }
 
-void AssemblyParametersView::copy_values(const std::map<std::string, double>& map_double)
+void AssemblyParametersView::copy_values()
 {
   //-- Values read from parameters (<-> calibrations) file
-  for(const auto& key : map_double)
-  {
-    this->setText(key.first, key.second);
+  for(const auto& i_key : config_->getKeys()) {
+
+    if(!(i_key.alias == "parameters"))
+    {
+      continue;
+    }
+
+    this->setText(i_key.key, config_->getValue<double>(i_key));
   }
 
   //-- Values read from config file
   //std::cout<<"===== AssemblyObjectAlignerView_PSS_deltaX = "<<config->getValue<std::string>(tmp)<<std::endl;
   std::string tmp(""); double d=0; std::stringstream ss;
-  ApplicationConfig* config = ApplicationConfig::instance(); //Read config file
 
   tmp = "AssemblyObjectAlignerView_PSP_deltaX";
-  ss << config->getValue<std::string>("main", tmp); ss >> d; //Convert string -> double
-  this->setText(tmp, d);
-  this->setText(tmp+"_neg", -d); //Minus sign
+  this->setText(tmp, config_->getValue<double>("main", tmp));
+  this->setText(tmp+"_neg", -config_->getValue<double>("main", tmp));
 
   tmp = "AssemblyObjectAlignerView_PSS_deltaX";
-  ss.str(std::string()); ss.clear(); //Clear previous value
-  ss << config->getValue<std::string>("main", tmp); ss >> d;
-  this->setText(tmp, d);
-  this->setText(tmp+"_neg", -d); //Minus sign
+  this->setText(tmp, config_->getValue<double>("main", tmp));
+  this->setText(tmp+"_neg", -config_->getValue<double>("main", tmp));
 
   return;
 }
