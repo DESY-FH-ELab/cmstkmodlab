@@ -279,7 +279,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
 
   //// DISTANCES -----------
   dist_wid_ = new QWidget;
-
+  dist_wid_->setMinimumHeight(5);
   toolbox->addItem(dist_wid_, tr("Reference Distances [mm, deg]"));
 
   QGridLayout* dist_lay = new QGridLayout;
@@ -442,11 +442,12 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dist_lay->addWidget(button_moveRelRefDist9_, row_index, 9, Qt::AlignLeft);
 
   // Add separator line
+
   ++row_index;
   QFrame* line = new QFrame();
   line->setFrameShape(QFrame::HLine);
   line->setFrameShadow(QFrame::Sunken);
-  dist_lay->addWidget(line, row_index, 0);
+  dist_lay->addWidget(line, row_index, 0, 1, 10);
 
   // distance: from reference marker 1 ("top-left" marker when facing the platform) to reference marker 2 ("top-right")
   // Add buttons to perform +dX/-dX relative movements from one marker to the other, both for PSS and PSP
