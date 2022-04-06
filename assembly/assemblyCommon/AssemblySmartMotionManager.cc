@@ -14,7 +14,6 @@
 #include <ApplicationConfig.h>
 
 #include <AssemblySmartMotionManager.h>
-#include <AssemblyParameters.h>
 #include <AssemblyUtilities.h>
 
 #include <QMessageBox>

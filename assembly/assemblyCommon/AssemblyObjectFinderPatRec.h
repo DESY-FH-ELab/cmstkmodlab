@@ -14,6 +14,7 @@
 #define ASSEMBLYOBJECTFINDERPATREC_H
 
 #include <AssemblyThresholder.h>
+#include <ApplicationConfig.h>
 
 #include <QObject>
 #include <QString>
@@ -71,6 +72,8 @@ class AssemblyObjectFinderPatRec : public QObject
   double mm_per_pixel_col_;
 
   AssemblyThresholder* const thresholder_;
+
+  const ApplicationConfig* config_;
 
   static int exe_counter_;
 

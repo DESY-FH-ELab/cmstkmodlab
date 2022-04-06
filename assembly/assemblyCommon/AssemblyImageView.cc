@@ -75,8 +75,7 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   }
   mm_per_pixel_row_ = config->getValue<double>("main", "mm_per_pixel_row");
   mm_per_pixel_col_ = config->getValue<double>("main", "mm_per_pixel_col");
-  const AssemblyParameters* const params = AssemblyParameters::instance(false);
-  angle_FromCameraXYtoRefFrameXY_deg_ = params->get("AngleOfCameraFrameInRefFrame_dA");
+  angle_FromCameraXYtoRefFrameXY_deg_ = config->getValue<double>("parameters", "AngleOfCameraFrameInRefFrame_dA");
 //--------------------------------------------
 
   img_scroll_ = new QScrollArea(this);
