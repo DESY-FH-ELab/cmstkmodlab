@@ -27,6 +27,8 @@ AssemblyAssemblyActionWidget::AssemblyAssemblyActionWidget(QWidget* parent)
  , qobject_(nullptr)
  , start_slot_(nullptr)
  , stop_signal_(nullptr)
+
+ , inhibit_dialogue_(false)
 {
   // layout
   layout_ = new QHBoxLayout;
@@ -63,23 +65,28 @@ void AssemblyAssemblyActionWidget::disable(const int state)
 {
   if(state == 2)
   {
-    QMessageBox* msgBox = new QMessageBox;
-    msgBox->setStyleSheet("QLabel{min-width: 300px;}");
-    msgBox->setInformativeText("WARNING: this will not perform any action but just mark the step as \"done\".\nWould you like to proceed?");
-    msgBox->setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-    msgBox->setDefaultButton(QMessageBox::Yes);
-    int ret = msgBox->exec();
-    switch(ret)
+    if(!inhibit_dialogue_)
     {
-      case QMessageBox::No:
-        checkbox_->setCheckState(Qt::Unchecked);
-        return;
-      case QMessageBox::Yes:
-        label_->setEnabled(false);
-        button_->setEnabled(false);
-        break;
-      default: return;
+      QMessageBox* msgBox = new QMessageBox;
+      msgBox->setStyleSheet("QLabel{min-width: 300px;}");
+      msgBox->setInformativeText("WARNING: this will not perform any action but just mark the step as \"done\".\nWould you like to proceed?");
+      msgBox->setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+      msgBox->setDefaultButton(QMessageBox::Yes);
+      int ret = msgBox->exec();
+      switch(ret)
+      {
+        case QMessageBox::No:
+          checkbox_->setCheckState(Qt::Unchecked);
+          return;
+        case QMessageBox::Yes:
+          break;
+        default: return;
+      }
+    } else {
+      inhibit_dialogue_ = false;
     }
+    label_->setEnabled(false);
+    button_->setEnabled(false);
   }
   else if(state == 0)
   {
@@ -141,7 +148,8 @@ void AssemblyAssemblyActionWidget::disable_action()
 
     disconnect(qobject_, stop_signal_, this, SLOT(disable_action()));
 
-    checkbox_->setChecked(true);
+    inhibit_dialogue_ = true;
+    checkbox_->setCheckState(Qt::Checked);
   }
   else
   {
