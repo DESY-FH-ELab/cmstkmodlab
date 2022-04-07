@@ -214,7 +214,7 @@ void AssemblySmartMotionManager::smartMove_window(const LStepExpressMotion& moti
   QPushButton* moveButton = msgBox.addButton(tr("Apply Movement") , QMessageBox::ActionRole);
   QPushButton* stopButton = msgBox.addButton(tr("Motion Finished"), QMessageBox::ActionRole);
 
-  msgBox.setDefaultButton(stopButton);
+  msgBox.setDefaultButton(moveButton);
 
   msgBox.exec();
 
