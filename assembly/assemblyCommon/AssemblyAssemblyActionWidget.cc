@@ -13,6 +13,8 @@
 #include <nqlogger.h>
 #include <AssemblyAssemblyActionWidget.h>
 
+#include <QMessageBox>
+
 AssemblyAssemblyActionWidget::AssemblyAssemblyActionWidget(QWidget* parent)
  : QWidget(parent)
 
@@ -61,8 +63,23 @@ void AssemblyAssemblyActionWidget::disable(const int state)
 {
   if(state == 2)
   {
-    label_->setEnabled(false);
-    button_->setEnabled(false);
+    QMessageBox* msgBox = new QMessageBox;
+    msgBox->setStyleSheet("QLabel{min-width: 300px;}");
+    msgBox->setInformativeText("WARNING: this will not perform any action but just mark the step as \"done\".\nWould you like to proceed?");
+    msgBox->setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+    msgBox->setDefaultButton(QMessageBox::Yes);
+    int ret = msgBox->exec();
+    switch(ret)
+    {
+      case QMessageBox::No:
+        checkbox_->setCheckState(Qt::Unchecked);
+        return;
+      case QMessageBox::Yes:
+        label_->setEnabled(false);
+        button_->setEnabled(false);
+        break;
+      default: return;
+    }
   }
   else if(state == 0)
   {
