@@ -435,17 +435,6 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
   }
   // ----------
 
-  // step: Dispense Glue on Spacers and Place them on Assembly Platform
-  {
-    ++assembly_step_N;
-
-    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->text()->setText("Dispense Glue on Spacers and Place them on Assembly Platform");
-    PSSToSpacers_lay->addWidget(tmp_wid);
-  }
-  // ----------
-
   // step: Go To XYA Position To Glue PS-s to Spacers
   {
     ++assembly_step_N;
@@ -456,6 +445,17 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
     PSSToSpacers_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(GoToXYAPositionToGluePSSToSpacers_start()), SIGNAL(GoToXYAPositionToGluePSSToSpacers_finished()));
+  }
+  // ----------
+  
+  // step: Dispense Glue on Spacers and Place them on Assembly Platform
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->text()->setText("Dispense Glue on Spacers and Place them on Assembly Platform");
+    PSSToSpacers_lay->addWidget(tmp_wid);
   }
   // ----------
 
