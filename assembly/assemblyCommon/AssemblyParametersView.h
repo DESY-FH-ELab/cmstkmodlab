@@ -72,6 +72,8 @@ class AssemblyParametersView : public QWidget
 
   void Dump_UserValues_toDBlogfile(const QString&);
 
+  void overwriteParameter(const QString&);
+
   void moveToAbsRefPos1() {emit click_moveToAbsRefPos(1);};
   void moveToAbsRefPos2() {emit click_moveToAbsRefPos(2);};
   void moveToAbsRefPos3() {emit click_moveToAbsRefPos(3);};

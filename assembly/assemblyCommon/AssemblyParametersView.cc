@@ -514,7 +514,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
 
   layout->addLayout(paramIO_lay);
 
-  //Connections
+  // Connections to motion actions
   connect(button_moveAbsRefPos1_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos1()));
   connect(button_moveAbsRefPos2_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos2()));
   connect(button_moveAbsRefPos3_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos3()));
@@ -536,6 +536,12 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   connect(button_moveRelRefDist12_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist12()));
   connect(button_moveRelRefDist13_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist13()));
   connect(this , SIGNAL(click_moveByRelRefDist(int)), this, SLOT(askConfirmMoveByRelRefDist(int)));
+
+  // Connections to text changes
+  for(const auto& key : this->entries_map())
+  {
+    connect(this->get(key.first), SIGNAL(textChanged(const QString&)), this, SLOT(overwriteParameter(const QString&)));
+  }
 }
 
 AssemblyParametersView::~AssemblyParametersView()
@@ -634,6 +640,31 @@ QLineEdit* AssemblyParametersView::get(const std::string& key) const
   }
 
   return ptr;
+}
+
+void AssemblyParametersView::overwriteParameter(const QString& value)
+{
+  QLineEdit* ptr_qedit = qobject_cast<QLineEdit*>(sender()); //Get pointer address of QLineEdit that triggered the SIGNAL(textChanged)
+
+  // Identify the sender an its key
+  for(const auto& key : this->entries_map())
+  {
+    if(ptr_qedit == this->get(key.first))
+    {
+      bool conversion_ok;
+      double val = value.toDouble(&conversion_ok);
+      if(conversion_ok)
+      {
+        NQLog("AssemblyParametersView", NQLog::Spam) << "overwriteParameter"
+           << ": changing parameter " << key.first << " to " << val;
+        config_->setValue("parameters", key.first, value);
+      } else
+      {
+        NQLog("AssemblyParametersView", NQLog::Fatal) << "overwriteParameter"
+           << ": changed parameter for " << key.first << " cannot be casted to double: " << value;
+      }
+    }
+  }
 }
 
 std::map<std::string, std::string> AssemblyParametersView::entries_map() const
