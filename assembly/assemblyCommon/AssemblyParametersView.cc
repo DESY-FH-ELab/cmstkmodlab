@@ -666,11 +666,13 @@ void AssemblyParametersView::overwriteParameter(const QString& value)
       {
         NQLog("AssemblyParametersView", NQLog::Spam) << "overwriteParameter"
            << ": changing parameter " << key.first << " to " << val;
+        ptr_qedit->setStyleSheet("");
         config_->setValue("parameters", key.first, value);
       } else
       {
         NQLog("AssemblyParametersView", NQLog::Fatal) << "overwriteParameter"
            << ": changed parameter for " << key.first << " cannot be casted to double: " << value;
+        ptr_qedit->setStyleSheet("border: 3px solid red");
       }
     }
   }
