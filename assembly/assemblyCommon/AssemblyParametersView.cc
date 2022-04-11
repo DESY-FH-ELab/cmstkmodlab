@@ -576,7 +576,10 @@ AssemblyParametersView::~AssemblyParametersView()
 
 void AssemblyParametersView::read_parameters()
 {
-  const QString f_path = QFileDialog::getOpenFileName(this, tr("Read Parameters"), QString::fromStdString(Config::CMSTkModLabBasePath+"/assembly/assembly"), tr("*.cfg"));
+  auto input_file = config_->getValue<std::string>("main", "AssemblyParameters_file_path");
+  auto input_path = QFileInfo(QString::fromStdString(input_file)).absoluteDir().absolutePath();
+
+  const QString f_path = QFileDialog::getOpenFileName(this, tr("Read Parameters"), input_path, tr("*.cfg"));
 
   if(f_path.isNull())
   {
@@ -587,9 +590,10 @@ void AssemblyParametersView::read_parameters()
   }
 
   NQLog("AssemblyParametersView", NQLog::Spam) << "read_parameters"
-     << ": emitting signal \"read_from_file_request(" << f_path << ")\"";
+     << ": reading parameters from file: " << f_path;
 
-  emit read_from_file_request(f_path);
+  config_->append(f_path.toStdString(), "parameters");
+  this->copy_values();
 }
 
 void AssemblyParametersView::write_parameters()
