@@ -654,10 +654,12 @@ void AssemblyParametersView::overwriteParameter(const QString& value)
   QLineEdit* ptr_qedit = qobject_cast<QLineEdit*>(sender()); //Get pointer address of QLineEdit that triggered the SIGNAL(textChanged)
 
   // Identify the sender an its key
+  bool keyFound = false;
   for(const auto& key : this->entries_map())
   {
     if(ptr_qedit == this->get(key.first))
     {
+      keyFound = true;
       bool conversion_ok;
       double val = value.toDouble(&conversion_ok);
       if(conversion_ok)
@@ -671,6 +673,12 @@ void AssemblyParametersView::overwriteParameter(const QString& value)
            << ": changed parameter for " << key.first << " cannot be casted to double: " << value;
       }
     }
+  }
+
+  if(!keyFound)
+  {
+    NQLog("AssemblyParametersView", NQLog::Fatal) << "overwriteParameter"
+       << ": no parameter found for this LineEdit";
   }
 }
 
