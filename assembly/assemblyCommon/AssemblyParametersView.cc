@@ -601,7 +601,7 @@ void AssemblyParametersView::write_parameters()
   auto input_file = config_->getValue<std::string>("main", "AssemblyParameters_file_path");
   auto input_path = QFileInfo(QString::fromStdString(input_file)).absoluteDir().absolutePath();
 
-  const QString f_path = QFileDialog::getSaveFileName(this, tr("Write Parameters"), input_path, tr("*.cfg"));
+  QString f_path = QFileDialog::getSaveFileName(this, tr("Write Parameters"), input_path, tr("*.cfg"));
 
   if(f_path.isNull())
   {
@@ -609,6 +609,18 @@ void AssemblyParametersView::write_parameters()
        << ": empty path to output file for assembly parameters, no further action taken";
 
     return;
+  }
+
+  if(QFileInfo(f_path).suffix().isEmpty() && !f_path.endsWith('.'))
+  {
+    f_path.append(QString(".cfg"));
+    NQLog("AssemblyParametersView", NQLog::Spam) << "write_parameters"
+       << ": adding suffix to file path, which is now: " << f_path;
+  } else if(f_path.endsWith('.'))
+  {
+    f_path.append(QString("cfg"));
+    NQLog("AssemblyParametersView", NQLog::Spam) << "write_parameters"
+       << ": adding suffix to file path, which is now: " << f_path;
   }
 
   NQLog("AssemblyParametersView", NQLog::Spam) << "write_parameters"
