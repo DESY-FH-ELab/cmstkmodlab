@@ -110,6 +110,19 @@ void ApplicationConfig::saveAs(const std::string& filename, const std::string& a
 
   ApplicationConfigWriter writer(filename, alias);
   writer.write(tempKeyValueMap);
+
+  for (const auto & kv : keyvalueMap_) {
+    if (kv.first.alias!=alias)
+    {
+      fk.filename = kv.first.filename;
+      fk.alias = kv.first.alias;
+      fk.key = kv.first.key;
+
+      tempKeyValueMap[fk] = kv.second;
+    }
+  }
+
+  keyvalueMap_ = tempKeyValueMap;
 }
 
 void ApplicationConfig::issueKeyError(const ShortKey& sk) const
