@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2019 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
