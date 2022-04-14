@@ -60,17 +60,18 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   palette.setColor(QPalette::Background, QColor(220, 220, 220));
 
   imageView_1_ = new AssemblyUEyeView(this);
-  imageView_1_->setMinimumSize(720, 490);
+  imageView_1_->setMinimumSize(500, 300);
   imageView_1_->setPalette(palette);
   imageView_1_->setBackgroundRole(QPalette::Background);
   imageView_1_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   imageView_1_->setScaledContents(true);
   imageView_1_->setAlignment(Qt::AlignCenter);
+  imageView_1_->setZoomFactor(0.2);
 
   QApplication::processEvents();
 
   scrollArea_1_ = new QScrollArea(this);
-  scrollArea_1_->setMinimumSize(720, 490);
+  scrollArea_1_->setMinimumSize(500, 300);
   scrollArea_1_->setPalette(palette);
   scrollArea_1_->setBackgroundRole(QPalette::Background);
   scrollArea_1_->setAlignment(Qt::AlignCenter);
@@ -80,16 +81,16 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   g0->addWidget(scrollArea_1_, 0, 0);
 
   imageView_2_ = new AssemblyUEyeView(this);
-  imageView_2_->setMinimumSize(300, 490);
+  imageView_2_->setMinimumSize(300, 300);
   imageView_2_->setPalette(palette);
   imageView_2_->setBackgroundRole(QPalette::Background);
   imageView_2_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   imageView_2_->setScaledContents(true);
   imageView_2_->setAlignment(Qt::AlignCenter);
-  imageView_2_->setZoomFactor(0.50);
+  imageView_2_->setZoomFactor(0.60);
 
   scrollArea_2_ = new QScrollArea(this);
-  scrollArea_2_->setMinimumSize(300, 490);
+  scrollArea_2_->setMinimumSize(300, 300);
   scrollArea_2_->setPalette(palette);
   scrollArea_2_->setBackgroundRole(QPalette::Background);
   scrollArea_2_->setAlignment(Qt::AlignCenter);
@@ -99,15 +100,16 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   g0->addWidget(scrollArea_2_, 0, 1);
 
   imageView_3_ = new AssemblyUEyeView(this);
-  imageView_3_->setMinimumSize(720, 490);
+  imageView_3_->setMinimumSize(500, 300);
   imageView_3_->setPalette(palette);
   imageView_3_->setBackgroundRole(QPalette::Background);
   imageView_3_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   imageView_3_->setScaledContents(true);
   imageView_3_->setAlignment(Qt::AlignCenter);
+  imageView_3_->setZoomFactor(0.2);
 
   scrollArea_3_ = new QScrollArea(this);
-  scrollArea_3_->setMinimumSize(720, 490);
+  scrollArea_3_->setMinimumSize(500, 300);
   scrollArea_3_->setPalette(palette);
   scrollArea_3_->setBackgroundRole(QPalette::Background);
   scrollArea_3_->setAlignment(Qt::AlignCenter);
@@ -117,7 +119,7 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   g0->addWidget(scrollArea_3_, 1, 0);
 
   imageView_4_ = new AssemblyUEyeView(this);
-  imageView_4_->setMinimumSize(300, 490);
+  imageView_4_->setMinimumSize(300, 300);
   imageView_4_->setPalette(palette);
   imageView_4_->setBackgroundRole(QPalette::Background);
   imageView_4_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -126,7 +128,7 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   imageView_4_->setZoomFactor(0.35);
 
   scrollArea_4_ = new QScrollArea(this);
-  scrollArea_4_->setMinimumSize(300, 490);
+  scrollArea_4_->setMinimumSize(300, 300);
   scrollArea_4_->setPalette(palette);
   scrollArea_4_->setBackgroundRole(QPalette::Background);
   scrollArea_4_->setAlignment(Qt::AlignCenter);
@@ -232,6 +234,12 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   patrec_box->setLayout(patrec_lay);
 
   g0->addWidget(patrec_box, 0, 2, 2, 2);
+
+  g0->setColumnStretch(0, 60);
+  g0->setColumnStretch(1, 40);
+  g0->setColumnStretch(2, 50);
+  g0->setRowStretch(0, 50);
+  g0->setRowStretch(1, 50);
   // ---------------------
 }
 
