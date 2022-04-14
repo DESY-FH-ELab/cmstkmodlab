@@ -41,6 +41,33 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
 
+  //// Display parameter filename -------------------
+  QHBoxLayout* filename_lay = new QHBoxLayout;
+  layout->addLayout(filename_lay);
+
+  std::string parameter_filename = config_->getValue<std::string>("main", "AssemblyParameters_file_path");
+  QString parameter_filepath = QFileInfo(QString::fromStdString(parameter_filename)).absoluteDir().absolutePath();
+
+  QWidget* fn_wid = new QWidget;
+  QGridLayout* fn_lay = new QGridLayout;
+  fn_wid->setLayout(fn_lay);
+
+  std::string fn_par_name = "AssemblyParameters_file_path";
+  map_lineEdit_[fn_par_name] = new QLineEdit(tr(""));
+  map_lineEdit_[fn_par_name]->setEnabled(false);
+  map_lineEdit_[fn_par_name]->setMinimumWidth(700);
+  map_lineEdit_[fn_par_name]->setStyleSheet("color: black;");
+
+  fn_lay->addWidget(new QLabel("Assembly parameters filename"), 0, 0, Qt::AlignLeft);
+  fn_lay->addWidget(this->get(fn_par_name), 0, 1, Qt::AlignRight);
+
+  fn_lay->setColumnStretch(0,50);
+  fn_lay->setColumnStretch(1,50);
+
+  filename_lay->addWidget(fn_wid);
+
+  //// Start toolbox
+
   QToolBox* toolbox = new QToolBox;
   layout->addWidget(toolbox);
 
@@ -650,6 +677,11 @@ void AssemblyParametersView::overwriteParameter(const QString& value)
   bool keyFound = false;
   for(const auto& key : this->entries_map())
   {
+    if(key.first == "AssemblyParameters_file_path")
+    {
+      continue;
+    }
+
     if(ptr_qedit == this->get(key.first))
     {
       keyFound = true;
@@ -726,10 +758,25 @@ void AssemblyParametersView::copy_values()
   this->setText(tmp, config_->getValue<double>("main", tmp));
   this->setText(tmp+"_neg", -config_->getValue<double>("main", tmp));
 
+  tmp = "AssemblyParameters_file_path";
+  this->setText(tmp, config_->getValue<std::string>("main", tmp));
+
   return;
 }
 
 void AssemblyParametersView::setText(const std::string& key, const double val)
+{
+  QLineEdit* const ptr = this->get(key);
+
+  std::stringstream strs;
+  strs << val;
+
+  ptr->setText(QString::fromStdString(strs.str()));
+
+  return;
+}
+
+void AssemblyParametersView::setText(const std::string& key, const std::string val)
 {
   QLineEdit* const ptr = this->get(key);
 
