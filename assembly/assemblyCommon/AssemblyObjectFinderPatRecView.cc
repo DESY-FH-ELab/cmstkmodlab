@@ -180,15 +180,15 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   ApplicationConfig* config = ApplicationConfig::instance();
   if(config != nullptr)
   {
-    const std::string fpath = config->getDefaultValue<std::string>("main", "AssemblyObjectFinderPatRecView_template_fpath", "");
+    const std::string fpath = config->getDefaultValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSP1_template_fpath", "");
     if(fpath != ""){ patrec_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+fpath)); }
 
-    assembly::QLineEdit_setText(patrec_wid_->threshold_lineEdit()        , config->getDefaultValue<int>("main", "AssemblyObjectFinderPatRecView_threshold"        , 100));
-    assembly::QLineEdit_setText(patrec_wid_->adaptiveThreshold_lineEdit(), config->getDefaultValue<int>("main", "AssemblyObjectFinderPatRecView_adaptiveThreshold", 587));
+    assembly::QLineEdit_setText(patrec_wid_->threshold_lineEdit()        , config->getDefaultValue<int>("main", "AssemblyObjectAlignerView_PatRec_threshold"        , 100));
+    assembly::QLineEdit_setText(patrec_wid_->adaptiveThreshold_lineEdit(), config->getDefaultValue<int>("main", "AssemblyObjectAlignerView_PatRec_adaptiveThreshold", 587));
 
-    assembly::QLineEdit_setText(patrec_wid_->angles_prescan_lineEdit()   , config->getDefaultValue<double>("main", "AssemblyObjectFinderPatRecView_angles_prescan" , 0));
-    assembly::QLineEdit_setText(patrec_wid_->angles_finemax_lineEdit()   , config->getDefaultValue<double>("main", "AssemblyObjectFinderPatRecView_angles_finemax" , 2));
-    assembly::QLineEdit_setText(patrec_wid_->angles_finestep_lineEdit()  , config->getDefaultValue<double>("main", "AssemblyObjectFinderPatRecView_angles_finestep", 0.2));
+    assembly::QLineEdit_setText(patrec_wid_->angles_prescan_lineEdit()   , config->getDefaultValue<double>("main", "AssemblyObjectAlignerView_PatRec_angles_prescan" , 0));
+    assembly::QLineEdit_setText(patrec_wid_->angles_finemax_lineEdit()   , config->getDefaultValue<double>("main", "AssemblyObjectAlignerView_PatRec_angles_finemax" , 2));
+    assembly::QLineEdit_setText(patrec_wid_->angles_finestep_lineEdit()  , config->getDefaultValue<double>("main", "AssemblyObjectAlignerView_PatRec_angles_finestep", 0.2));
   }
 
   patrec_lay->addWidget(patrec_wid_);
