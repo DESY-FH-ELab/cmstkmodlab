@@ -42,7 +42,7 @@ class AssemblyObjectFinderPatRecWidget : public QWidget
 
  public:
 
-  explicit AssemblyObjectFinderPatRecWidget(QWidget* parent=nullptr);
+  explicit AssemblyObjectFinderPatRecWidget(const bool=false, QWidget* parent=nullptr);
   virtual ~AssemblyObjectFinderPatRecWidget() {}
 
   QVBoxLayout* layout() const { return layout_; }
@@ -69,6 +69,11 @@ class AssemblyObjectFinderPatRecWidget : public QWidget
   QPushButton* templa_load_button_;
   QLineEdit*   templa_file_linee_;
 
+  QPushButton* suggest_psp1_button_;
+  QPushButton* suggest_psp2_button_;
+  QPushButton* suggest_pss1_button_;
+  QPushButton* suggest_pss2_button_;
+
   QRadioButton* thresh_thresh_radbu_;
   QLineEdit*    thresh_thresh_linee_;
 
@@ -88,6 +93,7 @@ class AssemblyObjectFinderPatRecWidget : public QWidget
 
   void load_image_template();
   void load_image_template_from_path(const QString&);
+  void load_image_template_from_config();
 
   void transmit_configuration();
 

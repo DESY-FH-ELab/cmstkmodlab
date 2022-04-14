@@ -23,7 +23,7 @@
 #include <QPixmap>
 #include <QFileDialog>
 
-AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(QWidget* parent) :
+AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(const bool suggest_templates, QWidget* parent) :
   QWidget(parent),
 
   layout_(nullptr),
@@ -53,7 +53,7 @@ AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(QWidget* pare
   QGroupBox* templa_box = new QGroupBox(tr("Template Image"));
   templa_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
 
-  QHBoxLayout* templa_lay = new QHBoxLayout;
+  QGridLayout* templa_lay = new QGridLayout;
 
   templa_load_button_ = new QPushButton(tr("Load Image"));
 
@@ -64,8 +64,28 @@ AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(QWidget* pare
 
   connect(this, SIGNAL(updated_image_template_path(QString)), templa_file_linee_, SLOT(setText(QString)));
 
-  templa_lay->addWidget(templa_load_button_, 34);
-  templa_lay->addWidget(templa_file_linee_ , 66);
+  templa_lay->addWidget(templa_load_button_, 0, 0, 1, 2);
+  templa_lay->addWidget(templa_file_linee_ , 0, 2, 1, 3);
+
+  if(suggest_templates)
+  {
+    QLabel* suggest_label = new QLabel("Use template: ");
+    suggest_psp1_button_ = new QPushButton(tr("PSP 1"));
+    suggest_psp2_button_ = new QPushButton(tr("PSP 2"));
+    suggest_pss1_button_ = new QPushButton(tr("PSS 1"));
+    suggest_pss2_button_ = new QPushButton(tr("PSS 2"));
+
+    templa_lay->addWidget(suggest_label, 1, 0);
+    templa_lay->addWidget(suggest_psp1_button_, 1, 1);
+    templa_lay->addWidget(suggest_psp2_button_, 1, 2);
+    templa_lay->addWidget(suggest_pss1_button_, 1, 3);
+    templa_lay->addWidget(suggest_pss2_button_, 1, 4);
+
+    connect(suggest_psp1_button_, SIGNAL(clicked()), this, SLOT(load_image_template_from_config()));
+    connect(suggest_psp2_button_, SIGNAL(clicked()), this, SLOT(load_image_template_from_config()));
+    connect(suggest_pss1_button_, SIGNAL(clicked()), this, SLOT(load_image_template_from_config()));
+    connect(suggest_pss2_button_, SIGNAL(clicked()), this, SLOT(load_image_template_from_config()));
+  }
 
   templa_box->setLayout(templa_lay);
 
@@ -167,6 +187,36 @@ void AssemblyObjectFinderPatRecWidget::load_image_template_from_path(const QStri
 
   emit updated_image_template(img);
 }
+
+void AssemblyObjectFinderPatRecWidget::load_image_template_from_config()
+{
+  QPushButton* ptr_qedit = qobject_cast<QPushButton*>(sender());
+  std::string filepath = Config::CMSTkModLabBasePath + "/";
+
+  auto config = ApplicationConfig::instance();
+
+  if(ptr_qedit == suggest_psp1_button_)
+  {
+    filepath += config->getValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSP1_template_fpath");
+  } else if(ptr_qedit == suggest_psp2_button_)
+  {
+    filepath += config->getValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSP2_template_fpath");
+  } else if(ptr_qedit == suggest_pss1_button_)
+  {
+    filepath += config->getValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSS1_template_fpath");
+  } else if(ptr_qedit == suggest_pss2_button_)
+  {
+    filepath += config->getValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSS2_template_fpath");
+  } else
+  {
+    NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Fatal) << "load_image_template_from_config"
+      << ": Could not update image template - unknown sender of signal";
+    return;
+  }
+
+  this->load_image_template_from_path(QString::fromStdString(filepath));
+}
+
 
 void AssemblyObjectFinderPatRecWidget::transmit_configuration()
 {

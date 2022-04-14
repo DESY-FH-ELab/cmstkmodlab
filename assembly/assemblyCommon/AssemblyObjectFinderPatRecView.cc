@@ -170,7 +170,7 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   patrec_lay->addSpacing(20);
   patrec_lay->addWidget(patrec_cfg_title);
 
-  patrec_wid_ = new AssemblyObjectFinderPatRecWidget;
+  patrec_wid_ = new AssemblyObjectFinderPatRecWidget(true);
   patrec_wid_->setToolTip("Pattern Recognition Configuration");
 
   connect(patrec_exe_button_, SIGNAL(clicked()), this->PatRec_Widget(), SLOT(transmit_configuration()));
