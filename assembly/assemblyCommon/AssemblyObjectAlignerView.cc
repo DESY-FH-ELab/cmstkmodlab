@@ -661,6 +661,23 @@ void AssemblyObjectAlignerView::update_autofocusing_checkbox(const int state)
 
 void AssemblyObjectAlignerView::transmit_configuration()
 {
+  QMessageBox* msgBox = new QMessageBox;
+  msgBox->setStyleSheet("QLabel{min-width: 300px;}");
+  msgBox->setInformativeText("Are you sure you selected the correct template images and defined the relevant B/W thresholds?");
+  msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+  msgBox->setDefaultButton(QMessageBox::Yes);
+  int ret = msgBox->exec();
+  switch(ret)
+  {
+    case QMessageBox::Yes:
+      break;
+    case QMessageBox::No:
+      NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "transmit_configuration"
+      << ": abort start of alignment procedure";
+      return;
+    default: return;
+  }
+
   bool valid_conf(false);
 
   const auto& conf = this->get_configuration(valid_conf);
@@ -890,10 +907,6 @@ void AssemblyObjectAlignerView::set_alignmentMode_PSP()
     alignm_PSP_radbu_->setEnabled(true);
     alignm_PSP_radbu_->setChecked(true);
 
-    QMessageBox::information(this, tr("Setting alignment mode to [PS-P]"),
-            tr("<p>Make sure to select the correct PS-P template images, and to define relevant B/W thresholds.</p>"
-    ));
-
     return;
 }
 
@@ -904,10 +917,6 @@ void AssemblyObjectAlignerView::set_alignmentMode_PSS()
     alignm_PSP_radbu_->setChecked(false);
     alignm_PSS_radbu_->setEnabled(true);
     alignm_PSS_radbu_->setChecked(true);
-
-    QMessageBox::information(this, tr("Setting alignment mode to [PS-S]"),
-            tr("<p>Make sure to select the correct PS-S template images, and to define relevant B/W thresholds.</p>"
-    ));
 
     return;
 }
