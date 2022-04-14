@@ -566,6 +566,8 @@ void AssemblyParametersView::read_parameters()
   NQLog("AssemblyParametersView", NQLog::Spam) << "read_parameters"
      << ": reading parameters from file: " << f_path;
 
+  config_->setValue<std::string>("main", "AssemblyParameters_file_path", f_path.toStdString());
+
   config_->append(f_path.toStdString(), "parameters");
   this->copy_values();
 }
@@ -599,6 +601,8 @@ void AssemblyParametersView::write_parameters()
 
   NQLog("AssemblyParametersView", NQLog::Spam) << "write_parameters"
      << ": calling configuration to save parameters as " << f_path;
+
+  config_->setValue<std::string>("main", "AssemblyParameters_file_path", f_path.toStdString());
 
   config_->saveAs(f_path.toStdString(), "parameters");
 }
