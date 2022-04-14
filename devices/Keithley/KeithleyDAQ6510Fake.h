@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -33,6 +33,9 @@ class KeithleyDAQ6510Fake : public VKeithleyDAQ6510
 
   void SetTime(int /* year */, int /* month */, int /* day */,
                int /* hour */, int /* minute */, int /* second */) { }
+
+  void SetChannelMode(unsigned int card, unsigned int channel,
+  		ChannelMode_t mode);
 
   void ActivateChannel(unsigned int card, unsigned int channel,
                        bool active);

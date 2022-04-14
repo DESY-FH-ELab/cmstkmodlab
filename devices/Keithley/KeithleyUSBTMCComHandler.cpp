@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -10,9 +10,18 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+#ifndef USE_FAKEIO
+#include <linux/usb/tmc.h>
+#include <sys/ioctl.h>
+#endif
+
 #include <string.h>
 
 #include <iostream>
+
+#ifndef __DEBUG
+// #define __DEBUG 1
+#endif
 
 #include "KeithleyUSBTMCComHandler.h"
 
@@ -23,6 +32,10 @@
 */
 KeithleyUSBTMCComHandler::KeithleyUSBTMCComHandler(ioport_t ioPort)
 {
+#ifdef __DEBUG
+  std::cout << "KeithleyUSBTMCComHandler::KeithleyUSBTMCComHandler(ioport_t ioPort)" << std::endl;
+#endif
+  
   // save ioport 
   fIoPort = ioPort;
 
@@ -33,26 +46,32 @@ KeithleyUSBTMCComHandler::KeithleyUSBTMCComHandler(ioport_t ioPort)
 
 KeithleyUSBTMCComHandler::~KeithleyUSBTMCComHandler( void )
 {
-  // restore ioport options as they were
-  RestoreIoPort();
-  
-  // close device file
-  CloseIoPort();
+#ifdef __DEBUG
+  std::cout << "KeithleyUSBTMCComHandler::~KeithleyUSBTMCComHandler( void )" << std::endl;
+#endif
 }
 
 //! Send the command string &lt;commandString&gt; to device.
 void KeithleyUSBTMCComHandler::SendCommand( const char *commandString )
 {
-  std::cout << "void KeithleyUSBTMCComHandler::SendCommand( const char *commandString )" << std::endl;
-  
   if (!fDeviceAvailable) return;
 
-  std::cout << "void KeithleyUSBTMCComHandler::SendCommand( const char *commandString ) " << commandString << std::endl;
-  
+#ifdef __DEBUG
+  std::cout << "void KeithleyUSBTMCComHandler::SendCommand( const char *commandString ) "
+	    << commandString << std::endl;
+#endif
+
   std::string theCommand = commandString;
   theCommand += "\n";
   
-  write( fIoPortFileDescriptor, theCommand.c_str(), theCommand.length());
+  write( fIoPortFileDescriptor, theCommand.c_str(), strlen(theCommand.c_str()));
+  
+  usleep(10);
+}
+
+void KeithleyUSBTMCComHandler::SendCommand( const std::string& commandString )
+{
+  SendCommand(commandString.c_str());
 }
 
 //! Read a string from device.
@@ -71,18 +90,15 @@ void KeithleyUSBTMCComHandler::ReceiveString( char *receiveString )
     receiveString[0] = 0;
     return;
   }
-
-  std::cout << "void KeithleyUSBTMCComHandler::ReceiveString( char *receiveString )" << std::endl;
-  
-  usleep(10000);
-
+ 
   int timeout = 0, readResult = 0;
 
+  /*
   while (timeout < 100000)  {
 
     readResult = read( fIoPortFileDescriptor, receiveString, 1024 );
 
-    std::cout << "receiveString: " << readResult << " " << receiveString << std::endl;
+    // std::cout << "receiveString: " << readResult << " " << receiveString << std::endl;
     
     if ( readResult > 0 ) {
       receiveString[readResult] = 0;
@@ -91,6 +107,15 @@ void KeithleyUSBTMCComHandler::ReceiveString( char *receiveString )
     
     timeout++;
   }
+  */
+  
+  readResult = read( fIoPortFileDescriptor, receiveString, 1024 );
+
+#ifdef __DEBUG
+  std::cout << "receiveString: " << readResult << " " << receiveString << std::endl;
+#endif
+
+  usleep(10);
 }
 
 //! Open I/O port.
@@ -99,6 +124,10 @@ void KeithleyUSBTMCComHandler::ReceiveString( char *receiveString )
 */
 void KeithleyUSBTMCComHandler::OpenIoPort( void )
 {
+#ifdef __DEBUG
+  std::cout << "void KeithleyUSBTMCComHandler::OpenIoPort( void )" << std::endl;
+#endif
+  
   // open io port ( read/write | no term control | no DCD line check )
   fIoPortFileDescriptor = open( fIoPort, O_RDWR);
 
@@ -112,7 +141,14 @@ void KeithleyUSBTMCComHandler::OpenIoPort( void )
     return;
   } else {
     // configure port with no delay
-    fcntl( fIoPortFileDescriptor, F_SETFL, FNDELAY );
+    // fcntl(fIoPortFileDescriptor, F_SETFL, FNDELAY);
+
+#ifndef USE_FAKEIO
+    int rv = ioctl(fIoPortFileDescriptor, USBTMC_IOCTL_CLEAR);
+    if(rv==-1) {
+      printf("Error: ioctl returned %d.\n",rv);
+    }
+#endif
   }
 
   fDeviceAvailable = true;
@@ -127,7 +163,7 @@ void KeithleyUSBTMCComHandler::InitializeIoPort( void )
   if (!fDeviceAvailable) return;
 
   // get and save current ioport settings for later restoring
-  tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );
+  // tcgetattr( fIoPortFileDescriptor, &fCurrentTermios );
 }
 
 //! Restore former I/O port settings.
@@ -139,7 +175,7 @@ void KeithleyUSBTMCComHandler::RestoreIoPort( void )
   if (!fDeviceAvailable) return;
 
   // restore old com port settings
-  tcsetattr( fIoPortFileDescriptor, TCSANOW, &fCurrentTermios );
+  // tcsetattr( fIoPortFileDescriptor, TCSANOW, &fCurrentTermios );
 }
 
 //! Close I/O port.
@@ -150,6 +186,19 @@ void KeithleyUSBTMCComHandler::CloseIoPort( void )
 {
   if (!fDeviceAvailable) return;
 
+#ifndef USE_FAKEIO
+  std::cout << "void KeithleyUSBTMCComHandler::CloseIoPort( void )" << std::endl;
+#endif
+
+  /*
+#ifndef USE_FAKEIO
+  int rv = ioctl(fIoPortFileDescriptor, USBTMC_IOCTL_CLEAR);
+  if(rv==-1) {
+    printf("Error: ioctl returned %d.\n",rv);
+  }
+#endif
+  */
+  
   close( fIoPortFileDescriptor );
 }
 

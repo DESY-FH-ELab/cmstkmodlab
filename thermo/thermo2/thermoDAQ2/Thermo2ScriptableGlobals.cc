@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2019 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -15,6 +15,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <chrono>
+#include <thread>
 
 #include <QMutexLocker>
 #include <QDateTime>
@@ -27,10 +29,18 @@
 
 Thermo2ScriptableGlobals::Thermo2ScriptableGlobals(Thermo2ScriptModel* scriptModel,
                                                    QObject *parent)
-  : QObject(parent),
-    scriptModel_(scriptModel)
+  : VScriptableDevice(parent),
+    scriptModel_(scriptModel),
+    abortRequested_(false)
 {
 
+}
+
+void Thermo2ScriptableGlobals::abort()
+{
+  NQLogDebug("Thermo2ScriptableGlobals") << "abort()";
+
+  abortRequested_ = true;
 }
 
 void Thermo2ScriptableGlobals::startMeasurement()
@@ -47,6 +57,8 @@ void Thermo2ScriptableGlobals::stopMeasurement()
 
 void Thermo2ScriptableGlobals::wait(int seconds)
 {
+  using namespace std::chrono_literals;
+
   static QString TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
 
   QString message;
@@ -60,7 +72,22 @@ void Thermo2ScriptableGlobals::wait(int seconds)
   this->message(message);
   NQLogMessage("Thermo2ScriptableGlobals") << message;
 
-  sleep(seconds);
+  for (int ts=0;ts<seconds;ts++) {
+    
+    if (abortRequested_) {
+      abortRequested_ = false;
+
+      message = QString("execution aborted");
+      this->message(message);
+      NQLogMessage("Thermo2ScriptableGlobals") << message;
+
+      return;
+    }
+    
+    std::this_thread::sleep_for(1s);
+
+    if (QDateTime::currentDateTime()>=dt) break;
+  }
 
   this->message("done");
   NQLogMessage("Thermo2ScriptableGlobals") << "done";

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2019 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -40,11 +40,6 @@ RohdeSchwarzNGE103BModel::RohdeSchwarzNGE103BModel(const char* port,
   measuredVoltage_ = { 0., 0., 0. };
   current_ = { 0., 0., 0. };
   measuredCurrent_ = { 0., 0., 0. };
-  
-  for (int i=0;i<3;++i) {
-    measuredVoltageHistory_[i] = ValueHistory<float>(updateInterval_, 2*60.*60.);
-    measuredCurrentHistory_[i] = ValueHistory<float>(updateInterval_, 2*60.*60.);
-  }
 
   timer_ = new QTimer(this);
   timer_->setInterval(updateInterval_ * 1000);
@@ -74,11 +69,12 @@ void RohdeSchwarzNGE103BModel::setOutputState(int channel, bool state)
   controller_->SetOutputState(state);
 
   outputState_[channel-1] = state;
-
-  updateInformation();
-
+  
   if (easyRampState_[channel-1]) {
     QTimer::singleShot(1000*easyRampDuration_[channel-1], this,
+                       SLOT(updateInformation()));
+  } else {
+    QTimer::singleShot(100, this,
                        SLOT(updateInformation()));
   }
 }
@@ -114,18 +110,12 @@ void RohdeSchwarzNGE103BModel::setVoltage(int channel, float voltage)
 
   voltage_[channel-1] = voltage;
 
-  updateInformation();
+  emit informationChanged();
 }
 
 float RohdeSchwarzNGE103BModel::getMeasuredVoltage(int channel) const
 {
   if (channel>=1 && channel<=3) return measuredVoltage_[channel-1];
-  return 0;
-}
-
-float RohdeSchwarzNGE103BModel::getMeasuredVoltageHistory(int channel, int secondsAgo) const
-{
-  if (channel>=1 && channel<=3) return measuredVoltageHistory_[channel-1].secondsAgo(secondsAgo);
   return 0;
 }
 
@@ -154,18 +144,12 @@ void RohdeSchwarzNGE103BModel::setCurrent(int channel, float current)
 
   current_[channel-1] = current;
 
-  updateInformation();
+  emit informationChanged();
 }
 
 float RohdeSchwarzNGE103BModel::getMeasuredCurrent(int channel) const
 {
   if (channel>=1 && channel<=3) return measuredCurrent_[channel-1];
-  return 0;
-}
-
-float RohdeSchwarzNGE103BModel::getMeasuredCurrentHistory(int channel, int secondsAgo) const
-{
-  if (channel>=1 && channel<=3) return measuredCurrentHistory_[channel-1].secondsAgo(secondsAgo);
   return 0;
 }
 
@@ -320,11 +304,6 @@ void RohdeSchwarzNGE103BModel::updateInformation()
       NQLogDebug("RohdeSchwarzNGE103BModel") << "information changed";
 
       emit informationChanged();
-    }
-
-    for (unsigned int c=0;c<3;++c) {
-      measuredVoltageHistory_[c].push(measuredVoltage_[c]);
-      measuredCurrentHistory_[c].push(measuredCurrent_[c]);
     }
   }
 }

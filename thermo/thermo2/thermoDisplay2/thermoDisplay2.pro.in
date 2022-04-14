@@ -1,9 +1,9 @@
-LIBS += -L@basepath@/devices/lib -lTkModLabKeithley
-LIBS += -L@basepath@/devices/lib -lTkModLabGreisinger
-LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
-LIBS += -L@basepath@/devices/lib -lTkModLabHameg
-LIBS += -L@basepath@/devices/lib -lTkModLabPfeiffer
-LIBS += -L@basepath@/devices/lib -lTkModLabHuber
+#LIBS += -L@basepath@/devices/lib -lTkModLabKeithley
+#LIBS += -L@basepath@/devices/lib -lTkModLabGreisinger
+#LIBS += -L@basepath@/devices/lib -lTkModLabJulabo
+#LIBS += -L@basepath@/devices/lib -lTkModLabHameg
+#LIBS += -L@basepath@/devices/lib -lTkModLabPfeiffer
+#LIBS += -L@basepath@/devices/lib -lTkModLabHuber
 LIBS += -L@basepath@/common -lCommon
 
 QMAKE = @qmake@
@@ -21,6 +21,14 @@ macx {
   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
 } else {
   QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+}
+
+macx {
+  QMAKE_CXXFLAGS += -I/opt/local/include
+  LIBS += -L/opt/local/lib -lgsl -lblas
+} else {
+  QMAKE_CXXFLAGS += `pkg-config --cflags gsl`
+  LIBS += ` pkg-config --libs gsl`
 }
 
 DEFINES += @configdefines@

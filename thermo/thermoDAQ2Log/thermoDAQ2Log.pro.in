@@ -1,0 +1,35 @@
+QMAKE = @qmake@
+
+CONFIG+=c++14
+QMAKE_CXXFLAGS += -std=c++14
+macx {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"unknown\\\"
+} else {
+  QMAKE_CXXFLAGS += -DAPPLICATIONVERSIONSTR=\\\"`git describe --dirty --always --tags`\\\"
+}
+
+QT       += core xml
+
+QT       -= gui
+
+TARGET = thermoDAQ2Log
+CONFIG   += console
+CONFIG   -= app_bundle
+
+TEMPLATE = app
+
+macx {
+  QMAKE_MACOSX_DEPLOYMENT_TARGET=11.3
+  CONFIG+=sdk_no_version_check
+}
+
+greaterThan(QT_MAJOR_VERSION, 4) {
+  cache()
+}
+
+HEADERS += ThermoDAQStreamReader.h \
+           ThermoDAQ2StreamReader.h
+
+SOURCES += main.cc \
+           ThermoDAQStreamReader.cc \
+           ThermoDAQ2StreamReader.cc

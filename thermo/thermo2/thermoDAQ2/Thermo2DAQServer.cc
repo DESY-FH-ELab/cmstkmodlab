@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2019 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -28,7 +28,7 @@ Thermo2DAQServer::Thermo2DAQServer(Thermo2DAQModel* model, QObject *parent)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 void Thermo2DAQServer::incomingConnection(int socketDescriptor)
 {
-  NQLogMessage("ThermoDAQServer") << "incomingConnection(int socketDescriptor)";
+  NQLogDebug("ThermoDAQServer") << "incomingConnection(int socketDescriptor)";
 
   Thermo2DAQServerThread *thread = new Thermo2DAQServerThread(socketDescriptor, model_, this);
   connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
@@ -37,7 +37,7 @@ void Thermo2DAQServer::incomingConnection(int socketDescriptor)
 #else
 void Thermo2DAQServer::incomingConnection(qintptr socketDescriptor)
 {
-  NQLogMessage("ThermoDAQServer") << "incomingConnection(qintptr socketDescriptor)";
+  NQLogDebug("ThermoDAQServer") << "incomingConnection(qintptr socketDescriptor)";
 
   Thermo2DAQServerThread *thread = new Thermo2DAQServerThread(socketDescriptor, model_, this);
   connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));

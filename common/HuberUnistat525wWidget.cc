@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -18,7 +18,7 @@ HuberUnistat525wTemperatureControlModeBox::HuberUnistat525wTemperatureControlMod
    model_(model)
 {
   addItem("internal", 0);
-  addItem("external", 1);
+  addItem("process", 1);
 
   int idx = findData(model_->getTemperatureControlMode());
   if (idx!=-1) setCurrentIndex(idx);
@@ -40,6 +40,8 @@ void HuberUnistat525wTemperatureControlModeBox::currentItemChanged(int idx)
 
 void HuberUnistat525wTemperatureControlModeBox::updateInformation()
 {
+  if (hasFocus()) return;
+  
   int idx = findData(model_->getTemperatureControlMode());
   if (idx!=-1) setCurrentIndex(idx);
 }
@@ -71,9 +73,42 @@ HuberUnistat525wWidget::HuberUnistat525wWidget(HuberUnistat525wModel* model,
   operationLayout->addRow(QString::fromUtf8("Temperature Setpoint [°C]"),
                           temperatureSetPointSpinner_);
 
+  autoPIDCheckBox_ = new QCheckBox("enabled");
+  operationLayout->addRow("auto PID",
+                          autoPIDCheckBox_);
+
   temperatureControlModeBox_ = new HuberUnistat525wTemperatureControlModeBox(model_);
   operationLayout->addRow(QString::fromUtf8("Temperature Control Mode"),
                           temperatureControlModeBox_);
+
+  kpSpinBox_ = new QSpinBox();
+  kpSpinBox_->setSingleStep(1);
+  kpSpinBox_->setKeyboardTracking(false);
+  kpSpinBox_->setMinimum(20);
+  kpSpinBox_->setMaximum(1000);
+  kpSpinBox_->setAlignment(Qt::AlignRight);
+  operationLayout->addRow(QString::fromUtf8("Kp"),
+                          kpSpinBox_);
+
+  tnSpinBox_ = new QDoubleSpinBox();
+  tnSpinBox_->setSingleStep(1);
+  tnSpinBox_->setKeyboardTracking(false);
+  tnSpinBox_->setMinimum(20);
+  tnSpinBox_->setMaximum(1000);
+  tnSpinBox_->setDecimals(1);
+  tnSpinBox_->setAlignment(Qt::AlignRight);
+  operationLayout->addRow(QString::fromUtf8("Tn"),
+                          tnSpinBox_);
+
+  tvSpinBox_ = new QDoubleSpinBox();
+  tvSpinBox_->setSingleStep(1);
+  tvSpinBox_->setKeyboardTracking(false);
+  tvSpinBox_->setMinimum(0);
+  tvSpinBox_->setMaximum(1000);
+  tvSpinBox_->setDecimals(1);
+  tvSpinBox_->setAlignment(Qt::AlignRight);
+  operationLayout->addRow(QString::fromUtf8("Tv"),
+                          tvSpinBox_);
 
   temperatureControlCheckBox_ = new QCheckBox("enabled");
   operationLayout->addRow("Temperature Control",
@@ -83,11 +118,17 @@ HuberUnistat525wWidget::HuberUnistat525wWidget(HuberUnistat525wModel* model,
   operationLayout->addRow("Circulator",
                           circulatorCheckBox_);
 
-  bathTempLCD_ = new QLCDNumber(LCD_SIZE);
-  bathTempLCD_->setSegmentStyle(QLCDNumber::Flat);
-  bathTempLCD_->setSmallDecimalPoint(true);
-  operationLayout->addRow(QString::fromUtf8("Bath Temperature [°C]"),
-                          bathTempLCD_);
+  internalTempLCD_ = new QLCDNumber(LCD_SIZE);
+  internalTempLCD_->setSegmentStyle(QLCDNumber::Flat);
+  internalTempLCD_->setSmallDecimalPoint(true);
+  operationLayout->addRow(QString::fromUtf8("Internal Temperature [°C]"),
+                          internalTempLCD_);
+
+  processTempLCD_ = new QLCDNumber(LCD_SIZE);
+  processTempLCD_->setSegmentStyle(QLCDNumber::Flat);
+  processTempLCD_->setSmallDecimalPoint(true);
+  operationLayout->addRow(QString::fromUtf8("Process Temperature [°C]"),
+                          processTempLCD_);
 
   returnTempLCD_ = new QLCDNumber(LCD_SIZE);
   returnTempLCD_->setSegmentStyle(QLCDNumber::Flat);
@@ -135,8 +176,20 @@ HuberUnistat525wWidget::HuberUnistat525wWidget(HuberUnistat525wModel* model,
   connect(temperatureSetPointSpinner_, SIGNAL(valueChanged(double)),
           model_, SLOT(setTemperatureSetPoint(double)));
 
+  connect(autoPIDCheckBox_, SIGNAL(toggled(bool)),
+          model_, SLOT(setAutoPID(bool)));
+
   connect(temperatureControlCheckBox_, SIGNAL(toggled(bool)),
           model_, SLOT(setTemperatureControlEnabled(bool)));
+
+  connect(kpSpinBox_, SIGNAL(valueChanged(int)),
+          model_, SLOT(setKp(int)));
+
+  connect(tnSpinBox_, SIGNAL(valueChanged(double)),
+          model_, SLOT(setTn(double)));
+
+  connect(tvSpinBox_, SIGNAL(valueChanged(double)),
+          model_, SLOT(setTv(double)));
 
   connect(circulatorCheckBox_, SIGNAL(toggled(bool)),
           model_, SLOT(setCirculatorEnabled(bool)));
@@ -153,14 +206,26 @@ void HuberUnistat525wWidget::updateDeviceState(State newState)
   bool ready = (newState == READY || newState == INITIALIZING);
   huberUnistat525wCheckBox_->setChecked(ready);
   operationPanel_->setEnabled(ready);
+
+  bool autoPID = model_->getAutoPID();
+  if (autoPID) {
+    temperatureControlModeBox_->setEnabled(false);
+    kpSpinBox_->setEnabled(false);
+    tnSpinBox_->setEnabled(false);
+    tvSpinBox_->setEnabled(false);
+
+  } else {
+    temperatureControlModeBox_->setEnabled(true);
+    kpSpinBox_->setEnabled(true);
+    tnSpinBox_->setEnabled(true);
+    tvSpinBox_->setEnabled(true);
+  }
 }
 
 void HuberUnistat525wWidget::controlStateChanged(bool enabled)
 {
   huberUnistat525wCheckBox_->setEnabled(enabled);
-  if (enabled) {
-    //State state = model_->getDeviceState();
-  }
+  operationPanel_->setEnabled(enabled);
 }
 
 /**
@@ -172,10 +237,37 @@ void HuberUnistat525wWidget::updateInfo()
   if (!temperatureSetPointSpinner_->hasFocus())
     temperatureSetPointSpinner_->setValue(model_->getTemperatureSetPoint());
 
+  bool autoPID = model_->getAutoPID();
+  
+  autoPIDCheckBox_->setChecked(autoPID);
+
+  if (autoPID) {
+    temperatureControlModeBox_->setEnabled(false);
+    kpSpinBox_->setEnabled(false);
+    tnSpinBox_->setEnabled(false);
+    tvSpinBox_->setEnabled(false);
+
+  } else {
+    temperatureControlModeBox_->setEnabled(true);
+    kpSpinBox_->setEnabled(true);
+    tnSpinBox_->setEnabled(true);
+    tvSpinBox_->setEnabled(true);
+    
+    if (!kpSpinBox_->hasFocus())
+      kpSpinBox_->setValue(model_->getKp());
+    
+    if (!tnSpinBox_->hasFocus())
+      tnSpinBox_->setValue(model_->getTn());
+    
+    if (!tvSpinBox_->hasFocus())
+      tvSpinBox_->setValue(model_->getTv());
+  }
+  
   temperatureControlCheckBox_->setChecked(model_->getTemperatureControlEnabled());
   circulatorCheckBox_->setChecked(model_->getCirculatorEnabled());
 
-  bathTempLCD_->display(QString::number(model_->getBathTemperature(), 'f', 2));
+  internalTempLCD_->display(QString::number(model_->getInternalTemperature(), 'f', 2));
+  processTempLCD_->display(QString::number(model_->getProcessTemperature(), 'f', 2));
   returnTempLCD_->display(QString::number(model_->getReturnTemperature(), 'f', 2));
 
   pumpPressureLCD_->display(QString::number(model_->getPumpPressure(), 'f', 3));

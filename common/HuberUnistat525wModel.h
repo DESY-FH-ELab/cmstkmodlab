@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -21,7 +21,6 @@
 #include "DeviceState.h"
 #include "DeviceParameter.h"
 
-/*
 #ifdef USE_FAKEIO
 #include "devices/Huber/HuberPilotOneFake.h"
 typedef HuberPilotOneFake HuberPilotOne_t;
@@ -29,9 +28,6 @@ typedef HuberPilotOneFake HuberPilotOne_t;
 #include "devices/Huber/HuberPilotOne.h"
 typedef HuberPilotOne HuberPilotOne_t;
 #endif
-*/
-#include "devices/Huber/HuberPilotOneFake.h"
-typedef HuberPilotOneFake HuberPilotOne_t;
 
 /**
   Command and control model of the Huber Unistat 525w chiller.
@@ -51,7 +47,8 @@ public:
   bool getTemperatureControlEnabled() const;
   bool getCirculatorEnabled() const;
 
-  double getBathTemperature() const;
+  double getInternalTemperature() const;
+  double getProcessTemperature() const;
   double getReturnTemperature() const;
 
   double getPumpPressure() const;
@@ -60,15 +57,50 @@ public:
   double getCoolingWaterInletTemperature() const;
   double getCoolingWaterOutletTemperature() const;
 
+  bool getAutoPID() const;
+  int getKpInternal() const;
+  double getTnInternal() const;
+  double getTvInternal() const;
+  int getKpJacket() const;
+  double getTnJacket() const;
+  double getTvJacket() const;
+  int getKpProcess() const;
+  double getTnProcess() const;
+  double getTvProcess() const;
+  int getKp() const;
+  double getTn() const;
+  double getTv() const;
+
+  void statusMessage(const QString & text);
+
 public slots:
 
   void setDeviceEnabled(bool enabled);
   void setControlsEnabled(bool enabled);
 
   void setTemperatureSetPoint(double temperature);
-  void setTemperatureControlMode(bool external);
+  void setTemperatureControlMode(bool process);
   void setTemperatureControlEnabled(bool enabled);
   void setCirculatorEnabled(bool enabled);
+
+  void setAutoPID(bool autoPID);
+
+  void setKpInternal(int Kp);
+  void setTnInternal(double Tn);
+  void setTvInternal(double Tv);
+
+  void setKpJacket(int Kp);
+  void setTnJacket(double Tn);
+  void setTvJacket(double Tv);
+
+  void setKpProcess(int Kp);
+  void setTnProcess(double Tn);
+  void setTvProcess(double Tv);
+
+  void setKp(int Kp);
+  void setTn(double Tn);
+  void setTv(double Tv);
+  void setPID(int Kp, double Tn, double Tv);
 
 protected:
 
@@ -87,7 +119,8 @@ protected:
   bool temperatureControlEnabled_;
   bool circulatorEnabled_;
 
-  double bathTemperature_;
+  double internalTemperature_;
+  double processTemperature_;
   double returnTemperature_;
 
   double pumpPressure_;
@@ -95,6 +128,17 @@ protected:
 
   double cwInletTemperature_;
   double cwOutletTemperature_;
+
+  bool autoPID_;
+  int KpInternal_;
+  double TnInternal_;
+  double TvInternal_;
+  int KpJacket_;
+  double TnJacket_;
+  double TvJacket_;
+  int KpProcess_;
+  double TnProcess_;
+  double TvProcess_;
 
 protected slots:
 
@@ -105,6 +149,7 @@ signals:
   void deviceStateChanged( State newState );
   void informationChanged();
   void message(const QString & text);
+  void log(const QString & text);
   void controlStateChanged(bool);
 };
 

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -31,6 +31,8 @@ KeithleyDAQ6510Model::KeithleyDAQ6510Model(const char* port,
     }
   }
 
+  scanState_ = false;
+  
   timer_ = new QTimer(this);
   timer_->setInterval(updateInterval_ * 1000);
   connect( timer_, SIGNAL(timeout()), this, SLOT(scanTemperatures()) );
@@ -83,15 +85,35 @@ void KeithleyDAQ6510Model::setDeviceEnabled(bool enabled)
   // scanTemperatures();
 }
 
+void KeithleyDAQ6510Model::setScanEnabled(bool enabled)
+{
+  if ( state_ == READY ) {
+    if (scanState_==enabled) return;
+
+    if (enabled) {
+      timer_->start();
+    } else {
+      timer_->stop();
+    }
+    
+    scanState_ = enabled;
+
+    emit scanStateChanged(enabled);
+
+    if (scanState_) scanTemperatures();
+  }
+}
+
 void KeithleyDAQ6510Model::setDeviceState(State state)
 {
   if (state_ != state) {
     state_ = state;
 
-    if ( state == READY )
-      timer_->start();
-    else
+    if ( state != READY && scanState_) {
       timer_->stop();
+      scanState_ = false;
+      emit scanStateChanged(scanState_);
+    }
 
     emit deviceStateChanged(state);
   }
@@ -132,6 +154,20 @@ void KeithleyDAQ6510Model::setSensorEnabled(unsigned int sensor, bool enabled)
     setSensorState(sensor, OFF);
     scanDuration_ = controller_->GetScanDuration();
   }
+  emit activeSensorCountChanged(controller_->GetActiveChannelCount());
+}
+
+void KeithleyDAQ6510Model::setSensorMode(unsigned int sensor, KeithleyDAQ6510_t::ChannelMode_t mode)
+{
+  unsigned int card = sensor / 100;
+  unsigned int channel = sensor % 100;
+
+  if (controller_->GetChannelMode(card, channel)==mode) return;
+
+  // if (sensorStates_[card][channel] == READY) {
+    controller_->SetChannelMode(card, channel, mode);
+    emit sensorModeChanged(sensor, mode);
+  //}
 }
 
 void KeithleyDAQ6510Model::setControlsEnabled(bool enabled)
@@ -155,6 +191,19 @@ const State & KeithleyDAQ6510Model::getSensorState(unsigned int sensor) const
   return sensorStates_[card][channel];
 }
 
+VKeithleyDAQ6510::ChannelMode_t KeithleyDAQ6510Model::getSensorMode(unsigned int sensor) const
+{
+  unsigned int card = sensor / 100;
+  unsigned int channel = sensor % 100;
+
+  return controller_->GetChannelMode(card, channel);
+}
+
+const std::map<VKeithleyDAQ6510::ChannelMode_t,std::string>& KeithleyDAQ6510Model::getSensorModeNames() const
+{
+  return controller_->GetChannelModeNames();
+}
+
 /// Returns the current cached temperature of the requested sensor.
 double KeithleyDAQ6510Model::getTemperature(unsigned int sensor) const
 {
@@ -170,6 +219,8 @@ double KeithleyDAQ6510Model::getTemperature(unsigned int sensor) const
   */
 void KeithleyDAQ6510Model::scanTemperatures()
 {
+  if (controller_->GetActiveChannelCount()==0) return;
+    
   NQLogDebug("KeithleyDAQ6510Model") << "scanTemperatures()";
 
   controller_->Scan();
@@ -180,7 +231,7 @@ void KeithleyDAQ6510Model::scanTemperatures()
 
 void KeithleyDAQ6510Model::scanComplete()
 {
-  NQLogDebug("KeithleyDAQ6510Model") << "scanComplete() " << controller_->GetScanStatus();
+  NQLogDebug("KeithleyDAQ6510Model") << "scanComplete()";
 
   VKeithleyDAQ6510::reading_t data;
   controller_->GetScanData(data);

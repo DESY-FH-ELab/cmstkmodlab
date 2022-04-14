@@ -4,3 +4,8 @@ testout.cfg
 *.o
 .qmake.stash
 .qmake.cache
+
+testApplicationConfig
+testRingbuffer
+testFifo
+testHistoryFifo

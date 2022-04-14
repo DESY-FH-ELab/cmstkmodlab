@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -235,12 +235,19 @@ VLeyboldGraphix::SensorStatus LeyboldGraphixThree::GetSensorStatus(int sensor) c
   std::string buffer;
   bool isACK = ReceiveData(buffer);
 
-  return GetSensorStatusByStatusText(buffer);
+  sensorStatus_[sensor-1] = GetSensorStatusByStatusText(buffer);
+  
+  return sensorStatus_[sensor-1];
 }
 
 double LeyboldGraphixThree::GetPressure(int sensor) const
 {
   if (sensor<1 || sensor>3) return -1;
+
+  if (GetSensorStatus(sensor)!=SensorStatus_ok) {
+    std::cout << "sensor " << sensor << " not OK" << std::endl;
+    return 1000.;
+  }
 
   std::string command;
 
@@ -254,10 +261,12 @@ double LeyboldGraphixThree::GetPressure(int sensor) const
   std::string buffer;
   bool isACK = ReceiveData(buffer);
 
-  if (sensorStatus_[sensor-1]!=SensorStatus_ok) {
+  /*
+  if (sensorStatus_[sensor]!=SensorStatus_ok) {
     // std::cout << "sensor " << sensor << " not OK" << std::endl;
     return -1;
   }
+  */
 
   return std::atof(buffer.c_str());
 }

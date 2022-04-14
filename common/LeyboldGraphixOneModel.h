@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -63,7 +63,9 @@ public:
 
   const QDateTime getDateTime() const;
   void setDateTime(const QDateTime& dt);
-  
+
+  void statusMessage(const QString & text);
+
 public slots:
 
   void setDeviceEnabled(bool enabled);
@@ -91,6 +93,8 @@ signals:
 
   void deviceStateChanged(State newState);
   void informationChanged();
+  void message(const QString & text);
+  void log(const QString & text);
   void controlStateChanged(bool);
 };
 

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -28,13 +28,14 @@ class HuberPilotOne : public VHuberPilotOne
   bool SetTemperatureSetPoint(const float);
   float GetTemperatureSetPoint();
 
-  float GetBathTemperature();
+  float GetInternalTemperature();
+  float GetProcessTemperature();
   float GetReturnTemperature();
 
   float GetPumpPressure();
   int GetPower();
 
-  bool SetTemperatureControlMode(bool external);
+  bool SetTemperatureControlMode(bool process);
   bool GetTemperatureControlMode();
 
   bool SetTemperatureControlEnabled(bool enabled);
@@ -45,6 +46,36 @@ class HuberPilotOne : public VHuberPilotOne
 
   float GetCoolingWaterInletTemperature();
   float GetCoolingWaterOutletTemperature();
+
+  bool SetAutoPID(bool autoPID);
+  bool GetAutoPID();
+
+  bool SetKpInternal(int Kp);
+  int GetKpInternal();
+
+  bool SetTnInternal(float Tn);
+  float GetTnInternal();
+
+  bool SetTvInternal(float Tn);
+  float GetTvInternal();
+
+  bool SetKpJacket(int Kp);
+  int GetKpJacket();
+
+  bool SetTnJacket(float Tn);
+  float GetTnJacket();
+
+  bool SetTvJacket(float Tn);
+  float GetTvJacket();
+
+  bool SetKpProcess(int Kp);
+  int GetKpProcess();
+
+  bool SetTnProcess(float Tn);
+  float GetTnProcess();
+
+  bool SetTvProcess(float Tn);
+  float GetTvProcess();
 
  private:
 

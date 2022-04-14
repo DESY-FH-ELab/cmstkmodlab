@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -34,7 +34,7 @@ LeyboldGraphixOneModel::LeyboldGraphixOneModel(const char* port,
 
   setDeviceEnabled(true);
 
-  NQLog("LeyboldGraphixOneModel") << "constructed";
+  updateInformation();
 }
 
 LeyboldGraphixOne_t::SensorDetectionMode LeyboldGraphixOneModel::getSensorDetectionMode() const
@@ -201,4 +201,9 @@ void LeyboldGraphixOneModel::setDeviceEnabled(bool enabled)
 void LeyboldGraphixOneModel::setControlsEnabled(bool enabled)
 {
   emit controlStateChanged(enabled);
+}
+
+void LeyboldGraphixOneModel::statusMessage(const QString & text)
+{
+  emit message(text);
 }

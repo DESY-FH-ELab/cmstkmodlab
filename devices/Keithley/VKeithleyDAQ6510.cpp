@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -20,7 +20,33 @@
 
 VKeithleyDAQ6510::VKeithleyDAQ6510( ioport_t port )
 {
+  for (int card=1;card<=2;++card) {
+    for (int channel=1;channel<=10;++channel) {
+      channelModes_[card-1][channel-1] = FourWireRTD_PT100;
+    }
+  }
 
+  channelModeNames_[UnknownMode] = "unknown";
+  channelModeNames_[FourWireRTD_PT100] = "4-wire PT100";
+  // channelModeNames_[ThreeWireRTD_PT100] = "3-wire PT100";
+  // channelModeNames_[TwoWireRTD_PT100] = "2-wire PT100";
+  // channelModeNames_[FourWireRTD_PT385] = "4-wire PT385";
+  // channelModeNames_[ThreeWireRTD_PT385] = "3-wire PT385";
+  // channelModeNames_[TwoWireRTD_PT385] = "2-wire PT385";
+  // channelModeNames_[FourWireRTD_PT3916] = "4-wire PT3916";
+  // channelModeNames_[ThreeWireRTD_PT3916] = "3-wire PT3916";
+  // channelModeNames_[TwoWireRTD_PT3916] = "2-wire PT3916";
+  // channelModeNames_[Thermistor_2252] = "Thermistor 2252Ohm";
+  // channelModeNames_[Thermistor_5000] = "Thermistor 5kOhm";
+  channelModeNames_[Thermistor_10000] = "Thermistor 10kOhm";
+  // channelModeNames_[TCouple_B] = "Thermocouple B";
+  // channelModeNames_[TCouple_E] = "Thermocouple E";
+  // channelModeNames_[TCouple_J] = "Thermocouple J";
+  // channelModeNames_[TCouple_K] = "Thermocouple K";
+  // channelModeNames_[TCouple_N] = "Thermocouple N";
+  // channelModeNames_[TCouple_R] = "Thermocouple R";
+  // channelModeNames_[TCouple_S] = "Thermocouple S";
+  // channelModeNames_[TCouple_T] = "Thermocouple T";
 }
 
 VKeithleyDAQ6510::~VKeithleyDAQ6510()
@@ -46,6 +72,13 @@ bool VKeithleyDAQ6510::IsChannelAvailable(unsigned int channel) const
   unsigned int card = channel / 100;
   unsigned int ch = channel % 100;
   return IsChannelAvailable(card, ch);
+}
+
+VKeithleyDAQ6510::ChannelMode_t VKeithleyDAQ6510::GetChannelMode(unsigned int card, unsigned int channel)
+{
+  if (card<1 || card>2) return UnknownMode;
+  if (channel<1 || channel>10) return UnknownMode;
+  return channelModes_[card-1][channel-1];
 }
 
 /*
@@ -172,7 +205,18 @@ std::string VKeithleyDAQ6510::CreateChannelString(unsigned int card, channels_t&
   for (int i=0;i<10;++i) {
     
     // std::cout << card*100+i+1 << ": " << channels[i] << std::endl;
+
+    // test version using individual channels.
+    /*
+    if (channels[i]) {
+      if (hasPrevious) ss << ",";
+      ss << card * 100 + i+1;
+      
+      hasPrevious = true;
+    }
+    */
     
+    // original version using channel ranges.
     if (channels[i]) {
       if (!inRange) {
         rangeStart = i;

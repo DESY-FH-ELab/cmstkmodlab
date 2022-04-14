@@ -16,6 +16,9 @@ add_library(Common SHARED
         SingletonApplication.cc
         ApplicationConfigReader.cc
         ApplicationConfigWriter.cc
+        ApplicationConfigItemModel.cc
+        ApplicationConfigViewer.cc
+        VScriptableDevice.cc
         SlackBot.cc
         MattermostBot.cc
         JulaboModel.cc
@@ -51,6 +54,7 @@ add_library(Common SHARED
         LeyboldGraphixThreeModel.cc
         LeyboldGraphixOneModel.cc
         LeyboldGraphixOneWidget.cc
+        ScriptableLeyboldGraphixOne.cc
         RohdeSchwarzNGE103BModel.cc
         RohdeSchwarzNGE103BWidget.cc
         ScriptableRohdeSchwarzNGE103B.cc
@@ -71,7 +75,6 @@ add_library(Common SHARED
 set(DEVICE_LIBRARIES
         TkModLabAgilent
         TkModLabArduino
-        TkModLabCanon
         TkModLabConrad
         TkModLabCori
         TkModLabGreisinger
@@ -89,6 +92,12 @@ set(DEVICE_LIBRARIES
         TkModLabRohdeSchwarz
         TkModLabVelleman
 )
+
+if(CMSTKMODLAB_ASSEMBLY OR CMSTKMODLAB_DEFO)
+	list(APPEND DEVICE_LIBRARIES
+        TkModLabCanon
+	)
+endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 

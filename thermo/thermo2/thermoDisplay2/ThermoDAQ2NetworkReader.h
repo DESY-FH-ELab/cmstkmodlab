@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -28,7 +28,8 @@ typedef struct {
   bool           u525wTemperatureControlMode_;
   bool           u525wTemperatureControlEnabled_;
   bool           u525wCirculatorEnabled_;
-  float          u525wBathTemperature_;
+  float          u525wInternalTemperature_;
+  float          u525wProcessTemperature_;
   float          u525wReturnTemperature_;
   float          u525wPumpPressure_;
   int            u525wPower_;
@@ -78,8 +79,13 @@ typedef struct {
   float          martaFlowSetpoint2_;
   uint16_t       martaAlarms_[4];
 
+  bool           agilentState_;
+  bool           agilentPumpState_;
+  unsigned int   agilentPumpStatus_;
+  unsigned int   agilentErrorCode_;
+
   bool           leyboldState_;
-  double         leyboldPressure_;
+  float          leyboldPressure_;
 
   bool           nge103BState[3];
   float          nge103BVoltage[3];
@@ -122,6 +128,8 @@ signals:
   void processMartaFlow(QXmlStreamReader& xml);
   void processMartaSettings(QXmlStreamReader& xml);
   void processMartaAlarms(QXmlStreamReader& xml);
+
+  void processAgilentTwisTorr304(QXmlStreamReader& xml);
 
   void processLeyboldGraphixOne(QXmlStreamReader& xml);
 

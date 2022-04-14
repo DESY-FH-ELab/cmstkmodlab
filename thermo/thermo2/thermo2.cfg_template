@@ -1,15 +1,75 @@
-AgilentTwisTorr304Device /dev/tty1
-HuberUnistatDevice       /dev/tty0
-MartaIPAddress           10.255.21.224:502
-LeyboldGraphixOneDevice  /dev/ttyUSB0
-RohdeSchwarzNGE103B      /dev/ttyACM0
-KeithleyDAQ6510          /dev/usbtmc0
+#
+# Device
+#
+AgilentTwisTorr304Device               /dev/ttyAgilentTwisTorr304
+HuberUnistatDevice                     /dev/ttyHuberUnistat525w
+MartaIPAddress                         10.255.21.224:502
+LeyboldGraphixOneDevice                /dev/ttyLeyboldGraphixOne
+RohdeSchwarzNGE103BDevice              /dev/ttyRohdeSchwarzNGE103B
+KeithleyDAQ6510Device                  /dev/usbtmc0
 
-DataPath                 /home/mussgill/development/cmstkmodlab/thermo/thermo2/thermoDAQ2/data
-DataGroup                cms
+#
+# Active Devices and Measurement Setups
+#
+ChillerAndVacuumActive                 1
+MartaActive                            0
+ThroughPlaneSetupActive                1
 
-ServerPort               55555
+#
+# Data Storage
+#
+DataPath                               /home/cmsdaf/public/thermoDAQ2
+DataGroup                              cms
+ScriptDirectory                        /home/cmsdaf/public/thermoDAQ2/scripts
 
-mattermostwebhook        https://mattermost.web.cern.ch/hooks/d5tpf87e63ntmroe54peebo7eo
-mattermostusername       thermoDAQ2
-mattermostchannel        daf
+#
+# Communication with Display Application
+#
+ServerPort                             55555
+PlotSaveDirectory                      /home/cmsdaf/public/thermoDAQ2/plots
+
+#
+# Communication Server settings
+#
+CommServerHostname                     cmssectortest01
+CommServerIP                           131.169.43.223
+CommServerPort                         56666
+
+#
+# Mattermost
+#
+mattermostwebhook                      https://mattermost.web.cern.ch/hooks/d5tpf87e63ntmroe54peebo7eo
+mattermostusername                     thermodaq2
+mattermostchannel                      thermodaq2
+
+#
+# Ambient temperature sensor
+#
+KeithleyAmbientSensor                  210
+KeithleyAmbientSensorType              4WirePT100
+
+#
+# Through-Plane Thermal Measurement Setup
+#
+ThroughPlaneAutoConfig                 0      # Automatically configure Keithley channels on startup
+ThroughPlaneMattermostStatus           0      # Send status messages via Mattermost
+ThroughPlaneMattermostInterval         30     # Interval between mattermost status updates in minutes
+ThroughPlaneResistance                 10.0   # Resistance of heat source in Ohm
+ThroughPlaneCableResistance            1.1    # Resistance of cable (incl. feedthrough) in Ohm
+ThroughPlaneKBlock                     394.0  # Thermal conductivity of blocks in W/m/K
+ThroughPlaneABlock                     900.0  # Area of blocks in mm^2 (30 mm x 30 mm)
+ThroughPlaneNGE103BChannel             3
+ThroughPlaneKeithleyTopSensors         101 102 103 104 105 106        # From top to interface to sample
+ThroughPlaneKeithleyTopSensorTypes     4WirePT100                     # Type of temperature probe (4WirePT100 or Therm10k)
+ThroughPlaneKeithleyTopPositions       60.0 50.0 40.0 30.0 20.0 10.0  # Position of sensor from interface to sample in mm
+ThroughPlaneKeithleyTopCor0            -1.987212e-01 +2.000235e-01 -1.577817e-02 -5.809836e-02 -1.302576e-01 +1.045751e-01 
+ThroughPlaneKeithleyTopCor1            +1.008655e+00 +9.923893e-01 +9.992698e-01 +1.000862e+00 +1.000613e+00 +9.991822e-01 
+ThroughPlaneKeithleyTopCor2            +8.242263e-06 -2.451968e-05 -8.094984e-06 +8.687270e-07 +1.614825e-05 +1.291368e-05 
+ThroughPlaneKeithleyTopCor3            0.0 0.0 0.0 0.0 0.0 0.0 
+ThroughPlaneKeithleyBottomSensors      201 202 203 204 205 206        # From interface to sample to heat sink
+ThroughPlaneKeithleyBottomSensorTypes  4WirePT100                     # Type of temperature probe (4WirePT100 or Therm10k)
+ThroughPlaneKeithleyBottomPositions    10.0 20.0 30.0 40.0 50.0 60.0  # Position of sensor from interface to sample in mm
+ThroughPlaneKeithleyBottomCor0         +1.031536e-02 -2.937237e-02 +5.379875e-02 +1.398991e-01 -1.139843e-01 +3.372828e-02 
+ThroughPlaneKeithleyBottomCor1         +9.979621e-01 +1.000199e+00 +9.988582e-01 +9.998310e-01 +1.002932e+00 +9.993718e-01 
+ThroughPlaneKeithleyBottomCor2         -1.655805e-05 +2.156900e-05 +1.888039e-05 -2.684960e-05 -2.272911e-05 +2.119618e-05 
+ThroughPlaneKeithleyBottomCor3         0.0 0.0 0.0 0.0 0.0 0.0 

@@ -54,7 +54,7 @@ target_link_libraries(microDisplay
         PUBLIC ${QWT_LIBRARY}
 )
 
-configure_file(microDisplay.desktop.in micro.desktop)
+configure_file(microDisplay.desktop.in microDisplay.desktop)
 
 INSTALL(
     TARGETS microDisplay

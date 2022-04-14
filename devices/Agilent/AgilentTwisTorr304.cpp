@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -29,7 +29,7 @@
 ///
 AgilentTwisTorr304::AgilentTwisTorr304( const ioport_t ioPort )
  : VAgilentTwisTorr304(ioPort),
-   uDelay_(100000)
+   uDelay_(100)
 {
   comHandler_ = new AgilentTwisTorr304ComHandler( ioPort );
   isCommunication_ = false;
@@ -40,23 +40,21 @@ VAgilentTwisTorr304::StatusCode AgilentTwisTorr304::GetPumpStatus() const
 {
   std::string command, hexcommand;
 
-  MakeReadCommand(command, 205);
+  MakeReadCommand(command, VAgilentTwisTorr304::PumpStatus);
 
   GetCommandAsHex(hexcommand, command);
-  std::cout << hexcommand << std::endl;
 
   comHandler_->SendCommand(command.c_str());
+
+  usleep(uDelay_);
 
   char buf[1000];
   comHandler_->ReceiveString(buf);
   StripBuffer(buf);
 
-  usleep(100);
-
   std::string reply = buf;
 
   GetCommandAsHex(hexcommand, reply);
-  std::cout << hexcommand << std::endl;
 
   return static_cast<VAgilentTwisTorr304::StatusCode>(GetIntegerValue(reply));
 }
@@ -65,23 +63,21 @@ unsigned int AgilentTwisTorr304::GetErrorCode() const
 {
   std::string command, hexcommand;
 
-  MakeReadCommand(command, 206);
+  MakeReadCommand(command, VAgilentTwisTorr304::ErrorCode);
 
   GetCommandAsHex(hexcommand, command);
-  std::cout << hexcommand << std::endl;
 
   comHandler_->SendCommand(command.c_str());
+
+  usleep(uDelay_);
 
   char buf[1000];
   comHandler_->ReceiveString(buf);
   StripBuffer(buf);
 
-  usleep(100);
-
   std::string reply = buf;
 
   GetCommandAsHex(hexcommand, reply);
-  std::cout << hexcommand << std::endl;
 
   return GetIntegerValue(reply);
 }
@@ -90,23 +86,21 @@ bool AgilentTwisTorr304::GetPumpState() const
 {
   std::string command, hexcommand;
 
-  MakeReadCommand(command, 0);
+  MakeReadCommand(command, VAgilentTwisTorr304::StartStop);
 
   GetCommandAsHex(hexcommand, command);
-  std::cout << hexcommand << std::endl;
 
   comHandler_->SendCommand(command.c_str());
+
+  usleep(uDelay_);
 
   char buf[1000];
   comHandler_->ReceiveString(buf);
   StripBuffer(buf);
 
-  usleep(100);
-
   std::string reply = buf;
 
   GetCommandAsHex(hexcommand, reply);
-  std::cout << hexcommand << std::endl;
 
   return GetBooleanValue(reply);
 }
@@ -115,46 +109,42 @@ void AgilentTwisTorr304::SwitchPumpOn()
 {
   std::string command, hexcommand;
 
-  MakeWriteCommand(command, 0, true);
+  MakeWriteCommand(command, VAgilentTwisTorr304::StartStop, true);
 
   GetCommandAsHex(hexcommand, command);
-  std::cout << hexcommand << std::endl;
 
   comHandler_->SendCommand(command.c_str());
+
+  usleep(uDelay_);
 
   char buf[1000];
   comHandler_->ReceiveString(buf);
   StripBuffer(buf);
 
-  usleep(100);
-
   std::string reply = buf;
 
   GetCommandAsHex(hexcommand, reply);
-  std::cout << hexcommand << std::endl;
 }
 
 void AgilentTwisTorr304::SwitchPumpOff()
 {
   std::string command, hexcommand;
 
-  MakeWriteCommand(command, 0, false);
+  MakeWriteCommand(command, VAgilentTwisTorr304::StartStop, false);
 
   GetCommandAsHex(hexcommand, command);
-  std::cout << hexcommand << std::endl;
 
   comHandler_->SendCommand(command.c_str());
+
+  usleep(uDelay_);
 
   char buf[1000];
   comHandler_->ReceiveString(buf);
   StripBuffer(buf);
 
-  usleep(100);
-
   std::string reply = buf;
 
   GetCommandAsHex(hexcommand, reply);
-  std::cout << hexcommand << std::endl;
 }
 
 ///
@@ -177,22 +167,6 @@ void AgilentTwisTorr304::StripBuffer( char* buffer ) const
   }
 }
 
-int AgilentTwisTorr304::ToInteger(const char* buffer) const
-{
-  std::string temp(buffer);
-  temp.erase(0, 3);
-
-  return std::atoi( temp.c_str() );
-}
-
-float AgilentTwisTorr304::ToFloat(const char* buffer) const
-{
-  std::string temp(buffer);
-  temp.erase(0, 3);
-
-  return std::atof( temp.c_str() );// * 10;
-}
-
 ///
 /// read back software version
 /// to check communication with device
@@ -205,18 +179,26 @@ void AgilentTwisTorr304::Device_Init()
 
   isCommunication_ = false;
 
-  char buffer[1000];
-  
-  comHandler_->SendCommand("#STr");
-  usleep( uDelay_ );
+  std::string command, hexcommand;
 
-  comHandler_->ReceiveString( buffer );
+  MakeReadCommand(command, VAgilentTwisTorr304::CRCEprom);
 
-  usleep( uDelay_ );
-  StripBuffer( buffer );
-  std::string temp(buffer);
-  // std::cout<<"status = "<<buffer<<std::endl;
-  if (temp.compare(0, 2, "ST")!=0) {
+  GetCommandAsHex(hexcommand, command);
+
+  comHandler_->SendCommand(command.c_str());
+
+  usleep(uDelay_);
+
+  char buf[1000];
+  comHandler_->ReceiveString(buf);
+  StripBuffer(buf);
+
+  std::string reply = buf;
+
+  GetCommandAsHex(hexcommand, reply);
+
+  reply = GetStringValue(reply);
+  if (reply.compare(0, 3, "QE8")!=0) {
     std::cerr << " [AgilentTwisTorr304::Device_Init] ** ERROR: Device communication problem." << std::endl;
     return;
   }

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -14,7 +14,6 @@
 #include <ApplicationConfig.h>
 
 #include <AssemblyObjectAligner.h>
-#include <AssemblyParameters.h>
 #include <AssemblyUtilities.h>
 
 #include <cmath>
@@ -24,6 +23,8 @@ AssemblyObjectAligner::AssemblyObjectAligner(const LStepExpressMotionManager* co
 
  , motion_manager_(motion_manager)
  , motion_manager_enabled_(false)
+
+ , config_(nullptr)
 {
   if(motion_manager_ == nullptr)
   {
@@ -35,17 +36,16 @@ AssemblyObjectAligner::AssemblyObjectAligner(const LStepExpressMotionManager* co
 
   //When launching alignment routine, most params get read by AssemblyObjectAlignerView, and copied into this->configuration_.
   //But other params are not related to the View (not editable in GUI), so must read their values manually here
-  ApplicationConfig* config = ApplicationConfig::instance(); //Access config file parameters
-  if(not config)
+  config_ = ApplicationConfig::instance(); //Access config file
+  if(config_ == nullptr)
   {
     NQLog("AssemblyObjectAligner", NQLog::Fatal)
        << "ApplicationConfig::instance() not initialized (null pointer), stopped constructor";
 
     assembly::kill_application(tr("[AssemblyObjectAligner]"), tr("ApplicationConfig::instance() not initialized (null pointer), closing application"));
   }
-  else {
-    max_numOfRotations_ = config->getValue<int>("AssemblyObjectAligner_maxNumberOfRotations", 10);
-  }
+
+  max_numOfRotations_ = config_->getDefaultValue<int>("main", "AssemblyObjectAligner_maxNumberOfRotations", 10);
 
   qRegisterMetaType<AssemblyObjectAligner::Configuration>("AssemblyObjectAligner::Configuration"); //"After a type has been registered, you can create and destroy objects of that type dynamically at run-time"
 
@@ -338,13 +338,11 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
     const double obj_deltaX = this->configuration().object_deltaX;
     const double obj_deltaY = this->configuration().object_deltaY;
 
-    const AssemblyParameters* const params = AssemblyParameters::instance(false);
-
     // angle from marker's outer edge to best-match position in the camera ref-frame
     //   - the 90.0 deg offset corresponds to the angle spanned by the marker (L-shape)
     const double patrec_angle_full = (patrec_angle + 90.0);
 
-    const double camera_offset_dA = params->get("AngleOfCameraFrameInRefFrame_dA");
+    const double camera_offset_dA = config_->getValue<double>("parameters", "AngleOfCameraFrameInRefFrame_dA");
 
     double dX_1to2, dY_1to2;
     assembly::rotation2D_deg(dX_1to2, dY_1to2, (patrec_angle_full + camera_offset_dA), obj_deltaX, obj_deltaY);

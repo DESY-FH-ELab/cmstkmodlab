@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -324,7 +324,6 @@ void ThermoDisplay2VoltageChart::leftYAxisDoubleClicked()
 {
   axisY_->configure();
 }
-
 ThermoDisplay2CurrentChart::ThermoDisplay2CurrentChart()
   : ThermoDisplay2Chart()
 {
@@ -359,6 +358,44 @@ void ThermoDisplay2CurrentChart::refreshYAxis()
 }
 
 void ThermoDisplay2CurrentChart::leftYAxisDoubleClicked()
+{
+  axisY_->configure();
+}
+
+ThermoDisplay2PowerChart::ThermoDisplay2PowerChart()
+  : ThermoDisplay2Chart()
+{
+  axisY_ = new ThermoDisplay2ValueAxis();
+  axisY_->setLabelFormat("%.2f");
+  axisY_->setTitleText("P [W]");
+  addAxis(axisY_, Qt::AlignLeft);
+
+  connect(axisY_, SIGNAL(axisModeChanged()),
+          this, SLOT(refreshYAxis()));
+
+  legend()->setAlignment(Qt::AlignTop);
+}
+
+void ThermoDisplay2PowerChart::addSeries(QAbstractSeries *series)
+{
+  QChart::addSeries(series);
+
+  series->attachAxis(axisX_);
+  series->attachAxis(axisY_);
+}
+
+void ThermoDisplay2PowerChart::refreshAxes()
+{
+  refreshXAxis();
+  refreshYAxis();
+}
+
+void ThermoDisplay2PowerChart::refreshYAxis()
+{
+  axisY_->refresh(series());
+}
+
+void ThermoDisplay2PowerChart::leftYAxisDoubleClicked()
 {
   axisY_->configure();
 }

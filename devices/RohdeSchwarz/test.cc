@@ -20,16 +20,19 @@ typedef RohdeSchwarzNGE103BFake RohdeSchwarzNGE103B_t;
 typedef RohdeSchwarzNGE103B RohdeSchwarzNGE103B_t;
 #endif
 
-int main()
+int main(int argc, char* argv[])
 {
-  std::cout << "test" << std::endl;
+  std::string ioPort = "/dev/ttyACM0";
+  if (argc==2) ioPort = argv[1];
 
+  std::cout << "test on " << ioPort << std::endl;
+  
   std::string buffer;
 
-  RohdeSchwarzNGE103B_t nge103B("/dev/ttyACM0");
+  RohdeSchwarzNGE103B_t nge103B(ioPort.c_str());
 
   std::cout << (int) nge103B.DeviceAvailable() << std::endl;
-
+  
   nge103B.GetIdentification(buffer);
   std::cout << "OUTP:STAT?\t" << nge103B.GetOutputState() << std::endl;
   std::cout << buffer << std::endl;

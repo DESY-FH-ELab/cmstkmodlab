@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -94,6 +94,18 @@ class ThermoDisplay2CurrentChartView : public ThermoDisplay2ChartView
 public:
 
   explicit ThermoDisplay2CurrentChartView(ThermoDisplay2Chart *chart, QWidget *parent = nullptr);
+
+public slots:
+
+  void tooltip(QPointF point, bool state);
+};
+
+class ThermoDisplay2PowerChartView : public ThermoDisplay2ChartView
+{
+  Q_OBJECT
+public:
+
+  explicit ThermoDisplay2PowerChartView(ThermoDisplay2Chart *chart, QWidget *parent = nullptr);
 
 public slots:
 

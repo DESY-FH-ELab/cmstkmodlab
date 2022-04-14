@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -22,10 +22,12 @@
 
 #include "ThermoDAQStreamReader.h"
 
-ThermoDAQStreamReader::ThermoDAQStreamReader(QStringList arguments,
-                                             QObject* parent) :
-    QObject(parent),
-    arguments_(arguments),
+ThermoDAQStreamReader::ThermoDAQStreamReader(const QStringList &parameters,
+    const QString &filename,
+    QObject* parent)
+  : QObject(parent),
+    parameters_(parameters),
+    filename_(filename),
     measurementValid_(false)
 {
     log_.message = "";
@@ -229,9 +231,13 @@ void ThermoDAQStreamReader::processLine(QString& line)
 
 void ThermoDAQStreamReader::process()
 {
-    if (arguments_.size()!=2) return;
+  /*
+  for (auto p : parameters_) {
 
-    QFile file(arguments_.at(1));
+  }
+  */
+
+  QFile file(filename_);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) return;
 
     QFileInfo fi(file);

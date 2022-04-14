@@ -62,6 +62,7 @@ class AssemblyObjectAligner : public QObject
     const LStepExpressMotionManager* const motion_manager_;
 
     Configuration configuration_;
+    const ApplicationConfig* config_;
 
     bool motion_manager_enabled_;
 

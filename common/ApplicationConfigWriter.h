@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -19,6 +19,8 @@
 
 #include <QObject>
 
+#include "ApplicationConfig.h"
+
 /** @addtogroup common
  *  @{
  */
@@ -27,20 +29,23 @@ class ApplicationConfigWriter : public QObject
 {
   Q_OBJECT
 
- public:
+public:
 
-  ApplicationConfigWriter( const std::string & filename );
+  ApplicationConfigWriter(const std::string& filename, const std::string& alias);
   ~ApplicationConfigWriter();
 
-  void write(std::multimap<std::string,std::string> &keyvalueMap);
-  std::string getFileName( void ) { return outputFileName_; }
+  void write(ApplicationConfig::storage_t& keyvalueMap);
 
- private:
+  const std::string& getFileName( void ) const { return filename_; }
+  const std::string& getAlias( void ) const { return alias_; }
 
-  std::string outputFileName_;
-  
-  void writeMerge(std::multimap<std::string,std::string> &keyvalueMap);
-  void writeNew(std::multimap<std::string,std::string> &keyvalueMap);
+private:
+
+  std::string filename_;
+  std::string alias_;
+
+  void writeMerge(ApplicationConfig::storage_t  &keyvalueMap);
+  void writeNew(ApplicationConfig::storage_t  &keyvalueMap);
 };
 
 /** @} */

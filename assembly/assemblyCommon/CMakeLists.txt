@@ -32,7 +32,6 @@ add_library(AssemblyCommon SHARED
         AssemblyPositionsRegistryWidget.cc
         AssemblyToolboxView.cc
         AssemblySmartMotionManager.cc
-        AssemblyParameters.cc
         AssemblyParametersView.cc
         AssemblyVacuumWidget.cc
         AssemblyMotionWidgets.cc

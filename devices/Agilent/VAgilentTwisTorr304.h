@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -36,6 +36,15 @@ class VAgilentTwisTorr304
 		AgilentWR     = 0x31,
 		AgilentOFF    = 0x30,
 		AgilentON     = 0x31
+  };
+
+  enum Windows {
+  	StartStop    =   0,
+		SoftStart    = 100,
+		PumpStatus   = 205,
+		ErrorCode    = 206,
+		CRCEprom     = 400,
+		CRCParam     = 401,
   };
 
   enum StatusCode {
@@ -76,12 +85,13 @@ class VAgilentTwisTorr304
   void MakeReadCommand(std::string& command, unsigned int window) const;
   void MakeWriteCommand(std::string& command, unsigned int window, bool data) const;
   void MakeWriteCommand(std::string& command, unsigned int window, int data) const;
-  void MakeWriteCommand(std::string& command, unsigned int window, float data) const;
+  void MakeWriteCommand(std::string& command, unsigned int window, float data, const char* format) const;
   void MakeWriteCommand(std::string& command, unsigned int window, std::string& data) const;
 
   bool GetBooleanValue(std::string& reply) const;
   int GetIntegerValue(std::string& reply) const;
   float GetFloatValue(std::string& reply) const;
+  std::string GetStringValue(std::string& reply) const;
 
   void GetChecksum(const std::string& buffer, char& crc0, char& crc1) const;
 

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -35,12 +35,12 @@ class Thermo2DAQModel : public QObject
 public:
 
   explicit Thermo2DAQModel(HuberUnistat525wModel* huberModel,
-													 MartaModel* martaModel,
-                           AgilentTwisTorr304Model* agilentModel,
-                           LeyboldGraphixOneModel* leyboldModel,
-                           RohdeSchwarzNGE103BModel* nge103BModel,
-                           KeithleyDAQ6510Model* keithleyModel,
-                           QObject *parent = 0);
+		  MartaModel* martaModel,
+		  AgilentTwisTorr304Model* agilentModel,
+		  LeyboldGraphixOneModel* leyboldModel,
+		  RohdeSchwarzNGE103BModel* nge103BModel,
+		  KeithleyDAQ6510Model* keithleyModel,
+		  QObject *parent = 0);
 
   QDateTime& currentTime();
 
@@ -72,7 +72,7 @@ protected:
   bool daqState_;
 
   HuberUnistat525wModel* huberModel_;
-	MartaModel* martaModel_;
+  MartaModel* martaModel_;
   AgilentTwisTorr304Model* agilentModel_;
   LeyboldGraphixOneModel* leyboldModel_;
   RohdeSchwarzNGE103BModel* nge103BModel_;
@@ -94,12 +94,23 @@ protected:
   bool u525wTemperatureControlMode_;
   bool u525wTemperatureControlEnabled_;
   bool u525wCirculatorEnabled_;
-  float u525wBathTemperature_;
+  float u525wInternalTemperature_;
+  float u525wProcessTemperature_;
   float u525wReturnTemperature_;
   float u525wPumpPressure_;
   int u525wPower_;
   float u525wCWInletTemperature_;
   float u525wCWOutletTemperature_;
+  bool u525AutoPID_;
+  int u525KpInternal_;
+  float u525TnInternal_;
+  float u525TvInternal_;
+  int u525KpJacket_;
+  float u525TnJacket_;
+  float u525TvJacket_;
+  int u525KpProcess_;
+  float u525TnProcess_;
+  float u525TvProcess_;
 
   // Marta CO2 Chiller Data
   bool martaState_;

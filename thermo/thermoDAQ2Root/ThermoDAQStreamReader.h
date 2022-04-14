@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -73,7 +73,9 @@ class ThermoDAQStreamReader : public QObject
 {
     Q_OBJECT
 public:
-    explicit ThermoDAQStreamReader(QStringList arguments, QObject* parent);
+    explicit ThermoDAQStreamReader(const QStringList &parameters,
+        const QString &filename,
+        QObject* parent);
 
 public slots:
     void run();
@@ -82,7 +84,10 @@ signals:
     void finished();
 
 protected:
-    QStringList arguments_;
+
+    const QStringList parameters_;
+    const QString filename_;
+
     void process();
     void processLine(QString& line);
 

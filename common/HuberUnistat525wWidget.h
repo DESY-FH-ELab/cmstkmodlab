@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -14,6 +14,7 @@
 #define HUBERUNISTAT525WWIDGET_H
 
 #include <QCheckBox>
+#include <QSpinBox>
 #include <QDoubleSpinBox>
 #include <QFormLayout>
 #include <QHBoxLayout>
@@ -66,11 +67,19 @@ protected:
   QWidget* operationPanel_;
 
   QDoubleSpinBox* temperatureSetPointSpinner_;
+  
+  QCheckBox* autoPIDCheckBox_;
   HuberUnistat525wTemperatureControlModeBox* temperatureControlModeBox_;
+
+  QSpinBox* kpSpinBox_;
+  QDoubleSpinBox* tnSpinBox_;
+  QDoubleSpinBox* tvSpinBox_;
+
   QCheckBox* temperatureControlCheckBox_;
   QCheckBox* circulatorCheckBox_;
 
-  QLCDNumber* bathTempLCD_;
+  QLCDNumber* internalTempLCD_;
+  QLCDNumber* processTempLCD_;
   QLCDNumber* returnTempLCD_;
 
   QLCDNumber* pumpPressureLCD_;

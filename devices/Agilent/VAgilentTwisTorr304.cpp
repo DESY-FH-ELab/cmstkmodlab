@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -108,56 +108,129 @@ void VAgilentTwisTorr304::MakeWriteCommand(std::string& command, unsigned int wi
 
 void VAgilentTwisTorr304::MakeWriteCommand(std::string& command, unsigned int window, int data) const
 {
+  command = AgilentSTX;
+  command += 0x80;
 
+  char win[4];
+  sprintf(win, "%03d", window);
+  command += win;
+
+  command += AgilentWR;
+
+  char number[7];
+  sprintf(number, "%06d", data);
+  command += number;
+
+  command += AgilentETX;
+
+  char crc0, crc1;
+
+  GetChecksum(command, crc0, crc1);
+
+  command += crc1;
+  command += crc0;
 }
 
-void VAgilentTwisTorr304::MakeWriteCommand(std::string& command, unsigned int window, float data) const
+void VAgilentTwisTorr304::MakeWriteCommand(std::string& command, unsigned int window, float data, const char* format) const
 {
+  command = AgilentSTX;
+  command += 0x80;
 
+  char win[4];
+  sprintf(win, "%03d", window);
+  command += win;
+
+  command += AgilentWR;
+
+  char number[7];
+  sprintf(number, format, data);
+  command += number;
+
+  command += AgilentETX;
+
+  char crc0, crc1;
+
+  GetChecksum(command, crc0, crc1);
+
+  command += crc1;
+  command += crc0;
 }
 
 void VAgilentTwisTorr304::MakeWriteCommand(std::string& command, unsigned int window, std::string& data) const
 {
+  command = AgilentSTX;
+  command += 0x80;
 
+  char win[4];
+  sprintf(win, "%03d", window);
+  command += win;
+
+  command += AgilentWR;
+
+  char text[11];
+  if (data.length()>10) {
+  	sprintf(text, "%10s", data.substr(0, 10).c_str());
+  } else {
+  	sprintf(text, "%10s", data.c_str());
+  }
+  command += text;
+
+  command += AgilentETX;
+
+  char crc0, crc1;
+
+  GetChecksum(command, crc0, crc1);
+
+  command += crc1;
+  command += crc0;
 }
 
 bool VAgilentTwisTorr304::GetBooleanValue(std::string& reply) const
 {
-  std::string valuestring = reply.substr(5, 1);
+  std::string valuestring = reply.substr(6, 1);
 
   std::string hexvalue;
 
   GetCommandAsHex(hexvalue, valuestring);
-  std::cout << hexvalue << std::endl;
-  std::cout << std::stoi(valuestring) << std::endl;
+  std::cout << "GetBooleanValue: " << hexvalue << ": " << std::stoi(valuestring) << std::endl;
 
   return std::stoi(valuestring);
 }
 
 int VAgilentTwisTorr304::GetIntegerValue(std::string& reply) const
 {
-  std::string valuestring = reply.substr(5, 6);
+  std::string valuestring = reply.substr(6, 6);
 
   std::string hexvalue;
 
   GetCommandAsHex(hexvalue, valuestring);
-  std::cout << hexvalue << std::endl;
-  std::cout << std::stoi(valuestring) << std::endl;
+  std::cout << "GetIntegerValue: " << hexvalue << ": " << std::stoi(valuestring) << std::endl;
 
   return std::stoi(valuestring);
 }
 
 float VAgilentTwisTorr304::GetFloatValue(std::string& reply) const
 {
-  std::string valuestring = reply.substr(5, 6);
+  std::string valuestring = reply.substr(6, 6);
 
   std::string hexvalue;
 
   GetCommandAsHex(hexvalue, valuestring);
-  std::cout << hexvalue << std::endl;
-  std::cout << std::stof(valuestring) << std::endl;
+  std::cout << "GetFloatValue: " << hexvalue << ": " << std::stof(valuestring) << std::endl;
 
   return std::stof(valuestring);
+}
+
+std::string VAgilentTwisTorr304::GetStringValue(std::string& reply) const
+{
+  std::string valuestring = reply.substr(6, 10);
+
+  std::string hexvalue;
+
+  GetCommandAsHex(hexvalue, valuestring);
+  std::cout << "GetStringValue: " << hexvalue << ": " << valuestring << std::endl;
+  
+  return valuestring;
 }
 
 void VAgilentTwisTorr304::GetChecksum(const std::string& buffer, char& crc0, char& crc1) const
@@ -190,6 +263,8 @@ void VAgilentTwisTorr304::GetCommandAsHex(std::string& hexcommand, const std::st
     if (*i=='\0') break;
     ss << ", 0x" << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << (0xff&(unsigned int)*i);
   }
+
+  std::cout << "GetCommandAsHex: " << command << ": " << hexcommand << std::endl;
 
   hexcommand = ss.str();
 }

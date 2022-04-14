@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -44,8 +44,6 @@ class AgilentTwisTorr304 : public VAgilentTwisTorr304
 
   const int uDelay_;
   void StripBuffer(char*) const;
-  int ToInteger(const char*) const;
-  float ToFloat(const char*) const;
 
   void Device_Init();
   AgilentTwisTorr304ComHandler* comHandler_;

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -112,13 +112,13 @@ void WatchDog::pressureChanged(int sensor, double p)
 
   switch (sensor) {
   case 1:
-    pressure1_.push(p);
+    pressure1_.push_back(p);
     break;
   case 2:
-    pressure2_.push(p);
+    pressure2_.push_back(p);
     break;
   case 3:
-    pressure3_.push(p);
+    pressure3_.push_back(p);
     break;
   }
 }
@@ -144,9 +144,9 @@ void WatchDog::statusTimeout()
   switchState_[valve2] = model_->getSwitchState(valve2);
   switchState_[valve3] = model_->getSwitchState(valve3);
 
-  pressure1_.push(psys);
-  pressure2_.push(p1);
-  pressure3_.push(p2);
+  pressure1_.push_back(psys);
+  pressure2_.push_back(p1);
+  pressure3_.push_back(p2);
 
   NQLog("WatchDog") << pressure1_.deltaTime();
   

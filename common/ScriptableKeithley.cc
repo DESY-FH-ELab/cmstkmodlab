@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -99,7 +99,7 @@ void ScriptableKeithley::waitForStableTemperature(const QString & channels,
       current[channel] = keithleyModel_->getTemperature(channel);
       buffer[channel].push_back(current[channel]);
 
-      float delta = current[channel]-buffer[channel].get();
+      float delta = current[channel]-buffer[channel].front();
       NQLog("keithley") << QString("dT(%1) = %2").arg(channel).arg(delta);
 
       if (std::fabs(delta)>=0.01) stable = false;

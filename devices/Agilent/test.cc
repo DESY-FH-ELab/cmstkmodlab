@@ -13,7 +13,7 @@ typedef AgilentTwisTorr304 AgilentTwisTorr304_t;
 
 int main()
 {
-  AgilentTwisTorr304_t twistorr("/dev/ttyS3");
+  AgilentTwisTorr304_t twistorr("/dev/ttyUSB0");
 
   /*
   std::string command, hexcommand;
@@ -41,5 +41,7 @@ int main()
 
   twistorr.GetPumpStatus();
 
+  std::cout << twistorr.GetPumpStatus() << std::endl;
+  
   return 0;
 }

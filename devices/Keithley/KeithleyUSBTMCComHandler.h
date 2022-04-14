@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -19,10 +19,14 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include <string>
+
 typedef const char* ioport_t;
 typedef struct termios termios_t;
 
 class KeithleyUSBTMCComHandler {
+
+  friend class KeithleyDAQ6510;
 
  public:
   
@@ -36,16 +40,20 @@ class KeithleyUSBTMCComHandler {
   KeithleyUSBTMCComHandler( const KeithleyUSBTMCComHandler& );
 
   void SendCommand( const char* );
+  void SendCommand( const std::string& );
   void ReceiveString( char* );
 
   bool DeviceAvailable();
+
+ protected:
+  
+  void CloseIoPort( void );
 
  private:
 
   void OpenIoPort( void );
   void InitializeIoPort( void );
   void RestoreIoPort( void );
-  void CloseIoPort( void );
 
   bool fDeviceAvailable;
   int fIoPortFileDescriptor;

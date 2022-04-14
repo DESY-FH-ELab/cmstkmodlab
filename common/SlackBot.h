@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -25,9 +25,16 @@ class SlackBot : public QObject
 {
   Q_OBJECT
 public:
+
+
+  [[deprecated("Use SlackBot(QString username, QString webhook, QString channel, QObject *parent) instead.")]]
   explicit SlackBot(QObject *parent = 0);
+
+  [[deprecated("Use SlackBot(QString username, QString webhook, QString channel, QObject *parent) instead.")]]
   explicit SlackBot(QString username, QObject *parent = 0);
+
   explicit SlackBot(QString username, QString webhook, QString channel, QObject *parent = 0);
+
   ~SlackBot();
 
 public slots:

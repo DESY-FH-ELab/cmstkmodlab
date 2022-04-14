@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -273,7 +273,7 @@ void MartaWidget::updateInfo()
   chillerCheckBox_->setChecked(model_->getChillerOn());
   co2CheckBox_->setChecked(model_->getCO2On());
 
-  QString svg = svgString;
+  QString svg = MartaSVGString;
 
   double value;
   QString s;

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2019 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -56,7 +56,7 @@ QScriptValue ScriptableRohdeSchwarzNGE103B::getVoltage(int channel)
 {
   QMutexLocker locker(&mutex_);
   if (channel<1 || channel>3) return QScriptValue(-1);
-  bool value = model_->getVoltage(channel);
+  float value = model_->getVoltage(channel);
   return QScriptValue(value);
 }
 
@@ -74,16 +74,7 @@ QScriptValue ScriptableRohdeSchwarzNGE103B::getMeasuredVoltage(int channel)
 {
   QMutexLocker locker(&mutex_);
   if (channel<1 || channel>3) return QScriptValue(-1);
-  bool value = model_->getMeasuredVoltage(channel);
-  return QScriptValue(value);
-}
-
-QScriptValue ScriptableRohdeSchwarzNGE103B::getMeasuredVoltageHistory(int channel,
-                                                                      int secondsAgo)
-{
-  QMutexLocker locker(&mutex_);
-  if (channel<1 || channel>3) return QScriptValue(-1);
-  bool value = model_->getMeasuredVoltageHistory(channel, secondsAgo);
+  float value = model_->getMeasuredVoltage(channel);
   return QScriptValue(value);
 }
 
@@ -91,7 +82,7 @@ QScriptValue ScriptableRohdeSchwarzNGE103B::getCurrent(int channel)
 {
   QMutexLocker locker(&mutex_);
   if (channel<1 || channel>3) return QScriptValue(-1);
-  bool value = model_->getCurrent(channel);
+  float value = model_->getCurrent(channel);
   return QScriptValue(value);
 }
 
@@ -109,16 +100,7 @@ QScriptValue ScriptableRohdeSchwarzNGE103B::getMeasuredCurrent(int channel)
 {
   QMutexLocker locker(&mutex_);
   if (channel<1 || channel>3) return QScriptValue(-1);
-  bool value = model_->getMeasuredCurrent(channel);
-  return QScriptValue(value);
-}
-
-QScriptValue ScriptableRohdeSchwarzNGE103B::getMeasuredCurrentHistory(int channel,
-                                                                      int secondsAgo)
-{
-  QMutexLocker locker(&mutex_);
-  if (channel<1 || channel>3) return QScriptValue(-1);
-  bool value = model_->getMeasuredCurrentHistory(channel, secondsAgo);
+  float value = model_->getMeasuredCurrent(channel);
   return QScriptValue(value);
 }
 

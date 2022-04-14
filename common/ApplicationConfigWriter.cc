@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -12,14 +12,17 @@
 
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 
 #include <QMessageBox>
 
 #include "ApplicationConfigWriter.h"
 
-ApplicationConfigWriter::ApplicationConfigWriter( const std::string & outputFileName )
+ApplicationConfigWriter::ApplicationConfigWriter(const std::string& filename, const std::string& alias)
+  : filename_(filename),
+    alias_(alias)
 {
-  outputFileName_ = std::string( outputFileName );
+
 }
 
 ApplicationConfigWriter::~ApplicationConfigWriter()
@@ -27,119 +30,154 @@ ApplicationConfigWriter::~ApplicationConfigWriter()
 
 }
 
-void ApplicationConfigWriter::write(std::multimap<std::string,std::string> &keyvalueMap)
+void ApplicationConfigWriter::write(ApplicationConfig::storage_t &keyvalueMap)
 {
-  std::ifstream file( outputFileName_.c_str(), std::ios::in );
+  std::ifstream file(filename_.c_str(), std::ios::in);
   if (file.good()) {
     file.close();
     writeMerge(keyvalueMap);
   } else {
+    file.close();
     writeNew(keyvalueMap);
   }
 }
 
-void ApplicationConfigWriter::writeMerge(std::multimap<std::string,std::string> &keyvalueMap)
+void ApplicationConfigWriter::writeMerge(ApplicationConfig::storage_t& keyvalueMap)
 {
-	std::map<std::string,std::string> keyMap;
-	std::multimap<std::string,std::string> tmap = keyvalueMap;
-	std::ostringstream ostream;
+  std::map<std::string,std::string> keyMap;
 
-	std::ifstream file( outputFileName_.c_str(), std::ios::in );
-	if( !file.good() ) {
-		std::cerr << " [ApplicationConfigWriter::openAndCheckFile] ** ERROR: failed to open file: "
-				<< outputFileName_ << "." << std::endl;
-		QMessageBox::critical( 0, tr("[ApplicationConfigWriter::fill]"),
-				QString("Failed to open configuration file: \"%1\". No chance!").arg(QString(outputFileName_.c_str())),
-				QMessageBox::Abort );
-		throw; // must abort
-	}
+  ApplicationConfig::storage_t tempKeyValueMap;
+  for (const auto & kv : keyvalueMap) {
+    if (kv.first.alias!=alias_) continue;
+    tempKeyValueMap[kv.first] = kv.second;
+  }
 
-	int count;
-	std::string Key;
-	std::string Value;
-	std::string buffer;
+  std::ostringstream ostream;
 
-	while (std::getline(file, buffer)) {
-		while (buffer[0]==' ') buffer = buffer.substr(1, buffer.length());
-		if (buffer[0]=='\0' || buffer[0]=='\n' || buffer[0]=='#') {
-			ostream << buffer << std::endl;
-			continue;
-		}
+  unsigned long maxKeyLength = 0;
+  for (auto & kv : keyvalueMap) {
+    maxKeyLength = std::max(maxKeyLength, kv.first.key.size());
+  }
+  maxKeyLength = 5*(2+maxKeyLength/5);
 
-		std::istringstream iss(buffer.c_str(), std::istringstream::in);
-		iss >> Key;
-		std::map<std::string,std::string>::iterator itFind = keyMap.find(Key);
-		std::map<std::string,std::string>::iterator it = tmap.find(Key);
-		if (it!=tmap.end()) {
-			if (itFind==keyMap.end()) {
-				ostream.fill(' ');
-				ostream.width(25);
-				ostream << std::left << it->first;
+  std::ifstream file(filename_.c_str(), std::ios::in);
+  if( !file.good() ) {
+    std::cerr << " [ApplicationConfigWriter::openAndCheckFile] ** ERROR: failed to open file: "
+        << filename_ << "." << std::endl;
+    QMessageBox::critical( 0, tr("[ApplicationConfigWriter::fill]"),
+        QString("Failed to open configuration file: \"%1\". No chance!").arg(QString(filename_.c_str())),
+        QMessageBox::Abort );
+    throw; // must abort
+  }
 
-				count = 0;
-				auto range = tmap.equal_range(it->first);
-				for (auto i = range.first; i != range.second; ++i) {
-					if (count>0) ostream << " ";
-					ostream << i->second;
-					count++;
-				}
-				ostream << "\n";
+  int count;
+  std::string Key;
+  ApplicationConfig::ShortKey sk;
+  sk.alias = alias_;
+  std::string Value;
+  std::vector<std::string> Values;
+  std::string buffer;
+  std::string::size_type n;
 
-				keyMap.insert(std::make_pair(it->first, it->first));
-			}
-		}
-	}
+  while (std::getline(file, buffer)) {
 
-	for (auto & kv : keyMap) {
-		tmap.erase(kv.first);
-	}
+    while (buffer[0]==' ') buffer = buffer.substr(1, buffer.length());
+    if (buffer[0]=='\0' || buffer[0]=='\n' || buffer[0]=='#') {
+      ostream << buffer << std::endl;
+      continue;
+    }
 
-	for (auto & kv : tmap) {
+    std::istringstream iss(buffer.c_str(), std::istringstream::in);
+    iss >> Key;
+    sk.key = Key;
+    std::map<std::string,std::string>::iterator itFind = keyMap.find(Key);
+    ApplicationConfig::storage_t::iterator it = tempKeyValueMap.find(sk);
+    if (it!=tempKeyValueMap.end()) {
+      if (itFind==keyMap.end()) {
+        ostream.fill(' ');
+        ostream.width(maxKeyLength);
+        ostream << std::left << it->first.key << " ";
 
-		std::map<std::string,std::string>::iterator itFind = keyMap.find(kv.first);
-		if (itFind==keyMap.end()) {
-			ostream.fill(' ');
-			ostream.width(25);
-			ostream << std::left << kv.first;
+        count = 0;
+        for (auto & v : it->second) {
+          if (count>0) ostream << " ";
+          ostream << v;
+          count++;
+        }
 
-			count = 0;
-			auto range = tmap.equal_range(kv.first);
-			for (auto i = range.first; i != range.second; ++i) {
-				if (count>0) ostream << " ";
-				ostream << i->second;
-				count++;
-			}
-			ostream << "\n";
+        n = buffer.find("#");
+        if (n != std::string::npos) {
+          ostream << " " << buffer.substr(n);
+        }
 
-			keyMap.insert(std::make_pair(kv.first, kv.first));
-		}
-	}
+        ostream << std::endl;
 
-	file.close();
+        keyMap.insert(std::make_pair(it->first.key, it->first.key));
+      }
+    }
+  }
 
-	std::ofstream ofile(outputFileName_.c_str(), std::ios::trunc);
-	ofile << ostream.str() << std::endl;
-	ofile.close();
+  for (auto & kv : keyMap) {
+    sk.key = kv.first;
+    ApplicationConfig::storage_t::iterator it = tempKeyValueMap.find(sk);
+    tempKeyValueMap.erase(it);
+  }
+
+  for (auto & kv : tempKeyValueMap) {
+
+    std::map<std::string,std::string>::iterator itFind = keyMap.find(kv.first.key);
+    if (itFind==keyMap.end()) {
+      ostream.fill(' ');
+      ostream.width(maxKeyLength);
+      ostream << std::left << kv.first.key << " ";
+
+      count = 0;
+      for (auto & v : kv.second) {
+        if (count>0) ostream << " ";
+        ostream << v;
+        count++;
+      }
+      ostream << std::endl;
+
+      keyMap.insert(std::make_pair(kv.first.key, kv.first.key));
+    }
+  }
+
+  file.close();
+
+  std::ofstream ofile(filename_.c_str(), std::ios::trunc);
+  ofile << ostream.str();
+  ofile.close();
 }
 
-void ApplicationConfigWriter::writeNew(std::multimap<std::string,std::string> &keyvalueMap)
+void ApplicationConfigWriter::writeNew(ApplicationConfig::storage_t& keyvalueMap)
 {
-	std::map<std::string,std::string> keyMap;
-  std::ofstream file(outputFileName_.c_str(), std::ios::out);
+  int count = 0;
+  std::map<std::string,std::string> keyMap;
+  std::ofstream file(filename_.c_str(), std::ios::out);
+
+  unsigned long maxKeyLength = 0;
   for (auto & kv : keyvalueMap) {
+    maxKeyLength = std::max(maxKeyLength, kv.first.key.size());
+  }
+  maxKeyLength = 5*(2+maxKeyLength/5);
 
-  	std::map<std::string,std::string>::iterator itFind = keyMap.find(kv.first);
-  	if (itFind==keyMap.end()) {
-  		file.fill(' ');
-  		file.width(25);
-  		file << std::left << kv.first;
+  for (auto & kv : keyvalueMap) {
+    std::map<std::string,std::string>::iterator itFind = keyMap.find(kv.first.key);
+    if (itFind==keyMap.end()) {
+      file.fill(' ');
+      file.width(maxKeyLength);
+      file << std::left << kv.first.key << " ";
 
-  		auto range = keyvalueMap.equal_range(kv.first);
-  		for (auto i = range.first; i != range.second; ++i) {
-  			file << i->second << " ";
-  		}
+      count = 0;
+      for (auto & v : kv.second) {
+        if (count>0) file << " ";
+        file << v;
+        count++;
+      }
+      file << std::endl;
 
-  		keyMap.insert(std::make_pair(kv.first, kv.first));
-  	}
+      keyMap.insert(std::make_pair(kv.first.key, kv.first.key));
+    }
   }
 }

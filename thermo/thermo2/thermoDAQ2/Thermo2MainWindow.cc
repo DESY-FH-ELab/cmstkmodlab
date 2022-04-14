@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -22,21 +22,22 @@
 
 #include "ApplicationConfig.h"
 
-#include "HuberUnistat525wWidget.h"
+#include <nqlogger.h>
+
 #include "MartaWidget.h"
-#include "AgilentTwisTorr304Widget.h"
-#include "LeyboldGraphixOneWidget.h"
-#include "RohdeSchwarzNGE103BWidget.h"
-#include "KeithleyDAQ6510Widget.h"
 
 #include "Thermo2DAQWidget.h"
 #include "Thermo2ScriptWidget.h"
+
+#include "Thermo2ThroughPlaneWidget.h"
 
 #include "Thermo2MainWindow.h"
 
 Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   : QMainWindow(parent)
 {
+  NQLog("Thermo2MainWindow", NQLog::Debug) << "Thermo2MainWindow(QWidget *parent)";
+
   ApplicationConfig* config = ApplicationConfig::instance();
 
   QWidget * widget;
@@ -45,69 +46,95 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   QBoxLayout * vlayout2;
   QBoxLayout * hlayout;
 
+  chillerAndVacuumActive_ = config->getValue<int>("main", "ChillerAndVacuumActive");
+  martaActive_ = config->getValue<int>("main", "MartaActive");
+  throughPlaneActive_ = config->getValue<int>("main", "ThroughPlaneSetupActive");
+
+  huberModel_ = 0;
+  if (chillerAndVacuumActive_) {
 #ifdef USE_FAKEIO
-  huberModel_ = new HuberUnistat525wModel(config->getValue<std::string>("HuberUnistatDevice").c_str(),
-                                          5, this);
+  	huberModel_ = new HuberUnistat525wModel(config->getValue<std::string>("main", "HuberUnistatDevice").c_str(),
+  			5, this);
 #else
-  huberModel_ = new HuberUnistat525wModel(config->getValue<std::string>("HuberUnistatDevice").c_str(),
-                                          20, this);
+  	huberModel_ = new HuberUnistat525wModel(config->getValue<std::string>("main", "HuberUnistatDevice").c_str(),
+  			10, this);
 #endif
+  }
+
+  martaModel_ = 0;
+  if (martaActive_) {
+#ifdef USE_FAKEIO
+  	martaModel_ = new MartaModel(config->getValue<std::string>("main", "MartaIPAddress").c_str(),
+  			5, this);
+#else
+  	martaModel_ = new MartaModel(config->getValue<std::string>("main", "MartaIPAddress").c_str(),
+  			10, this);
+#endif
+  }
+
+  agilentModel_ = 0;
+  if (chillerAndVacuumActive_) {
+#ifdef USE_FAKEIO
+  	agilentModel_ = new AgilentTwisTorr304Model(config->getValue<std::string>("main", "AgilentTwisTorr304Device").c_str(),
+  			5, this);
+#else
+  	agilentModel_ = new AgilentTwisTorr304Model(config->getValue<std::string>("main", "AgilentTwisTorr304Device").c_str(),
+  			20, this);
+#endif
+  }
+
+  leyboldModel_ = 0;
+  if (chillerAndVacuumActive_) {
+#ifdef USE_FAKEIO
+  	leyboldModel_ = new LeyboldGraphixOneModel(config->getValue<std::string>("main", "LeyboldGraphixOneDevice").c_str(),
+  			5, this);
+#else
+  	leyboldModel_ = new LeyboldGraphixOneModel(config->getValue<std::string>("main", "LeyboldGraphixOneDevice").c_str(),
+  			20, this);
+#endif
+  }
 
 #ifdef USE_FAKEIO
-  martaModel_ = new MartaModel(config->getValue<std::string>("MartaIPAddress").c_str(),
-			       5, this);
-#else
-  martaModel_ = new MartaModel(config->getValue<std::string>("MartaIPAddress").c_str(),
-			       10, this);
-#endif
-
-#ifdef USE_FAKEIO
-  agilentModel_ = new AgilentTwisTorr304Model(config->getValue<std::string>("AgilentTwisTorr304Device").c_str(),
-                                              5, this);
-#else
-  agilentModel_ = new AgilentTwisTorr304Model(config->getValue<std::string>("AgilentTwisTorr304Device").c_str(),
-                                              20, this);
-#endif
-
-#ifdef USE_FAKEIO
-  leyboldModel_ = new LeyboldGraphixOneModel(config->getValue<std::string>("LeyboldGraphixOneDevice").c_str(),
-                                             5, this);
-#else
-  leyboldModel_ = new LeyboldGraphixOneModel(config->getValue<std::string>("LeyboldGraphixOneDevice").c_str(),
-                                             20, this);
-#endif
-
-#ifdef USE_FAKEIO
-  nge103BModel_ = new RohdeSchwarzNGE103BModel(config->getValue<std::string>("RohdeSchwarzNGE103B").c_str(),
+  nge103BModel_ = new RohdeSchwarzNGE103BModel(config->getValue<std::string>("main", "RohdeSchwarzNGE103BDevice").c_str(),
                                                5, this);
 #else
-  nge103BModel_ = new RohdeSchwarzNGE103BModel(config->getValue<std::string>("RohdeSchwarzNGE103B").c_str(),
+  nge103BModel_ = new RohdeSchwarzNGE103BModel(config->getValue<std::string>("main", "RohdeSchwarzNGE103BDevice").c_str(),
                                                10, this);
 #endif
 
 #ifdef USE_FAKEIO
-  keithleyModel_ = new KeithleyDAQ6510Model(config->getValue<std::string>("KeithleyDAQ6510").c_str(),
+  keithleyModel_ = new KeithleyDAQ6510Model(config->getValue<std::string>("main", "KeithleyDAQ6510Device").c_str(),
                                             5, this);
 #else
-  keithleyModel_ = new KeithleyDAQ6510Model(config->getValue<std::string>("KeithleyDAQ6510").c_str(),
+  keithleyModel_ = new KeithleyDAQ6510Model(config->getValue<std::string>("main", "KeithleyDAQ6510Device").c_str(),
                                             30, this);
 #endif
 
+  throughPlaneModel_ = 0;
+  if (chillerAndVacuumActive_ && throughPlaneActive_) {
+    throughPlaneModel_ = new Thermo2ThroughPlaneModel(huberModel_,
+        nge103BModel_,
+        keithleyModel_,
+        this);
+  }
+
   daqModel_ = new Thermo2DAQModel(huberModel_,
-																	martaModel_,
-                                  agilentModel_,
-                                  leyboldModel_,
-                                  nge103BModel_,
-                                  keithleyModel_,
-                                  this);
+				  martaModel_,
+				  agilentModel_,
+				  leyboldModel_,
+				  nge103BModel_,
+				  keithleyModel_,
+				  this);
 
   // SCRIPT MODEL
   scriptModel_ = new Thermo2ScriptModel(daqModel_,
-                                        huberModel_,
-																				martaModel_,
-                                        nge103BModel_,
-                                        keithleyModel_,
-                                        this);
+					leyboldModel_,
+					huberModel_,
+					martaModel_,
+					nge103BModel_,
+					keithleyModel_,
+					throughPlaneModel_,
+					this);
 
   daqStreamer_ = new Thermo2DAQStreamer(daqModel_, this);
 
@@ -117,13 +144,22 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 //  }
 
   daqServer_ = new Thermo2DAQServer(daqModel_, this);
-  daqServer_->listen(QHostAddress::LocalHost, config->getValue<unsigned int>("ServerPort"));
+  daqServer_->listen(QHostAddress::LocalHost, config->getValue<unsigned int>("main", "ServerPort"));
 
   daqThread_ = new Thermo2DAQThread(daqModel_, this);
   connect(QApplication::instance(), SIGNAL(aboutToQuit()),
           this, SLOT(quit()));
   daqThread_->start();
   daqModel_->myMoveToThread(daqThread_);
+
+  commServer_ = new Thermo2CommunicationServer(daqModel_,
+      huberModel_,
+      martaModel_,
+      agilentModel_,
+      leyboldModel_,
+      nge103BModel_,
+      keithleyModel_,
+      this);
 
   tabWidget_ = new QTabWidget(this);
   tabWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
@@ -135,53 +171,64 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
   hlayout = new QHBoxLayout();
   vlayout->addLayout(hlayout);
 
-  gbox = new QGroupBox("Chiller");
-  vlayout2 = new QVBoxLayout();
-  gbox->setLayout(vlayout2);
+  if (chillerAndVacuumActive_) {
+  	gbox = new QGroupBox("Chiller");
+  	vlayout2 = new QVBoxLayout();
+  	gbox->setLayout(vlayout2);
 
-  // HUBER MODEL
-  HuberUnistat525wWidget* huberWidget = new HuberUnistat525wWidget(huberModel_, widget);
-  huberWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  vlayout2->addWidget(huberWidget);
+  	// HUBER MODEL
+  	huberWidget_ = new HuberUnistat525wWidget(huberModel_, widget);
+  	huberWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  	vlayout2->addWidget(huberWidget_);
 
-  hlayout->addWidget(gbox);
+  	hlayout->addWidget(gbox);
 
-  gbox = new QGroupBox("Vacuum");
-  vlayout2 = new QVBoxLayout();
-  gbox->setLayout(vlayout2);
+  	gbox = new QGroupBox("Vacuum");
+  	vlayout2 = new QVBoxLayout();
+  	gbox->setLayout(vlayout2);
 
-  // AGILET MODEL
-  AgilentTwisTorr304Widget* agilentWidget = new AgilentTwisTorr304Widget(agilentModel_, widget);
-  agilentWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  vlayout2->addWidget(agilentWidget);
+  	// AGILET MODEL
+  	agilentWidget_ = new AgilentTwisTorr304Widget(agilentModel_, widget);
+  	agilentWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  	vlayout2->addWidget(agilentWidget_);
 
-  // LEYBOLD MODEL
-  LeyboldGraphixOneWidget* leyboldWidget = new LeyboldGraphixOneWidget(leyboldModel_, widget);
-  leyboldWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  vlayout2->addWidget(leyboldWidget);
+  	// LEYBOLD MODEL
+  	leyboldWidget_ = new LeyboldGraphixOneWidget(leyboldModel_, widget);
+  	leyboldWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  	vlayout2->addWidget(leyboldWidget_);
 
-  vlayout2->addWidget(new QWidget());
+  	vlayout2->addWidget(new QWidget());
 
-  hlayout->addWidget(gbox);
+  	hlayout->addWidget(gbox);
 
-  vlayout->addWidget(new QWidget());
+  	vlayout->addWidget(new QWidget());
 
-  tabWidget_->addTab(widget, "Chiller && Vacuum");
+  	tabWidget_->addTab(widget, "Chiller && Vacuum");
+  }
 
-  // MARTA MODEL
-  MartaWidget* martaWidget = new MartaWidget(martaModel_);
-  martaWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  tabWidget_->addTab(martaWidget, "Marta");
+  if (martaActive_) {
+  	// MARTA MODEL
+  	martaWidget_ = new MartaWidget(martaModel_);
+  	martaWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  	tabWidget_->addTab(martaWidget_, "Marta");
+  }
 
   // Rohde & Schwarz NGE130B Widget
-  RohdeSchwarzNGE103BWidget* nge103BWidget = new RohdeSchwarzNGE103BWidget(nge103BModel_);
+  nge103BWidget_ = new RohdeSchwarzNGE103BWidget(nge103BModel_);
   //nge103BWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  tabWidget_->addTab(nge103BWidget, "Power Supply");
+  tabWidget_->addTab(nge103BWidget_, "Power Supply");
 
   // KEITHLEY MODEL
-  KeithleyDAQ6510Widget* keithleyWidget = new KeithleyDAQ6510Widget(keithleyModel_);
-  keithleyWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  tabWidget_->addTab(keithleyWidget, "Multimeter");
+  keithleyWidget_ = new KeithleyDAQ6510Widget(keithleyModel_);
+  keithleyWidget_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  tabWidget_->addTab(keithleyWidget_, "Multimeter");
+
+  if (chillerAndVacuumActive_ && throughPlaneActive_) {
+  	// THROUGH PLANE MODEL
+  	Thermo2ThroughPlaneWidget* throughPlaneWidget = new Thermo2ThroughPlaneWidget(throughPlaneModel_);
+  	throughPlaneWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  	tabWidget_->addTab(throughPlaneWidget, "Through Plane");
+  }
 
   widget = new QWidget();
   widget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
@@ -203,14 +250,32 @@ Thermo2MainWindow::Thermo2MainWindow(QWidget *parent)
 
   tabWidget_->addTab(widget, "DAQ && Scripting");
 
+  configViewer_ = new ApplicationConfigViewer(false, this);
+  tabWidget_->addTab(configViewer_, "Configuration");
+
+  connect(scriptModel_, SIGNAL(setControlsEnabled(bool)),
+          this, SLOT(controlStateChanged(bool)));
+
   setCentralWidget(tabWidget_);
   updateGeometry();
 }
 
 void Thermo2MainWindow::quit()
 {
+  NQLog("Thermo2MainWindow", NQLog::Debug) << "quit()";
+
   if (daqThread_) {
     daqThread_->quit();
     daqThread_->wait();
   }
+}
+
+void Thermo2MainWindow::controlStateChanged(bool state)
+{
+  huberWidget_->controlStateChanged(state);
+  if (martaModel_) martaWidget_->controlStateChanged(state);  
+  agilentWidget_->controlStateChanged(state);  
+  leyboldWidget_->controlStateChanged(state);  
+  nge103BWidget_->controlStateChanged(state);  
+  keithleyWidget_->controlStateChanged(state);  
 }

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -45,6 +45,10 @@ public:
                                 QObject *parent = 0);
 
   const State& getSensorState(unsigned int sensor) const;
+  bool getScanState() const { return scanState_; }
+  VKeithleyDAQ6510::ChannelMode_t getSensorMode(unsigned int sensor) const;
+  const std::map<VKeithleyDAQ6510::ChannelMode_t,std::string>& getSensorModeNames() const;
+
   double getTemperature(unsigned int sensor) const;
   int getUpdateInterval() const { return updateInterval_; }
 
@@ -53,7 +57,9 @@ public:
 public slots:
 
   void setDeviceEnabled(bool enabled);
+  void setScanEnabled(bool enabled);
   void setSensorEnabled(unsigned int sensor, bool enabled);
+  void setSensorMode(unsigned int sensor, VKeithleyDAQ6510::ChannelMode_t mode);
   void setControlsEnabled(bool enabled);
   void setUpdateInterval(int updateInterval);
 
@@ -65,6 +71,7 @@ protected:
   QString port_;
   int updateInterval_;
   QTimer* timer_;
+  bool scanState_;
   unsigned int scanDuration_;
 
   // cached config information
@@ -84,11 +91,15 @@ protected slots:
 signals:
 
   void deviceStateChanged(State newState);
+  void scanStateChanged(bool enabled);
   void sensorStateChanged(unsigned int sensor, State newState);
+  void sensorModeChanged(unsigned int sensor, VKeithleyDAQ6510::ChannelMode_t newMode);
+  void activeSensorCountChanged(unsigned int sensors);
   void temperatureChanged(unsigned int sensor, double temperature);
   void informationChanged();
   void temperatureGradientChanged(unsigned int sensor, double gradient);
   void message(const QString & text);
+  void log(const QString & text);
   void controlStateChanged(bool);
 };
 

@@ -14,7 +14,6 @@
 #define ASSEMBLYIMAGEVIEW_H
 
 #include <AssemblyUEyeView.h>
-#include <AssemblyParameters.h>
 
 #include <QWidget>
 #include <QScrollArea>

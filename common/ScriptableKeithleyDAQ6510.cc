@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -26,10 +26,16 @@
 
 ScriptableKeithleyDAQ6510::ScriptableKeithleyDAQ6510(KeithleyDAQ6510Model* keithleyModel,
                                                      QObject *parent)
- : QObject(parent),
-   keithleyModel_(keithleyModel)
+ : VScriptableDevice(parent),
+   keithleyModel_(keithleyModel),
+   abortRequested_(false)
 {
 
+}
+
+void ScriptableKeithleyDAQ6510::abort()
+{
+  abortRequested_ = true;
 }
 
 QScriptValue ScriptableKeithleyDAQ6510::state(unsigned int sensor)
@@ -104,7 +110,7 @@ void ScriptableKeithleyDAQ6510::waitForStableTemperature(const QString & sensors
   }
 
   keithleyModel_->statusMessage(QString("wait for stable temperatures on sensors %1 ...").arg(sensorString));
-  NQLog("keithley") << QString("wait for stable temperatures on sensors %1 ...").arg(sensorString);
+  NQLogMessage("ScriptableKeithleyDAQ6510") << QString("wait for stable temperatures on sensors %1 ...").arg(sensorString);
 
   std::map<unsigned int,Ringbuffer<float,10>> buffer;
   for (unsigned int card=1;card<=2;++card) {
@@ -115,9 +121,11 @@ void ScriptableKeithleyDAQ6510::waitForStableTemperature(const QString & sensors
   std::map<unsigned int,float> current;
 
   int t = 0;
-  while (t<=timeout) {
 
-    bool stable = true;
+  bool stable = false;
+  while (!stable) {
+
+    stable = true;
     float temperature;
     for (unsigned int sensor : activeSensors) {
       temperature = keithleyModel_->getTemperature(sensor);
@@ -125,20 +133,36 @@ void ScriptableKeithleyDAQ6510::waitForStableTemperature(const QString & sensors
       current[sensor] = temperature;
       buffer[sensor].push_back(temperature);
 
-      float delta = temperature-buffer[sensor].get();
-      NQLog("keithley") << QString("dT(%1) = %2").arg(sensor).arg(delta);
+      float delta = temperature-buffer[sensor].front();
+      NQLogMessage("ScriptableKeithleyDAQ6510") << QString("dT(%1) = %2").arg(sensor).arg(delta);
 
       if (std::fabs(delta)>=0.01) stable = false;
     }
-    if (stable) break;
 
-    std::this_thread::sleep_for(60s);
+    for (int s=0;s<60;++s) {
+      if (abortRequested_) {
+        abortRequested_ = false;
 
-    t++;
+        keithleyModel_->statusMessage("execution aborted");
+        NQLogMessage("ScriptableKeithleyDAQ6510") << "execution aborted";
+
+        return;
+      }
+
+      std::this_thread::sleep_for(1s);
+
+      t++;
+      if (t>timeout) {
+        keithleyModel_->statusMessage("timeout");
+        NQLogMessage("ScriptableKeithleyDAQ6510") << "timeout";
+
+        return;
+      }
+    }
   }
 
   keithleyModel_->statusMessage("done");
-  NQLog("keithley") << "done";
+  NQLogMessage("ScriptableKeithleyDAQ6510") << "done";
 }
 
 void ScriptableKeithleyDAQ6510::waitForTemperatureAbove(unsigned int sensor,
@@ -148,9 +172,11 @@ void ScriptableKeithleyDAQ6510::waitForTemperatureAbove(unsigned int sensor,
   using namespace std::chrono_literals;
 
   keithleyModel_->statusMessage(QString("wait for T(%1) > %2 deg C ...").arg(sensor).arg(temperature));
-  NQLog("keithley") << QString("wait for T(%1) > %2 deg C ...").arg(sensor).arg(temperature);
+  NQLogMessage("ScriptableKeithleyDAQ6510") << QString("wait for T(%1) > %2 deg C ...").arg(sensor).arg(temperature);
 
-  for (int m=0;m<=timeout;++m) {
+  int t = 0;
+
+  while (1) {
 
     QMutexLocker locker(&mutex_);
     double temp = keithleyModel_->getTemperature(sensor);
@@ -158,11 +184,30 @@ void ScriptableKeithleyDAQ6510::waitForTemperatureAbove(unsigned int sensor,
 
     if (temp>temperature) break;
 
-    std::this_thread::sleep_for(60s);
+    for (int s=0;s<60;++s) {
+      if (abortRequested_) {
+        abortRequested_ = false;
+
+        keithleyModel_->statusMessage("execution aborted");
+        NQLogMessage("ScriptableKeithleyDAQ6510") << "execution aborted";
+
+        return;
+      }
+
+      std::this_thread::sleep_for(1s);
+
+      t++;
+      if (t>timeout) {
+        keithleyModel_->statusMessage("timeout");
+        NQLogMessage("ScriptableKeithleyDAQ6510") << "timeout";
+
+        return;
+      }
+    }
   }
 
   keithleyModel_->statusMessage("done");
-  NQLog("keithley") << "done";
+  NQLogMessage("ScriptableKeithleyDAQ6510") << "done";
 }
 
 void ScriptableKeithleyDAQ6510::waitForTemperatureBelow(unsigned int sensor,
@@ -172,9 +217,11 @@ void ScriptableKeithleyDAQ6510::waitForTemperatureBelow(unsigned int sensor,
   using namespace std::chrono_literals;
 
   keithleyModel_->statusMessage(QString("wait for T(%1) < %2 deg C ...").arg(sensor).arg(temperature));
-  NQLog("keithley") << QString("wait for T(%1) < %2 deg C ...").arg(sensor).arg(temperature);
+  NQLogMessage("ScriptableKeithleyDAQ6510") << QString("wait for T(%1) < %2 deg C ...").arg(sensor).arg(temperature);
 
-  for (int m=0;m<=timeout;++m) {
+  int t = 0;
+
+  while (1) {
 
     QMutexLocker locker(&mutex_);
     double temp = keithleyModel_->getTemperature(sensor);
@@ -182,9 +229,28 @@ void ScriptableKeithleyDAQ6510::waitForTemperatureBelow(unsigned int sensor,
 
     if (temp<temperature) break;
 
-    std::this_thread::sleep_for(60s);
+    for (int s=0;s<60;++s) {
+      if (abortRequested_) {
+        abortRequested_ = false;
+
+        keithleyModel_->statusMessage("execution aborted");
+        NQLogMessage("ScriptableKeithleyDAQ6510") << "execution aborted";
+
+        return;
+      }
+
+      std::this_thread::sleep_for(1s);
+
+      t++;
+      if (t>timeout) {
+        keithleyModel_->statusMessage("timeout");
+        NQLogMessage("ScriptableKeithleyDAQ6510") << "timeout";
+
+        return;
+      }
+    }
   }
 
   keithleyModel_->statusMessage("done");
-  NQLog("keithley") << "done";
+  NQLogMessage("ScriptableKeithleyDAQ6510") << "done";
 }

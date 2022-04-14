@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -25,10 +25,18 @@ class MattermostBot : public QObject
 {
   Q_OBJECT
 public:
+
+  [[deprecated("Use MattermostBot(QString channel, QString username, QString webhook, QObject *parent) instead.")]]
   explicit MattermostBot(QObject *parent = 0);
+
+  [[deprecated("Use MattermostBot(QString channel, QString username, QString webhook, QObject *parent) instead.")]]
   explicit MattermostBot(QString channel, QObject *parent = 0);
+
+  [[deprecated("Use MattermostBot(QString channel, QString username, QString webhook, QObject *parent) instead.")]]
   explicit MattermostBot(QString channel, QString username, QObject *parent = 0);
+
   explicit MattermostBot(QString channel, QString username, QString webhook, QObject *parent = 0);
+
   ~MattermostBot();
 
 public slots:

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -102,6 +102,8 @@ public:
   double getSpeedSetpoint2() const { return SpeedSetpoint2_; }
   double getFlowSetpoint2() const { return FlowSetpoint2_; }
 
+  void statusMessage(const QString & text);
+
 public slots:
 
   // Methods for control and status querying of the device itself, as specified
@@ -195,6 +197,7 @@ signals:
   void informationChanged();
   void alarmsChanged();
   void message(const QString & text);
+  void log(const QString & text);
   void controlStateChanged(bool);
 };
 

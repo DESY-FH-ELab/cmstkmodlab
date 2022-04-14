@@ -43,8 +43,8 @@ target_link_libraries(thermoDAQ2Root
 )
 
 INSTALL(
-    TARGETS thermoDAQ2Root
-    EXPORT Thermo
-    RUNTIME DESTINATION bin
-    ARCHIVE DESTINATION lib
+        TARGETS thermoDAQ2Root
+        EXPORT Thermo
+        RUNTIME DESTINATION bin
+        ARCHIVE DESTINATION lib
 )

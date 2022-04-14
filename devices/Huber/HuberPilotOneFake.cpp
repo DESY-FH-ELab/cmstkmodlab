@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -26,9 +26,20 @@ HuberPilotOneFake::HuberPilotOneFake(const ioport_t ioPort)
  : VHuberPilotOne(ioPort)
 {
   temperatureSetPoint_ = 20.0;
-  externalTemperatureControl_ = false;
+  processTemperatureControl_ = false;
   temperatureControlEnabled_ = false;
   circulatorEnabled_ = false;
+
+  autoPID_ = false;
+  KpInternal_ = 100;
+  TnInternal_ = 123.4;
+  TvInternal_ = 567.8;
+  KpJacket_ = 100;
+  TnJacket_ = 123.4;
+  TvJacket_ = 567.8;
+  KpProcess_ = 100;
+  TnProcess_ = 123.4;
+  TvProcess_ = 567.8;
 }
 
 bool HuberPilotOneFake::SetTemperatureSetPoint(const float temperatureSetPoint)
@@ -61,7 +72,14 @@ float HuberPilotOneFake::GetTemperatureSetPoint()
   return temperatureSetPoint_;
 }
 
-float HuberPilotOneFake::GetBathTemperature()
+float HuberPilotOneFake::GetInternalTemperature()
+{
+  float temp = temperatureSetPoint_;
+  temp += normalDistribution_(randomGenerator_);
+  return temp;
+}
+
+float HuberPilotOneFake::GetProcessTemperature()
 {
   float temp = temperatureSetPoint_;
   temp += normalDistribution_(randomGenerator_);
@@ -71,9 +89,9 @@ float HuberPilotOneFake::GetBathTemperature()
 float HuberPilotOneFake::GetReturnTemperature()
 {
   if (circulatorEnabled_) {
-    return GetBathTemperature() + 2.0;
+    return GetInternalTemperature() + 2.0;
   } else {
-    return GetBathTemperature();
+    return GetInternalTemperature();
   }
 }
 
@@ -87,15 +105,15 @@ int HuberPilotOneFake::GetPower()
   return 500 + 100*normalDistribution_(randomGenerator_);
 }
 
-bool HuberPilotOneFake::SetTemperatureControlMode(bool external)
+bool HuberPilotOneFake::SetTemperatureControlMode(bool process)
 {
-  externalTemperatureControl_ = external;
+  processTemperatureControl_ = process;
   return true;
 }
 
 bool HuberPilotOneFake::GetTemperatureControlMode()
 {
-  return externalTemperatureControl_;
+  return processTemperatureControl_;
 }
 
 bool HuberPilotOneFake::SetTemperatureControlEnabled(bool enabled)
@@ -131,6 +149,116 @@ float HuberPilotOneFake::GetCoolingWaterOutletTemperature()
   if (temperatureControlEnabled_) temp += 1.0;
   if (circulatorEnabled_) temp += 2.0;
   return temp;
+}
+
+bool HuberPilotOneFake::SetAutoPID(bool autoPID)
+{
+  autoPID_ = autoPID;
+  return true;
+}
+
+bool HuberPilotOneFake::GetAutoPID()
+{
+  return autoPID_;
+}
+
+bool HuberPilotOneFake::SetKpInternal(int Kp)
+{
+  KpInternal_ = Kp;
+  return true;
+}
+
+int HuberPilotOneFake::GetKpInternal()
+{
+  return KpInternal_;
+}
+
+bool HuberPilotOneFake::SetTnInternal(float Tn)
+{
+  TnInternal_ = Tn;
+  return true;
+}
+
+float HuberPilotOneFake::GetTnInternal()
+{
+  return TnInternal_;
+}
+
+bool HuberPilotOneFake::SetTvInternal(float Tv)
+{
+  TvInternal_ = Tv;
+  return true;
+}
+
+float HuberPilotOneFake::GetTvInternal()
+{
+  return TvInternal_;
+}
+
+bool HuberPilotOneFake::SetKpJacket(int Kp)
+{
+  KpJacket_ = Kp;
+  return true;
+}
+
+int HuberPilotOneFake::GetKpJacket()
+{
+  return KpJacket_;
+}
+
+bool HuberPilotOneFake::SetTnJacket(float Tn)
+{
+  TnJacket_ = Tn;
+  return true;
+}
+
+float HuberPilotOneFake::GetTnJacket()
+{
+  return TnJacket_;
+}
+
+bool HuberPilotOneFake::SetTvJacket(float Tv)
+{
+  TvJacket_ = Tv;
+  return true;
+}
+
+float HuberPilotOneFake::GetTvJacket()
+{
+  return TvJacket_;
+}
+
+bool HuberPilotOneFake::SetKpProcess(int Kp)
+{
+  KpProcess_ = Kp;
+  return true;
+}
+
+int HuberPilotOneFake::GetKpProcess()
+{
+  return KpProcess_;
+}
+
+bool HuberPilotOneFake::SetTnProcess(float Tn)
+{
+  TnProcess_ = Tn;
+  return true;
+}
+
+float HuberPilotOneFake::GetTnProcess()
+{
+  return TnProcess_;
+}
+
+bool HuberPilotOneFake::SetTvProcess(float Tv)
+{
+  TvProcess_ = Tv;
+  return true;
+}
+
+float HuberPilotOneFake::GetTvProcess()
+{
+  return TvProcess_;
 }
 
 void HuberPilotOneFake::Device_Init()

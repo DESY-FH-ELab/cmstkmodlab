@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -16,14 +16,22 @@
 #include <cmath>
 #include <QMutexLocker>
 
+#include <nqlogger.h>
+
 #include "ScriptableMarta.h"
 
 ScriptableMarta::ScriptableMarta(MartaModel* model,
                                  QObject *parent)
- : QObject(parent),
-   model_(model)
+ : VScriptableDevice(parent),
+   model_(model),
+   abortRequested_(false)
 {
 
+}
+
+void ScriptableMarta::abort()
+{
+  abortRequested_ = true;
 }
 
 void ScriptableMarta::setTemperatureSetPoint(double temperature)
@@ -67,16 +75,43 @@ void ScriptableMarta::waitForTemperatureAbove(float temperature,
 {
   using namespace std::chrono_literals;
 
-  for (int m=0;m<=timeout;++m) {
+  model_->statusMessage(QString("wait for T > %1 deg C ...").arg(temperature));
+  NQLogMessage("ScriptableHuberUnistat525w") << QString("wait for T > %1 deg C ...").arg(temperature);
+
+  int t = 0;
+
+  while (1) {
 
     QMutexLocker locker(&mutex_);
     double temp = model_->getST04CO2();
     locker.unlock();
 
-    if (temp>temperature) break;
+    if (temp>temperature) return;
 
-    std::this_thread::sleep_for(60s);
+    for (int s=0;s<60;++s) {
+      if (abortRequested_) {
+        abortRequested_ = false;
+
+        model_->statusMessage("execution aborted");
+        NQLogMessage("ScriptableMarta") << "execution aborted";
+
+        return;
+      }
+
+      std::this_thread::sleep_for(1s);
+
+      t++;
+      if (t>timeout) {
+        model_->statusMessage("timeout");
+        NQLogMessage("ScriptableMarta") << "timeout";
+
+        return;
+      }
+    }
   }
+
+  model_->statusMessage("done");
+  NQLogMessage("ScriptableMarta") << "done";
 }
 
 void ScriptableMarta::waitForTemperatureBelow(float temperature,
@@ -84,7 +119,12 @@ void ScriptableMarta::waitForTemperatureBelow(float temperature,
 {
   using namespace std::chrono_literals;
 
-  for (int m=0;m<=timeout;++m) {
+  model_->statusMessage(QString("wait for T < %1 deg C ...").arg(temperature));
+  NQLogMessage("ScriptableHuberUnistat525w") << QString("wait for T < %1 deg C ...").arg(temperature);
+
+  int t = 0;
+
+  while (1) {
 
     QMutexLocker locker(&mutex_);
     double temp = model_->getST04CO2();
@@ -92,8 +132,30 @@ void ScriptableMarta::waitForTemperatureBelow(float temperature,
 
     if (temp<temperature) break;
 
-    std::this_thread::sleep_for(60s);
+    for (int s=0;s<60;++s) {
+      if (abortRequested_) {
+        abortRequested_ = false;
+
+        model_->statusMessage("execution aborted");
+        NQLogMessage("ScriptableMarta") << "execution aborted";
+
+        return;
+      }
+
+      std::this_thread::sleep_for(1s);
+
+      t++;
+      if (t>timeout) {
+        model_->statusMessage("timeout");
+        NQLogMessage("ScriptableMarta") << "timeout";
+
+        return;
+      }
+    }
   }
+
+  model_->statusMessage("done");
+  NQLogMessage("ScriptableMarta") << "done";
 }
 
 void ScriptableMarta::waitForStableTemperature(float deltaT,
@@ -102,19 +164,53 @@ void ScriptableMarta::waitForStableTemperature(float deltaT,
 {
   using namespace std::chrono_literals;
 
+  model_->statusMessage(QString("wait for stable T (%1)").arg(deltaT));
+  NQLog("ScriptableHuberUnistat525w") << QString("wait for stable T (%1)").arg(deltaT);
+
+  QMutexLocker locker(&mutex_);
+  double oldTemp = model_->getST04CO2();
+  locker.unlock();
+
+  int t = 0;
   int count = 0;
-  double oldTemp = -999;
-  for (int m=0;m<=timeout;++m) {
+
+  while (1) {
+
+    for (int s=0;s<60;++s) {
+      if (abortRequested_) {
+        abortRequested_ = false;
+
+        model_->statusMessage("execution aborted");
+        NQLogMessage("ScriptableMarta") << "execution aborted";
+
+        return;
+      }
+
+      std::this_thread::sleep_for(1s);
+
+      t++;
+      if (t>timeout) {
+        model_->statusMessage("timeout");
+        NQLogMessage("ScriptableMarta") << "timeout";
+
+        return;
+      }
+    }
 
     QMutexLocker locker(&mutex_);
     double temp = model_->getST04CO2();
     locker.unlock();
 
-    if (fabs(oldTemp-temp)<=deltaT) count++;
+    if (fabs(oldTemp-temp)<=deltaT) {
+      count += 60;
+    } else {
+      count = 0;
+    }
     oldTemp = temp;
     if (count>=delay) break;
-
-    std::this_thread::sleep_for(60s);
   }
+
+  model_->statusMessage("done");
+  NQLogMessage("ScriptableMarta") << "done";
 }
 

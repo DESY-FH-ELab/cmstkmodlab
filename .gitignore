@@ -7,6 +7,9 @@ CMakeCache.txt
 cmake_install.cmake
 *_autogen
 
+CTestTestfile.cmake
+Testing
+
 tkmodlabenv.csh
 tkmodlabenv.sh
 .cproject
@@ -16,3 +19,5 @@ share/assembly/*png
 html/
 .DS_Store
 .orig
+doxygen
+

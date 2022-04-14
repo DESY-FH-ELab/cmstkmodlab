@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -29,6 +29,14 @@ KeithleyDAQ6510Fake::KeithleyDAQ6510Fake( ioport_t port )
       activeChannels_[card-1][channel-1] = false;
     }
   }
+}
+
+void KeithleyDAQ6510Fake::SetChannelMode(unsigned int card, unsigned int channel,
+		ChannelMode_t mode)
+{
+	if (card<1 || card>2) return;
+	if (channel<1 || channel>10) return;
+	channelModes_[card-1][channel-1] = mode;
 }
 
 void KeithleyDAQ6510Fake::ActivateChannel(unsigned int card, unsigned int channel,

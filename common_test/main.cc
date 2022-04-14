@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2019 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -18,6 +18,10 @@
 #include <vector>
 #include <map>
 #include <cmath>
+
+#include <QApplication>
+
+#include <nqlogger.h>
 
 #include <nvector3D.h>
 #include <npoint3D.h>
@@ -39,6 +43,8 @@
 
 #include <MartaModel.h>
 
+#include "CommonTestMainWindow.h"
+
 double imageScale(double focalLength)
 {
   double p0 = -0.0240888;
@@ -48,106 +54,36 @@ double imageScale(double focalLength)
   return p0 + p1 * focalLength + p2 * focalLength * focalLength;
 }
 
-int main(int /* argc */, char ** /* argv */)
+int main(int argc, char ** argv)
 {
+  NQLogger::instance()->addActiveModule("*");
+  NQLogger::instance()->addDestiniation(stdout, NQLog::Debug);
+
+  /*
+  {
+    QApplication app(argc, argv);
+
+    app.setStyle("cleanlooks");
+
+    ApplicationConfig * config = ApplicationConfig::instance();
+    config->append(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2/thermo2.cfg", "main");
+
+    CommonTestMainWindow mainWindow;
+
+    mainWindow.show();
+
+    return app.exec();
+  }
+  */
+
+  /*
   {
     MartaModel *marta = new MartaModel("10.255.21.224:502");
 
     delete marta;
   }
-  
-  /*
-  {
-    ValueHistory<float> history(10, 200);
-
-    for (int i=0;i<=40;++i) {
-      history.push(i);
-
-      std::cout << i << "\t" << history.at(0) << "\t" << history.secondsAgo(30) << std::endl;
-    }
-  }
   */
   
-  /*
-  {
-    ApplicationConfig * config = ApplicationConfig::instance("test.cfg");
-
-    double double1 = config->getValue<double>("double1");
-
-    std::cout << double1 << std::endl;
-
-    double1 = 4.3;
-
-    config->setValue<double>("double1", double1);
-
-    double1 = config->getValue<double>("double1");
-
-    config->safe("testout.cfg");
-  }
-  */
-
-  /*
-  {
-    ApplicationConfig * config = ApplicationConfig::instance("test.cfg");
-
-    std::vector<int> integer1 = config->getValueVector<int>("integer1");
-    std::cout << "integer1: ";
-    for (std::vector<int>::iterator it = integer1.begin();
-        it!=integer1.end();
-        ++it) {
-      std::cout << *it << " ";
-    }
-    std::cout << std::endl;
-
-    config->safe("testout.cfg");
-  }
-  */
-
-  /*
-  {
-    HistoryFifo<double> fifo(5);
-
-    fifo.push(QDateTime::fromString("2017-06-13T09:09:11", Qt::ISODate), 10);
-    fifo.push(QDateTime::fromString("2017-06-13T09:09:12", Qt::ISODate), 20);
-    fifo.push(QDateTime::fromString("2017-06-13T09:09:13", Qt::ISODate), 30);
-    fifo.push(QDateTime::fromString("2017-06-13T09:09:14", Qt::ISODate), 40);
-    fifo.push(QDateTime::fromString("2017-06-13T09:09:15", Qt::ISODate), 50);
-    fifo.push(QDateTime::fromString("2017-06-13T09:09:16", Qt::ISODate), 60);
-    fifo.push(QDateTime::fromString("2017-06-13T09:09:17", Qt::ISODate), 70);
-    fifo.push(QDateTime::fromString("2017-06-13T09:09:18", Qt::ISODate), 80);
-    fifo.push(QDateTime::fromString("2017-06-13T09:09:19", Qt::ISODate), 90);
-
-    for (int i=0;i<fifo.size();++i) {
-      std::cout << fifo.timeAt(i).toString(Qt::ISODate).toStdString() << " : " << fifo.at(i) << std::endl;
-    }
-
-    std::cout << fifo.sizeInSecs() << std::endl;
-    std::cout << fifo.deltaTime(0, 4) << std::endl;
-    std::cout << fifo.delta(0, 4) << std::endl;
-    std::cout << fifo.gradient(0, 4) << std::endl;
-  }
-  */
-
-  /*
-  {
-    Fifo<int> fifo(5);
-
-    fifo.push(1);
-    fifo.push(2); // 1
-    fifo.push(3); // 1
-    fifo.push(4); // 1
-    fifo.push(5); // 1
-    fifo.push(6); // 2
-    fifo.push(7); // 3
-    fifo.push(8); // 4
-
-    for (int i=0;i<fifo.size();++i) {
-      std::cout << fifo.at(i) << " ";
-    }
-    std::cout << std::endl;
-  }
-  */
-
   /*
   {
     double f = 50.0;
@@ -454,6 +390,18 @@ int main(int /* argc */, char ** /* argv */)
     MattermostBot bot("test", "cmstkmodlab");
 
     bot.postMessage("message from cmstkmodlab");
+  }
+  */
+
+  /*
+  {
+    ApplicationConfig * config = ApplicationConfig::instance();
+
+    config->append("test1.cfg", "test1");
+    config->append("test2.cfg", "test2");
+
+    config->save();
+    config->saveAs("testout.cfg", "test");
   }
   */
 }

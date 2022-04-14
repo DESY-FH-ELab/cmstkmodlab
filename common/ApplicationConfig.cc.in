@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -17,162 +17,613 @@
 
 const std::string Config::CMSTkModLabBasePath("@basepath@");
 
-ApplicationConfig* ApplicationConfig::instance_ = NULL;
-
-ApplicationConfig::ApplicationConfig(const std::string filename)
+bool operator<(const ApplicationConfig::FullKey& k1, const ApplicationConfig::FullKey& k2)
 {
-  ApplicationConfigReader reader(filename);
-  reader.fill(keyvalueMap_);
+  if (k1.alias == k2.alias) {
+    return k1.key < k2.key;
+  } else {
+    return k1.alias < k2.alias;
+  }
 }
 
-ApplicationConfig* ApplicationConfig::instance(const std::string filename)
+bool operator<(const ApplicationConfig::FullKey& fk, const ApplicationConfig::ShortKey& sk)
+{
+  if (fk.alias == sk.alias) {
+    return fk.key < sk.key;
+  }
+  return fk.alias < sk.alias;
+}
+
+bool operator<(const ApplicationConfig::ShortKey& sk, const ApplicationConfig::FullKey& fk)
+{
+  if (sk.alias == fk.alias) {
+    return sk.key < fk.key;
+  }
+  return sk.alias < fk.alias;
+}
+
+ApplicationConfig* ApplicationConfig::instance_ = NULL;
+
+ApplicationConfig::ApplicationConfig(QObject *parent)
+ : QObject(parent)
+{
+
+}
+
+ApplicationConfig* ApplicationConfig::instance(QObject *parent)
 {
   if (instance_==NULL) {
+    instance_ = new ApplicationConfig(parent);
+  }
+  return instance_;
+}
+
+ApplicationConfig* ApplicationConfig::instance(const std::string filename,
+  const std::string alias, QObject *parent)
+{
+  if (instance_==NULL) {
+    instance_ = new ApplicationConfig(parent);
     if (!filename.empty()) {
-      instance_ = new ApplicationConfig(filename);
+      instance_->append(filename, alias);
     }
   }
   return instance_;
 }
 
-void ApplicationConfig::safe(const std::string filename)
+void ApplicationConfig::append(const std::string& filename, const std::string& alias)
 {
-  ApplicationConfigWriter writer(filename);
-  writer.write(keyvalueMap_);
+  ApplicationConfigReader reader(filename, alias);
+  reader.fill(keyvalueMap_);
+  
+  emit structureChanged();
+  emit valueChanged();
 }
 
-void ApplicationConfig::issueKeyError(std::string const& key) const
+void ApplicationConfig::save()
+{
+  std::map<std::string,std::string> filemap;
+  for (const auto & kv : keyvalueMap_) {
+  	if (kv.first.alias=="*") continue;
+  	filemap[kv.first.filename] = kv.first.alias;
+  }
+
+  for (const auto & kv : filemap) {
+  	ApplicationConfigWriter writer(kv.first, kv.second);
+    writer.write(keyvalueMap_);
+  }
+}
+
+void ApplicationConfig::saveAs(const std::string& filename, const std::string& alias)
+{
+  storage_t tempKeyValueMap;
+
+  FullKey fk;
+  fk.filename = filename;
+  fk.alias = alias;
+
+  for (const auto & kv : keyvalueMap_) {
+  	if (kv.first.alias!=alias) continue;
+
+  	fk.key = kv.first.key;
+  	tempKeyValueMap[fk] = kv.second;
+  }
+
+  ApplicationConfigWriter writer(filename, alias);
+  writer.write(tempKeyValueMap);
+
+  for (const auto & kv : keyvalueMap_) {
+    if (kv.first.alias!=alias)
+    {
+      fk.filename = kv.first.filename;
+      fk.alias = kv.first.alias;
+      fk.key = kv.first.key;
+
+      tempKeyValueMap[fk] = kv.second;
+    }
+  }
+
+  keyvalueMap_ = tempKeyValueMap;
+}
+
+void ApplicationConfig::issueKeyError(const ShortKey& sk) const
 {
   std::cerr << " [issueKeyError::getValue] ** ERROR: failed to get value for key: "
-      << key << "." << std::endl;
+      << sk.alias << "." << sk.key << "." << std::endl;
 
   QMessageBox::critical(0,
                         QString("[ApplicationConfigReader::issueKeyError]"),
-                        QString("Failed to find value for key: \"%1\"\n.").arg( QString( key.c_str() ) ),
+                        QString("Failed to find value for key: \"%1.%2\"\n.").arg(QString(sk.alias.c_str())).arg(QString(sk.key.c_str())),
                         QMessageBox::Ok);
 }
 
-template <> std::string ApplicationConfig::getValue(std::string const& key) const
+template <>
+std::string ApplicationConfig::getValue(const ApplicationConfig::ShortKey& sk) const
 {
-  std::multimap<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
   if (it!=keyvalueMap_.end()) {
-    return it->second;
+    return it->second.front();
   } else {
-    issueKeyError(key);
+    issueKeyError(sk);
   }
   return std::string();
 }
 
-template <> std::vector<std::string> ApplicationConfig::getValueVector(std::string const& key) const
+template <>
+std::string ApplicationConfig::getValue(const std::string& key) const
+{
+  ShortKey sk = { "*", key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    return it->second.front();
+  } else {
+    issueKeyError(sk);
+  }
+  return std::string();
+}
+
+template <>
+std::string ApplicationConfig::getValue(const std::string& alias,
+    const std::string& key) const
+{
+  ShortKey sk = { alias, key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    return it->second.front();
+  } else {
+    issueKeyError(sk);
+  }
+  return std::string();
+}
+
+template <>
+QString ApplicationConfig::getValue(const ApplicationConfig::ShortKey& sk) const
+{
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    return QString(it->second.front().c_str());
+  } else {
+    issueKeyError(sk);
+  }
+  return QString();
+}
+
+template <>
+QString ApplicationConfig::getValue(const std::string& key) const
+{
+  ShortKey sk = { "*", key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    return QString(it->second.front().c_str());
+  } else {
+    issueKeyError(sk);
+  }
+  return QString();
+}
+
+template <>
+QString ApplicationConfig::getValue(const std::string& alias,
+    const std::string& key) const
+{
+  ShortKey sk = { alias, key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    return QString(it->second.front().c_str());
+  } else {
+    issueKeyError(sk);
+  }
+  return QString();
+}
+
+template <>
+std::vector<std::string> ApplicationConfig::getValueVector(const ShortKey& sk) const
 {
   std::vector<std::string> returnVector;
-  std::pair<std::multimap<std::string,std::string>::const_iterator,
-            std::multimap<std::string,std::string>::const_iterator> ret;
-  ret = keyvalueMap_.equal_range(key);
-  for (std::multimap<std::string,std::string>::const_iterator it=ret.first; it!=ret.second; ++it) {
-    returnVector.push_back(it->second);
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    returnVector = it->second;
+  } else {
+    issueKeyError(sk);
   }
   return returnVector;
 }
 
-template <> std::string ApplicationConfig::getValue(std::string const& key,
-                                                    std::string defaultValue) const
+template <>
+std::vector<std::string> ApplicationConfig::getValueVector(const std::string& key) const
 {
-  std::multimap<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
+  std::vector<std::string> returnVector;
+  ShortKey sk = { "*", key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
   if (it!=keyvalueMap_.end()) {
-    return it->second;
+    returnVector = it->second;
   } else {
-    return defaultValue;
+    issueKeyError(sk);
   }
-  return std::string();
+  return returnVector;
 }
 
-template <> int ApplicationConfig::getValue(std::string const& key) const
+template <>
+std::vector<std::string> ApplicationConfig::getValueVector(const std::string& alias,
+    const std::string& key) const
+{
+  std::vector<std::string> returnVector;
+  ShortKey sk = { alias, key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    returnVector = it->second;
+  } else {
+    issueKeyError(sk);
+  }
+  return returnVector;
+}
+
+template <>
+std::string ApplicationConfig::getDefaultValue(const ApplicationConfig::ShortKey& sk,
+    std::string defaultValue) const
+{
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    return it->second.front();
+  }
+  return defaultValue;
+}
+
+template <>
+std::string ApplicationConfig::getDefaultValue(const std::string& key,
+    std::string defaultValue) const
+{
+  ShortKey sk = { "*", key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    return it->second.front();
+  }
+  return defaultValue;
+}
+
+template <>
+std::string ApplicationConfig::getDefaultValue(const std::string& alias,
+    const std::string& key,
+    std::string defaultValue) const
+{
+  ShortKey sk = { alias, key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    return it->second.front();
+  }
+  return defaultValue;
+}
+
+template <>
+int ApplicationConfig::getValue(const ApplicationConfig::ShortKey& sk) const
 {
   int returnValue = 0;
-  std::multimap<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
   if (it!=keyvalueMap_.end()) {
-    std::istringstream iss(it->second.c_str(), std::istringstream::in);
+    std::istringstream iss(it->second.front().c_str(), std::istringstream::in);
     iss >> std::setbase(0) >> returnValue;
   } else {
-    issueKeyError(key);
+    issueKeyError(sk);
   }
   return returnValue;
 }
 
-template <> std::vector<int> ApplicationConfig::getValueVector(std::string const& key) const
+template <>
+int ApplicationConfig::getValue(const std::string& key) const
+{
+  int returnValue = 0;
+  ShortKey sk = { "*", key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    std::istringstream iss(it->second.front().c_str(), std::istringstream::in);
+    iss >> std::setbase(0) >> returnValue;
+  } else {
+    issueKeyError(sk);
+  }
+  return returnValue;
+}
+
+template <>
+int ApplicationConfig::getValue(const std::string& alias,
+    const std::string& key) const
+{
+  int returnValue = 0;
+  ShortKey sk = { alias, key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    std::istringstream iss(it->second.front().c_str(), std::istringstream::in);
+    iss >> std::setbase(0) >> returnValue;
+  } else {
+    issueKeyError(sk);
+  }
+  return returnValue;
+}
+
+template <>
+std::vector<int> ApplicationConfig::getValueVector(const ApplicationConfig::ShortKey& sk) const
 {
   int returnValue = 0;
   std::vector<int> returnVector;
-  std::pair<std::multimap<std::string,std::string>::const_iterator,
-            std::multimap<std::string,std::string>::const_iterator> ret;
-  ret = keyvalueMap_.equal_range(key);
-  for (std::multimap<std::string,std::string>::const_iterator it=ret.first; it!=ret.second; ++it) {
-    std::istringstream iss(it->second.c_str(), std::istringstream::in);
-    iss >> std::setbase(0) >> returnValue;
-    returnVector.push_back(returnValue);
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+  	for (auto & v : it->second) {
+  	  std::istringstream iss(v.c_str(), std::istringstream::in);
+      iss >> std::setbase(0) >> returnValue;
+      returnVector.push_back(returnValue);
+  	}
+  } else {
+    issueKeyError(sk);
   }
   return returnVector;
 }
 
-template <> int ApplicationConfig::getValue(std::string const& key,
-                                            int defaultValue) const
+template <>
+std::vector<int> ApplicationConfig::getValueVector(const std::string& key) const
 {
   int returnValue = 0;
-  std::multimap<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
+  std::vector<int> returnVector;
+  ShortKey sk = { "*", key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
   if (it!=keyvalueMap_.end()) {
-    std::istringstream iss(it->second.c_str(), std::istringstream::in);
-    iss >> std::setbase(0) >> returnValue;
+  	for (auto & v : it->second) {
+  	  std::istringstream iss(v.c_str(), std::istringstream::in);
+      iss >> std::setbase(0) >> returnValue;
+      returnVector.push_back(returnValue);
+  	}
   } else {
-    returnValue = defaultValue;
+    issueKeyError(sk);
+  }
+  return returnVector;
+}
+
+template <>
+std::vector<int> ApplicationConfig::getValueVector(const std::string& alias,
+    const std::string& key) const
+{
+  int returnValue = 0;
+  std::vector<int> returnVector;
+  ShortKey sk = { alias, key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+  	for (auto & v : it->second) {
+  	  std::istringstream iss(v.c_str(), std::istringstream::in);
+      iss >> std::setbase(0) >> returnValue;
+      returnVector.push_back(returnValue);
+  	}
+  } else {
+    issueKeyError(sk);
+  }
+  return returnVector;
+}
+
+template <>
+int ApplicationConfig::getDefaultValue(const ApplicationConfig::ShortKey& sk,
+    int defaultValue) const
+{
+  int returnValue = defaultValue;
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    std::istringstream iss(it->second.front().c_str(), std::istringstream::in);
+    iss >> std::setbase(0) >> returnValue;
   }
   return returnValue;
 }
 
-template <> unsigned int ApplicationConfig::getValue(std::string const& key) const
+template <>
+int ApplicationConfig::getDefaultValue(const std::string& key,
+    int defaultValue) const
+{
+  int returnValue = defaultValue;
+  ShortKey sk = { "*", key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    std::istringstream iss(it->second.front().c_str(), std::istringstream::in);
+    iss >> std::setbase(0) >> returnValue;
+  }
+  return returnValue;
+}
+
+template <>
+int ApplicationConfig::getDefaultValue(const std::string& alias,
+    std::string const& key,
+    int defaultValue) const
+{
+  int returnValue = defaultValue;
+  ShortKey sk = { alias, key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    std::istringstream iss(it->second.front().c_str(), std::istringstream::in);
+    iss >> std::setbase(0) >> returnValue;
+  }
+  return returnValue;
+}
+
+template <>
+unsigned int ApplicationConfig::getValue(const ApplicationConfig::ShortKey& sk) const
 {
   unsigned int returnValue = 0;
-  std::multimap<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
   if (it!=keyvalueMap_.end()) {
-    std::istringstream iss(it->second.c_str(), std::istringstream::in);
+    std::istringstream iss(it->second.front().c_str(), std::istringstream::in);
     iss >> std::setbase(0) >> returnValue;
   } else {
-    issueKeyError(key);
+    issueKeyError(sk);
   }
   return returnValue;
 }
 
-template <> std::vector<unsigned int> ApplicationConfig::getValueVector(std::string const& key) const
+template <>
+unsigned int ApplicationConfig::getValue(const std::string& key) const
+{
+  unsigned int returnValue = 0;
+  ShortKey sk = { "*", key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    std::istringstream iss(it->second.front().c_str(), std::istringstream::in);
+    iss >> std::setbase(0) >> returnValue;
+  } else {
+    issueKeyError(sk);
+  }
+  return returnValue;
+}
+
+template <>
+unsigned int ApplicationConfig::getValue(const std::string& alias,
+    const std::string& key) const
+{
+  unsigned int returnValue = 0;
+  ShortKey sk = { alias, key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    std::istringstream iss(it->second.front().c_str(), std::istringstream::in);
+    iss >> std::setbase(0) >> returnValue;
+  } else {
+    issueKeyError(sk);
+  }
+  return returnValue;
+}
+
+template <>
+std::vector<unsigned int> ApplicationConfig::getValueVector(const ApplicationConfig::ShortKey& sk) const
 {
   unsigned int returnValue = 0;
   std::vector<unsigned int> returnVector;
-  std::pair<std::multimap<std::string,std::string>::const_iterator,
-            std::multimap<std::string,std::string>::const_iterator> ret;
-  ret = keyvalueMap_.equal_range(key);
-  for (std::multimap<std::string,std::string>::const_iterator it=ret.first; it!=ret.second; ++it) {
-    std::istringstream iss(it->second.c_str(), std::istringstream::in);
-    iss >> std::setbase(0) >> returnValue;
-    returnVector.push_back(returnValue);
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+  	for (auto & v : it->second) {
+  	  std::istringstream iss(v.c_str(), std::istringstream::in);
+      iss >> std::setbase(0) >> returnValue;
+      returnVector.push_back(returnValue);
+  	}
+  } else {
+    issueKeyError(sk);
   }
   return returnVector;
 }
 
-template <> unsigned int ApplicationConfig::getValue(std::string const& key,
-                                                     unsigned int defaultValue) const
+template <>
+std::vector<unsigned int> ApplicationConfig::getValueVector(const std::string& key) const
 {
   unsigned int returnValue = 0;
-  std::multimap<std::string,std::string>::const_iterator it = keyvalueMap_.find(key);
+  std::vector<unsigned int> returnVector;
+  ShortKey sk = { "*", key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
   if (it!=keyvalueMap_.end()) {
-    std::istringstream iss(it->second.c_str(), std::istringstream::in);
-    iss >> std::setbase(0) >> returnValue;
+  	for (auto & v : it->second) {
+  	  std::istringstream iss(v.c_str(), std::istringstream::in);
+      iss >> std::setbase(0) >> returnValue;
+      returnVector.push_back(returnValue);
+  	}
   } else {
-    returnValue = defaultValue;
+    issueKeyError(sk);
+  }
+  return returnVector;
+}
+
+template <>
+std::vector<unsigned int> ApplicationConfig::getValueVector(const std::string& alias,
+    const std::string& key) const
+{
+  unsigned int returnValue = 0;
+  std::vector<unsigned int> returnVector;
+  ShortKey sk = { alias, key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+  	for (auto & v : it->second) {
+  	  std::istringstream iss(v.c_str(), std::istringstream::in);
+      iss >> std::setbase(0) >> returnValue;
+      returnVector.push_back(returnValue);
+  	}
+  } else {
+    issueKeyError(sk);
+  }
+  return returnVector;
+}
+
+template <>
+unsigned int ApplicationConfig::getDefaultValue(const ApplicationConfig::ShortKey& sk,
+    unsigned int defaultValue) const
+{
+  unsigned int returnValue = defaultValue;
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    std::istringstream iss(it->second.front().c_str(), std::istringstream::in);
+    iss >> std::setbase(0) >> returnValue;
   }
   return returnValue;
 }
 
-template <> void ApplicationConfig::setValue(std::string const& key, std::string value)
+template <>
+unsigned int ApplicationConfig::getDefaultValue(const std::string& key,
+    unsigned int defaultValue) const
 {
-  keyvalueMap_.erase(key);
-  keyvalueMap_.insert(std::make_pair(key, value));
+  unsigned int returnValue = defaultValue;
+  ShortKey sk = { "*", key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    std::istringstream iss(it->second.front().c_str(), std::istringstream::in);
+    iss >> std::setbase(0) >> returnValue;
+  }
+  return returnValue;
+}
+
+template <>
+unsigned int ApplicationConfig::getDefaultValue(const std::string& alias,
+    std::string const& key,
+    unsigned int defaultValue) const
+{
+  unsigned int returnValue = defaultValue;
+  ShortKey sk = { alias, key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    std::istringstream iss(it->second.front().c_str(), std::istringstream::in);
+    iss >> std::setbase(0) >> returnValue;
+  }
+  return returnValue;
+}
+
+template <>
+void ApplicationConfig::setValue(const ApplicationConfig::ShortKey& sk,
+    std::string value)
+{
+  storage_t::iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    std::vector<std::string> values;
+    values.push_back(value);
+    it->second = values;
+    emit valueChanged();
+  } else {
+    issueKeyError(sk);
+  }
+}
+
+template <>
+void ApplicationConfig::setValue(const std::string& key,
+    std::string value)
+{
+  ShortKey sk = { "*", key };
+  storage_t::iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    std::vector<std::string> values;
+    values.push_back(value);
+    it->second = values;
+    emit valueChanged();
+  } else {
+    issueKeyError(sk);
+  }
+}
+
+template <>
+void ApplicationConfig::setValue(const std::string& alias,
+    const std::string& key,
+    std::string value)
+{
+  ShortKey sk = { alias, key };
+  storage_t::iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+    std::vector<std::string> values;
+    values.push_back(value);
+    it->second = values;
+    emit valueChanged();
+  } else {
+    issueKeyError(sk);
+  }
 }

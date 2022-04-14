@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -25,11 +25,15 @@ class KeithleyDAQ6510 : public VKeithleyDAQ6510
 {
  public:
   KeithleyDAQ6510( ioport_t );
+  ~KeithleyDAQ6510( );
 
   bool DeviceAvailable() const { return isDeviceAvailable_; }
 
   void SetTime(int year, int month, int day,
                int hour, int minute, int second);
+
+  void SetChannelMode(unsigned int card, unsigned int channel,
+  		ChannelMode_t mode);
 
   void ActivateChannel(unsigned int card, unsigned int channel,
                        bool active);
@@ -38,22 +42,8 @@ class KeithleyDAQ6510 : public VKeithleyDAQ6510
   void Scan();
   void GetScanData(reading_t & data);
 
-  /*
-  void SetActiveChannels( std::string );
-  void SetActiveChannels( channels_t );
-  void AddActiveChannels( std::string );
-  void DisableActiveChannels( std::string );
-  const reading_t Scan( void );
-  void Dump( void ) const;
-  bool IsScanOk( void ) { return isScanOk_; }
-  void Reset();
-
-  // delay time constants (usec)
-  // delay for 1 channel scan -- delay for 10 channel scan
-  static constexpr int DelayMin = 1700000;
-  static constexpr int DelayMax = 7000000;
-  */
-
+  void ShutDown();
+  
   float GetScanDuration() const;
 
  private:
@@ -63,15 +53,12 @@ class KeithleyDAQ6510 : public VKeithleyDAQ6510
   
   void StripBuffer(char*) const;
   void DeviceInit();
+
+  bool deviceChannelsSet_;
   void DeviceSetChannels();
 
-  /*
-  bool isDebug_;
-  bool isScanOk_;
-  unsigned int uSecDelay_;
-  
-  void CalculateDelay( void );
-  */
+  std::map<unsigned int, unsigned int> sensorScanCountMap_;
+  unsigned int GetSensorFromScanCount(unsigned int scanCount);
 };
 
 #endif

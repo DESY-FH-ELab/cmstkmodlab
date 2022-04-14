@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -22,7 +22,6 @@
 #include <QTimer>
 
 #include "DeviceState.h"
-#include "Ringbuffer.h"
 
 #ifdef USE_FAKEIO
 #include "devices/Agilent/AgilentTwisTorr304Fake.h"

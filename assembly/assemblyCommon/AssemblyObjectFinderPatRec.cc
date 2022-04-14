@@ -11,10 +11,8 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <nqlogger.h>
-#include <ApplicationConfig.h>
 
 #include <AssemblyObjectFinderPatRec.h>
-#include <AssemblyParameters.h>
 #include <AssemblyUtilities.h>
 
 #include <iostream>
@@ -35,6 +33,8 @@ AssemblyObjectFinderPatRec::AssemblyObjectFinderPatRec(AssemblyThresholder* cons
   QObject(parent),
 
   thresholder_(thresholder),
+
+  config_(nullptr),
 
   output_dir_path_   (output_dir_path   .toStdString()),
   output_subdir_name_(output_subdir_name.toStdString()),
@@ -58,8 +58,8 @@ AssemblyObjectFinderPatRec::AssemblyObjectFinderPatRec(AssemblyThresholder* cons
   connect(this, SIGNAL(template_matching_request(Configuration, cv::Mat, cv::Mat, cv::Mat)), this, SLOT(template_matching(Configuration, cv::Mat, cv::Mat, cv::Mat)));
   // -----------
 
-  ApplicationConfig* config = ApplicationConfig::instance();
-  if(config == nullptr)
+  config_ = ApplicationConfig::instance();
+  if(config_ == nullptr)
   {
     NQLog("AssemblyObjectFinderPatRec", NQLog::Fatal) << "initialization error"
        << ": ApplicationConfig::instance() not initialized (null pointer), exiting constructor";
@@ -67,8 +67,8 @@ AssemblyObjectFinderPatRec::AssemblyObjectFinderPatRec(AssemblyThresholder* cons
     return;
   }
 
-  mm_per_pixel_row_ = config->getValue<double>("mm_per_pixel_row");
-  mm_per_pixel_col_ = config->getValue<double>("mm_per_pixel_col");
+  mm_per_pixel_row_ = config_->getValue<double>("main", "mm_per_pixel_row");
+  mm_per_pixel_col_ = config_->getValue<double>("main", "mm_per_pixel_col");
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Debug) << "constructed";
 }
@@ -627,9 +627,7 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
   //   in order to convert this to a normal XY ref-frame,
   //   we invert the sign of the value on the Y-axis.
   //
-  const AssemblyParameters* const params = AssemblyParameters::instance(false);
-
-  const double angle_FromCameraXYtoRefFrameXY_deg = params->get("AngleOfCameraFrameInRefFrame_dA");
+  const double angle_FromCameraXYtoRefFrameXY_deg = config_->getValue<double>("parameters", "AngleOfCameraFrameInRefFrame_dA");
 
   const double dX_0 = +1.0 * (best_matchLoc.x - (img_master_copy.cols / 2.0)) * mm_per_pixel_col_;
   const double dY_0 = -1.0 * (best_matchLoc.y - (img_master_copy.rows / 2.0)) * mm_per_pixel_row_;

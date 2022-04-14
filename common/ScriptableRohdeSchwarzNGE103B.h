@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2019 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -33,12 +33,10 @@ public slots:
   QScriptValue getVoltage(int channel);
   void setVoltage(int channel, float voltage);
   QScriptValue getMeasuredVoltage(int channel);
-  QScriptValue getMeasuredVoltageHistory(int channel, int secondsAgo);
 
   QScriptValue getCurrent(int channel);
   void setCurrent(int channel, float current);
   QScriptValue getMeasuredCurrent(int channel);
-  QScriptValue getMeasuredCurrentHistory(int channel, int secondsAgo);
 
   QScriptValue getEasyRampDuration(int channel);
   void setEasyRampDuration(int channel, float voltage);

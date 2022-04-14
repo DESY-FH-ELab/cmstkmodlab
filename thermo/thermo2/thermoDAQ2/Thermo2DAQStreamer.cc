@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2019 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -54,8 +54,8 @@ void Thermo2DAQStreamer::daqStateChanged(bool state)
     QDateTime dt = QDateTime::currentDateTime().toUTC();
 
     ApplicationConfig* config = ApplicationConfig::instance();
-    QString dataPath(config->getValue<std::string>("DataPath").c_str());
-    QString dataGroup(config->getValue<std::string>("DataGroup").c_str());
+    QString dataPath(config->getValue<std::string>("main", "DataPath").c_str());
+    QString dataGroup(config->getValue<std::string>("main", "DataGroup").c_str());
 
     QString measurementDirPath(dataPath + "/%1");
     currentDir_.setPath(measurementDirPath.arg(dt.toString("yyyyMMdd")));

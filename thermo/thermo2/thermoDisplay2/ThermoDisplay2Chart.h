@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -129,6 +129,27 @@ class ThermoDisplay2CurrentChart : public ThermoDisplay2Chart
 public:
 
   explicit ThermoDisplay2CurrentChart();
+
+  void addSeries(QAbstractSeries *series);
+
+  void refreshAxes();
+
+public slots:
+
+  void leftYAxisDoubleClicked();
+  void refreshYAxis();
+
+protected:
+
+  ThermoDisplay2ValueAxis *axisY_;
+};
+
+class ThermoDisplay2PowerChart : public ThermoDisplay2Chart
+{
+  Q_OBJECT
+public:
+
+  explicit ThermoDisplay2PowerChart();
 
   void addSeries(QAbstractSeries *series);
 

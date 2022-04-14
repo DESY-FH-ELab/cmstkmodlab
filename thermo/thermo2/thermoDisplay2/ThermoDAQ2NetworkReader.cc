@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -71,14 +71,16 @@ void ThermoDAQ2NetworkReader::processHuberUnistat525wControl(QXmlStreamReader& x
 
 void ThermoDAQ2NetworkReader::processHuberUnistat525wInfo(QXmlStreamReader& xml)
 {
-  float Bath = xml.attributes().value("Bath").toString().toFloat();
+  float Internal = xml.attributes().value("Internal").toString().toFloat();
+  float Process = xml.attributes().value("Process").toString().toFloat();
   float Return = xml.attributes().value("Return").toString().toFloat();
   float Pressure = xml.attributes().value("Pressure").toString().toFloat();
   int Power = xml.attributes().value("Power").toString().toInt();
   float CWI = xml.attributes().value("CWI").toString().toFloat();
   float CWO = xml.attributes().value("CWO").toString().toFloat();
 
-  measurement_.u525wBathTemperature_ = Bath;
+  measurement_.u525wInternalTemperature_ = Internal;
+  measurement_.u525wProcessTemperature_ = Process;
   measurement_.u525wReturnTemperature_ = Return;
   measurement_.u525wPumpPressure_ = Pressure;
   measurement_.u525wPower_ = Power;
@@ -229,6 +231,18 @@ void ThermoDAQ2NetworkReader::processMartaAlarms(QXmlStreamReader& xml)
   }
 }
 
+void ThermoDAQ2NetworkReader::processAgilentTwisTorr304(QXmlStreamReader& xml)
+{
+  // NQLogDebug("ThermoDAQ2NetworkReader") << "processAgilentTwisTorr304(QXmlStreamReader& xml)";
+
+  QString time = xml.attributes().value("time").toString();
+  measurement_.dt = QDateTime::fromString(time, Qt::ISODate);
+  measurement_.agilentState_ = xml.attributes().value("State").toString().toInt();
+  measurement_.agilentPumpState_ = xml.attributes().value("PumpState").toString().toInt();
+  measurement_.agilentPumpStatus_ = xml.attributes().value("PumpStatus").toString().toInt();
+  measurement_.agilentErrorCode_ = xml.attributes().value("ErrorCode").toString().toInt();
+}
+
 void ThermoDAQ2NetworkReader::processLeyboldGraphixOne(QXmlStreamReader& xml)
 {
   // NQLogDebug("ThermoDAQ2NetworkReader") << "processLeyboldGraphixOne(QXmlStreamReader& xml)";
@@ -236,7 +250,7 @@ void ThermoDAQ2NetworkReader::processLeyboldGraphixOne(QXmlStreamReader& xml)
   QString time = xml.attributes().value("time").toString();
   measurement_.dt = QDateTime::fromString(time, Qt::ISODate);
   measurement_.leyboldState_ = xml.attributes().value("State").toString().toInt();
-  measurement_.leyboldPressure_ = xml.attributes().value("Pressure").toString().toDouble();
+  measurement_.leyboldPressure_ = xml.attributes().value("Pressure").toString().toFloat();
 }
 
 void ThermoDAQ2NetworkReader::processRohdeSchwarzNGE103B(QXmlStreamReader& xml)
@@ -334,12 +348,16 @@ void ThermoDAQ2NetworkReader::processLine(QString& line)
         processMartaAlarms(xml);
       }
 
+      if (xml.name()=="AgilentTwisTorr304") {
+      	processAgilentTwisTorr304(xml);
+      }
+
       if (xml.name()=="LeyboldGraphixOne") {
-        processLeyboldGraphixOne(xml);
+      	processLeyboldGraphixOne(xml);
       }
 
       if (xml.name()=="RohdeSchwarzNGE103B") {
-        processRohdeSchwarzNGE103B(xml);
+      	processRohdeSchwarzNGE103B(xml);
       }
       if (xml.name()=="RohdeSchwarzNGE103BChannel") {
         processRohdeSchwarzNGE103BChannel(xml);

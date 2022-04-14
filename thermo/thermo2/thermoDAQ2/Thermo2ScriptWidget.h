@@ -69,6 +69,8 @@ protected:
   Thermo2ScriptEdit* scriptEditor_;
   Thermo2MessageDisplay* messageDisplay_;
 
+  QString scriptDirectory_;
+
 protected slots:
 
   void openScriptButtonClicked();
@@ -80,6 +82,8 @@ protected slots:
   void insertSnippetButtonClicked();
 
   void scriptChanged();
+
+  void controlStateChanged(bool);
 };
 
 #endif // THERMO2SCRIPTWIDGET_H

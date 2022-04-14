@@ -29,9 +29,9 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
   connect(QApplication::instance(), SIGNAL(aboutToQuit()), this, SLOT(quit()));
 
   lStepExpressModel_ = new LStepExpressModel(
-    config->getValue<std::string>("LStepExpressDevice"),
-    config->getValue<std::string>("LStepExpressDevice_ver"),
-    config->getValue<std::string>("LStepExpressDevice_iver"),
+    config->getValue<std::string>("main", "LStepExpressDevice"),
+    config->getValue<std::string>("main", "LStepExpressDevice_ver"),
+    config->getValue<std::string>("main", "LStepExpressDevice_iver"),
     1000,
     1000
   );
@@ -42,7 +42,7 @@ MCommanderMainWindow::MCommanderMainWindow(QWidget *parent)
   //lStepExpressSettings_->moveToThread(motionThread_);
   motionThread_->start();
 
-  laserModel_ = new LaserModel(config->getValue<std::string>("KeyenceDevice").c_str());
+  laserModel_ = new LaserModel(config->getValue<std::string>("main", "KeyenceDevice").c_str());
   laserThread_ = new LaserThread(this);
   laserModel_->moveToThread(laserThread_);
   laserThread_->start();

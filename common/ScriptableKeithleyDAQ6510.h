@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -17,14 +17,18 @@
 #include <QMutex>
 #include <QScriptValue>
 
+#include <VScriptableDevice.h>
+
 #include <KeithleyDAQ6510Model.h>
 
-class ScriptableKeithleyDAQ6510 : public QObject
+class ScriptableKeithleyDAQ6510 : public VScriptableDevice
 {
   Q_OBJECT
 public:
   explicit ScriptableKeithleyDAQ6510(KeithleyDAQ6510Model* keithleyModel,
                                      QObject *parent = 0);
+
+  void abort();
 
 public slots:
 
@@ -46,6 +50,8 @@ public slots:
 
 protected:
   KeithleyDAQ6510Model* keithleyModel_;
+
+  bool abortRequested_;
 
   // For thread safety
   QMutex mutex_;

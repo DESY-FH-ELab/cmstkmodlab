@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -270,6 +270,11 @@ void MartaModel::setDeviceEnabled(bool enabled)
 void MartaModel::setControlsEnabled(bool enabled)
 {
   emit controlStateChanged(enabled);
+}
+
+void MartaModel::statusMessage(const QString & text)
+{
+  emit message(text);
 }
 
 void MartaModel::setStartChiller(bool value)

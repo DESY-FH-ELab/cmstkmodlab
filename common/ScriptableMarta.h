@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -17,14 +17,18 @@
 #include <QMutex>
 #include <QScriptValue>
 
+#include <VScriptableDevice.h>
+
 #include <MartaModel.h>
 
-class ScriptableMarta : public QObject
+class ScriptableMarta : public VScriptableDevice
 {
   Q_OBJECT
 public:
   explicit ScriptableMarta(MartaModel* model,
-                                      QObject *parent = 0);
+      QObject *parent = 0);
+
+  void abort();
 
 public slots:
 
@@ -48,6 +52,8 @@ public slots:
 protected:
 
   MartaModel* model_;
+
+  bool abortRequested_;
 
   // For thread safety
   QMutex mutex_;
