@@ -119,6 +119,8 @@ class AssemblyObjectAlignerView : public QWidget
   void set_alignmentMode_PSP();
   void set_alignmentMode_PSS();
 
+  void update_templates(const bool);
+
  signals:
 
   void configuration(AssemblyObjectAligner::Configuration);
