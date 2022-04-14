@@ -512,6 +512,9 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   connect(button_moveRelRefDist13_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist13()));
   connect(this , SIGNAL(click_moveByRelRefDist(int)), this, SLOT(askConfirmMoveByRelRefDist(int)));
 
+  connect(config_, SIGNAL(valueChanged()), this, SLOT(copy_values()));
+  connect(config_, SIGNAL(structureChanged()), this, SLOT(copy_values()));
+
   // Connections to text changes
   for(const auto& key : this->entries_map())
   {

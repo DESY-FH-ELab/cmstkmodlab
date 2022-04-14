@@ -38,9 +38,8 @@ class AssemblyParametersView : public QWidget
   bool       has(const std::string&) const;
   QLineEdit* get(const std::string&) const;
 
-  void copy_values();
-
   void setText(const std::string&, const double);
+  void setText(const std::string&, const std::string);
 
   std::map<std::string, std::string> entries_map() const;
 
@@ -65,6 +64,8 @@ class AssemblyParametersView : public QWidget
 
   void  read_parameters();
   void write_parameters();
+
+  void copy_values();
 
   void transmit_entries();
 
