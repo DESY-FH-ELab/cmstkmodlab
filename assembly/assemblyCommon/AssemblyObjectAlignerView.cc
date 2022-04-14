@@ -11,7 +11,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <nqlogger.h>
-#include <ApplicationConfig.h>
 
 #include <AssemblyObjectAlignerView.h>
 #include <AssemblyUtilities.h>
@@ -73,6 +72,8 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
  , button_alignerEmergencyStop_(nullptr)
 
  , finder_connected_(false)
+
+ , config_(nullptr)
 {
   QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
@@ -80,7 +81,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   QToolBox* toolbox = new QToolBox;
   layout->addWidget(toolbox);
 
-  ApplicationConfig* config = ApplicationConfig::instance();
+  config_ = ApplicationConfig::instance();
 
   // Configuration + Execution
 
@@ -129,8 +130,8 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   connect(alignm_PSS_radbu_, SIGNAL(toggled(bool)), alignm_PSS_dY_label , SLOT(setEnabled(bool)));
   connect(alignm_PSS_radbu_, SIGNAL(toggled(bool)), alignm_PSS_dY_linee_, SLOT(setEnabled(bool)));
 
-  assembly::QLineEdit_setText(alignm_PSS_dX_linee_, config->getDefaultValue<double>("main", "AssemblyObjectAlignerView_PSS_deltaX", 0.));
-  assembly::QLineEdit_setText(alignm_PSS_dY_linee_, config->getDefaultValue<double>("main", "AssemblyObjectAlignerView_PSS_deltaY", 0.));
+  assembly::QLineEdit_setText(alignm_PSS_dX_linee_, config_->getDefaultValue<double>("main", "AssemblyObjectAlignerView_PSS_deltaX", 0.));
+  assembly::QLineEdit_setText(alignm_PSS_dY_linee_, config_->getDefaultValue<double>("main", "AssemblyObjectAlignerView_PSS_deltaY", 0.));
 
   QHBoxLayout* alignm_PSP_lay = new QHBoxLayout;
   alignm_dXY_lay->addLayout(alignm_PSP_lay);
@@ -157,8 +158,8 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   connect(alignm_PSP_radbu_, SIGNAL(toggled(bool)), alignm_PSP_dY_label , SLOT(setEnabled(bool)));
   connect(alignm_PSP_radbu_, SIGNAL(toggled(bool)), alignm_PSP_dY_linee_, SLOT(setEnabled(bool)));
 
-  assembly::QLineEdit_setText(alignm_PSP_dX_linee_, config->getDefaultValue<double>("main", "AssemblyObjectAlignerView_PSP_deltaX", 0.));
-  assembly::QLineEdit_setText(alignm_PSP_dY_linee_, config->getDefaultValue<double>("main", "AssemblyObjectAlignerView_PSP_deltaY", 0.));
+  assembly::QLineEdit_setText(alignm_PSP_dX_linee_, config_->getDefaultValue<double>("main", "AssemblyObjectAlignerView_PSP_deltaX", 0.));
+  assembly::QLineEdit_setText(alignm_PSP_dY_linee_, config_->getDefaultValue<double>("main", "AssemblyObjectAlignerView_PSP_deltaY", 0.));
 
   alignm_objcfg_lay->addSpacing(10);
 
@@ -271,7 +272,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   alignm_angmax_dontIter_lay->addWidget(alignm_angmax_dontIter_linee_, 10, Qt::AlignLeft);
 //  alignm_angmax_dontIter_lay->addSpacing(10);
 
-  assembly::QLineEdit_setText(alignm_angmax_dontIter_linee_, config->getDefaultValue<double>("main", "AssemblyObjectAlignerView_angle_max_dontIter", 0.50));
+  assembly::QLineEdit_setText(alignm_angmax_dontIter_linee_, config_->getDefaultValue<double>("main", "AssemblyObjectAlignerView_angle_max_dontIter", 0.50));
 
   // parameter: maximum angle to validate alignment
   QHBoxLayout* alignm_angmax_complete_lay = new QHBoxLayout;
@@ -285,7 +286,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   alignm_angmax_complete_lay->addWidget(alignm_angmax_complete_linee_, 10, Qt::AlignLeft);
 //  alignm_angmax_complete_lay->addSpacing(10);
 
-  assembly::QLineEdit_setText(alignm_angmax_complete_linee_, config->getDefaultValue<double>("main", "AssemblyObjectAlignerView_angle_max_complete", 0.01));
+  assembly::QLineEdit_setText(alignm_angmax_complete_linee_, config_->getDefaultValue<double>("main", "AssemblyObjectAlignerView_angle_max_complete", 0.01));
 
   // ----------
 
@@ -303,7 +304,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   patrecOne_wid_ = new AssemblyObjectFinderPatRecWidget;
   patrecOne_wid_->setToolTip("Pattern Recognition Configuration #1 [Bottom-Left Marker]");
 
-  if(config != nullptr)
+  if(config_ != nullptr)
   {
     const std::string fpath = config->getDefaultValue<std::string>("main", "AssemblyObjectAlignerView_PatRec1_template_fpath", "");
     if(fpath != ""){ patrecOne_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+fpath)); }

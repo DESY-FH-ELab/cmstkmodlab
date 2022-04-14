@@ -16,6 +16,7 @@
 #include <AssemblyUEyeView.h>
 #include <AssemblyObjectAligner.h>
 #include <AssemblyObjectFinderPatRecWidget.h>
+#include <ApplicationConfig.h>
 
 #include <QWidget>
 #include <QString>
@@ -94,6 +95,8 @@ class AssemblyObjectAlignerView : public QWidget
   QPushButton* button_alignerEmergencyStop_;
 
   bool finder_connected_;
+
+  ApplicationConfig* config_;
 
  public slots:
 
