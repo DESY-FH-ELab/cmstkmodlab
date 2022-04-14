@@ -96,13 +96,13 @@ void ApplicationConfig::save()
 void ApplicationConfig::saveAs(const std::string& filename, const std::string& alias)
 {
   storage_t tempKeyValueMap;
-  
+
   FullKey fk;
   fk.filename = filename;
   fk.alias = alias;
-  
+
   for (const auto & kv : keyvalueMap_) {
-  	if (kv.first.alias!="*") continue;
+  	if (kv.first.alias!=alias) continue;
 
   	fk.key = kv.first.key;
   	tempKeyValueMap[fk] = kv.second;
@@ -110,16 +110,18 @@ void ApplicationConfig::saveAs(const std::string& filename, const std::string& a
 
   ApplicationConfigWriter writer(filename, alias);
   writer.write(tempKeyValueMap);
-  
-  for (const auto & kv : tempKeyValueMap) {
-  	if (kv.first.alias!="*") continue;
 
-	fk.filename = "*";
-  	fk.alias = "*";
-  	fk.key = kv.first.key;
-  	tempKeyValueMap[fk] = kv.second;
+  for (const auto & kv : keyvalueMap_) {
+    if (kv.first.alias!=alias)
+    {
+      fk.filename = kv.first.filename;
+      fk.alias = kv.first.alias;
+      fk.key = kv.first.key;
+
+      tempKeyValueMap[fk] = kv.second;
+    }
   }
-  
+
   keyvalueMap_ = tempKeyValueMap;
 }
 

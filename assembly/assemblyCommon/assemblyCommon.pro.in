@@ -98,7 +98,6 @@ HEADERS += AssemblyVUEyeCamera.h \
            AssemblyPositionsRegistryWidget.h \
            AssemblyToolboxView.h \
            AssemblySmartMotionManager.h \
-           AssemblyParameters.h \
            AssemblyParametersView.h \
            AssemblyVacuumWidget.h \
            AssemblyMotionWidgets.h \
@@ -166,7 +165,6 @@ SOURCES += AssemblyVUEyeCamera.cc \
            AssemblyPositionsRegistryWidget.cc \
            AssemblyToolboxView.cc \
            AssemblySmartMotionManager.cc \
-           AssemblyParameters.cc \
            AssemblyParametersView.cc \
            AssemblyVacuumWidget.cc \
            AssemblyMotionWidgets.cc \

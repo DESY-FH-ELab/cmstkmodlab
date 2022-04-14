@@ -15,15 +15,16 @@
 #include <iomanip>
 
 #include <QMessageBox>
+#include <QFileInfo>
 
 #include "ApplicationConfigReader.h"
 
 ApplicationConfigReader::ApplicationConfigReader(const std::string & filename,
     const std::string& alias)
-  : filename_(filename),
-    alias_(alias)
+  : alias_(alias)
 {
-
+  QFileInfo info(QString::fromStdString(filename));
+  filename_ = info.absoluteFilePath().toStdString();
 }
 
 ApplicationConfigReader::~ApplicationConfigReader()

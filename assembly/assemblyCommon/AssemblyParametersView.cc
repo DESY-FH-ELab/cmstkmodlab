@@ -11,7 +11,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 #include <nqlogger.h>
-#include <ApplicationConfig.h>
 
 #include <AssemblyParametersView.h>
 #include <AssemblyUtilities.h>
@@ -34,7 +33,11 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
 
  , paramIO_button_read_ (nullptr)
  , paramIO_button_write_(nullptr)
+
+ , config_(nullptr)
 {
+  config_ = ApplicationConfig::instance();
+
   QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
 
@@ -276,7 +279,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
 
   //// DISTANCES -----------
   dist_wid_ = new QWidget;
-
+  dist_wid_->setMinimumHeight(5);
   toolbox->addItem(dist_wid_, tr("Reference Distances [mm, deg]"));
 
   QGridLayout* dist_lay = new QGridLayout;
@@ -439,11 +442,12 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dist_lay->addWidget(button_moveRelRefDist9_, row_index, 9, Qt::AlignLeft);
 
   // Add separator line
+
   ++row_index;
   QFrame* line = new QFrame();
   line->setFrameShape(QFrame::HLine);
   line->setFrameShadow(QFrame::Sunken);
-  dist_lay->addWidget(line, row_index, 0);
+  dist_lay->addWidget(line, row_index, 0, 1, 10);
 
   // distance: from reference marker 1 ("top-left" marker when facing the platform) to reference marker 2 ("top-right")
   // Add buttons to perform +dX/-dX relative movements from one marker to the other, both for PSS and PSP
@@ -490,6 +494,10 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
 
   //// ---------------------
 
+  copy_values();
+
+  //// ---------------------
+
   layout->addStretch(1);
 
   QHBoxLayout* paramIO_lay = new QHBoxLayout;
@@ -506,7 +514,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
 
   layout->addLayout(paramIO_lay);
 
-  //Connections
+  // Connections to motion actions
   connect(button_moveAbsRefPos1_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos1()));
   connect(button_moveAbsRefPos2_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos2()));
   connect(button_moveAbsRefPos3_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos3()));
@@ -528,6 +536,12 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   connect(button_moveRelRefDist12_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist12()));
   connect(button_moveRelRefDist13_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist13()));
   connect(this , SIGNAL(click_moveByRelRefDist(int)), this, SLOT(askConfirmMoveByRelRefDist(int)));
+
+  // Connections to text changes
+  for(const auto& key : this->entries_map())
+  {
+    connect(this->get(key.first), SIGNAL(textChanged(const QString&)), this, SLOT(overwriteParameter(const QString&)));
+  }
 }
 
 AssemblyParametersView::~AssemblyParametersView()
@@ -562,7 +576,10 @@ AssemblyParametersView::~AssemblyParametersView()
 
 void AssemblyParametersView::read_parameters()
 {
-  const QString f_path = QFileDialog::getOpenFileName(this, tr("Read Parameters"), QString::fromStdString(Config::CMSTkModLabBasePath+"/assembly/assembly"), tr("*.cfg"));
+  auto input_file = config_->getValue<std::string>("main", "AssemblyParameters_file_path");
+  auto input_path = QFileInfo(QString::fromStdString(input_file)).absoluteDir().absolutePath();
+
+  const QString f_path = QFileDialog::getOpenFileName(this, tr("Read Parameters"), input_path, tr("*.cfg"));
 
   if(f_path.isNull())
   {
@@ -573,14 +590,18 @@ void AssemblyParametersView::read_parameters()
   }
 
   NQLog("AssemblyParametersView", NQLog::Spam) << "read_parameters"
-     << ": emitting signal \"read_from_file_request(" << f_path << ")\"";
+     << ": reading parameters from file: " << f_path;
 
-  emit read_from_file_request(f_path);
+  config_->append(f_path.toStdString(), "parameters");
+  this->copy_values();
 }
 
 void AssemblyParametersView::write_parameters()
 {
-  const QString f_path = QFileDialog::getSaveFileName(this, tr("Write Parameters"), QString::fromStdString(Config::CMSTkModLabBasePath+"/assembly/assembly"), tr("*.cfg"));
+  auto input_file = config_->getValue<std::string>("main", "AssemblyParameters_file_path");
+  auto input_path = QFileInfo(QString::fromStdString(input_file)).absoluteDir().absolutePath();
+
+  QString f_path = QFileDialog::getSaveFileName(this, tr("Write Parameters"), input_path, tr("*.cfg"));
 
   if(f_path.isNull())
   {
@@ -590,10 +611,22 @@ void AssemblyParametersView::write_parameters()
     return;
   }
 
-  NQLog("AssemblyParametersView", NQLog::Spam) << "write_parameters"
-     << ": emitting signal \"write_to_file_request(" << f_path << ")\"";
+  if(QFileInfo(f_path).suffix().isEmpty() && !f_path.endsWith('.'))
+  {
+    f_path.append(QString(".cfg"));
+    NQLog("AssemblyParametersView", NQLog::Spam) << "write_parameters"
+       << ": adding suffix to file path, which is now: " << f_path;
+  } else if(f_path.endsWith('.'))
+  {
+    f_path.append(QString("cfg"));
+    NQLog("AssemblyParametersView", NQLog::Spam) << "write_parameters"
+       << ": adding suffix to file path, which is now: " << f_path;
+  }
 
-  emit write_to_file_request(f_path);
+  NQLog("AssemblyParametersView", NQLog::Spam) << "write_parameters"
+     << ": calling configuration to save parameters as " << f_path;
+
+  config_->saveAs(f_path.toStdString(), "parameters");
 }
 
 bool AssemblyParametersView::has(const std::string& key) const
@@ -628,6 +661,41 @@ QLineEdit* AssemblyParametersView::get(const std::string& key) const
   return ptr;
 }
 
+void AssemblyParametersView::overwriteParameter(const QString& value)
+{
+  QLineEdit* ptr_qedit = qobject_cast<QLineEdit*>(sender()); //Get pointer address of QLineEdit that triggered the SIGNAL(textChanged)
+
+  // Identify the sender an its key
+  bool keyFound = false;
+  for(const auto& key : this->entries_map())
+  {
+    if(ptr_qedit == this->get(key.first))
+    {
+      keyFound = true;
+      bool conversion_ok;
+      double val = value.toDouble(&conversion_ok);
+      if(conversion_ok)
+      {
+        NQLog("AssemblyParametersView", NQLog::Spam) << "overwriteParameter"
+           << ": changing parameter " << key.first << " to " << val;
+        ptr_qedit->setStyleSheet("");
+        config_->setValue("parameters", key.first, value);
+      } else
+      {
+        NQLog("AssemblyParametersView", NQLog::Fatal) << "overwriteParameter"
+           << ": changed parameter for " << key.first << " cannot be casted to double: " << value;
+        ptr_qedit->setStyleSheet("border: 3px solid red");
+      }
+    }
+  }
+
+  if(!keyFound)
+  {
+    NQLog("AssemblyParametersView", NQLog::Fatal) << "overwriteParameter"
+       << ": no parameter found for this LineEdit";
+  }
+}
+
 std::map<std::string, std::string> AssemblyParametersView::entries_map() const
 {
   std::map<std::string, std::string> map_str;
@@ -652,29 +720,30 @@ void AssemblyParametersView::transmit_entries()
   emit entries(map_str);
 }
 
-void AssemblyParametersView::copy_values(const std::map<std::string, double>& map_double)
+void AssemblyParametersView::copy_values()
 {
   //-- Values read from parameters (<-> calibrations) file
-  for(const auto& key : map_double)
-  {
-    this->setText(key.first, key.second);
+  for(const auto& i_key : config_->getKeys()) {
+
+    if(!(i_key.alias == "parameters"))
+    {
+      continue;
+    }
+
+    this->setText(i_key.key, config_->getValue<double>(i_key));
   }
 
   //-- Values read from config file
   //std::cout<<"===== AssemblyObjectAlignerView_PSS_deltaX = "<<config->getValue<std::string>(tmp)<<std::endl;
   std::string tmp(""); double d=0; std::stringstream ss;
-  ApplicationConfig* config = ApplicationConfig::instance(); //Read config file
 
   tmp = "AssemblyObjectAlignerView_PSP_deltaX";
-  ss << config->getValue<std::string>("main", tmp); ss >> d; //Convert string -> double
-  this->setText(tmp, d);
-  this->setText(tmp+"_neg", -d); //Minus sign
+  this->setText(tmp, config_->getValue<double>("main", tmp));
+  this->setText(tmp+"_neg", -config_->getValue<double>("main", tmp));
 
   tmp = "AssemblyObjectAlignerView_PSS_deltaX";
-  ss.str(std::string()); ss.clear(); //Clear previous value
-  ss << config->getValue<std::string>("main", tmp); ss >> d;
-  this->setText(tmp, d);
-  this->setText(tmp+"_neg", -d); //Minus sign
+  this->setText(tmp, config_->getValue<double>("main", tmp));
+  this->setText(tmp+"_neg", -config_->getValue<double>("main", tmp));
 
   return;
 }

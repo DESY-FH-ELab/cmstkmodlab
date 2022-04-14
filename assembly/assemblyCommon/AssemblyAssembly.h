@@ -19,7 +19,7 @@
 #include <RelayCardManager.h>
 
 #include <AssemblySmartMotionManager.h>
-#include <AssemblyParameters.h>
+#include <ApplicationConfig.h>
 
 #include <vector>
 
@@ -30,8 +30,6 @@ class AssemblyAssembly : public QObject
  public:
   explicit AssemblyAssembly(const LStepExpressMotionManager* const, const RelayCardManager* const, const AssemblySmartMotionManager* const smart_motion=nullptr, QObject* parent=nullptr);
   virtual ~AssemblyAssembly() {}
-
-  AssemblyParameters* parameters() const;
 
   const LStepExpressMotionManager* motion() const;
   const RelayCardManager* vacuum() const;
@@ -44,6 +42,8 @@ class AssemblyAssembly : public QObject
   const RelayCardManager* const vacuum_;
 
   const AssemblySmartMotionManager* const smart_motion_;
+
+  const ApplicationConfig* config_;
 
   int vacuum_pickup_;
   int vacuum_spacer_;
