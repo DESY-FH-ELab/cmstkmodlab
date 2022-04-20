@@ -831,15 +831,15 @@ void AssemblyAssemblyV2::GoToXYAPositionToGlueMaPSAToBaseplate_start()
   }
 
   const double dx0 =
-     config_->getValue<double>("parameters", "PlatformRefPointCalibrationBaseplate_X")
-   + config_->getValue<double>("parameters", "FromPlatformRefPointCalibrationBaseplateToPSPEdge_dX")
+     config_->getValue<double>("parameters", "RefPointPlatform_X")
+   + config_->getValue<double>("parameters", "FromRefPointPlatformToPSPEdge_dX")
    + config_->getValue<double>("parameters", "FromPSPEdgeToPSPRefPoint_dX")
    + config_->getValue<double>("parameters", "FromSensorRefPointToSensorPickup_dX")
    - motion_->get_position_X();
 
   const double dy0 =
-     config_->getValue<double>("parameters", "PlatformRefPointCalibrationBaseplate_Y")
-   + config_->getValue<double>("parameters", "FromPlatformRefPointCalibrationBaseplateToPSPEdge_dY")
+     config_->getValue<double>("parameters", "RefPointPlatform_Y")
+   + config_->getValue<double>("parameters", "FromRefPointPlatformToPSPEdge_dY")
    + config_->getValue<double>("parameters", "FromPSPEdgeToPSPRefPoint_dY")
    + config_->getValue<double>("parameters", "FromSensorRefPointToSensorPickup_dY")
    - motion_->get_position_Y();
@@ -847,7 +847,7 @@ void AssemblyAssemblyV2::GoToXYAPositionToGlueMaPSAToBaseplate_start()
   const double dz0 = 0.0;
 
   const double da0 =
-     config_->getValue<double>("parameters", "PlatformRefPointCalibrationBaseplate_A")
+     config_->getValue<double>("parameters", "RefPointPlatform_A")
    - motion_->get_position_A();
 
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
@@ -989,15 +989,15 @@ void AssemblyAssemblyV2::GoToXYAPositionToGluePSSToSpacers_start()
   }
 
   const double dx0 =
-     config_->getValue<double>("parameters", "PlatformRefPointCalibrationSpacers_X")
-   + config_->getValue<double>("parameters", "FromPlatformRefPointCalibrationSpacersToSpacerEdge_dX")
+     config_->getValue<double>("parameters", "RefPointPlatform_X")
+   + config_->getValue<double>("parameters", "FromRefPointPlatformToSpacerEdge_dX")
    + config_->getValue<double>("parameters", "FromSpacerEdgeToPSSRefPoint_dX")
    + config_->getValue<double>("parameters", "FromSensorRefPointToSensorPickup_dX")
    - motion_->get_position_X();
 
   const double dy0 =
-     config_->getValue<double>("parameters", "PlatformRefPointCalibrationSpacers_Y")
-   + config_->getValue<double>("parameters", "FromPlatformRefPointCalibrationSpacersToSpacerEdge_dY")
+     config_->getValue<double>("parameters", "RefPointPlatform_Y")
+   + config_->getValue<double>("parameters", "FromRefPointPlatformToSpacerEdge_dY")
    + config_->getValue<double>("parameters", "FromSpacerEdgeToPSSRefPoint_dY")
    + config_->getValue<double>("parameters", "FromSensorRefPointToSensorPickup_dY")
    - motion_->get_position_Y();
@@ -1005,7 +1005,7 @@ void AssemblyAssemblyV2::GoToXYAPositionToGluePSSToSpacers_start()
   const double dz0 = 0.0;
 
   const double da0 =
-     config_->getValue<double>("parameters", "PlatformRefPointCalibrationSpacers_A")
+     config_->getValue<double>("parameters", "RefPointPlatform_A")
    - motion_->get_position_A();
 
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
@@ -1147,13 +1147,13 @@ void AssemblyAssemblyV2::GoToPSPMarkerIdealPosition_start()
   }
 
   const double x0 =
-     config_->getValue<double>("parameters", "PlatformRefPointCalibrationBaseplate_X")
-   + config_->getValue<double>("parameters", "FromPlatformRefPointCalibrationBaseplateToPSPEdge_dX")
+     config_->getValue<double>("parameters", "RefPointPlatform_X")
+   + config_->getValue<double>("parameters", "FromRefPointPlatformToPSPEdge_dX")
    + config_->getValue<double>("parameters", "FromPSPEdgeToPSPRefPoint_dX");
 
   const double y0 =
-     config_->getValue<double>("parameters", "PlatformRefPointCalibrationBaseplate_Y")
-   + config_->getValue<double>("parameters", "FromPlatformRefPointCalibrationBaseplateToPSPEdge_dY")
+     config_->getValue<double>("parameters", "RefPointPlatform_Y")
+   + config_->getValue<double>("parameters", "FromRefPointPlatformToPSPEdge_dY")
    + config_->getValue<double>("parameters", "FromPSPEdgeToPSPRefPoint_dY");
 
   const double z0 =
@@ -1162,7 +1162,7 @@ void AssemblyAssemblyV2::GoToPSPMarkerIdealPosition_start()
    + config_->getValue<double>("parameters", "Thickness_GlueLayer")
    + config_->getValue<double>("parameters", "Thickness_Baseplate");
 
-  const double a0 = config_->getValue<double>("parameters", "PlatformRefPointCalibrationBaseplate_A");
+  const double a0 = config_->getValue<double>("parameters", "RefPointPlatform_A");
 
   connect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToPSPMarkerIdealPosition_finish()));
@@ -1766,7 +1766,29 @@ void AssemblyAssemblyV2::LiftUpPickupTool_finish()
   emit DBLogMessage("== Assembly step completed : [Lift up pickup tool]");
 }
 // ----------------------------------------------------------------------------------------------------
+void AssemblyAssemblyV2::AssemblyCompleted_start()
+{
+  if(in_action_){
 
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "AssemblyCompleted_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
+
+  QMessageBox* msgBox = new QMessageBox;
+  msgBox->setStyleSheet("QLabel{min-width: 300px;}");
+  msgBox->setInformativeText("The assembly is completed! Very well done!");
+
+  msgBox->setStandardButtons(QMessageBox::Ok);
+  msgBox->setDefaultButton(QMessageBox::Ok);
+
+  int ret = msgBox->exec();
+
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "AssemblyCompleted_start called - no action taken";
+
+  emit AssemblyCompleted_finished();
+}
 // ----------------------------------------------------------------------------------------------------
 // switchToAlignmentTab_PSP ------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------

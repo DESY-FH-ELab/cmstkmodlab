@@ -358,10 +358,10 @@ void LStepExpressWidget::restart()
           restart_step_ = 1;
         }
       }
-      else //if(axes_enabled == false)
+      else //if(axes_ready == false)
       {
         NQLog("LStepExpressWidget", NQLog::Spam) << "restart [step=" << restart_step_ << "]"
-           << ": axes NOT ENABLED (enabled"
+           << ": axes NOT READY (enabled"
            << ": x=" << x_enabled
            << ", y=" << y_enabled
            << ", z=" << z_enabled
@@ -445,14 +445,32 @@ void LStepExpressWidget::restart()
     if(restart_timer_){ delete restart_timer_; restart_timer_ = nullptr; }
 
     // re-enable widget
-    this->setEnabled(true);
-
-    // reset restart variables
-    restart_completed_ = false;
+    if(restart_completed_) this->setEnabled(true);
 
     restart_attempts_ = 0;
 
     restart_step_ = 0;
+
+    if(!restart_completed_)
+    {
+      QMessageBox* msgBox = new QMessageBox;
+      msgBox->setStyleSheet("QLabel{min-width: 400px;}");
+      msgBox->setInformativeText("Restart of motion stage failed!\nWould you like to try again?");
+      msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+      msgBox->setDefaultButton(QMessageBox::Yes);
+      int ret = msgBox->exec();
+      switch(ret)
+      {
+	case QMessageBox::No: break;
+        case QMessageBox::Yes:
+          restart_step_ = 0;
+          this->restart();
+        default: return;
+      }
+    }
+
+    // reset restart variables
+    restart_completed_ = false;
 
     NQLog("LStepExpressWidget", NQLog::Spam) << "restart"
        << ": emitting signal \"restart_completed\"";

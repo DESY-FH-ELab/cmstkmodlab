@@ -52,28 +52,26 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
 
   finder_connected_(false)
 {
-  QHBoxLayout* layout = new QHBoxLayout;
-  this->setLayout(layout);
-
   // IMAGE VIEW(S) -------
   QGridLayout* g0 = new QGridLayout;
-  layout->addLayout(g0);
+  this->setLayout(g0);
 
   QPalette palette;
   palette.setColor(QPalette::Background, QColor(220, 220, 220));
 
   imageView_1_ = new AssemblyUEyeView(this);
-  imageView_1_->setMinimumSize(200, 200);
+  imageView_1_->setMinimumSize(500, 300);
   imageView_1_->setPalette(palette);
   imageView_1_->setBackgroundRole(QPalette::Background);
   imageView_1_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   imageView_1_->setScaledContents(true);
   imageView_1_->setAlignment(Qt::AlignCenter);
+  imageView_1_->setZoomFactor(0.2);
 
   QApplication::processEvents();
 
   scrollArea_1_ = new QScrollArea(this);
-  scrollArea_1_->setMinimumSize(200, 200);
+  scrollArea_1_->setMinimumSize(500, 300);
   scrollArea_1_->setPalette(palette);
   scrollArea_1_->setBackgroundRole(QPalette::Background);
   scrollArea_1_->setAlignment(Qt::AlignCenter);
@@ -83,16 +81,16 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   g0->addWidget(scrollArea_1_, 0, 0);
 
   imageView_2_ = new AssemblyUEyeView(this);
-  imageView_2_->setMinimumSize(200, 200);
+  imageView_2_->setMinimumSize(300, 300);
   imageView_2_->setPalette(palette);
   imageView_2_->setBackgroundRole(QPalette::Background);
   imageView_2_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   imageView_2_->setScaledContents(true);
   imageView_2_->setAlignment(Qt::AlignCenter);
-  imageView_2_->setZoomFactor(0.50);
+  imageView_2_->setZoomFactor(0.60);
 
   scrollArea_2_ = new QScrollArea(this);
-  scrollArea_2_->setMinimumSize(200, 200);
+  scrollArea_2_->setMinimumSize(300, 300);
   scrollArea_2_->setPalette(palette);
   scrollArea_2_->setBackgroundRole(QPalette::Background);
   scrollArea_2_->setAlignment(Qt::AlignCenter);
@@ -102,15 +100,16 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   g0->addWidget(scrollArea_2_, 0, 1);
 
   imageView_3_ = new AssemblyUEyeView(this);
-  imageView_3_->setMinimumSize(200, 200);
+  imageView_3_->setMinimumSize(500, 300);
   imageView_3_->setPalette(palette);
   imageView_3_->setBackgroundRole(QPalette::Background);
   imageView_3_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   imageView_3_->setScaledContents(true);
   imageView_3_->setAlignment(Qt::AlignCenter);
+  imageView_3_->setZoomFactor(0.2);
 
   scrollArea_3_ = new QScrollArea(this);
-  scrollArea_3_->setMinimumSize(200, 200);
+  scrollArea_3_->setMinimumSize(500, 300);
   scrollArea_3_->setPalette(palette);
   scrollArea_3_->setBackgroundRole(QPalette::Background);
   scrollArea_3_->setAlignment(Qt::AlignCenter);
@@ -120,7 +119,7 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   g0->addWidget(scrollArea_3_, 1, 0);
 
   imageView_4_ = new AssemblyUEyeView(this);
-  imageView_4_->setMinimumSize(200, 200);
+  imageView_4_->setMinimumSize(300, 300);
   imageView_4_->setPalette(palette);
   imageView_4_->setBackgroundRole(QPalette::Background);
   imageView_4_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -129,7 +128,7 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   imageView_4_->setZoomFactor(0.35);
 
   scrollArea_4_ = new QScrollArea(this);
-  scrollArea_4_->setMinimumSize(200, 200);
+  scrollArea_4_->setMinimumSize(300, 300);
   scrollArea_4_->setPalette(palette);
   scrollArea_4_->setBackgroundRole(QPalette::Background);
   scrollArea_4_->setAlignment(Qt::AlignCenter);
@@ -171,7 +170,7 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   patrec_lay->addSpacing(20);
   patrec_lay->addWidget(patrec_cfg_title);
 
-  patrec_wid_ = new AssemblyObjectFinderPatRecWidget;
+  patrec_wid_ = new AssemblyObjectFinderPatRecWidget(true);
   patrec_wid_->setToolTip("Pattern Recognition Configuration");
 
   connect(patrec_exe_button_, SIGNAL(clicked()), this->PatRec_Widget(), SLOT(transmit_configuration()));
@@ -181,15 +180,15 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   ApplicationConfig* config = ApplicationConfig::instance();
   if(config != nullptr)
   {
-    const std::string fpath = config->getDefaultValue<std::string>("main", "AssemblyObjectFinderPatRecView_template_fpath", "");
+    const std::string fpath = config->getDefaultValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSP1_template_fpath", "");
     if(fpath != ""){ patrec_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+fpath)); }
 
-    assembly::QLineEdit_setText(patrec_wid_->threshold_lineEdit()        , config->getDefaultValue<int>("main", "AssemblyObjectFinderPatRecView_threshold"        , 100));
-    assembly::QLineEdit_setText(patrec_wid_->adaptiveThreshold_lineEdit(), config->getDefaultValue<int>("main", "AssemblyObjectFinderPatRecView_adaptiveThreshold", 587));
+    assembly::QLineEdit_setText(patrec_wid_->threshold_lineEdit()        , config->getDefaultValue<int>("main", "AssemblyObjectAlignerView_PatRec_threshold"        , 100));
+    assembly::QLineEdit_setText(patrec_wid_->adaptiveThreshold_lineEdit(), config->getDefaultValue<int>("main", "AssemblyObjectAlignerView_PatRec_adaptiveThreshold", 587));
 
-    assembly::QLineEdit_setText(patrec_wid_->angles_prescan_lineEdit()   , config->getDefaultValue<double>("main", "AssemblyObjectFinderPatRecView_angles_prescan" , 0));
-    assembly::QLineEdit_setText(patrec_wid_->angles_finemax_lineEdit()   , config->getDefaultValue<double>("main", "AssemblyObjectFinderPatRecView_angles_finemax" , 2));
-    assembly::QLineEdit_setText(patrec_wid_->angles_finestep_lineEdit()  , config->getDefaultValue<double>("main", "AssemblyObjectFinderPatRecView_angles_finestep", 0.2));
+    assembly::QLineEdit_setText(patrec_wid_->angles_prescan_lineEdit()   , config->getDefaultValue<double>("main", "AssemblyObjectAlignerView_PatRec_angles_prescan" , 0));
+    assembly::QLineEdit_setText(patrec_wid_->angles_finemax_lineEdit()   , config->getDefaultValue<double>("main", "AssemblyObjectAlignerView_PatRec_angles_finemax" , 2));
+    assembly::QLineEdit_setText(patrec_wid_->angles_finestep_lineEdit()  , config->getDefaultValue<double>("main", "AssemblyObjectAlignerView_PatRec_angles_finestep", 0.2));
   }
 
   patrec_lay->addWidget(patrec_wid_);
@@ -234,10 +233,13 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
 
   patrec_box->setLayout(patrec_lay);
 
-  layout->addWidget(patrec_box);
+  g0->addWidget(patrec_box, 0, 2, 2, 2);
 
-  layout->setStretch(0, 55);
-  layout->setStretch(1, 45);
+  g0->setColumnStretch(0, 60);
+  g0->setColumnStretch(1, 40);
+  g0->setColumnStretch(2, 50);
+  g0->setRowStretch(0, 50);
+  g0->setRowStretch(1, 50);
   // ---------------------
 }
 

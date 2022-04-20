@@ -155,13 +155,8 @@ void AssemblyObjectFinderPatRec::launch_PatRec(const AssemblyObjectFinderPatRec:
 
   if(assembly::MatIsBlackAndWhite(img_templa) == false)
   {
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Fatal) << "launch_PatRec"
-       << ": updated template image is not a binary image, no action taken";
-
-    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "launch_PatRec"
-       << ": emitting signal \"PatRec_exitcode(1)\"";
-
-    emit PatRec_exitcode(1);
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Warning) << "launch_PatRec"
+       << ": updated template image is not a binary image, please check image";
   }
 
   // emit DBLogMessage("Starting Pattern Recognition");

@@ -21,3 +21,6 @@ html/
 .orig
 doxygen
 
+build/
+bin/
+lib/

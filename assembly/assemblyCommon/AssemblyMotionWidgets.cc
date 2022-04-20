@@ -98,6 +98,9 @@ AssemblyMoveWidget::AssemblyMoveWidget(const LStepExpressMotionManager* const ma
   connect(this, SIGNAL(move_absolute(double, double, double, double)), manager_, SLOT(moveAbsolute(double, double, double, double)));
   connect(this, SIGNAL(move_relative(double, double, double, double)), manager_, SLOT(moveRelative(double, double, double, double)));
 
+  connect(manager_, SIGNAL(signalDeactivate()), this, SLOT(deactivate()));
+  connect(manager_, SIGNAL(signalReactivate()), this, SLOT(reactivate()));
+  
   connect(manager_, SIGNAL(motion_finished()), this, SLOT(reactivate()));
 
   connect(button_moveabs_, SIGNAL(clicked()), this, SLOT(move_absolute()));

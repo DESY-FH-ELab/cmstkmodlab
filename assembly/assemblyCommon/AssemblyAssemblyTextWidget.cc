@@ -10,6 +10,7 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+#include <nqlogger.h>
 #include <AssemblyAssemblyTextWidget.h>
 
 AssemblyAssemblyTextWidget::AssemblyAssemblyTextWidget(QWidget* parent)
@@ -65,4 +66,62 @@ void AssemblyAssemblyTextWidget::disable(const int state)
   }
 
   return;
+}
+
+void AssemblyAssemblyTextWidget::reset_action()
+{
+  qobject_ = nullptr;
+  check_slot_ = nullptr;
+  uncheck_slot_ = nullptr;
+}
+
+
+void AssemblyAssemblyTextWidget::connect_check_action(const QObject* qobject, const char* check_slot, const char* uncheck_slot)
+{
+  if(qobject_) {this->reset_action();}
+
+  if(qobject)
+  {
+    qobject_ = qobject;
+    check_slot_ = check_slot;
+    uncheck_slot_ = uncheck_slot;
+
+    connect(checkbox_, SIGNAL(stateChanged(int)), this, SLOT(change_action(int)));
+  }
+  else
+  {
+    NQLog("AssemblyAssemblyTextWidget", NQLog::Warning) << "connect_check_action"
+       << ": invalid (NULL) input pointer to QObject, no action taken";
+  }
+}
+
+void AssemblyAssemblyTextWidget::change_action(int state)
+{
+  NQLog("AssemblyAssemblyTextWidget", NQLog::Spam) << "calling check_action";
+
+  if(qobject_)
+  {
+    if(state == Qt::Checked)
+    {
+      if(check_slot_)
+      {
+        connect(this, SIGNAL(action_request()), qobject_, check_slot_);
+        emit action_request();
+        disconnect(this, SIGNAL(action_request()), qobject_, check_slot_);
+      }
+    } else if(state == Qt::Unchecked)
+    {
+      if(uncheck_slot_)
+      {
+        connect(this, SIGNAL(action_request()), qobject_, uncheck_slot_);
+        emit action_request();
+        disconnect(this, SIGNAL(action_request()), qobject_, uncheck_slot_);
+      }
+    }
+  }
+  else
+  {
+    NQLog("AssemblyAssemblyTextWidget", NQLog::Warning) << "check_action"
+       << ": invalid (NULL) pointer to QObject, no action taken";
+  }
 }

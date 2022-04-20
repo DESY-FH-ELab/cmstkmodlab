@@ -46,6 +46,8 @@ class AssemblyAssemblyActionWidget : public QWidget
   const char* start_slot_;
   const char* stop_signal_;
 
+  bool inhibit_dialogue_;
+
  public slots:
   void disable(const bool b=true);
   void disable(const int);

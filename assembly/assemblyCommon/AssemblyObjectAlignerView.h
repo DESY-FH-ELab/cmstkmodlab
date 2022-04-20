@@ -16,6 +16,7 @@
 #include <AssemblyUEyeView.h>
 #include <AssemblyObjectAligner.h>
 #include <AssemblyObjectFinderPatRecWidget.h>
+#include <ApplicationConfig.h>
 
 #include <QWidget>
 #include <QString>
@@ -95,6 +96,8 @@ class AssemblyObjectAlignerView : public QWidget
 
   bool finder_connected_;
 
+  ApplicationConfig* config_;
+
  public slots:
 
   void enable();
@@ -115,6 +118,8 @@ class AssemblyObjectAlignerView : public QWidget
 
   void set_alignmentMode_PSP();
   void set_alignmentMode_PSS();
+
+  void update_templates(const bool);
 
  signals:
 

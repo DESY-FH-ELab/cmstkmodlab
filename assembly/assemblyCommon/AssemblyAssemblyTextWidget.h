@@ -34,6 +34,8 @@ class AssemblyAssemblyTextWidget : public QWidget
   QLabel* text() const { return text_; }
   QCheckBox* checkbox() const { return checkbox_; }
 
+  void connect_check_action(const QObject*, const char*, const char* = nullptr);
+
  protected:
   QHBoxLayout* layout_;
 
@@ -41,11 +43,19 @@ class AssemblyAssemblyTextWidget : public QWidget
   QLabel* text_;
   QCheckBox* checkbox_;
 
+  const QObject* qobject_;
+  const char* check_slot_;
+  const char* uncheck_slot_;
+
  public slots:
   void disable(const bool b=true);
   void disable(const int);
 
+  void reset_action();
+  void change_action(int);
+
  signals:
+ void action_request();
 };
 // ====================================================================================================
 

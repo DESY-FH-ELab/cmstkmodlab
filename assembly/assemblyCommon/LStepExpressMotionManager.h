@@ -90,7 +90,7 @@ class LStepExpressMotionManager : public QObject
 
     void emergency_stop();
 
-    QQueue<LStepExpressMotion> set_movements_priorities_XYZA(const double x, const double y, const double z, const double a, const bool is_absolute_movements);
+    void set_movements_priorities_XYZA(const double x, const double y, const double z, const double a, const bool is_absolute_movements);
 
   protected slots:
 
@@ -103,6 +103,9 @@ class LStepExpressMotionManager : public QObject
     void restartMotionStage_request() const;
 
     void motion_finished();
+
+    void signalDeactivate();
+    void signalReactivate();
 
     void signalMoveRelative(double x, double y, double z, double a);
     void signalMoveAbsolute(double x, double y, double z, double a);
