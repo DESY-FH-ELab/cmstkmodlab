@@ -35,11 +35,12 @@ int main(int argc, char *argv[])
     arguments.removeOne("--debug");
   }
 
+  ApplicationConfig::instance();
   if (arguments.contains("--web")) {
-    ApplicationConfig::instance("pumpstation.cfg");
+    ApplicationConfig::instance()->append("pumpstation.cfg", "main");
     arguments.removeOne("--web");
   } else {
-    ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
+    ApplicationConfig::instance()->append(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg", "main");
   }
 
   Controller controller(arguments);
