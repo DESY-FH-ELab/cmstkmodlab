@@ -52,7 +52,8 @@ int main(int argc, char** argv)
 #endif
 
     app.setStyle("cleanlooks");
-
+    app.setWindowIcon(QIcon(QString::fromStdString(std::string(Config::CMSTkModLabBasePath)+"/assembly/assembly/images/icon2.png")));
+    
     QCommandLineParser parser;
     parser.setApplicationDescription("Automated Assembly Software");
     parser.addHelpOption();
