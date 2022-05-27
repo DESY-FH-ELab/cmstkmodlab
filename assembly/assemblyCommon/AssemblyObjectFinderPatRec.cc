@@ -565,7 +565,7 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
     const std::string filepath_FOM_root = filepath_FOM_base+".root";
 
     c1.SaveAs(filepath_FOM_png.c_str());
-
+    
     TFile o_file(filepath_FOM_root.c_str(), "recreate");
     o_file.cd();
     gr_scan.Write();

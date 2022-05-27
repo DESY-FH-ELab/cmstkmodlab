@@ -135,7 +135,7 @@ void AssemblyAssemblyV2::use_smartMove(const int state)
 // ----------------------------------------------------------------------------------------------------
 // GoToSensorMarkerPreAlignment -----------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
-void AssemblyAssemblyV2::GoToSensorMarkerPreAlignment_start()
+void AssemblyAssemblyV2::GoToSensorMarkerPreAlignment_start(bool isMapsa)
 {
   if(in_action_){
 
@@ -147,7 +147,8 @@ void AssemblyAssemblyV2::GoToSensorMarkerPreAlignment_start()
 
   const double x0 = config_->getValue<double>("parameters", "RefPointSensor_X");
   const double y0 = config_->getValue<double>("parameters", "RefPointSensor_Y");
-  const double z0 = config_->getValue<double>("parameters", "RefPointSensor_Z");
+  const double z0 = config_->getValue<double>("parameters", "CameraFocusOnAssemblyStage_Z") 
+  + (isMapsa ? config_->getValue<double>("parameters", "Thickness_PSP") : config_->getValue<double>("parameters", "Thickness_PSS"));
   const double a0 = config_->getValue<double>("parameters", "RefPointSensor_A");
 
   connect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
@@ -1082,6 +1083,7 @@ void AssemblyAssemblyV2::LowerPSSOntoSpacers_start()
       + config_->getValue<double>("parameters", "FromCameraBestFocusToPickupHeight_dZ")
       + config_->getValue<double>("parameters", "Thickness_PSS")
       + config_->getValue<double>("parameters", "Thickness_GlueLayer")
+      + config_->getValue<double>("parameters", "Thickness_SpacerClamp")
       - motion_->get_position_Z();
 
     const double da0 = 0.0;

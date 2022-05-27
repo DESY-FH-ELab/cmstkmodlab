@@ -168,6 +168,21 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dime_lay->addWidget(new QLabel(tr("dZ")), row_index, 5, Qt::AlignRight);
   dime_lay->addWidget(this->get(tmp_tag)  , row_index, 6, Qt::AlignRight);
 
+
+  // dimension: thickness of SpacerClamp
+  ++row_index;
+
+  tmp_tag = "Thickness_SpacerClamp";
+  tmp_des = "Thickness of SpacerClamp :";
+
+  map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
+
+  dime_lay->addWidget(new QLabel(tmp_des) , row_index, 0, Qt::AlignLeft);
+  dime_lay->addWidget(new QLabel(tr("dZ")), row_index, 5, Qt::AlignRight);
+  dime_lay->addWidget(this->get(tmp_tag)  , row_index, 6, Qt::AlignRight);
+
+  //Added this part to include spacer vacuum clamp. -PW 04/26
+
   //// ---------------------
 
   row_index = -1;

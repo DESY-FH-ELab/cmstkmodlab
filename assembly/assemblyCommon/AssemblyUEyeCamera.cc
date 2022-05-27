@@ -206,6 +206,7 @@ void AssemblyUEyeCamera::open()
     eventThread_->start(cameraHandle_);
 
     cameraState_ = State::READY;
+    setExposureTime(84.58);
 
     NQLog("AssemblyUEyeCamera", NQLog::Debug) << "open"
        << ": emitting signal \"cameraOpened\"";
@@ -300,7 +301,7 @@ void AssemblyUEyeCamera::updatePixelClock()
     if (nRet == IS_SUCCESS) {
       nMin = nRange[0];
       nMax = nRange[1];
-      nInc = nRange[2];
+      nInc = nRange[2]!=0 ? nRange[2] : 1;
     }
 
     NQLog("AssemblyUEyeCamera", NQLog::Debug) << "updatePixelClock"

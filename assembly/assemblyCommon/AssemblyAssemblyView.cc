@@ -100,7 +100,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const QObject* const assembly, QWidge
     tmp_wid->button()->setText("Go To Measurement Position on PS-s");
     PSSAlignm_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoToSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoToPssSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
   }
   // ----------
 
@@ -322,7 +322,7 @@ AssemblyAssemblyView::AssemblyAssemblyView(const QObject* const assembly, QWidge
     tmp_wid->button()->setText("Go To Measurement Position on PS-p");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoToSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoToPspSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
   }
   // ----------
 
