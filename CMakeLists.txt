@@ -8,6 +8,8 @@ if(CMAKE_VERSION VERSION_LESS "3.7.0")
         set(CMAKE_INCLUDE_CURRENT_DIR ON)
 endif()
 
+include(CMakeDependentOption)
+
 project(cmstkmodlab VERSION 2.3.0)
 
 execute_process(COMMAND bash -c "git describe --dirty --always --tags" OUTPUT_VARIABLE GIT_DESCRIBE)
@@ -119,7 +121,16 @@ else()
         message(STATUS "Support for version 2 of thermal test setup: OFF")
 endif()
 
+CMAKE_DEPENDENT_OPTION(CMSTKMODLAB_THERMO_HDF5 "Build thermal test setup software with HDF5 support" OFF
+                       "CMSTKMODLAB_THERMO1 OR CMSTKMODLAB_THERMO2" OFF)
+
 if(CMSTKMODLAB_THERMO1 OR CMSTKMODLAB_THERMO2)
+		if(CMSTKMODLAB_THERMO_HDF5)
+				message(STATUS "Support for HDF5 in thermal test setup: ON")
+				find_package(HDF5 COMPONENTS C HL)
+		else()
+				message(STATUS "Support for HDF5 in thermal test setup: OFF")
+		endif()
         pkg_check_modules(GSL REQUIRED IMPORTED_TARGET gsl)
         add_subdirectory(thermo)
 endif()
