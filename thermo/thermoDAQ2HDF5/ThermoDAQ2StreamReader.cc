@@ -669,6 +669,7 @@ void ThermoDAQ2StreamReader::process()
 
   hsize_t chunk_size = 10;
   int compress = 1;
+  int *fill_data  = NULL;
   H5TBmake_table("thermoDAQ2",
       file_id,
       "thermoDAQ2",
@@ -679,9 +680,9 @@ void ThermoDAQ2StreamReader::process()
       dst_offsets.data(),
       field_types.data(),
       chunk_size,
-      NULL,
+      fill_data,
       compress,
-      0);
+      &measurement_);
 
   processFile(&file);
 
