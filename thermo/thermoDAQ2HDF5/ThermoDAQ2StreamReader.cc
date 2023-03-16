@@ -463,7 +463,7 @@ void ThermoDAQ2StreamReader::processFile(QFile* file)
       if (triggerKeithley_ && xml.name()=="KeithleyDAQ6510") {
         if (measurementValid_) {
           H5TBappend_records(file_id,
-              "ThermoDAQ2",
+              "thermoDAQ2",
               1,
               dst_size,
               dst_offsets.data(),
@@ -475,7 +475,7 @@ void ThermoDAQ2StreamReader::processFile(QFile* file)
       if (triggerHuber_ && xml.name()=="HuberUnistat525w") {
         if (measurementValid_) {
           H5TBappend_records(file_id,
-              "ThermoDAQ2",
+              "thermoDAQ2",
               1,
               dst_size,
               dst_offsets.data(),
