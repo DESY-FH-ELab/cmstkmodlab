@@ -226,6 +226,8 @@ void HuberUnistat525wWidget::controlStateChanged(bool enabled)
 {
   huberUnistat525wCheckBox_->setEnabled(enabled);
   operationPanel_->setEnabled(enabled);
+
+  temperatureSetPointSpinner_->blockSignals(enabled);
 }
 
 /**
