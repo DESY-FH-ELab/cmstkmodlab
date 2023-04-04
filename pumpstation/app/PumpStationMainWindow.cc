@@ -33,7 +33,7 @@ PumpStationMainWindow::PumpStationMainWindow(PumpStationHTTPModel* model,
     locked_(true)
 {
   QPalette pal;
-  pal.setColor(QPalette::Background, Qt::white);
+  pal.setColor(QPalette::Window, Qt::white);
   setPalette(pal);
 
   QWidget * w = new QWidget(this);

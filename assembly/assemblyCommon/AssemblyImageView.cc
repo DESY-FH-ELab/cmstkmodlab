@@ -54,14 +54,14 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   //// left-hand side -----------------------------------
 
   QPalette palette;
-  palette.setColor(QPalette::Background, QColor(220, 220, 220));
+  palette.setColor(QPalette::Window, QColor(220, 220, 220));
 
   // image
   img_ueye_ = new AssemblyUEyeView(this);
   img_ueye_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   img_ueye_->setMinimumSize(500, 300);
   img_ueye_->setPalette(palette);
-  img_ueye_->setBackgroundRole(QPalette::Background);
+  img_ueye_->setBackgroundRole(QPalette::Window);
   img_ueye_->setScaledContents(true);
   img_ueye_->setAlignment(Qt::AlignCenter);
 
@@ -83,7 +83,7 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   img_scroll_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   img_scroll_->setMinimumSize(500, 300);
   img_scroll_->setPalette(palette);
-  img_scroll_->setBackgroundRole(QPalette::Background);
+  img_scroll_->setBackgroundRole(QPalette::Window);
   img_scroll_->setAlignment(Qt::AlignCenter);
   img_scroll_->setWidget(img_ueye_);
 
@@ -97,7 +97,7 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   autofocus_ueye_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   autofocus_ueye_->setMinimumSize(500, 300);
   autofocus_ueye_->setPalette(palette);
-  autofocus_ueye_->setBackgroundRole(QPalette::Background);
+  autofocus_ueye_->setBackgroundRole(QPalette::Window);
   autofocus_ueye_->setScaledContents(true);
   autofocus_ueye_->setAlignment(Qt::AlignCenter);
   autofocus_ueye_->setZoomFactor(0.75);
@@ -106,7 +106,7 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   autofocus_scroll_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   autofocus_scroll_->setMinimumSize(500, 300);
   autofocus_scroll_->setPalette(palette);
-  autofocus_scroll_->setBackgroundRole(QPalette::Background);
+  autofocus_scroll_->setBackgroundRole(QPalette::Window);
   autofocus_scroll_->setAlignment(Qt::AlignCenter);
   autofocus_scroll_->setWidget(autofocus_ueye_);
 

@@ -32,12 +32,12 @@ AssemblyUEyeSnapShooter::AssemblyUEyeSnapShooter(QWidget *parent)
     l->addWidget(button);
 
     QPalette palette;
-    palette.setColor(QPalette::Background, QColor(220, 220, 220));
+    palette.setColor(QPalette::Window, QColor(220, 220, 220));
 
     imageView_ = new AssemblyUEyeView();
     imageView_->setMinimumSize(500, 500);
     imageView_->setPalette(palette);
-    imageView_->setBackgroundRole(QPalette::Background);
+    imageView_->setBackgroundRole(QPalette::Window);
     imageView_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     imageView_->setScaledContents(true);
     imageView_->setAlignment(Qt::AlignCenter);
@@ -45,7 +45,7 @@ AssemblyUEyeSnapShooter::AssemblyUEyeSnapShooter(QWidget *parent)
     scrollArea_ = new QScrollArea(this);
     scrollArea_->setMinimumSize(500, 500);
     scrollArea_->setPalette(palette);
-    scrollArea_->setBackgroundRole(QPalette::Background);
+    scrollArea_->setBackgroundRole(QPalette::Window);
     scrollArea_->setAlignment(Qt::AlignCenter);
     scrollArea_->setWidget(imageView_);
     scrollArea_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
