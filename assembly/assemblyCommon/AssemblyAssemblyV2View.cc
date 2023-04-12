@@ -17,6 +17,7 @@
 
 #include <nqlogger.h>
 
+#include <AssemblyAssemblyV2.h>
 #include <AssemblyAssemblyV2View.h>
 #include <AssemblyAssemblyActionWidget.h>
 #include <AssemblyAssemblyTextWidget.h>
@@ -340,7 +341,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
     tmp_wid->connect_action(assembly, SLOT(GoToSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
   }
   // ----------
-  
+
   // step: Enable Vacuum on PS-s
   {
     ++assembly_step_N;
@@ -447,7 +448,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
     tmp_wid->connect_action(assembly, SLOT(GoToXYAPositionToGluePSSToSpacers_start()), SIGNAL(GoToXYAPositionToGluePSSToSpacers_finished()));
   }
   // ----------
-  
+
   // step: Dispense Glue on Spacers and Place them on Assembly Platform
   {
     ++assembly_step_N;
@@ -623,73 +624,77 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
   }
   // ----------
 
-  // step: Register "PS-s to MaPSA" XYZA Position
-  // (position that will be used as starting point to lower "PS-s + Spacers" on MaPSA;
-  //  the height corresponds to the best-focus height on PS-p surface, as resulting from the PS-p alignment,
-  //  if the latter step completed successfully and was executed with auto-focusing enabled)
+  bool skip = dynamic_cast<const AssemblyAssemblyV2*>(assembly) -> IsSkipDipping();
+  if (!skip)
+
   {
-    ++assembly_step_N;
+      // step: Register "PS-s to MaPSA" XYZA Position
+      // (position that will be used as starting point to lower "PS-s + Spacers" on MaPSA;
+      //  the height corresponds to the best-focus height on PS-p surface, as resulting from the PS-p alignment,
+      //  if the latter step completed successfully and was executed with auto-focusing enabled)
+      {
+        ++assembly_step_N;
 
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->button()->setText("Register \"PS-s to MaPSA\" XYZA Position");
-    PSSToMaPSA_lay->addWidget(tmp_wid);
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Register \"PS-s to MaPSA\" XYZA Position");
+        PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(RegisterPSSPlusSpacersToMaPSAPosition_start()), SIGNAL(RegisterPSSPlusSpacersToMaPSAPosition_finished()));
+        tmp_wid->connect_action(assembly, SLOT(RegisterPSSPlusSpacersToMaPSAPosition_start()), SIGNAL(RegisterPSSPlusSpacersToMaPSAPosition_finished()));
+      }
+      // ----------
+
+      // step: Place spacers on gluing stage
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->text()->setText("Dispense Glue on Blocks and Place them on Gluing Stage");
+        PSSToMaPSA_lay->addWidget(tmp_wid);
+      }
+      // ----------
+
+      // step: Go From "PS-s to MaPSA" Position to Gluing Stage (XY) Ref-Point
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Go From \"PS-s To MaPSA\" Position to Gluing Stage (XY) Ref-Point");
+        PSSToMaPSA_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start()), SIGNAL(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished()));
+      }
+      // ----------
+
+      // step: Lower "PS-s + Spacers" onto Gluing Stage
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Lower \"PS-s + Spacers\" onto Gluing Stage");
+        PSSToMaPSA_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(LowerPSSPlusSpacersOntoGluingStage_start()), SIGNAL(LowerPSSPlusSpacersOntoGluingStage_finished()));
+      }
+      // ----------
+
+      // step: Return To "PS-s to MaPSA" XYZA Position
+      // (step prior to lowering pickup tool; camera height must correspond to best-focus height on PS-p surface)
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Return To \"PS-s to MaPSA\" Position (XYZA)");
+        PSSToMaPSA_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(ReturnToPSSPlusSpacersToMaPSAPosition_start()), SIGNAL(ReturnToPSSPlusSpacersToMaPSAPosition_finished()));
+      }
+      // ----------
   }
-  // ----------
-
-  // step: Place spacers on gluing stage
-  {
-    ++assembly_step_N;
-
-    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->text()->setText("Dispense Glue on Blocks and Place them on Gluing Stage");
-    PSSToMaPSA_lay->addWidget(tmp_wid);
-  }
-  // ----------
-
-  // step: Go From "PS-s to MaPSA" Position to Gluing Stage (XY) Ref-Point
-  {
-    ++assembly_step_N;
-
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->button()->setText("Go From \"PS-s To MaPSA\" Position to Gluing Stage (XY) Ref-Point");
-    PSSToMaPSA_lay->addWidget(tmp_wid);
-
-    tmp_wid->connect_action(assembly, SLOT(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start()), SIGNAL(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished()));
-  }
-  // ----------
-
-  // step: Lower "PS-s + Spacers" onto Gluing Stage
-  {
-    ++assembly_step_N;
-
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->button()->setText("Lower \"PS-s + Spacers\" onto Gluing Stage");
-    PSSToMaPSA_lay->addWidget(tmp_wid);
-
-    tmp_wid->connect_action(assembly, SLOT(LowerPSSPlusSpacersOntoGluingStage_start()), SIGNAL(LowerPSSPlusSpacersOntoGluingStage_finished()));
-  }
-  // ----------
-
-  // step: Return To "PS-s to MaPSA" XYZA Position
-  // (step prior to lowering pickup tool; camera height must correspond to best-focus height on PS-p surface)
-  {
-    ++assembly_step_N;
-
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->button()->setText("Return To \"PS-s to MaPSA\" Position (XYZA)");
-    PSSToMaPSA_lay->addWidget(tmp_wid);
-
-    tmp_wid->connect_action(assembly, SLOT(ReturnToPSSPlusSpacersToMaPSAPosition_start()), SIGNAL(ReturnToPSSPlusSpacersToMaPSAPosition_finished()));
-  }
-  // ----------
-
   // step: Lower "PS-s + Spacers" onto MaPSA
   {
     ++assembly_step_N;
