@@ -15,6 +15,7 @@
 #include <QProcess>
 #include <QFile>
 #include <QDir>
+#include <QFileDialog>
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <QDesktopServices>
 #else
@@ -117,8 +118,17 @@ int main( int argc, char** argv )
     myProcess.start(thermoDisplay.c_str(), arguments);
   }
 
+  QString configFile = QFileDialog::getOpenFileName(0,
+                                                    "Please select configuration file",
+                                                    QString(Config::CMSTkModLabBasePath.c_str()) + "/thermo/thermo2/",
+                                                    "Configuration File (*.cfg)");
+  if (configFile.isNull()) {
+      configFile = QString(Config::CMSTkModLabBasePath.c_str()) + "/thermo/thermo2/thermo2.cfg";
+  }
+  NQLogMessage("thermoDAQ2") << "using " << configFile << " as configuration";
+
   ApplicationConfig::instance();
-  ApplicationConfig::instance()->append(std::string(Config::CMSTkModLabBasePath) + "/thermo/thermo2/thermo2.cfg", "main");
+  ApplicationConfig::instance()->append(configFile.toStdString(), "main");
 
   //TestWindow mainWindow;
   Thermo2MainWindow mainWindow;
