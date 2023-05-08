@@ -31,20 +31,20 @@ DefoCameraModel::DefoCameraModel(QObject *parent)
   comment_->setDefaultFont(QFont("Courier New",10));
 
   calibAmplitude_ = 0;
-  
-  numberOfImages_ = ApplicationConfig::instance()->getValue<int>("NUMBEROFIMAGES", 1);
+
+  numberOfImages_ = ApplicationConfig::instance()->getDefaultValue<int>("main", "NUMBEROFIMAGES", 1);
 
   int initValue = 0;
   parameters_[APERTURE] = initValue;
   parameters_[ISO] = initValue;
   parameters_[SHUTTER_SPEED] = initValue;
   parameters_[WHITE_BALANCE] = initValue;
- 
+
   liveViewTimer_.setInterval(1000);
 
   connect(&liveViewTimer_, SIGNAL(timeout()),
           this, SLOT(acquireLiveViewPicture()));
- 
+
   setDeviceEnabled(true);
 }
 

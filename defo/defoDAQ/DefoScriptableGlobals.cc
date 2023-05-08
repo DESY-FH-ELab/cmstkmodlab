@@ -89,6 +89,6 @@ QScriptValue DefoScriptableGlobals::mkUTime(int year, int month, int day,
 
 void DefoScriptableGlobals::slack(const QString& message)
 {
-  SlackBot bot("defoDAQ");
+  SlackBot bot("defoDAQ", "main");
   bot.postMessage(message);
 }
