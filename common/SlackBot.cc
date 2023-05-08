@@ -16,33 +16,35 @@
 #include <curl/curl.h>
 
 #include <nqlogger.h>
-#include <ApplicationConfig.h>
 
 #include "SlackBot.h"
 
-SlackBot::SlackBot(QObject *parent)
+SlackBot::SlackBot(std::string config_alias, QObject *parent)
   : QObject(parent),
     username_(),
     webhook_(),
-    channel_()
+    channel_(),
+    config_alias_(config_alias)
 {
 
 }
 
-SlackBot::SlackBot(QString username, QObject *parent)
+SlackBot::SlackBot(QString username, std::string config_alias, QObject *parent)
   : QObject(parent),
-    username_(username)
+    username_(username),
+    config_alias_(config_alias)
 {
 
 }
 
-SlackBot::SlackBot(QString username, QString webhook, QString channel, QObject *parent)
+SlackBot::SlackBot(QString username, QString webhook, QString channel, std::string config_alias, QObject *parent)
   : QObject(parent),
     username_(username),
     webhook_(webhook),
-    channel_(channel)
+    channel_(channel),
+    config_alias_(config_alias)
 {
-
+    config_ = ApplicationConfig::instance();
 }
 
 SlackBot::~SlackBot()
@@ -84,7 +86,7 @@ void SlackBot::postMessage(const QString& message)
   std::string data = "payload={\"channel\": \"";
 
   if (channel_.isNull()) {
-    data += ApplicationConfig::instance()->getValue("slackchannel");
+    data += config_->getValue<std::string>(config_alias_ ,"slackchannel");
   } else {
     data += channel_.toStdString();
   }
@@ -92,7 +94,7 @@ void SlackBot::postMessage(const QString& message)
   data += "\", \"username\": \"";
 
   if (username_.isNull()) {
-    data += ApplicationConfig::instance()->getValue("slackusername");
+    data += config_->getValue<std::string>(config_alias_ ,"slackusername");
   } else {
     data += username_.toStdString();
   }
@@ -103,7 +105,7 @@ void SlackBot::postMessage(const QString& message)
 
   std::string webhook;
   if (webhook_.isNull()) {
-    webhook = ApplicationConfig::instance()->getValue("slackwebhook");
+    webhook = config_->getValue<std::string>(config_alias_ ,"slackwebhook");
   } else {
     webhook = webhook_.toStdString();
   }
