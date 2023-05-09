@@ -283,7 +283,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
          << " (assembly_sequence = " << assembly_sequence << ")";
 
       if (assemblyV2_->IsSkipDipping()) {
-          NQLog("AssemblyMainWindow", NQLog::Message) << "skipping dipping of PSs-Spacers atcd  stage 3";
+          NQLog("AssemblyMainWindow", NQLog::Message) << "skipping dipping of PSs-Spacers at stage 3";
       }
     }
     else
@@ -437,7 +437,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     else if(assembly_sequence == 2) {
         emit DBLogMessage("== Using modified assembly sequence == (MaPSA glued to baseplate first)");
         if (assemblyV2_->IsSkipDipping()) {
-            emit DBLogMessage("== Skipping dipping at stage 3 == (Glue dispenser is used for PSs-to-MaPSA)");
+            emit DBLogMessage("== Skipping spacer dipping at stage 3 == (Glue dispenser is used for PSs-to-MaPSA)");
         }
     }
 
