@@ -69,7 +69,7 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
 
   alreadyClicked_LowerPickupToolOntoMaPSA = false; alreadyClicked_LowerPickupToolOntoPSS = false; alreadyClicked_LowerMaPSAOntoBaseplate = false; alreadyClicked_LowerPSSOntoSpacers = false; alreadyClicked_LowerPSSPlusSpacersOntoGluingStage = false; alreadyClicked_LowerPSSPlusSpacersOntoMaPSA = false;
 
-  skip_dipping_ = config_->getDefaultValue<int>("main", "skip_dipping", 0);
+  skip_dipping_ = config_->getDefaultValue<bool>("main", "skip_dipping", false);
 
 }
 
