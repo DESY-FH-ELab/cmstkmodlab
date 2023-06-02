@@ -52,6 +52,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   zfocus_finder_(nullptr),
   thresholder_(nullptr),
   aligner_(nullptr),
+  metrology_(nullptr),
   assembly_(nullptr),
   assemblyV2_(nullptr),
   multipickup_tester_(nullptr),
@@ -73,6 +74,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   finder_view_(nullptr),
   aligner_view_(nullptr),
   assembly_view_(nullptr),
+  metrology_view_(nullptr),
   assemblyV2_view_(nullptr),
   toolbox_view_(nullptr),
   params_view_(nullptr),
@@ -89,6 +91,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   // flags
   images_enabled_(false),
   aligner_connected_(false),
+  metrology_connected_(false),
 
   // timing
   testTimerCount_(0.),
@@ -287,6 +290,29 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
       NQLog("AssemblyMainWindow", NQLog::Fatal) << "invalid value for configuration parameter \"assembly_sequence\" ("
          << assembly_sequence << ") -> GUI Tab " << tabname_Assembly << " will not be created";
     }
+    // ---------------------------------------------------------
+
+    // Metrology VIEW ------------------------------------------
+    const QString tabname_Metrology("Metrology");
+
+    metrology_view_ = new MetrologyView(assembly_tab);
+    assembly_tab->addTab(metrology_view_, tabname_Metrology);
+
+    // metrology
+    metrology_ = new Metrology(motion_manager_);
+
+    connect(metrology_view_, SIGNAL(configuration(Metrology::Configuration)), this, SLOT(start_metrology(Metrology::Configuration)));
+
+    metrology_view_->PatRecOne_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecOne(cv::Mat)));
+    metrology_view_->PatRecTwo_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecTwo(cv::Mat)));
+
+    connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_Metrology()));
+    connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
+    connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Metrology;
+    // ---------------------------------------------------------
+
 
     connect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
     connect(motion_manager_, SIGNAL(motion_finished()), image_view_, SLOT(InfoMotionFinished()));
@@ -810,6 +836,117 @@ void AssemblyMainWindow::disconnect_objectAligner()
   aligner_view_->Configuration_Widget()->setEnabled(true);
 
   aligner_connected_ = false;
+
+  return;
+}
+
+
+void AssemblyMainWindow::start_metrology(const Metrology::Configuration& conf)
+{
+  if(image_ctr_ == nullptr)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "start_metrology"
+       << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+
+    return;
+  }
+
+  if(metrology_connected_)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "start_metrology"
+       << ": Metrology already connected, no action taken";
+
+    return;
+  }
+
+  // acquire image
+  connect(metrology_, SIGNAL(image_request()), image_ctr_, SLOT(acquire_image()));
+  connect(metrology_, SIGNAL(autofocused_image_request()), image_ctr_, SLOT(acquire_autofocused_image()));
+
+  // master-image updated, go to next step (PatRec)
+  connect(finder_, SIGNAL(updated_image_master()), metrology_, SLOT(launch_next_metrology_step()));
+
+  // launch PatRec
+  connect(metrology_, SIGNAL(PatRec_request(AssemblyObjectFinderPatRec::Configuration)), finder_, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
+
+  // show PatRec-edited image in Aligner widget
+  connect(finder_, SIGNAL(PatRec_res_image_master_edited(cv::Mat)), metrology_, SLOT(redirect_image(cv::Mat)));
+
+  // use PatRec results for next alignment step
+  connect(finder_, SIGNAL(PatRec_results(double, double, double)), metrology_, SLOT(run_metrology(double, double, double)));
+
+  // show measured angle
+  connect(metrology_, SIGNAL(measured_angle(bool, double)), metrology_view_, SLOT(show_measured_angle(bool, double)));
+
+  // show measured Results
+  connect(metrology_, SIGNAL(measured_results(double, double, double)), metrology_view_, SLOT(show_results(double, double, double)));
+
+  // once completed, disable connections between controllers used for alignment
+  connect(metrology_, SIGNAL(execution_completed()), this, SLOT(disconnect_metrology()));
+
+  // kick-start alignment
+  connect(metrology_, SIGNAL(configuration_updated()), metrology_, SLOT(execute()));
+
+  metrology_view_->Configuration_Widget()->setEnabled(false);
+
+  metrology_connected_ = true;
+
+  // if successful, emits signal "configuration_updated()"
+  metrology_->update_configuration(conf);
+
+  return;
+}
+
+
+void AssemblyMainWindow::disconnect_metrology()
+{
+  if(image_ctr_ == nullptr)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "disconnect_metrology"
+       << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+
+    return;
+  }
+
+  if(metrology_connected_ == false)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "disconnect_metrology"
+       << ": Metrology already disconnected, no action taken";
+
+    return;
+  }
+
+  // acquire image
+  disconnect(metrology_, SIGNAL(image_request()), image_ctr_, SLOT(acquire_image()));
+  disconnect(metrology_, SIGNAL(autofocused_image_request()), image_ctr_, SLOT(acquire_autofocused_image()));
+
+  // master-image updated, go to next step (PatRec)
+  disconnect(finder_, SIGNAL(updated_image_master()), metrology_, SLOT(launch_next_alignment_step()));
+
+  // launch PatRec
+  disconnect(metrology_, SIGNAL(PatRec_request(AssemblyObjectFinderPatRec::Configuration)), finder_, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
+
+  // show PatRec-edited image in Aligner widget
+  disconnect(finder_, SIGNAL(PatRec_res_image_master_edited(cv::Mat)), metrology_, SLOT(redirect_image(cv::Mat)));
+
+  // use PatRec results for next alignment step
+  disconnect(finder_, SIGNAL(PatRec_results(double, double, double)), metrology_, SLOT(run_alignment(double, double, double)));
+
+  // show measured angle
+  disconnect(metrology_, SIGNAL(measured_angle(bool, double)), metrology_view_, SLOT(show_measured_angle(bool, double)));
+
+  // show measured Results
+  disconnect(metrology_, SIGNAL(measured_results(double, double, double)), metrology_view_, SLOT(show_results(double, double, double)));
+
+  // once completed, disable connections between controllers used for alignment
+  disconnect(metrology_, SIGNAL(execution_completed(double, double, double)), this, SLOT(disconnect_metrology()));
+
+  // kick-start alignment
+  disconnect(metrology_, SIGNAL(configuration_updated()), metrology_, SLOT(execute()));
+
+  metrology_view_->Configuration_Widget()->setEnabled(true);
+
+  metrology_connected_ = false;
 
   return;
 }
