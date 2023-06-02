@@ -415,12 +415,12 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   alignm_res_lay->addLayout(alignm_img_lay);
 
   QPalette palette;
-  palette.setColor(QPalette::Background, QColor(220, 220, 220));
+  palette.setColor(QPalette::Window, QColor(220, 220, 220));
 
   patrecOne_image_ = new AssemblyUEyeView(this);
   patrecOne_image_->setMinimumSize(200, 200);
   patrecOne_image_->setPalette(palette);
-  patrecOne_image_->setBackgroundRole(QPalette::Background);
+  patrecOne_image_->setBackgroundRole(QPalette::Window);
   patrecOne_image_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   patrecOne_image_->setScaledContents(true);
   patrecOne_image_->setAlignment(Qt::AlignCenter);
@@ -430,7 +430,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   patrecOne_scroll_ = new QScrollArea(this);
   patrecOne_scroll_->setMinimumSize(200, 200);
   patrecOne_scroll_->setPalette(palette);
-  patrecOne_scroll_->setBackgroundRole(QPalette::Background);
+  patrecOne_scroll_->setBackgroundRole(QPalette::Window);
   patrecOne_scroll_->setAlignment(Qt::AlignCenter);
   patrecOne_scroll_->setWidget(patrecOne_image_);
   patrecOne_scroll_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -440,7 +440,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   patrecTwo_image_ = new AssemblyUEyeView(this);
   patrecTwo_image_->setMinimumSize(200, 200);
   patrecTwo_image_->setPalette(palette);
-  patrecTwo_image_->setBackgroundRole(QPalette::Background);
+  patrecTwo_image_->setBackgroundRole(QPalette::Window);
   patrecTwo_image_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   patrecTwo_image_->setScaledContents(true);
   patrecTwo_image_->setAlignment(Qt::AlignCenter);
@@ -448,7 +448,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   patrecTwo_scroll_ = new QScrollArea(this);
   patrecTwo_scroll_->setMinimumSize(200, 200);
   patrecTwo_scroll_->setPalette(palette);
-  patrecTwo_scroll_->setBackgroundRole(QPalette::Background);
+  patrecTwo_scroll_->setBackgroundRole(QPalette::Window);
   patrecTwo_scroll_->setAlignment(Qt::AlignCenter);
   patrecTwo_scroll_->setWidget(patrecTwo_image_);
   patrecTwo_scroll_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -943,7 +943,7 @@ void AssemblyObjectAlignerView::update_templates(const bool checked)
   }
 
   patrecOne_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+f_path_1));
-  patrecTwo_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+f_path_1));
+  patrecTwo_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+f_path_2));
 
   return;
 }

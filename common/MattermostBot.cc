@@ -20,37 +20,41 @@
 
 #include "MattermostBot.h"
 
-MattermostBot::MattermostBot(QObject *parent)
+MattermostBot::MattermostBot(std::string config_alias, QObject *parent)
   : QObject(parent),
     channel_(),
     username_(),
-    webhook_()
+    webhook_(),
+    config_alias_(config_alias)
 {
 
 }
 
-MattermostBot::MattermostBot(QString channel, QObject *parent)
-  : QObject(parent),
-    channel_(channel)
-{
-
-}
-
-MattermostBot::MattermostBot(QString channel, QString username, QObject *parent)
+MattermostBot::MattermostBot(QString channel, std::string config_alias, QObject *parent)
   : QObject(parent),
     channel_(channel),
-    username_(username)
+    config_alias_(config_alias)
 {
 
 }
 
-MattermostBot::MattermostBot(QString channel, QString username, QString webhook, QObject *parent)
+MattermostBot::MattermostBot(QString channel, QString username, std::string config_alias, QObject *parent)
   : QObject(parent),
     channel_(channel),
     username_(username),
-    webhook_(webhook)
+    config_alias_(config_alias)
 {
 
+}
+
+MattermostBot::MattermostBot(QString channel, QString username, QString webhook, std::string config_alias, QObject *parent)
+  : QObject(parent),
+    channel_(channel),
+    username_(username),
+    webhook_(webhook),
+    config_alias_(config_alias)
+{
+    config_ = ApplicationConfig::instance();
 }
 
 MattermostBot::~MattermostBot()
@@ -92,7 +96,7 @@ void MattermostBot::postMessage(const QString& message)
   std::string data = "payload={\"channel\": \"";
 
   if (channel_.isNull()) {
-    data += ApplicationConfig::instance()->getValue("mattermostchannel");
+    data += config_->getValue(config_alias_, "mattermostchannel");
   } else {
     data += channel_.toStdString();
   }
@@ -100,7 +104,7 @@ void MattermostBot::postMessage(const QString& message)
   data += "\", \"username\": \"";
 
   if (username_.isNull()) {
-    data += ApplicationConfig::instance()->getValue("mattermostusername");
+    data += config_->getValue(config_alias_, "mattermostusername");
   } else {
     data += username_.toStdString();
   }
@@ -111,7 +115,7 @@ void MattermostBot::postMessage(const QString& message)
 
   std::string webhook;
   if (webhook_.isNull()) {
-    webhook = ApplicationConfig::instance()->getValue("mattermostwebhook");
+    webhook = config_->getValue(config_alias_, "mattermostwebhook");
   } else {
     webhook = webhook_.toStdString();
   }

@@ -149,6 +149,6 @@ QScriptValue Thermo2ScriptableGlobals::mkUTime(int year, int month, int day,
 
 void Thermo2ScriptableGlobals::mattermost(const QString& message)
 {
-  MattermostBot bot;
+  MattermostBot bot("main");
   bot.postMessage(message);
 }

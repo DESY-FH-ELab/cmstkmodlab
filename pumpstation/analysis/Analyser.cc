@@ -63,7 +63,7 @@ void Analyser::analyse()
   bool hasStartDate = false;
   QDate startDate;
   if (arguments_.size()>=3) {
-    QStringList list = arguments_[2].split('-', QString::SkipEmptyParts);
+    QStringList list = arguments_[2].split('-', Qt::SkipEmptyParts);
     if (list.size()!=3) {
       std::cout << "cannot parse start date " << arguments_[2].toStdString() << std::endl;
       QCoreApplication::quit();
@@ -89,7 +89,7 @@ void Analyser::analyse()
   bool hasEndDate = false;
   QDate endDate;
   if (arguments_.size()==4) {
-    QStringList list = arguments_[3].split('-', QString::SkipEmptyParts);
+    QStringList list = arguments_[3].split('-', Qt::SkipEmptyParts);
     if (list.size()!=3) {
       std::cout << "cannot parse end date " << arguments_[3].toStdString() << std::endl;
       QCoreApplication::quit();
@@ -128,7 +128,7 @@ void Analyser::analyse()
     dateStamp.insert(6, "_");
     dateStamp.insert(4, "_");
 
-    QStringList list = dateStamp.split('_', QString::SkipEmptyParts);
+    QStringList list = dateStamp.split('_', Qt::SkipEmptyParts);
     if (list.size()!=4) continue;
 
     int y = list[0].toInt();
