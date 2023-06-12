@@ -192,6 +192,6 @@ void WatchDog::statusTimeout()
   }
   message += " mbar\n";
 
-  MattermostBot bot;
+  MattermostBot bot("main");
   bot.postMessage(message);
 }

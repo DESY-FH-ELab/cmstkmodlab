@@ -51,6 +51,8 @@ include_directories(${PROJECT_SOURCE_DIR})
 
 include_directories(${OPENCV4_INCLUDE_DIRS})
 
+include_directories(${EXIV2_INCLUDE_DIRS})
+
 include_directories(${Qt5Core_INCLUDE_DIRS})
 include_directories(${Qt5Widgts_INCLUDE_DIRS})
 include_directories(${Qt5Script_INCLUDE_DIRS})
@@ -82,7 +84,6 @@ target_link_libraries(defoCommon
         PRIVATE Qt5::Script
         PRIVATE Qt5::Svg
         PRIVATE Common
-        PUBLIC PkgConfig::EXIV2
 )
 
 INSTALL(

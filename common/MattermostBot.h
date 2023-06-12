@@ -27,15 +27,15 @@ class MattermostBot : public QObject
 public:
 
   [[deprecated("Use MattermostBot(QString channel, QString username, QString webhook, QObject *parent) instead.")]]
-  explicit MattermostBot(QObject *parent = 0);
+  explicit MattermostBot(std::string config_alias, QObject *parent = 0);
 
   [[deprecated("Use MattermostBot(QString channel, QString username, QString webhook, QObject *parent) instead.")]]
-  explicit MattermostBot(QString channel, QObject *parent = 0);
+  explicit MattermostBot(QString channel, std::string config_alias, QObject *parent = 0);
 
   [[deprecated("Use MattermostBot(QString channel, QString username, QString webhook, QObject *parent) instead.")]]
-  explicit MattermostBot(QString channel, QString username, QObject *parent = 0);
+  explicit MattermostBot(QString channel, QString username, std::string config_alias, QObject *parent = 0);
 
-  explicit MattermostBot(QString channel, QString username, QString webhook, QObject *parent = 0);
+  explicit MattermostBot(QString channel, QString username, QString webhook, std::string config_alias, QObject *parent = 0);
 
   ~MattermostBot();
 
@@ -49,6 +49,8 @@ protected:
   QString username_;
   QString webhook_;
   QMutex mutex_;
+  std::string config_alias_;
+  ApplicationConfig* config_;
 };
 
 /** @} */

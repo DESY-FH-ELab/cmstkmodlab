@@ -115,7 +115,7 @@ LegendListView::LegendListView(ThermoDAQLegend *legend) :
     QListView(legend)
 {
     setFrameStyle(NoFrame);
-    viewport()->setBackgroundRole(QPalette::Background);
+    viewport()->setBackgroundRole(QPalette::Window);
     viewport()->setAutoFillBackground(false);
 
     QStandardItemModel *model = new QStandardItemModel();

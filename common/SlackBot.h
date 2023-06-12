@@ -17,6 +17,8 @@
 #include <QMutex>
 #include <QString>
 
+#include <ApplicationConfig.h>
+
 /** @addtogroup common
  *  @{
  */
@@ -28,12 +30,12 @@ public:
 
 
   [[deprecated("Use SlackBot(QString username, QString webhook, QString channel, QObject *parent) instead.")]]
-  explicit SlackBot(QObject *parent = 0);
+  explicit SlackBot(std::string config_alias, QObject *parent = 0);
 
   [[deprecated("Use SlackBot(QString username, QString webhook, QString channel, QObject *parent) instead.")]]
-  explicit SlackBot(QString username, QObject *parent = 0);
+  explicit SlackBot(QString username, std::string config_alias, QObject *parent = 0);
 
-  explicit SlackBot(QString username, QString webhook, QString channel, QObject *parent = 0);
+  explicit SlackBot(QString username, QString webhook, QString channel, std::string config_alias, QObject *parent = 0);
 
   ~SlackBot();
 
@@ -47,6 +49,8 @@ protected:
   QString webhook_;
   QString channel_;
   QMutex mutex_;
+  std::string config_alias_;
+  ApplicationConfig* config_;
 };
 
 /** @} */

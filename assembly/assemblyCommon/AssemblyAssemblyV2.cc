@@ -68,6 +68,14 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
   pickup2_Z_ = config_->getValue<double>("main", "AssemblyAssembly_pickup2_Z");
 
   alreadyClicked_LowerPickupToolOntoMaPSA = false; alreadyClicked_LowerPickupToolOntoPSS = false; alreadyClicked_LowerMaPSAOntoBaseplate = false; alreadyClicked_LowerPSSOntoSpacers = false; alreadyClicked_LowerPSSPlusSpacersOntoGluingStage = false; alreadyClicked_LowerPSSPlusSpacersOntoMaPSA = false;
+
+  skip_dipping_ = config_->getDefaultValue<bool>("main", "skip_dipping", false);
+
+}
+
+bool AssemblyAssemblyV2::IsSkipDipping() const
+{
+    return skip_dipping_;
 }
 
 const LStepExpressMotionManager* AssemblyAssemblyV2::motion() const

@@ -52,12 +52,12 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
 
   //// left-hand side
   QPalette palette;
-  palette.setColor(QPalette::Background, QColor(220, 220, 220));
+  palette.setColor(QPalette::Window, QColor(220, 220, 220));
 
   imgraw_ueye_ = new AssemblyUEyeView(this);
   imgraw_ueye_->setMinimumSize(500, 300);
   imgraw_ueye_->setPalette(palette);
-  imgraw_ueye_->setBackgroundRole(QPalette::Background);
+  imgraw_ueye_->setBackgroundRole(QPalette::Window);
   imgraw_ueye_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   imgraw_ueye_->setScaledContents(true);
   imgraw_ueye_->setAlignment(Qt::AlignCenter);
@@ -65,7 +65,7 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
   imgraw_scroll_ = new QScrollArea(this);
   imgraw_scroll_->setMinimumSize(500, 300);
   imgraw_scroll_->setPalette(palette);
-  imgraw_scroll_->setBackgroundRole(QPalette::Background);
+  imgraw_scroll_->setBackgroundRole(QPalette::Window);
   imgraw_scroll_->setAlignment(Qt::AlignCenter);
   imgraw_scroll_->setWidget(imgraw_ueye_);
   imgraw_scroll_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -73,7 +73,7 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
   imgbin_ueye_ = new AssemblyUEyeView(this);
   imgbin_ueye_->setMinimumSize(500, 300);
   imgbin_ueye_->setPalette(palette);
-  imgbin_ueye_->setBackgroundRole(QPalette::Background);
+  imgbin_ueye_->setBackgroundRole(QPalette::Window);
   imgbin_ueye_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   imgbin_ueye_->setScaledContents(true);
   imgbin_ueye_->setAlignment(Qt::AlignCenter);
@@ -81,7 +81,7 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
   imgbin_scroll_ = new QScrollArea(this);
   imgbin_scroll_->setMinimumSize(500, 300);
   imgbin_scroll_->setPalette(palette);
-  imgbin_scroll_->setBackgroundRole(QPalette::Background);
+  imgbin_scroll_->setBackgroundRole(QPalette::Window);
   imgbin_scroll_->setAlignment(Qt::AlignCenter);
   imgbin_scroll_->setWidget(imgbin_ueye_);
   imgbin_scroll_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -177,7 +177,7 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
   lBin->addLayout(imgbin_adathr_layout);
 
   imgbin_adathr_button_ = new QPushButton("openCV::adaptiveThreshold", this);
-  imgbin_adathr_layout->addWidget(imgbin_adathr_button_, 0, 0);
+  imgbin_adathr_layout->addWidget(imgbin_adathr_button_, 0, Qt::Alignment());
 
   connect(imgbin_adathr_button_, SIGNAL(clicked()), this, SLOT(apply_adaptiveThreshold()));
 

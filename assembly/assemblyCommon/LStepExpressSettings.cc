@@ -162,7 +162,7 @@ bool LStepExpressSettingsInstructionVI::setValue(const QString& value)
     int newValue;
     bool ret = false;
 
-    QStringList tokens = value.split(" ", QString::SkipEmptyParts);
+    QStringList tokens = value.split(" ", Qt::SkipEmptyParts);
     int i = 0;
     for (QStringList::iterator it = tokens.begin();
          it!=tokens.end();
@@ -544,8 +544,8 @@ void LStepExpressSettings::writeSettingsToFile(const QString& filename)
              ++it) {
             LStepExpressSettingsInstruction* setting = *it;
 
-            out << qSetFieldWidth(40) << left << setting->key()
-                << qSetFieldWidth(20) << right << setting->valueAsString() << "\n";
+            out << qSetFieldWidth(40) << Qt::left << setting->key()
+                << qSetFieldWidth(20) << Qt::right << setting->valueAsString() << "\n";
         }
     }
 }
