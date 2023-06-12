@@ -496,6 +496,14 @@ void ThermoDAQ2StreamReader::processFile(QFile* file)
   }
 }
 
+template<typename T> size_t hoffset(T* t, size_t * m)
+{
+    size_t a = (size_t)t;
+    size_t b = (size_t)m;
+
+    return b - a;
+}
+
 void ThermoDAQ2StreamReader::process()
 {
   for (auto p : parameters_) {
@@ -607,35 +615,44 @@ void ThermoDAQ2StreamReader::process()
 
   for (int i=0;i<3;++i) {
     snprintf(columnName, sizeof(columnName), "nge103BState_%d", i+1);
-    tabledef.push_back( columndef { HOFFSET(Measurement2_t, nge103BState[i]), sizeof(bool), columnName, H5T_NATIVE_HBOOL });
+    tabledef.push_back( columndef { hoffset(&measurement_, (size_t*)(&measurement_.nge103BState[i])),
+          sizeof(bool), columnName, H5T_NATIVE_HBOOL });
 
     snprintf(columnName, sizeof(columnName), "nge103BMode_%d", i+1);
-    tabledef.push_back( columndef { HOFFSET(Measurement2_t, nge103BMode[i]), sizeof(int), columnName, H5T_NATIVE_INT });
+    tabledef.push_back( columndef { hoffset(&measurement_, (size_t*)(&measurement_.nge103BMode[i])),
+      sizeof(int), columnName, H5T_NATIVE_INT });
 
     snprintf(columnName, sizeof(columnName), "nge103BVoltage_%d", i+1);
-    tabledef.push_back( columndef { HOFFSET(Measurement2_t, nge103BVoltage[i]), sizeof(float), columnName, H5T_NATIVE_FLOAT });
+    tabledef.push_back( columndef { hoffset(&measurement_, (size_t*)(&measurement_.nge103BVoltage[i])),
+      sizeof(float), columnName, H5T_NATIVE_FLOAT });
 
     snprintf(columnName, sizeof(columnName), "nge103BMVoltage_%d", i+1);
-    tabledef.push_back( columndef { HOFFSET(Measurement2_t, nge103BMVoltage[i]), sizeof(float), columnName, H5T_NATIVE_FLOAT });
+    tabledef.push_back( columndef { hoffset(&measurement_, (size_t*)(&measurement_.nge103BMVoltage[i])),
+      sizeof(float), columnName, H5T_NATIVE_FLOAT });
 
     snprintf(columnName, sizeof(columnName), "nge103BCurrent_%d", i+1);
-    tabledef.push_back( columndef { HOFFSET(Measurement2_t, nge103BCurrent[i]), sizeof(float), columnName, H5T_NATIVE_FLOAT });
+    tabledef.push_back( columndef { hoffset(&measurement_, (size_t*)(&measurement_.nge103BCurrent[i])),
+      sizeof(float), columnName, H5T_NATIVE_FLOAT });
 
     snprintf(columnName, sizeof(columnName), "nge103BMCurrent_%d", i+1);
-    tabledef.push_back( columndef { HOFFSET(Measurement2_t, nge103BMCurrent[i]), sizeof(float), columnName, H5T_NATIVE_FLOAT });
+    tabledef.push_back( columndef { hoffset(&measurement_, (size_t*)(&measurement_.nge103BMCurrent[i])),
+      sizeof(float), columnName, H5T_NATIVE_FLOAT });
 
   }
 
   for (int i=0;i<2;++i) {
     for (int j=0;j<10;++j) {
       snprintf(columnName, sizeof(columnName), "KeithleyDAQ6510State_%d%02d", i+1, j+1);
-      tabledef.push_back( columndef { HOFFSET(Measurement2_t, keithleyState[i][j]), sizeof(bool), columnName, H5T_NATIVE_HBOOL });
+      tabledef.push_back( columndef { hoffset(&measurement_, (size_t*)(&measurement_.keithleyState[i][j])),
+        sizeof(bool), columnName, H5T_NATIVE_HBOOL });
 
       snprintf(columnName, sizeof(columnName), "KeithleyDAQ6510Temperature_%d%02d", i+1, j+1);
-      tabledef.push_back( columndef { HOFFSET(Measurement2_t, keithleyTemperature[i][j]), sizeof(float), columnName, H5T_NATIVE_FLOAT });
+      tabledef.push_back( columndef { hoffset(&measurement_, (size_t*)(&measurement_.keithleyTemperature[i][j])),
+        sizeof(float), columnName, H5T_NATIVE_FLOAT });
 
       snprintf(columnName, sizeof(columnName), "KeithleyDAQ6510SigmaTemperature_%d%02d", i+1, j+1);
-      tabledef.push_back( columndef { HOFFSET(Measurement2_t, keithleySigmaTemperature[i][j]), sizeof(float), columnName, H5T_NATIVE_FLOAT });
+      tabledef.push_back( columndef { hoffset(&measurement_, (size_t*)(&measurement_.keithleySigmaTemperature[i][j])),
+        sizeof(float), columnName, H5T_NATIVE_FLOAT });
     }
   }
 
