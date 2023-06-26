@@ -392,6 +392,7 @@ void Metrology::run_metrology(const double patrec_dX, const double patrec_dY, co
     dY += config_->getValue<double>("parameters", "FromPSPRefPointToPSSRefPoint_dY");
     const double dZ = config_->getValue<double>("parameters", "Thickness_GlueLayer") * 2.
                     + config_->getValue<double>("parameters", "Thickness_Spacer")
+                    + config_->getValue<double>("parameters", "Thickness_MPA")
                     + config_->getValue<double>("parameters", "Thickness_PSS");
 
 
@@ -554,8 +555,8 @@ void Metrology::run_metrology(const double patrec_dX, const double patrec_dY, co
 
     emit measured_angle(true, PSs_angle_deg_);
 
-    const double delta_x = (posi_PSs_x1_ - posi_PSs_x1_) - config_->getValue<double>("parameters", "FromPSPRefPointToPSSRefPoint_dX");
-    const double delta_y = (posi_PSs_y1_ - posi_PSs_y1_) - config_->getValue<double>("parameters", "FromPSPRefPointToPSSRefPoint_dY");
+    const double delta_x = (posi_PSs_x1_ - posi_PSp_x1_) - config_->getValue<double>("parameters", "FromPSPRefPointToPSSRefPoint_dX");
+    const double delta_y = (posi_PSs_y1_ - posi_PSp_y1_) - config_->getValue<double>("parameters", "FromPSPRefPointToPSSRefPoint_dY");
     const double delta_a = PSs_angle_deg_ - PSp_angle_deg_;
     emit measured_results(delta_x, delta_y, delta_a);
 
