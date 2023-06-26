@@ -144,6 +144,20 @@ void Metrology::redirect_image(const cv::Mat& img)
 
     emit image_PatRecTwo(img);
   }
+  else if(metrology_step_ == 8)
+  {
+    NQLog("Metrology", NQLog::Spam) << "redirect_image"
+       << ": emitting signal \"image_PatRecThree\"";
+
+    emit image_PatRecThree(img);
+  }
+  else if(metrology_step_ == 11)
+  {
+    NQLog("Metrology", NQLog::Spam) << "redirect_image"
+       << ": emitting signal \"image_PatRecFour\"";
+
+    emit image_PatRecFour(img);
+  }
 
   return;
 }

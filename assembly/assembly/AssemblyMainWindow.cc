@@ -305,6 +305,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     metrology_view_->PatRecOne_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecOne(cv::Mat)));
     metrology_view_->PatRecTwo_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecTwo(cv::Mat)));
+    metrology_view_->PatRecThree_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecThree(cv::Mat)));
+    metrology_view_->PatRecFour_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecFour(cv::Mat)));
 
     connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_Metrology()));
     connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));

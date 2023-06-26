@@ -46,6 +46,8 @@ class MetrologyView : public QWidget
 
   AssemblyUEyeView* PatRecOne_Image() const { return patrecOne_image_; }
   AssemblyUEyeView* PatRecTwo_Image() const { return patrecTwo_image_; }
+  AssemblyUEyeView* PatRecThree_Image() const { return patrecThree_image_; }
+  AssemblyUEyeView* PatRecFour_Image() const { return patrecFour_image_; }
 
   QPushButton* button_metrologyEmergencyStop() const { return button_metrologyEmergencyStop_; }
 
