@@ -104,6 +104,8 @@ class Metrology : public QObject
 
     void image_PatRecOne(const cv::Mat&);
     void image_PatRecTwo(const cv::Mat&);
+    void image_PatRecThree(const cv::Mat&);
+    void image_PatRecFour(const cv::Mat&);
 
     void image_request();
     void autofocused_image_request();
