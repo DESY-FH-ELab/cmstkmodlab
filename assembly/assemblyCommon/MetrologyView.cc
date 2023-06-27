@@ -705,7 +705,7 @@ void MetrologyView::display_infoTab()
 {
     QMessageBox::information(this, tr("Information - Metrology"),
             tr("<p>Click 'Perform Metrology' to run the module metrology.</p>"
-            "<p>Make sure to move to the first marker of the PSp beforehand and to set template images for PatRec and B/W thresholds.</p>"
+            "<p>Make sure to move to the first marker of the PSp beforehand and to set template images for PatRec and B/W thresholds. It is recommended to enable vacuum on the baseplate</p>"
     ));
 
     return;
