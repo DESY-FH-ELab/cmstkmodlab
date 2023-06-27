@@ -41,6 +41,8 @@ MetrologyView::MetrologyView(QWidget* parent)
  , metro_useAutoFocusing_checkbox_(nullptr)
 
  , metro_exemetro_pusbu_(nullptr)
+ , metro_goToMarker_pusbu_(nullptr)
+ , metro_enableVacuum_pusbu_(nullptr)
 
  , alignm_angmax_dontIter_linee_(nullptr)
  , alignm_angmax_complete_linee_(nullptr)
@@ -128,14 +130,33 @@ MetrologyView::MetrologyView(QWidget* parent)
 
   metro_exemod_lay->addSpacing(20);
 
+  // Add layout with a few buttons
+  QVBoxLayout* metro_button_lay = new QVBoxLayout;
+  metro_exemod_lay->addLayout(metro_button_lay);
+
+  QHBoxLayout* metro_prep_lay = new QHBoxLayout;
+  metro_button_lay->addLayout(metro_prep_lay);
+
+  QLabel* metro_prep_label = new QLabel("Preparations: ");
+  metro_goToMarker_pusbu_ = new QPushButton(tr("Go to PSp TL marker"));
+  metro_enableVacuum_pusbu_ = new QPushButton(tr("Enable baseplate vacuum"));
+
+  metro_prep_lay->addWidget(metro_prep_label);
+  metro_prep_lay->addWidget(metro_goToMarker_pusbu_);
+  metro_prep_lay->addWidget(metro_enableVacuum_pusbu_);
+
+  connect(metro_enableVacuum_pusbu_, SIGNAL(clicked()), this, SLOT(enable_vacuum_on_baseplate()));
+  connect(metro_goToMarker_pusbu_, SIGNAL(clicked()), this, SLOT(go_to_marker()));
+
   // mode: align object
   QHBoxLayout* metro_exemetro_lay = new QHBoxLayout;
-  metro_exemod_lay->addLayout(metro_exemetro_lay);
+  metro_button_lay->addLayout(metro_exemetro_lay);
 
   metro_exemetro_pusbu_ = new QPushButton(tr("Perform Metrology"));
 
   connect(metro_exemetro_pusbu_, SIGNAL(clicked()), this, SLOT(transmit_configuration()));
   metro_exemetro_lay->addWidget(metro_exemetro_pusbu_);
+
   // ----------
 
   metro_cfg_lay->addSpacing(50);
@@ -524,6 +545,36 @@ void MetrologyView::switch_to_config()
 
     toolbox_->setCurrentIndex(idx_cfg_wid_);
     return;
+}
+
+void MetrologyView::updateVacuumChannelState(int channel, bool state)
+{
+    const int vacuum_channel_baseplate = config_->getValue<int>("main", "Vacuum_Baseplate");
+    if (channel == vacuum_channel_baseplate) {
+        if(state) {
+            metro_enableVacuum_pusbu_->setEnabled(false);
+        } else {
+            metro_enableVacuum_pusbu_->setEnabled(true);
+        }
+    }
+}
+
+void MetrologyView::enable_vacuum_on_baseplate()
+{
+    const int vacuum_channel_baseplate = config_->getValue<int>("main", "Vacuum_Baseplate");
+
+    NQLog("MetrologyView", NQLog::Spam) << "enable_vacuum_on_baseplate"
+       << ": emitting signal \"enable_vacuum_baseplate(" << vacuum_channel_baseplate << ")\"";
+
+    emit enable_vacuum_baseplate(vacuum_channel_baseplate);
+}
+
+void MetrologyView::go_to_marker()
+{
+    NQLog("MetrologyView", NQLog::Spam) << "go_to_marker"
+       << ": emitting signal \"go_to_marker_signal()\"";
+
+    emit go_to_marker_signal();
 }
 
 void MetrologyView::transmit_configuration()

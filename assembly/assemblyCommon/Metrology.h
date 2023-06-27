@@ -73,6 +73,8 @@ class Metrology : public QObject
     double PSp_angle_deg_;
     double PSs_angle_deg_;
 
+    bool moving_to_start_;
+
     void reset();
 
   public slots:
@@ -90,6 +92,8 @@ class Metrology : public QObject
     void move_relative(const double, const double, const double, const double);
 
     void complete_motion();
+
+    void move_to_start();
 
     void clear_results();
 
