@@ -96,6 +96,7 @@ class MetrologyView : public QWidget
   AssemblyUEyeView* patrecFour_image_;
   QScrollArea*      patrecFour_scroll_;
 
+  QPushButton*  button_metrologyClearResults_;
   QPushButton* button_metrologyEmergencyStop_;
 
   bool finder_connected_;
@@ -121,6 +122,8 @@ class MetrologyView : public QWidget
   void updateImage(const int, const cv::Mat&);
 
   void update_templates(const bool);
+
+  void clearResults();
 
  signals:
 
