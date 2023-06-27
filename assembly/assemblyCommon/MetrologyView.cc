@@ -24,7 +24,6 @@
 #include <QHBoxLayout>
 #include <QGridLayout>
 #include <QGroupBox>
-#include <QToolBox>
 #include <QLabel>
 #include <QScriptEngine>
 #include <qnumeric.h>
@@ -32,6 +31,8 @@
 
 MetrologyView::MetrologyView(QWidget* parent)
  : QWidget(parent)
+
+ , toolbox_(nullptr)
 
  , metro_cfg_wid_(nullptr)
  , metro_res_wid_(nullptr)
@@ -71,20 +72,24 @@ MetrologyView::MetrologyView(QWidget* parent)
 
  , finder_connected_(false)
 
+ , idx_cfg_wid_(0)
+ , idx_results_wid_(0)
+
  , config_(nullptr)
 {
   QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
 
-  QToolBox* toolbox = new QToolBox;
-  layout->addWidget(toolbox);
+  toolbox_ = new QToolBox;
+  layout->addWidget(toolbox_);
 
   config_ = ApplicationConfig::instance();
 
   // Configuration + Execution
 
   metro_cfg_wid_ = new QWidget;
-  toolbox->addItem(metro_cfg_wid_, tr("Metrology Configuration"));
+  toolbox_->addItem(metro_cfg_wid_, tr("Metrology Configuration"));
+  idx_cfg_wid_ = toolbox_->indexOf(metro_cfg_wid_);
 
   QVBoxLayout* metro_cfg_lay = new QVBoxLayout;
   metro_cfg_wid_->setLayout(metro_cfg_lay);
@@ -241,7 +246,8 @@ MetrologyView::MetrologyView(QWidget* parent)
 
   // Results -------------
   metro_res_wid_ = new QWidget;
-  toolbox->addItem(metro_res_wid_, "Metrology Results");
+  toolbox_->addItem(metro_res_wid_, "Metrology Results");
+  idx_results_wid_ = toolbox_->indexOf(metro_res_wid_);
 
   QVBoxLayout* metro_res_lay = new QVBoxLayout;
   metro_res_wid_->setLayout(metro_res_lay);
@@ -444,6 +450,15 @@ void MetrologyView::update_templates(const bool checked)
   return;
 }
 
+void MetrologyView::switch_to_results()
+{
+    NQLog("MetrologyView", NQLog::Critical) << "switch_to_results"
+    << ": Switching to results widget";
+
+    toolbox_->setCurrentIndex(idx_results_wid_);
+    return;
+}
+
 void MetrologyView::transmit_configuration()
 {
   QMessageBox* msgBox = new QMessageBox;
@@ -479,6 +494,8 @@ void MetrologyView::transmit_configuration()
      << ": emitting signal \"configuration(Metrology::Configuration)\"";
 
   emit configuration(conf);
+
+  switch_to_results();
 }
 
 
