@@ -728,8 +728,13 @@ void AssemblyAssemblyV2::PickupMaPSA_start()
     return;
   }
 
-  connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupMaPSA_finish()));
+  if(use_smartMove_) {
+      connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+      connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(PickupMaPSA_finish()));
+  } else {
+      connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+      connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupMaPSA_finish()));
+  }
 
   in_action_ = true;
 
@@ -741,8 +746,13 @@ void AssemblyAssemblyV2::PickupMaPSA_start()
 
 void AssemblyAssemblyV2::PickupMaPSA_finish()
 {
-  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupMaPSA_finish()));
+  if(use_smartMove_) {
+      disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+      disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(PickupMaPSA_finish()));
+  } else {
+      disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+      disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupMaPSA_finish()));
+  }
 
   if(in_action_){ in_action_ = false; }
 
@@ -787,8 +797,13 @@ void AssemblyAssemblyV2::PickupPSS_start()
     return;
   }
 
-  connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSS_finish()));
+  if(use_smartMove_) {
+      connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+      connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(PickupPSS_finish()));
+  } else {
+      connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+      connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSS_finish()));
+  }
 
   in_action_ = true;
 
@@ -800,8 +815,13 @@ void AssemblyAssemblyV2::PickupPSS_start()
 
 void AssemblyAssemblyV2::PickupPSS_finish()
 {
-  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSS_finish()));
+  if(use_smartMove_) {
+      disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+      disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(PickupPSS_finish()));
+  } else {
+      disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+      disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSS_finish()));
+  }
 
   if(in_action_){ in_action_ = false; }
 
@@ -1676,8 +1696,13 @@ void AssemblyAssemblyV2::PickupPSSPlusSpacers_start()
     return;
   }
 
-  connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSSPlusSpacers_finish()));
+  if(use_smartMove_){
+      connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+      connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(PickupPSSPlusSpacers_finish()));
+  } else {
+      connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+      connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSSPlusSpacers_finish()));
+  }
 
   in_action_ = true;
 
@@ -1689,8 +1714,13 @@ void AssemblyAssemblyV2::PickupPSSPlusSpacers_start()
 
 void AssemblyAssemblyV2::PickupPSSPlusSpacers_finish()
 {
-  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSSPlusSpacers_finish()));
+  if(use_smartMove_){
+      disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+      disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(PickupPSSPlusSpacers_finish()));
+  } else {
+      disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+      disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSSPlusSpacers_finish()));
+  }
 
   if(in_action_){ in_action_ = false; }
 
