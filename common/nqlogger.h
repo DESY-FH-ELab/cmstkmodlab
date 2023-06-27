@@ -47,7 +47,7 @@ public:
         Fatal       = 5
     };
 
-    NQLog(const QString& module, LogLevel level = Message);
+    NQLog(const QString& module, LogLevel level = Message, int precision = 6);
     ~NQLog();
 
     inline NQLog &operator<<(QChar t) { stream_ << '\'' << t << '\''; return *this;}
