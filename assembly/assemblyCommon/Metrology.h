@@ -62,12 +62,8 @@ class Metrology : public QObject
     void connect_motion_manager() { this->enable_motion_manager(true) ; }
     void disconnect_motion_manager() { this->enable_motion_manager(false); }
 
-    // maximum number of allowed iterations in a single alignment execution
-    int max_numOfRotations_;
-
     // transient data (values to be updated during alignment)
     int metrology_step_;
-    int counter_numOfRotations_; //Count the number of rotations executed during the alignment routine
 
     double posi_PSp_x1_, posi_PSp_y1_, posi_PSp_z1_;
     double posi_PSp_x2_, posi_PSp_y2_, posi_PSp_z2_;
@@ -78,7 +74,6 @@ class Metrology : public QObject
     double PSs_angle_deg_;
 
     void reset();
-    void reset_counter_numOfRotations();
 
   public slots:
 
