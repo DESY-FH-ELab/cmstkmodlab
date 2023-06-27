@@ -311,6 +311,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_Metrology()));
     connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
     connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
+    connect(metrology_view_->button_metrologyClearResults(), SIGNAL(clicked()), metrology_, SLOT(clear_results()));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Metrology;
     // ---------------------------------------------------------
