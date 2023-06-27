@@ -109,6 +109,7 @@ class MetrologyView : public QWidget
   void transmit_configuration();
 
   void switch_to_results();
+  void switch_to_config();
 
   void show_measured_angle(const bool, const double);
 
