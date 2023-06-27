@@ -69,10 +69,10 @@ class Metrology : public QObject
     int metrology_step_;
     int counter_numOfRotations_; //Count the number of rotations executed during the alignment routine
 
-    double posi_PSp_x1_, posi_PSp_y1_;
-    double posi_PSp_x2_, posi_PSp_y2_;
-    double posi_PSs_x1_, posi_PSs_y1_;
-    double posi_PSs_x2_, posi_PSs_y2_;
+    double posi_PSp_x1_, posi_PSp_y1_, posi_PSp_z1_;
+    double posi_PSp_x2_, posi_PSp_y2_, posi_PSp_z2_;
+    double posi_PSs_x1_, posi_PSs_y1_, posi_PSs_z1_;
+    double posi_PSs_x2_, posi_PSs_y2_, posi_PSs_z2_;
 
     double PSp_angle_deg_;
     double PSs_angle_deg_;
@@ -118,7 +118,7 @@ class Metrology : public QObject
 
     void measured_angle(const bool, const double);
 
-    void measured_results(const double, const double, const double, const double, const double, const double);
+    void measured_results(const double, const double, const double, const double, const double, const double, const double);
 
     void execution_completed();
 
