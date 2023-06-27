@@ -45,14 +45,11 @@ Metrology::Metrology(const LStepExpressMotionManager* const motion_manager, QObj
     assembly::kill_application(tr("[Metrology]"), tr("ApplicationConfig::instance() not initialized (null pointer), closing application"));
   }
 
-  max_numOfRotations_ = config_->getDefaultValue<int>("main", "Metrology_maxNumberOfRotations", 10);
-
   qRegisterMetaType<Metrology::Configuration>("Metrology::Configuration"); //"After a type has been registered, you can create and destroy objects of that type dynamically at run-time"
 
   configuration_.reset();
 
   this->reset();
-  this->reset_counter_numOfRotations();
 
   connect(this, SIGNAL(nextMetrologyStep(double, double, double)), this, SLOT(run_metrology(double, double, double)));
 
@@ -92,11 +89,6 @@ void Metrology::reset()
   clear_results();
 
   return;
-}
-
-void Metrology::reset_counter_numOfRotations()
-{
-  counter_numOfRotations_ = 0;
 }
 
 void Metrology::update_configuration(const Metrology::Configuration& conf)
@@ -214,8 +206,6 @@ void Metrology::launch_next_metrology_step()
 void Metrology::execute()
 {
   this->reset();
-  this->reset_counter_numOfRotations();
-
   this->run_metrology(0., 0., 0.);
 }
 
