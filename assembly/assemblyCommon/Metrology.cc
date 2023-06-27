@@ -24,6 +24,8 @@ Metrology::Metrology(const LStepExpressMotionManager* const motion_manager, QObj
  , motion_manager_(motion_manager)
  , motion_manager_enabled_(false)
 
+ , moving_to_start_(false)
+
  , config_(nullptr)
 {
   if(motion_manager_ == nullptr)
@@ -195,8 +197,30 @@ void Metrology::complete_motion()
   emit motion_completed();
 }
 
+void Metrology::move_to_start()
+{
+  NQLog("Metrology", NQLog::Spam) << "move_to_start";
+
+  const double dX = config_->getValue<double>("parameters", "RefPointSensor_X") - motion_manager_->get_position_X();
+  const double dY = config_->getValue<double>("parameters", "RefPointSensor_Y") - motion_manager_->get_position_Y();
+  const double dZ = config_->getValue<double>("parameters", "RefPointSensor_Z") + config_->getValue<double>("parameters", "Thickness_Baseplate") + config_->getValue<double>("parameters", "Thickness_GlueLayer") - motion_manager_->get_position_Z();
+  const double dA = config_->getValue<double>("parameters", "RefPointSensor_A") - motion_manager_->get_position_A();
+
+  NQLog("Metrology", NQLog::Spam) << "move_to_start:"
+     << ": emitting signal \"move_relative(" << dX << ", " << dY << ", " << dZ << ", " << dA << ")\"";
+
+  moving_to_start_ = true;
+
+  this->move_relative(dX, dY, dZ, dA);
+}
+
 void Metrology::launch_next_metrology_step()
 {
+  if(moving_to_start_) {
+      moving_to_start_ = false;
+      return;
+  }
+
   NQLog("Metrology", NQLog::Spam) << "launch_next_metrology_step"
      << ": emitting signal \"nextMetrologyStep(0, 0, 0)\"";
 

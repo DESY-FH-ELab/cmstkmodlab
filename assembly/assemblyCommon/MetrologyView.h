@@ -65,7 +65,9 @@ class MetrologyView : public QWidget
   QCheckBox* metro_completeAtPosOne_checkbox_;
   QCheckBox* metro_useAutoFocusing_checkbox_;
 
-  QPushButton*  metro_exemetro_pusbu_;
+  QPushButton* metro_exemetro_pusbu_;
+  QPushButton* metro_goToMarker_pusbu_;
+  QPushButton* metro_enableVacuum_pusbu_;
 
   QLineEdit* alignm_angmax_dontIter_linee_;
   QLineEdit* alignm_angmax_complete_linee_;
@@ -124,11 +126,20 @@ class MetrologyView : public QWidget
 
   void update_templates(const bool);
 
+  void enable_vacuum_on_baseplate();
+
+  void go_to_marker();
+
   void clearResults();
+
+  void updateVacuumChannelState(int, bool);
 
  signals:
 
   void configuration(Metrology::Configuration);
+
+  void enable_vacuum_baseplate(int);
+  void go_to_marker_signal();
 
  };
 
