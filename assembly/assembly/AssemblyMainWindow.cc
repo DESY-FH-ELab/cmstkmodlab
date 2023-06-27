@@ -924,7 +924,7 @@ void AssemblyMainWindow::disconnect_metrology()
   disconnect(metrology_, SIGNAL(autofocused_image_request()), image_ctr_, SLOT(acquire_autofocused_image()));
 
   // master-image updated, go to next step (PatRec)
-  disconnect(finder_, SIGNAL(updated_image_master()), metrology_, SLOT(launch_next_alignment_step()));
+  disconnect(finder_, SIGNAL(updated_image_master()), metrology_, SLOT(launch_next_metrology_step()));
 
   // launch PatRec
   disconnect(metrology_, SIGNAL(PatRec_request(AssemblyObjectFinderPatRec::Configuration)), finder_, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
@@ -933,7 +933,7 @@ void AssemblyMainWindow::disconnect_metrology()
   disconnect(finder_, SIGNAL(PatRec_res_image_master_edited(cv::Mat)), metrology_, SLOT(redirect_image(cv::Mat)));
 
   // use PatRec results for next alignment step
-  disconnect(finder_, SIGNAL(PatRec_results(double, double, double)), metrology_, SLOT(run_alignment(double, double, double)));
+  disconnect(finder_, SIGNAL(PatRec_results(double, double, double)), metrology_, SLOT(run_metrology(double, double, double)));
 
   // show measured angle
   disconnect(metrology_, SIGNAL(measured_angle(bool, double)), metrology_view_, SLOT(show_measured_angle(bool, double)));
@@ -942,7 +942,7 @@ void AssemblyMainWindow::disconnect_metrology()
   disconnect(metrology_, SIGNAL(measured_results(double, double, double, double, double, double, double)), metrology_view_, SLOT(show_results(double, double, double, double, double, double, double)));
 
   // once completed, disable connections between controllers used for alignment
-  disconnect(metrology_, SIGNAL(execution_completed(double, double, double)), this, SLOT(disconnect_metrology()));
+  disconnect(metrology_, SIGNAL(execution_completed()), this, SLOT(disconnect_metrology()));
 
   // kick-start alignment
   disconnect(metrology_, SIGNAL(configuration_updated()), metrology_, SLOT(execute()));
