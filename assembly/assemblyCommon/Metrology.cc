@@ -576,7 +576,15 @@ void Metrology::run_metrology(const double patrec_dX, const double patrec_dY, co
     const double delta_z = (posi_PSs_z1_ + posi_PSs_z2_)/2. - (posi_PSp_z1_ + posi_PSp_z2_)/2.;
     const double delta_a_deg = PSs_angle_deg_ - PSp_angle_deg_;
     const double delta_a_urad = delta_a_deg * (M_PI/180.0);
+
     emit measured_results(delta_x, delta_x_corr, delta_y, delta_y_corr, delta_z, delta_a_deg, delta_a_urad);
+
+    NQLog("Metrology", NQLog::Message) << "run_metrology: Finished with results:";
+    NQLog("Metrology", NQLog::Message) << "run_metrology: Delta X (raw/corrected) [mm]:        \t" << delta_x << "\t" << delta_x_corr;
+    NQLog("Metrology", NQLog::Message) << "run_metrology: Delta Y (raw/corrected) [mm]:        \t" << delta_y << "\t" << delta_y_corr;
+    NQLog("Metrology", NQLog::Message, 4) << "run_metrology: Delta Z                 [mm]:        \t" << delta_z;
+    NQLog("Metrology", NQLog::Message, 3) << "run_metrology: Angle between PSp & PSs [deg / urad]:\t" << delta_a_deg << "\t" << delta_a_urad;
+
 
     if(this->configuration().complete_at_position1) //If box "Go back to marker-1 position before completion" is ticked, continue routine (go to marker1, take image, terminate)
     {
