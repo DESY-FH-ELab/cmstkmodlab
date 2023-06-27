@@ -96,6 +96,8 @@ class Metrology : public QObject
 
     void complete_motion();
 
+    void clear_results();
+
   signals:
 
     void configuration_updated();

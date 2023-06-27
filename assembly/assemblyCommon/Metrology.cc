@@ -89,21 +89,7 @@ void Metrology::reset()
 {
   metrology_step_ = 0;
 
-  posi_PSp_x1_ = 0.;
-  posi_PSp_y1_ = 0.;
-  posi_PSp_z1_ = 0.;
-  posi_PSp_x2_ = 0.;
-  posi_PSp_y2_ = 0.;
-  posi_PSp_z2_ = 0.;
-  posi_PSs_x1_ = 0.;
-  posi_PSs_y1_ = 0.;
-  posi_PSs_z1_ = 0.;
-  posi_PSs_x2_ = 0.;
-  posi_PSs_y2_ = 0.;
-  posi_PSs_z2_ = 0.;
-
-  PSp_angle_deg_ = 0.;
-  PSs_angle_deg_ = 0.;
+  clear_results();
 
   return;
 }
@@ -613,4 +599,23 @@ void Metrology::run_metrology(const double patrec_dX, const double patrec_dY, co
 
     emit execution_completed();
   }
+}
+
+void Metrology::clear_results()
+{
+    posi_PSp_x1_ = 0.;
+    posi_PSp_y1_ = 0.;
+    posi_PSp_z1_ = 0.;
+    posi_PSp_x2_ = 0.;
+    posi_PSp_y2_ = 0.;
+    posi_PSp_z2_ = 0.;
+    posi_PSs_x1_ = 0.;
+    posi_PSs_y1_ = 0.;
+    posi_PSs_z1_ = 0.;
+    posi_PSs_x2_ = 0.;
+    posi_PSs_y2_ = 0.;
+    posi_PSs_z2_ = 0.;
+
+    PSp_angle_deg_ = 0.;
+    PSs_angle_deg_ = 0.;
 }
