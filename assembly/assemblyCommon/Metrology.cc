@@ -555,10 +555,13 @@ void Metrology::run_metrology(const double patrec_dX, const double patrec_dY, co
 
     emit measured_angle(true, PSs_angle_deg_);
 
-    const double delta_x = (posi_PSs_x1_ - posi_PSp_x1_) - config_->getValue<double>("parameters", "FromPSPRefPointToPSSRefPoint_dX");
-    const double delta_y = (posi_PSs_y1_ - posi_PSp_y1_) - config_->getValue<double>("parameters", "FromPSPRefPointToPSSRefPoint_dY");
-    const double delta_a = PSs_angle_deg_ - PSp_angle_deg_;
-    emit measured_results(delta_x, delta_y, delta_a);
+    const double delta_x = (posi_PSs_x1_ - posi_PSp_x1_);
+    const double delta_x_corr = delta_x - config_->getValue<double>("parameters", "FromPSPRefPointToPSSRefPoint_dX");
+    const double delta_y = (posi_PSs_y1_ - posi_PSp_y1_);
+    const double delta_y_corr = delta_y - config_->getValue<double>("parameters", "FromPSPRefPointToPSSRefPoint_dY");
+    const double delta_a_deg = PSs_angle_deg_ - PSp_angle_deg_;
+    const double delta_a_urad = delta_a_deg * (M_PI/180.0);
+    emit measured_results(delta_x, delta_x_corr, delta_y, delta_y_corr, delta_a_deg, delta_a_urad);
 
     if(this->configuration().complete_at_position1) //If box "Go back to marker-1 position before completion" is ticked, continue routine (go to marker1, take image, terminate)
     {

@@ -77,8 +77,11 @@ class MetrologyView : public QWidget
   QLineEdit* metro_mesang_PSp_linee_;
   QLineEdit* metro_mesang_PSs_linee_;
   QLineEdit* metro_dx_linee_;
+  QLineEdit* metro_dx_corr_linee_;
   QLineEdit* metro_dy_linee_;
-  QLineEdit* metro_da_linee_;
+  QLineEdit* metro_dy_corr_linee_;
+  QLineEdit* metro_da_deg_linee_;
+  QLineEdit* metro_da_urad_linee_;
 
   AssemblyUEyeView* patrecOne_image_;
   QScrollArea*      patrecOne_scroll_;
@@ -108,7 +111,7 @@ class MetrologyView : public QWidget
 
   void show_measured_angle(const bool, const double);
 
-  void show_results(const double, const double, const double);
+  void show_results(const double, const double, const double, const double, const double, const double);
 
   void display_infoTab();
 

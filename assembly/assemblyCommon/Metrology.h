@@ -118,7 +118,7 @@ class Metrology : public QObject
 
     void measured_angle(const bool, const double);
 
-    void measured_results(const double, const double, const double);
+    void measured_results(const double, const double, const double, const double, const double, const double);
 
     void execution_completed();
 
