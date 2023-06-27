@@ -114,10 +114,12 @@ MetrologyView::MetrologyView(QWidget* parent)
 
   metro_completeAtPosOne_checkbox_ = new QCheckBox("Go back to marker-1 position before completion");
   metro_exeopt_lay->addWidget(metro_completeAtPosOne_checkbox_);
+  metro_completeAtPosOne_checkbox_->setChecked(true);
 
   // option: go-back to start before stopping
   metro_useAutoFocusing_checkbox_ = new QCheckBox("Use Auto-Focusing");
   metro_exeopt_lay->addWidget(metro_useAutoFocusing_checkbox_);
+  metro_useAutoFocusing_checkbox_->setChecked(true);
 
   metro_exemod_lay->addSpacing(20);
 
