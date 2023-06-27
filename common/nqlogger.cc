@@ -25,12 +25,12 @@
 
 #include "nqlogger.h"
 
-NQLog::NQLog(const QString& module, LogLevel level)
+NQLog::NQLog(const QString& module, LogLevel level, int precision)
 : module_(module),
   level_(level),
   stream_(&buffer_)
 {
-
+  stream_.setRealNumberPrecision(precision);
 }
 
 NQLog::~NQLog()
