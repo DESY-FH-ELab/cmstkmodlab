@@ -530,7 +530,7 @@ void MetrologyView::transmit_configuration()
 {
   QMessageBox* msgBox = new QMessageBox;
   msgBox->setStyleSheet("QLabel{min-width: 300px;}");
-  msgBox->setInformativeText("Are you sure you selected the correct template images and defined the relevant B/W thresholds?");
+  msgBox->setInformativeText("Are you sure the camera is positioned at the TL fiducial of the PSp sensor, the correct template images are selected and the relevant B/W thresholds are defined?");
   msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
   msgBox->setDefaultButton(QMessageBox::Yes);
   int ret = msgBox->exec();
