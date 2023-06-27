@@ -538,6 +538,7 @@ void MetrologyView::switch_to_results()
     toolbox_->setCurrentIndex(idx_results_wid_);
     return;
 }
+
 void MetrologyView::switch_to_config()
 {
     NQLog("MetrologyView", NQLog::Critical) << "switch_to_config"
