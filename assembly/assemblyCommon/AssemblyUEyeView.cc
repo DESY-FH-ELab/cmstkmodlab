@@ -54,6 +54,14 @@ void AssemblyUEyeView::setImage(const cv::Mat& newImage)
     update();
 }
 
+void AssemblyUEyeView::resetImage()
+{
+    QMutexLocker lock(&mutex_);
+    image_ = QImage();
+    lock.unlock();
+    update();
+}
+
 void AssemblyUEyeView::paintEvent(QPaintEvent*)
 {
     if(image_.isNull() == false)
