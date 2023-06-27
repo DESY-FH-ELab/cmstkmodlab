@@ -18,6 +18,7 @@
 #include <ApplicationConfig.h>
 #include <Metrology.h>
 
+#include <QToolBox>
 #include <QWidget>
 #include <QString>
 #include <QScrollArea>
@@ -54,6 +55,8 @@ class MetrologyView : public QWidget
   Metrology::Configuration get_configuration(bool&) const;
 
  protected:
+
+  QToolBox* toolbox_;
 
   QWidget* metro_cfg_wid_;
   QWidget* metro_res_wid_;
@@ -93,11 +96,15 @@ class MetrologyView : public QWidget
 
   bool finder_connected_;
 
+  int idx_cfg_wid_, idx_results_wid_;
+
   ApplicationConfig* config_;
 
  public slots:
 
   void transmit_configuration();
+
+  void switch_to_results();
 
   void show_measured_angle(const bool, const double);
 
