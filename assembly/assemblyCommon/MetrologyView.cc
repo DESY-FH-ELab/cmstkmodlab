@@ -400,6 +400,7 @@ MetrologyView::MetrologyView(QWidget* parent)
   patrecOne_image_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   patrecOne_image_->setScaledContents(true);
   patrecOne_image_->setAlignment(Qt::AlignCenter);
+  patrecOne_image_->setZoomFactor(0.2);
 
   QApplication::processEvents();
 
@@ -420,6 +421,7 @@ MetrologyView::MetrologyView(QWidget* parent)
   patrecTwo_image_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   patrecTwo_image_->setScaledContents(true);
   patrecTwo_image_->setAlignment(Qt::AlignCenter);
+  patrecTwo_image_->setZoomFactor(0.2);
 
   patrecTwo_scroll_ = new QScrollArea(this);
   patrecTwo_scroll_->setMinimumSize(200, 200);
@@ -438,6 +440,7 @@ MetrologyView::MetrologyView(QWidget* parent)
   patrecThree_image_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   patrecThree_image_->setScaledContents(true);
   patrecThree_image_->setAlignment(Qt::AlignCenter);
+  patrecThree_image_->setZoomFactor(0.2);
 
   patrecThree_scroll_ = new QScrollArea(this);
   patrecThree_scroll_->setMinimumSize(200, 200);
@@ -456,6 +459,7 @@ MetrologyView::MetrologyView(QWidget* parent)
   patrecFour_image_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   patrecFour_image_->setScaledContents(true);
   patrecFour_image_->setAlignment(Qt::AlignCenter);
+  patrecFour_image_->setZoomFactor(0.2);
 
   patrecFour_scroll_ = new QScrollArea(this);
   patrecFour_scroll_->setMinimumSize(200, 200);
