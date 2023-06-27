@@ -54,7 +54,10 @@ MetrologyView::MetrologyView(QWidget* parent)
  , metro_mesang_PSs_linee_(nullptr)
  , metro_dx_linee_(nullptr)
  , metro_dy_linee_(nullptr)
- , metro_da_linee_(nullptr)
+ , metro_dx_corr_linee_(nullptr)
+ , metro_dy_corr_linee_(nullptr)
+ , metro_da_deg_linee_(nullptr)
+ , metro_da_urad_linee_(nullptr)
 
  , patrecOne_image_ (nullptr)
  , patrecOne_scroll_(nullptr)
@@ -258,35 +261,28 @@ MetrologyView::MetrologyView(QWidget* parent)
   metro_res_lay->addLayout(metro_mesangs_lay);
 
   // Numerical Results
-  QHBoxLayout* metro_mesang_PSp_lay = new QHBoxLayout;
-  metro_mesangs_lay->addLayout(metro_mesang_PSp_lay);
-
   QLabel* metro_mesang_PSp_label = new QLabel("Measured Angle PSp [deg]");
   metro_mesang_PSp_linee_ = new QLineEdit("");
   metro_mesang_PSp_linee_->setReadOnly(true);
 
-  metro_mesang_PSp_lay->addWidget(metro_mesang_PSp_label);
-  metro_mesang_PSp_lay->addWidget(metro_mesang_PSp_linee_);
-  metro_mesang_PSp_lay->addWidget(new QLabel);
-
-  metro_mesang_PSp_lay->setStretch(0,  34);
-  metro_mesang_PSp_lay->setStretch(1,  65);
-  metro_mesang_PSp_lay->setStretch(2, 101);
-
-  QHBoxLayout* metro_mesang_PSs_lay = new QHBoxLayout;
-  metro_mesangs_lay->addLayout(metro_mesang_PSs_lay);
+  metro_mesangs_lay->addWidget(metro_mesang_PSp_label);
+  metro_mesangs_lay->addWidget(metro_mesang_PSp_linee_);
+  metro_mesangs_lay->addWidget(new QLabel);
 
   QLabel* metro_mesang_PSs_label = new QLabel("Measured Angle PSs [deg]");
   metro_mesang_PSs_linee_ = new QLineEdit("");
   metro_mesang_PSs_linee_->setReadOnly(true);
 
-  metro_mesang_PSs_lay->addWidget(metro_mesang_PSs_label);
-  metro_mesang_PSs_lay->addWidget(metro_mesang_PSs_linee_);
-  metro_mesang_PSs_lay->addWidget(new QLabel);
+  metro_mesangs_lay->addWidget(metro_mesang_PSs_label);
+  metro_mesangs_lay->addWidget(metro_mesang_PSs_linee_);
+  metro_mesangs_lay->addWidget(new QLabel);
 
-  metro_mesang_PSs_lay->setStretch(0,  34);
-  metro_mesang_PSs_lay->setStretch(1,  65);
-  metro_mesang_PSs_lay->setStretch(2, 101);
+  metro_mesangs_lay->setStretch(0,  44);
+  metro_mesangs_lay->setStretch(1,  55);
+  metro_mesangs_lay->setStretch(2, 101);
+  metro_mesangs_lay->setStretch(3,  44);
+  metro_mesangs_lay->setStretch(4,  55);
+  metro_mesangs_lay->setStretch(5, 101);
 
   QVBoxLayout* metro_diff_lay = new QVBoxLayout;
   metro_res_lay->addLayout(metro_diff_lay);
@@ -298,13 +294,23 @@ MetrologyView::MetrologyView(QWidget* parent)
   metro_dx_linee_ = new QLineEdit("");
   metro_dx_linee_->setReadOnly(true);
 
+  QLabel* metro_dx_corr_label = new QLabel("Corrected dx [mm]");
+  metro_dx_corr_linee_ = new QLineEdit("");
+  metro_dx_corr_linee_->setReadOnly(true);
+
   metro_dx_lay->addWidget(metro_dx_label);
   metro_dx_lay->addWidget(metro_dx_linee_);
   metro_dx_lay->addWidget(new QLabel);
+  metro_dx_lay->addWidget(metro_dx_corr_label);
+  metro_dx_lay->addWidget(metro_dx_corr_linee_);
+  metro_dx_lay->addWidget(new QLabel);
 
-  metro_dx_lay->setStretch(0,  34);
-  metro_dx_lay->setStretch(1,  65);
+  metro_dx_lay->setStretch(0,  44);
+  metro_dx_lay->setStretch(1,  55);
   metro_dx_lay->setStretch(2, 101);
+  metro_dx_lay->setStretch(3,  44);
+  metro_dx_lay->setStretch(4,  55);
+  metro_dx_lay->setStretch(5, 101);
 
   QHBoxLayout* metro_dy_lay = new QHBoxLayout;
   metro_diff_lay->addLayout(metro_dy_lay);
@@ -313,28 +319,48 @@ MetrologyView::MetrologyView(QWidget* parent)
   metro_dy_linee_ = new QLineEdit("");
   metro_dy_linee_->setReadOnly(true);
 
+  QLabel* metro_dy_corr_label = new QLabel("Corrected dy [mm]");
+  metro_dy_corr_linee_ = new QLineEdit("");
+  metro_dy_corr_linee_->setReadOnly(true);
+
   metro_dy_lay->addWidget(metro_dy_label);
   metro_dy_lay->addWidget(metro_dy_linee_);
   metro_dy_lay->addWidget(new QLabel);
+  metro_dy_lay->addWidget(metro_dy_corr_label);
+  metro_dy_lay->addWidget(metro_dy_corr_linee_);
+  metro_dy_lay->addWidget(new QLabel);
 
-  metro_dy_lay->setStretch(0,  34);
-  metro_dy_lay->setStretch(1,  65);
+  metro_dy_lay->setStretch(0,  44);
+  metro_dy_lay->setStretch(1,  55);
   metro_dy_lay->setStretch(2, 101);
+  metro_dy_lay->setStretch(3,  44);
+  metro_dy_lay->setStretch(4,  55);
+  metro_dy_lay->setStretch(5, 101);
 
   QHBoxLayout* metro_da_lay = new QHBoxLayout;
   metro_diff_lay->addLayout(metro_da_lay);
 
-  QLabel* metro_da_label = new QLabel("Measured angle difference [deg]");
-  metro_da_linee_ = new QLineEdit("");
-  metro_da_linee_->setReadOnly(true);
+  QLabel* metro_da_deg_label = new QLabel("Measured angle difference [deg]");
+  metro_da_deg_linee_ = new QLineEdit("");
+  metro_da_deg_linee_->setReadOnly(true);
 
-  metro_da_lay->addWidget(metro_da_label);
-  metro_da_lay->addWidget(metro_da_linee_);
+  QLabel* metro_da_urad_label = new QLabel("Measured angle difference [urad]");
+  metro_da_urad_linee_ = new QLineEdit("");
+  metro_da_urad_linee_->setReadOnly(true);
+
+  metro_da_lay->addWidget(metro_da_deg_label);
+  metro_da_lay->addWidget(metro_da_deg_linee_);
+  metro_da_lay->addWidget(new QLabel);
+  metro_da_lay->addWidget(metro_da_urad_label);
+  metro_da_lay->addWidget(metro_da_urad_linee_);
   metro_da_lay->addWidget(new QLabel);
 
-  metro_da_lay->setStretch(0,  34);
-  metro_da_lay->setStretch(1,  65);
+  metro_da_lay->setStretch(0,  44);
+  metro_da_lay->setStretch(1,  55);
   metro_da_lay->setStretch(2, 101);
+  metro_da_lay->setStretch(3,  44);
+  metro_da_lay->setStretch(4,  55);
+  metro_da_lay->setStretch(5, 101);
 
 
   // Graphical Results (PatRec Images)
@@ -601,19 +627,31 @@ void MetrologyView::show_measured_angle(const bool sensor_PSs, const double val)
   return;
 }
 
-void MetrologyView::show_results(const double dx, const double dy, const double da)
+void MetrologyView::show_results(const double dx, const double dx_corr, const double dy, const double dy_corr, const double da_deg, const double da_urad)
 {
   std::stringstream posi_strs_dx;
   posi_strs_dx << dx;
   metro_dx_linee_->setText(QString::fromStdString(posi_strs_dx.str()));
 
+  std::stringstream posi_strs_dx_corr;
+  posi_strs_dx_corr << dx_corr;
+  metro_dx_corr_linee_->setText(QString::fromStdString(posi_strs_dx_corr.str()));
+
   std::stringstream posi_strs_dy;
   posi_strs_dy << dy;
   metro_dy_linee_->setText(QString::fromStdString(posi_strs_dy.str()));
 
-  std::stringstream posi_strs_da;
-  posi_strs_da << da;
-  metro_da_linee_->setText(QString::fromStdString(posi_strs_da.str()));
+  std::stringstream posi_strs_dy_corr;
+  posi_strs_dy_corr << dy_corr;
+  metro_dy_corr_linee_->setText(QString::fromStdString(posi_strs_dy_corr.str()));
+
+  std::stringstream posi_strs_da_deg;
+  posi_strs_da_deg << da_deg;
+  metro_da_deg_linee_->setText(QString::fromStdString(posi_strs_da_deg.str()));
+
+  std::stringstream posi_strs_da_urad;
+  posi_strs_da_urad << da_urad;
+  metro_da_urad_linee_->setText(QString::fromStdString(posi_strs_da_urad.str()));
 
   return;
 }
