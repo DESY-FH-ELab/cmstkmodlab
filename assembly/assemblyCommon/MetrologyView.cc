@@ -72,6 +72,7 @@ MetrologyView::MetrologyView(QWidget* parent)
  , patrecFour_image_ (nullptr)
  , patrecFour_scroll_(nullptr)
 
+ , button_metrologyClearResults_(nullptr)
  , button_metrologyEmergencyStop_(nullptr)
 
  , finder_connected_(false)
@@ -469,13 +470,17 @@ MetrologyView::MetrologyView(QWidget* parent)
 
   QHBoxLayout* buttons_lay = new QHBoxLayout;
 
+  button_metrologyClearResults_ = new QPushButton(tr("Clear Results"));
   button_metrologyEmergencyStop_ = new QPushButton(tr("Emergency Stop"));
 
-  buttons_lay->addWidget(new QLabel, 33);
+  buttons_lay->addWidget(button_metrologyClearResults_, 33);
   buttons_lay->addWidget(new QLabel, 33);
   buttons_lay->addWidget(button_metrologyEmergencyStop_, 33);
 
   layout->addLayout(buttons_lay);
+
+  button_metrologyClearResults_->setEnabled(false);
+  connect(button_metrologyClearResults_, SIGNAL(clicked()), this, SLOT(clearResults()));
 }
 
 
@@ -687,6 +692,8 @@ void MetrologyView::show_results(const double dx, const double dx_corr, const do
   posi_strs_da_urad << da_urad;
   metro_da_urad_linee_->setText(QString::fromStdString(posi_strs_da_urad.str()));
 
+  button_metrologyClearResults_->setEnabled(true);
+
   return;
 }
 
@@ -718,23 +725,43 @@ void MetrologyView::updateImage(const int stage, const cv::Mat& img)
   if(stage == 1)
   {
     patrecOne_image_->setImage(img);
-//    patrecOne_image_->setZoomFactor(0.3);
   }
   else if(stage == 2)
   {
     patrecTwo_image_->setImage(img);
-//    patrecTwo_image_->setZoomFactor(0.5);
   }
   else if(stage == 3)
   {
     patrecThree_image_->setImage(img);
-//    patrecTwo_image_->setZoomFactor(0.5);
   }
   else if(stage == 4)
   {
     patrecFour_image_->setImage(img);
-//    patrecTwo_image_->setZoomFactor(0.5);
   }
 
   return;
+}
+
+void MetrologyView::clearResults()
+{
+  NQLog("MetrologyView", NQLog::Spam) << "clearResults()";
+
+  patrecOne_image_->resetImage();
+  patrecTwo_image_->resetImage();
+  patrecThree_image_->resetImage();
+  patrecFour_image_->resetImage();
+
+  metro_mesang_PSp_linee_->setText("");
+  metro_mesang_PSs_linee_->setText("");
+  metro_dx_linee_->setText("");
+  metro_dx_corr_linee_->setText("");
+  metro_dy_linee_->setText("");
+  metro_dy_corr_linee_->setText("");
+  metro_dz_linee_->setText("");
+  metro_da_deg_linee_->setText("");
+  metro_da_urad_linee_->setText("");
+
+  button_metrologyClearResults_->setEnabled(false);
+
+  switch_to_config();
 }
