@@ -53,9 +53,10 @@ MetrologyView::MetrologyView(QWidget* parent)
  , metro_mesang_PSp_linee_(nullptr)
  , metro_mesang_PSs_linee_(nullptr)
  , metro_dx_linee_(nullptr)
- , metro_dy_linee_(nullptr)
  , metro_dx_corr_linee_(nullptr)
+ , metro_dy_linee_(nullptr)
  , metro_dy_corr_linee_(nullptr)
+ , metro_dz_linee_(nullptr)
  , metro_da_deg_linee_(nullptr)
  , metro_da_urad_linee_(nullptr)
 
@@ -336,6 +337,27 @@ MetrologyView::MetrologyView(QWidget* parent)
   metro_dy_lay->setStretch(3,  44);
   metro_dy_lay->setStretch(4,  55);
   metro_dy_lay->setStretch(5, 101);
+
+  QHBoxLayout* metro_dz_lay = new QHBoxLayout;
+  metro_diff_lay->addLayout(metro_dz_lay);
+
+  QLabel* metro_dz_label = new QLabel("Measured dz [mm]");
+  metro_dz_linee_ = new QLineEdit("");
+  metro_dz_linee_->setReadOnly(true);
+
+  metro_dz_lay->addWidget(metro_dz_label);
+  metro_dz_lay->addWidget(metro_dz_linee_);
+  metro_dz_lay->addWidget(new QLabel);
+  metro_dz_lay->addWidget(new QLabel);
+  metro_dz_lay->addWidget(new QLabel);
+  metro_dz_lay->addWidget(new QLabel);
+
+  metro_dz_lay->setStretch(0,  44);
+  metro_dz_lay->setStretch(1,  55);
+  metro_dz_lay->setStretch(2, 101);
+  metro_dz_lay->setStretch(3,  44);
+  metro_dz_lay->setStretch(4,  55);
+  metro_dz_lay->setStretch(5, 101);
 
   QHBoxLayout* metro_da_lay = new QHBoxLayout;
   metro_diff_lay->addLayout(metro_da_lay);
@@ -627,7 +649,7 @@ void MetrologyView::show_measured_angle(const bool sensor_PSs, const double val)
   return;
 }
 
-void MetrologyView::show_results(const double dx, const double dx_corr, const double dy, const double dy_corr, const double da_deg, const double da_urad)
+void MetrologyView::show_results(const double dx, const double dx_corr, const double dy, const double dy_corr, const double dz, const double da_deg, const double da_urad)
 {
   std::stringstream posi_strs_dx;
   posi_strs_dx << dx;
@@ -644,6 +666,10 @@ void MetrologyView::show_results(const double dx, const double dx_corr, const do
   std::stringstream posi_strs_dy_corr;
   posi_strs_dy_corr << dy_corr;
   metro_dy_corr_linee_->setText(QString::fromStdString(posi_strs_dy_corr.str()));
+
+  std::stringstream posi_strs_dz;
+  posi_strs_dz << dz;
+  metro_dz_linee_->setText(QString::fromStdString(posi_strs_dz.str()));
 
   std::stringstream posi_strs_da_deg;
   posi_strs_da_deg << da_deg;

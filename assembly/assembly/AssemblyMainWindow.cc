@@ -881,7 +881,7 @@ void AssemblyMainWindow::start_metrology(const Metrology::Configuration& conf)
   connect(metrology_, SIGNAL(measured_angle(bool, double)), metrology_view_, SLOT(show_measured_angle(bool, double)));
 
   // show measured Results
-  connect(metrology_, SIGNAL(measured_results(double, double, double, double, double, double)), metrology_view_, SLOT(show_results(double, double, double, double, double, double)));
+  connect(metrology_, SIGNAL(measured_results(double, double, double, double, double, double, double)), metrology_view_, SLOT(show_results(double, double, double, double, double, double, double)));
 
   // once completed, disable connections between controllers used for alignment
   connect(metrology_, SIGNAL(execution_completed()), this, SLOT(disconnect_metrology()));
