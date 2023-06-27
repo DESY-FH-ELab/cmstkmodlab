@@ -939,7 +939,7 @@ void AssemblyMainWindow::disconnect_metrology()
   disconnect(metrology_, SIGNAL(measured_angle(bool, double)), metrology_view_, SLOT(show_measured_angle(bool, double)));
 
   // show measured Results
-  disconnect(metrology_, SIGNAL(measured_results(double, double, double)), metrology_view_, SLOT(show_results(double, double, double)));
+  disconnect(metrology_, SIGNAL(measured_results(double, double, double, double, double, double, double)), metrology_view_, SLOT(show_results(double, double, double, double, double, double, double)));
 
   // once completed, disable connections between controllers used for alignment
   disconnect(metrology_, SIGNAL(execution_completed(double, double, double)), this, SLOT(disconnect_metrology()));
