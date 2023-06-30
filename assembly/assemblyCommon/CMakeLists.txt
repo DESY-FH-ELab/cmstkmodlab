@@ -38,6 +38,8 @@ add_library(AssemblyCommon SHARED
         AssemblyHardwareControlView.cc
         AssemblyLogFileController.cc
         AssemblyLogFileView.cc
+        MetrologyView.cc
+        Metrology.cc
         RelayCardManager.cc
         LStepExpressModel.cc
         LStepExpressMotion.cc

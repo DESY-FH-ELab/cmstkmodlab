@@ -943,7 +943,7 @@ void AssemblyObjectAlignerView::update_templates(const bool checked)
   }
 
   patrecOne_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+f_path_1));
-  patrecTwo_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+f_path_1));
+  patrecTwo_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+f_path_2));
 
   return;
 }
