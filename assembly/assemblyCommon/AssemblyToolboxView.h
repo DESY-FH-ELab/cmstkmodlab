@@ -16,6 +16,7 @@
 #include <LStepExpressMotionManager.h>
 #include <AssemblyMultiPickupTesterWidget.h>
 #include <AssemblyPositionsRegistryWidget.h>
+#include <AssemblySubassemblyPickupWidget.h>
 
 #include <QWidget>
 #include <QMessageBox>
@@ -30,11 +31,13 @@ class AssemblyToolboxView : public QWidget
   virtual ~AssemblyToolboxView() {}
 
   AssemblyPositionsRegistryWidget* PositionsRegistry_Widget() { return posreg_wid_; }
+  AssemblySubassemblyPickupWidget* SubassemblyPickup_Widget() { return subassembly_pickup_wid_; }
   AssemblyMultiPickupTesterWidget* MultiPickupTester_Widget() { return mupite_wid_; }
 
  protected:
 
   AssemblyPositionsRegistryWidget* posreg_wid_;
+  AssemblySubassemblyPickupWidget* subassembly_pickup_wid_;
   AssemblyMultiPickupTesterWidget* mupite_wid_;
 
  public slots:
