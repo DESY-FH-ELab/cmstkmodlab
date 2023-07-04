@@ -434,7 +434,10 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     // TOOLBOX VIEW --------------------------------------------
     const QString tabname_Toolbox("Toolbox");
 
-    toolbox_view_ = new AssemblyToolboxView(motion_manager_, controls_tab);
+    subassembly_pickup_ = new AssemblySubassemblyPickup(motion_manager_, relayCardManager_, smart_motion_);
+
+
+    toolbox_view_ = new AssemblyToolboxView(motion_manager_, subassembly_pickup_, controls_tab);
     controls_tab->addTab(toolbox_view_, tabname_Toolbox);
 
     // multi-pickup tester

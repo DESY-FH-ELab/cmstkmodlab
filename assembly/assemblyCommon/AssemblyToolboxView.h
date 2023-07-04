@@ -27,7 +27,7 @@ class AssemblyToolboxView : public QWidget
 
  public:
 
-  explicit AssemblyToolboxView(const LStepExpressMotionManager* const, QWidget* parent=nullptr);
+  explicit AssemblyToolboxView(const LStepExpressMotionManager* const, const AssemblySubassemblyPickup* const, QWidget* parent=nullptr);
   virtual ~AssemblyToolboxView() {}
 
   AssemblyPositionsRegistryWidget* PositionsRegistry_Widget() { return posreg_wid_; }

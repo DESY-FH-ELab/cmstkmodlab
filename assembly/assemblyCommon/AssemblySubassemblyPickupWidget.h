@@ -33,14 +33,14 @@ class AssemblySubassemblyPickupWidget : public QWidget
 
  public:
 
-  explicit AssemblySubassemblyPickupWidget(const LStepExpressMotionManager* const, QWidget* parent=nullptr);
+  explicit AssemblySubassemblyPickupWidget(const QObject* const, QWidget* parent=nullptr);
   virtual ~AssemblySubassemblyPickupWidget() {}
 
   QGridLayout* layout() const { return layout_; }
 
  protected:
 
-  const LStepExpressMotionManager* const motion_manager_;
+  QCheckBox* smartMove_checkbox_;
 
   QGridLayout* layout_;
 

@@ -17,7 +17,7 @@
 #include <QVBoxLayout>
 #include <QToolBox>
 
-AssemblyToolboxView::AssemblyToolboxView(const LStepExpressMotionManager* const motion_manager, QWidget* parent) :
+AssemblyToolboxView::AssemblyToolboxView(const LStepExpressMotionManager* const motion_manager, const AssemblySubassemblyPickup* const subassembly_pickup, QWidget* parent) :
   QWidget(parent),
 
   posreg_wid_(nullptr),
@@ -53,7 +53,7 @@ AssemblyToolboxView::AssemblyToolboxView(const LStepExpressMotionManager* const 
   //  * widget to pick up PSS+spacers subassembly
   //  * used to process subassembly
   //
-  subassembly_pickup_wid_ = new AssemblySubassemblyPickupWidget(motion_manager);
+  subassembly_pickup_wid_ = new AssemblySubassemblyPickupWidget(subassembly_pickup);
 
   toolbox->addItem(subassembly_pickup_wid_, tr("PSS+spacers subassembly pickup"));
   // ---------------------

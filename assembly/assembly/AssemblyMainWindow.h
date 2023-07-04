@@ -199,6 +199,7 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyAssembly*           assembly_;
   AssemblyAssemblyV2*         assemblyV2_;
   AssemblyMultiPickupTester*  multipickup_tester_;
+  AssemblySubassemblyPickup*  subassembly_pickup_;
 
   AssemblyObjectFinderPatRec*       finder_;
   AssemblyObjectFinderPatRecThread* finder_thread_;

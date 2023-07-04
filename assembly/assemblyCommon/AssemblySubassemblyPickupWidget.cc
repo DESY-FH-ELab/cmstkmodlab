@@ -21,48 +21,152 @@
 #include <QVBoxLayout>
 #include <QStringList>
 
-AssemblySubassemblyPickupWidget::AssemblySubassemblyPickupWidget(const LStepExpressMotionManager* const motion_manager, QWidget* parent) :
-  QWidget(parent),
+AssemblySubassemblyPickupWidget::AssemblySubassemblyPickupWidget(const QObject* const subassembly_pickup, QWidget* parent)
+  : QWidget(parent)
 
-  motion_manager_(motion_manager)
+  , smartMove_checkbox_(nullptr)
 {
-  if(motion_manager_ == nullptr)
+  if(subassembly_pickup == nullptr)
   {
-    NQLog("AssemblySubassemblyPickupWidget", NQLog::Critical)
-       << "input error: null pointer to LStepExpressMotionManager object, exiting constructor";
+      NQLog("AssemblyAssemblyView", NQLog::Fatal) << "AssemblyAssemblyView(" << subassembly_pickup << ", " << parent << ")"
+      << ": null pointer to QObject --> GUI layout will not be created";
 
-    return;
+      return;
   }
 
   QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
 
+  //// Assembly Options ------------------------------
+  QHBoxLayout* opts_lay = new QHBoxLayout;
+  layout->addLayout(opts_lay);
+
+  smartMove_checkbox_ = new QCheckBox(tr("Use SmartMove"));
+
+  opts_lay->addWidget(smartMove_checkbox_);
+
+  connect(smartMove_checkbox_, SIGNAL(stateChanged(int)), subassembly_pickup, SLOT(use_smartMove(int)));
+
+  smartMove_checkbox_->setChecked(true);
+  //// -----------------------------------------------
+
+
   uint pickup_step_N = 0;
 
-  // step: Place MaPSA on Assembly Platform
+  // step: Place PSS+Spacers Subassembly on Assembly Platform
   {
     ++pickup_step_N;
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(pickup_step_N));
-    tmp_wid->text()->setText("Place PSS+spacers subassembly on assembly platform with the spacers in their spacer pockets");
+    tmp_wid->text()->setText("Place PSS+spacers subassembly on assembly platform with the spacers aligned in their spacer pockets");
     layout->addWidget(tmp_wid);
   }
   // ----------
 
-  // step: Go To Measurement Position on MaPSA
+  // step: Go To Measurement Position on PS-s
   {
     ++pickup_step_N;
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(pickup_step_N));
-    tmp_wid->button()->setText("Go To Measurement Position on PSS");
+    tmp_wid->button()->setText("Go To Measurement Position on PS-s - Spacer height considered");
     layout->addWidget(tmp_wid);
 
-    //tmp_wid->connect_action(assembly, SLOT(GoToSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
+    tmp_wid->connect_action(subassembly_pickup, SLOT(GoToSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
   }
   // ----------
 
+  // step: Enable vacuum on spacers
+  {
+    ++pickup_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(pickup_step_N));
+    tmp_wid->button()->setText("Enable vacuum on spacers");
+    layout->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(subassembly_pickup, SLOT(EnableVacuumSpacers_start()), SIGNAL(EnableVacuumSpacers_finished()));
+  }
+  // ----------
+
+  // step: Align PSS to motion stage
+  {
+    ++pickup_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(pickup_step_N));
+    tmp_wid->button()->setText("Align PS-s to Motion Stage (Go to \"Alignment\" Tab and select \"PS-s Sensor\")");
+    layout->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(subassembly_pickup, SLOT(switchToAlignmentTab_PSS()), SIGNAL(switchToAlignmentTab_PSS_request()));
+  }
+  // ----------
+
+  // step: Go from sensor marker to pickup XY
+  {
+    ++pickup_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(pickup_step_N));
+    tmp_wid->button()->setText("Go From Sensor Marker Ref-Point to Pickup XY");
+    layout->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(subassembly_pickup, SLOT(GoFromSensorMarkerToPickupXY_start()), SIGNAL(GoFromSensorMarkerToPickupXY_finished()));
+  }
+  // ----------
+
+  // step: Lower Pickup Tool onto Subassembly
+  {
+    ++pickup_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(pickup_step_N));
+    tmp_wid->button()->setText("Lower Pickup-Tool onto PSS+spacers subassembly");
+    layout->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(subassembly_pickup, SLOT(LowerPickupToolOntoSubassembly_start()), SIGNAL(LowerPickupToolOntoSubassembly_finished()));
+  }
+  // ----------
+
+  // step: Enable Vacuum on Pickup Tool
+  {
+    ++pickup_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(pickup_step_N));
+    tmp_wid->button()->setText("Enable Vacuum on Pickup-Tool");
+    layout->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(subassembly_pickup, SLOT(EnableVacuumPickupTool_start()), SIGNAL(EnableVacuumPickupTool_finished()));
+  }
+  // ----------
+
+  // step: Disable vacuum on Spacers
+  {
+    ++pickup_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(pickup_step_N));
+    tmp_wid->button()->setText("Disable Vacuum on Spacers");
+    layout->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(subassembly_pickup, SLOT(DisableVacuumSpacers_start()), SIGNAL(DisableVacuumSpacers_finished()));
+  }
+  // ----------
+
+  // step: Pick Up Subassembly
+  {
+    ++pickup_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(pickup_step_N));
+    tmp_wid->button()->setText("Pick Up PSS+spacers subassembly");
+    layout->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(subassembly_pickup, SLOT(PickupSubassembly_start()), SIGNAL(PickupSubassembly_finished()));
+  }
+  // ----------
 
   layout->addStretch(1);
 }
