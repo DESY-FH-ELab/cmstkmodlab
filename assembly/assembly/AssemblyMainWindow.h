@@ -244,6 +244,8 @@ class AssemblyMainWindow : public QMainWindow
   QTimer* liveTimer_;
 
   int idx_alignment_tab;
+  int idx_module_tab;
+  int idx_manual_tab;
 };
 
 #endif // ASSEMBLYMAINWINDOW_H
