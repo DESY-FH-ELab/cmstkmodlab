@@ -50,6 +50,8 @@ AssemblySubassemblyPickupWidget::AssemblySubassemblyPickupWidget(const QObject* 
   smartMove_checkbox_->setChecked(true);
   //// -----------------------------------------------
 
+  QVBoxLayout* sub_pick_lay = new QVBoxLayout;
+  layout->addLayout(sub_pick_lay);
 
   uint pickup_step_N = 0;
 
@@ -60,7 +62,7 @@ AssemblySubassemblyPickupWidget::AssemblySubassemblyPickupWidget(const QObject* 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(pickup_step_N));
     tmp_wid->text()->setText("Place PSS+spacers subassembly on assembly platform with the spacers aligned in their spacer pockets");
-    layout->addWidget(tmp_wid);
+    sub_pick_lay->addWidget(tmp_wid);
   }
   // ----------
 
@@ -71,7 +73,7 @@ AssemblySubassemblyPickupWidget::AssemblySubassemblyPickupWidget(const QObject* 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(pickup_step_N));
     tmp_wid->button()->setText("Go To Measurement Position on PS-s - Spacer height considered");
-    layout->addWidget(tmp_wid);
+    sub_pick_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(subassembly_pickup, SLOT(GoToSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
   }
@@ -84,7 +86,7 @@ AssemblySubassemblyPickupWidget::AssemblySubassemblyPickupWidget(const QObject* 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(pickup_step_N));
     tmp_wid->button()->setText("Enable vacuum on spacers");
-    layout->addWidget(tmp_wid);
+    sub_pick_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(subassembly_pickup, SLOT(EnableVacuumSpacers_start()), SIGNAL(EnableVacuumSpacers_finished()));
   }
@@ -97,7 +99,7 @@ AssemblySubassemblyPickupWidget::AssemblySubassemblyPickupWidget(const QObject* 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(pickup_step_N));
     tmp_wid->button()->setText("Align PS-s to Motion Stage (Go to \"Alignment\" Tab and select \"PS-s Sensor\")");
-    layout->addWidget(tmp_wid);
+    sub_pick_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(subassembly_pickup, SLOT(switchToAlignmentTab_PSS()), SIGNAL(switchToAlignmentTab_PSS_request()));
   }
@@ -110,7 +112,7 @@ AssemblySubassemblyPickupWidget::AssemblySubassemblyPickupWidget(const QObject* 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(pickup_step_N));
     tmp_wid->button()->setText("Go From Sensor Marker Ref-Point to Pickup XY");
-    layout->addWidget(tmp_wid);
+    sub_pick_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(subassembly_pickup, SLOT(GoFromSensorMarkerToPickupXY_start()), SIGNAL(GoFromSensorMarkerToPickupXY_finished()));
   }
@@ -123,7 +125,7 @@ AssemblySubassemblyPickupWidget::AssemblySubassemblyPickupWidget(const QObject* 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(pickup_step_N));
     tmp_wid->button()->setText("Lower Pickup-Tool onto PSS+spacers subassembly");
-    layout->addWidget(tmp_wid);
+    sub_pick_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(subassembly_pickup, SLOT(LowerPickupToolOntoSubassembly_start()), SIGNAL(LowerPickupToolOntoSubassembly_finished()));
   }
@@ -136,7 +138,7 @@ AssemblySubassemblyPickupWidget::AssemblySubassemblyPickupWidget(const QObject* 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(pickup_step_N));
     tmp_wid->button()->setText("Enable Vacuum on Pickup-Tool");
-    layout->addWidget(tmp_wid);
+    sub_pick_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(subassembly_pickup, SLOT(EnableVacuumPickupTool_start()), SIGNAL(EnableVacuumPickupTool_finished()));
   }
@@ -149,7 +151,7 @@ AssemblySubassemblyPickupWidget::AssemblySubassemblyPickupWidget(const QObject* 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(pickup_step_N));
     tmp_wid->button()->setText("Disable Vacuum on Spacers");
-    layout->addWidget(tmp_wid);
+    sub_pick_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(subassembly_pickup, SLOT(DisableVacuumSpacers_start()), SIGNAL(DisableVacuumSpacers_finished()));
   }
@@ -162,11 +164,11 @@ AssemblySubassemblyPickupWidget::AssemblySubassemblyPickupWidget(const QObject* 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(pickup_step_N));
     tmp_wid->button()->setText("Pick Up PSS+spacers subassembly");
-    layout->addWidget(tmp_wid);
+    sub_pick_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(subassembly_pickup, SLOT(PickupSubassembly_start()), SIGNAL(PickupSubassembly_finished()));
   }
   // ----------
 
-  layout->addStretch(1);
+  sub_pick_lay->addStretch(1);
 }
