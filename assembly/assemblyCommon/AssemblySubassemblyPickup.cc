@@ -352,10 +352,7 @@ void AssemblySubassemblyPickup::LowerPickupToolOntoSubassembly_start()
   {
     const double dx0 = 0.0;
     const double dy0 = 0.0;
-    const double dz0 =
-        config_->getValue<double>("parameters", "FromCameraBestFocusToPickupHeight_dZ")
-      + config_->getValue<double>("parameters", "Thickness_MPA") //NB: focused on PS-p marker --> to get correct distance to Subassembly, only need to account for additional width due to MPAs (not that of PS-p itself)
-    ;
+    const double dz0 = config_->getValue<double>("parameters", "FromCameraBestFocusToPickupHeight_dZ");
     const double da0 = 0.0;
 
     connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
