@@ -253,7 +253,10 @@ QQueue<LStepExpressMotion> AssemblySmartMotionManager::smartMotions_relative(con
     motions.enqueue(LStepExpressMotion(0, 0, initial_dZ, 0, false));
     motions.enqueue(LStepExpressMotion(0, 0, dz-initial_dZ, 0, false));
 
-    if(move_xya){ motions.enqueue(LStepExpressMotion(dx, dy, 0, da, false)); }
+    if(move_xya){
+      smart_motions_N = 2;
+      motions.enqueue(LStepExpressMotion(dx, dy, 0, da, false));
+    }
   }
   else
   {
