@@ -8,8 +8,9 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 // MEASUREMENTS
-const double ANGDEG_PATREC = -0.20; //Average the best-match angles obtained via PatRec on the 2 fiducials <-> indicates the orientation of the sensor within the laboratory frame (?)
+const double ANGDEG_PATREC = -0.275; //Average the best-match angles obtained via PatRec on the 2 fiducials <-> indicates the orientation of the sensor within the laboratory frame (?)
 
+/*
 const int PR1_PIXEL_X = 694;
 const int PR1_PIXEL_Y = 867;
 
@@ -21,6 +22,19 @@ const int PR2_PIXEL_Y = 534;
 
 const double PR2_MOTION_STAGE_POS_X = 37.22;
 const double PR2_MOTION_STAGE_POS_Y = -82.04;
+*/
+
+const int PR1_PIXEL_X = 1588;
+const int PR1_PIXEL_Y = 605;
+
+const double PR1_MOTION_STAGE_POS_X = -11.8108;
+const double PR1_MOTION_STAGE_POS_Y = -116.634;
+
+const int PR2_PIXEL_X = 1655;
+const int PR2_PIXEL_Y = 685;
+
+const double PR2_MOTION_STAGE_POS_X = 109.311;
+const double PR2_MOTION_STAGE_POS_Y = -116.634;
 
 // SENSOR, IMAGE SPECIFICATIONS - using markers in one line
 const double ANGDEG_REFERC = 0.00; // PS-s //Target angle between 2 markers (?) <-> 0 by default, because the ref. points of both fiducials are supposed to be on the same line (both in laboratory/camera frames)
