@@ -28,6 +28,8 @@ AssemblySmartMotionManager::AssemblySmartMotionManager(const LStepExpressMotionM
  , motion_manager_enabled_(false)
  , motion_index_(-1)
 
+ , smartMove_initial_step_up_dZ_(0.)
+
  , smartMotions_N_(0)
 {
   if(motion_manager_ == nullptr)
@@ -81,6 +83,9 @@ AssemblySmartMotionManager::AssemblySmartMotionManager(const LStepExpressMotionM
 
   NQLog("AssemblySmartMotionManager", NQLog::Message)
      << "loaded " << smartMove_steps_dZ_.size() << " smartMove steps (\"" << smartMove_steps_dZ_str << "\")";
+
+  smartMove_initial_step_up_dZ_ = config->getDefaultValue<double>("main", "AssemblySmartMotionManager_initial_step_up_dZ", 1.0);
+
   // -----------------------
 
   NQLog("AssemblySmartMotionManager", NQLog::Debug) << "constructed";
@@ -156,7 +161,7 @@ void AssemblySmartMotionManager::move_relative(const double dx0, const double dy
     return;
   }
 
-  motions_ = this->smartMotions_relative(dx0, dy0, dz0, da0, smartMove_steps_dZ_, smartMotions_N_);
+  motions_ = this->smartMotions_relative(dx0, dy0, dz0, da0, smartMove_steps_dZ_, smartMotions_N_, smartMove_initial_step_up_dZ_);
 
   this->connect_motion_manager();
 
@@ -234,7 +239,7 @@ void AssemblySmartMotionManager::smartMove_window(const LStepExpressMotion& moti
   }
 }
 
-QQueue<LStepExpressMotion> AssemblySmartMotionManager::smartMotions_relative(const double dx, const double dy, const double dz, const double da, const std::vector<double>& dz_steps, int& smart_motions_N)
+QQueue<LStepExpressMotion> AssemblySmartMotionManager::smartMotions_relative(const double dx, const double dy, const double dz, const double da, const std::vector<double>& dz_steps, int& smart_motions_N, const double initial_dZ)
 {
   QQueue<LStepExpressMotion> motions;
 
@@ -244,9 +249,14 @@ QQueue<LStepExpressMotion> AssemblySmartMotionManager::smartMotions_relative(con
 
   if(dz > 0.)
   {
-    motions.enqueue(LStepExpressMotion(0, 0, dz, 0, false));
+    smart_motions_N = 1;
+    motions.enqueue(LStepExpressMotion(0, 0, initial_dZ, 0, false));
+    motions.enqueue(LStepExpressMotion(0, 0, dz-initial_dZ, 0, false));
 
-    if(move_xya){ motions.enqueue(LStepExpressMotion(dx, dy, 0, da, false)); }
+    if(move_xya){
+      smart_motions_N = 2;
+      motions.enqueue(LStepExpressMotion(dx, dy, 0, da, false));
+    }
   }
   else
   {
