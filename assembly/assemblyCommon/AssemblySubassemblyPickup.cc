@@ -531,8 +531,13 @@ void AssemblySubassemblyPickup::PickupSubassembly_start()
     return;
   }
 
-  connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupSubassembly_finish()));
+  if(use_smartMove_) {
+    connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+    connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(PickupSubassembly_finish()));
+  } else {
+    connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+    connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupSubassembly_finish()));
+  }
 
   in_action_ = true;
 
@@ -544,8 +549,13 @@ void AssemblySubassemblyPickup::PickupSubassembly_start()
 
 void AssemblySubassemblyPickup::PickupSubassembly_finish()
 {
-  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupSubassembly_finish()));
+  if(use_smartMove_) {
+    disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+    disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(PickupSubassembly_finish()));
+  } else {
+    disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+    disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupSubassembly_finish()));
+  }
 
   if(in_action_){ in_action_ = false; }
 
