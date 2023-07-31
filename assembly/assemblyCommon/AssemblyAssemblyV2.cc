@@ -67,6 +67,8 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
   pickup1_Z_ = config_->getValue<double>("main", "AssemblyAssembly_pickup1_Z");
   pickup2_Z_ = config_->getValue<double>("main", "AssemblyAssembly_pickup2_Z");
 
+  original_Z_velocity_ = motion_->get_velocity_Z();
+
   alreadyClicked_LowerPickupToolOntoMaPSA = false; alreadyClicked_LowerPickupToolOntoPSS = false; alreadyClicked_LowerMaPSAOntoBaseplate = false; alreadyClicked_LowerPSSOntoSpacers = false; alreadyClicked_LowerPSSPlusSpacersOntoGluingStage = false; alreadyClicked_LowerPSSPlusSpacersOntoMaPSA = false;
 }
 
@@ -1455,6 +1457,90 @@ void AssemblyAssemblyV2::LowerPSSPlusSpacersOntoGluingStage_finish()
   emit DBLogMessage("== Assembly step completed : [Lower {PS-s + spacers} onto gluing stage]");
 }
 // ----------------------------------------------------------------------------------------------------
+
+
+// ----------------------------------------------------------------------------------------------------
+// SlowlyLiftFromGluingStage --------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssemblyV2::SlowlyLiftFromGluingStage_start()
+{
+  if(in_action_){
+
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "SlowlyLiftFromGluingStage_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
+
+  if(use_smartMove_)
+  {
+   
+   double slowVelocity = 0.5; // mm/s
+   original_Z_velocity_ = motion_->get_velocity_Z();
+   motion_->set_velocity_Z(slowVelocity); // 1 mm/s
+   while(slowVelocity != motion_->get_velocity_Z())
+   {
+      sleep(1); // not the best, but good enough
+   }
+
+    const double dx0 = 0.;
+    const double dy0 = 0.;
+    const double dz0 = 5.;
+    const double da0 = 0.;
+
+    connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+    connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(SlowlyLiftFromGluingStage_finish()));
+
+    in_action_ = true;
+
+    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "SlowlyLiftFromGluingStage_start"
+       << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+    emit move_relative_request(dx0, dy0, dz0, da0);
+  }
+  else
+  {
+    NQLog("AssemblyAssemblyV2", NQLog::Critical) << "SlowlyLiftFromGluingStage_start"
+       << ": please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step";
+
+    QMessageBox msgBox;
+    msgBox.setText(tr("AssemblyAssemblyV2::SlowlyLiftFromGluingStage_start -- please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step"));
+    msgBox.exec();
+
+    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "SlowlyLiftFromGluingStage_finish"
+       << ": emitting signal \"SlowlyLiftFromGluingStage_finished\"";
+
+    emit SlowlyLiftFromGluingStage_finished();
+
+    return;
+  }
+}
+
+void AssemblyAssemblyV2::SlowlyLiftFromGluingStage_finish()
+{
+  motion_->set_velocity_Z(original_Z_velocity_);
+  while(original_Z_velocity_ != motion_->get_velocity_Z())
+  {
+    sleep(1); // not the best, but good enough
+  }
+
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+  disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(SlowlyLiftFromGluingStage_finish()));
+
+  if(in_action_){ in_action_ = false; }
+
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "SlowlyLiftFromGluingStage_finish"
+     << ": emitting signal \"SlowlyLiftFromGluingStage_finished\"";
+
+  emit SlowlyLiftFromGluingStage_finished();
+
+  NQLog("AssemblyAssemblyV2", NQLog::Message) << "SlowlyLiftFromGluingStage_finish"
+     << ": assembly-step completed";
+
+  emit DBLogMessage("== Assembly step completed : [Slowly lifted PSS + spacers from gluing station]");
+}
+// ----------------------------------------------------------------------------------------------------
+
 
 // ----------------------------------------------------------------------------------------------------
 // ReturnToPSSPlusSpacersToMaPSAPosition --------------------------------------------------------------

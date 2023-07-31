@@ -58,6 +58,8 @@ class AssemblyAssemblyV2 : public QObject
   double PSSPlusSpacersToMaPSAPosition_Z_;
   double PSSPlusSpacersToMaPSAPosition_A_;
 
+  double original_Z_velocity_;
+
   bool alreadyClicked_LowerPickupToolOntoMaPSA, alreadyClicked_LowerPickupToolOntoPSS, alreadyClicked_LowerMaPSAOntoBaseplate, alreadyClicked_LowerPSSOntoSpacers, alreadyClicked_LowerPSSPlusSpacersOntoGluingStage, alreadyClicked_LowerPSSPlusSpacersOntoMaPSA;
 
  public slots:
@@ -106,6 +108,9 @@ class AssemblyAssemblyV2 : public QObject
 
   void ReturnToPSSPlusSpacersToMaPSAPosition_start();
   void ReturnToPSSPlusSpacersToMaPSAPosition_finish();
+
+  void SlowlyLiftFromGluingStage_start();
+  void SlowlyLiftFromGluingStage_finish();
 
   void LowerPSSPlusSpacersOntoMaPSA_start();
   void LowerPSSPlusSpacersOntoMaPSA_finish();
@@ -186,6 +191,7 @@ class AssemblyAssemblyV2 : public QObject
   void LowerPSSPlusSpacersOntoGluingStage_finished();
   void ReturnToPSSPlusSpacersToMaPSAPosition_finished();
 
+  void SlowlyLiftFromGluingStage_finished();
   void LowerPSSPlusSpacersOntoMaPSA_finished();
   void LiftUpPickupTool_finished();
   // ------
