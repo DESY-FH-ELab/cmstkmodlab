@@ -206,11 +206,15 @@ void AssemblyUEyeCamera::open()
     eventThread_->start(cameraHandle_);
 
     cameraState_ = State::READY;
-    setExposureTime(84.58);
+    setExposureTime(299.33); // silicon
+    // setExposureTime(84.58); // glass
+
+    NQLog("AssemblyUEyeCamera", NQLog::Message) << "open"
+       << ": setting custon exposure time !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
 
     NQLog("AssemblyUEyeCamera", NQLog::Debug) << "open"
        << ": emitting signal \"cameraOpened\"";
-
+    
     emit cameraOpened();
 }
 
