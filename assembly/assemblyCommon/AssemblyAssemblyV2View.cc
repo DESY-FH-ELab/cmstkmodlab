@@ -625,9 +625,35 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
   // ----------
 
   bool skip = dynamic_cast<const AssemblyAssemblyV2*>(assembly) -> IsSkipDipping();
-  if (!skip)
+  if (skip)
+      {
+          // step: Make space on the platform by raising the pickup tool
+          {
+            ++assembly_step_N;
 
-  {
+            AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+            tmp_wid->label()->setText(QString::number(assembly_step_N));
+            tmp_wid->text()->setText("Move up pickup tool to make space for glue dispensing");
+            PSSToMaPSA_lay->addWidget(tmp_wid);
+
+            tmp_wid->connect_action(assembly, SLOT(MakeSpaceOnPlatform_start()), SIGNAL(MakeSpaceOnPlatform_finished()));
+          }
+          // ----------
+
+          // step: Return to the platform by lowering the pickup tool
+          {
+            ++assembly_step_N;
+
+            AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+            tmp_wid->label()->setText(QString::number(assembly_step_N));
+            tmp_wid->text()->setText("Return to previous position");
+            PSSToMaPSA_lay->addWidget(tmp_wid);
+
+            tmp_wid->connect_action(assembly, SLOT(ReturnToPlatform_start()), SIGNAL(ReturnToPlatform_finished()));
+          }
+          // ----------
+
+      } else {
       // step: Register "PS-s to MaPSA" XYZA Position
       // (position that will be used as starting point to lower "PS-s + Spacers" on MaPSA;
       //  the height corresponds to the best-focus height on PS-p surface, as resulting from the PS-p alignment,
