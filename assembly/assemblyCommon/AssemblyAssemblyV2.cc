@@ -66,6 +66,7 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
   // (1: PSs to Spacers, 2: PSs+Spacers to MaPSA)
   pickup1_Z_ = config_->getValue<double>("main", "AssemblyAssembly_pickup1_Z");
   pickup2_Z_ = config_->getValue<double>("main", "AssemblyAssembly_pickup2_Z");
+  makespace_Z = config_->getValue<double>("main", "AssemblyAssembly_makespace_Z");
 
   alreadyClicked_LowerPickupToolOntoMaPSA = false; alreadyClicked_LowerPickupToolOntoPSS = false; alreadyClicked_LowerMaPSAOntoBaseplate = false; alreadyClicked_LowerPSSOntoSpacers = false; alreadyClicked_LowerPSSPlusSpacersOntoGluingStage = false; alreadyClicked_LowerPSSPlusSpacersOntoMaPSA = false;
 
@@ -1265,6 +1266,128 @@ void AssemblyAssemblyV2::ApplyPSPToPSSXYOffset_finish()
      << ": assembly-step completed";
 
   emit DBLogMessage("== Assembly step completed : [Move by PS-s/PS-p relative XY offset]");
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// Make Space in Z -----------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssemblyV2::MakeSpaceOnPlatform_start()
+{
+  if(in_action_){
+
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "MakeSpaceOnPlatform_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
+
+  const double dx0 = 0.0;
+  const double dy0 = 0.0;
+  const double dz0 = (makespace_Z - motion_->get_position_Z());
+  const double da0 = 0.0;
+
+  if(dz0 <= 0.)
+  {
+    NQLog("AssemblyAssemblyV2", NQLog::Critical) << "MakeSpaceOnPlatform_start"
+       << ": invalid (non-positive) value for vertical upward movement for makespace (dz=" << dz0 << "), no action taken";
+
+    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "MakeSpaceOnPlatform_start"
+       << ": emitting signal \"MakeSpaceOnPlatform_finished\"";
+
+    emit MakeSpaceOnPlatform_finished();
+
+    return;
+  }
+
+  connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(MakeSpaceOnPlatform_finish()));
+
+  in_action_ = true;
+
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "MakeSpaceOnPlatform_start"
+     << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative_request(dx0, dy0, dz0, da0);
+}
+
+void AssemblyAssemblyV2::MakeSpaceOnPlatform_finish()
+{
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(MakeSpaceOnPlatform_finish()));
+
+  if(in_action_){ in_action_ = false; }
+
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "MakeSpaceOnPlatform_finish"
+     << ": emitting signal \"LiftUpPickupTool_finished\"";
+
+  emit MakeSpaceOnPlatform_finished();
+
+  NQLog("AssemblyAssemblyV2", NQLog::Message) << "MakeSpaceOnPlatform_finish"
+     << ": assembly-step completed";
+
+  emit DBLogMessage("== Assembly step completed : [Make space on platform]");
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// Return to initial position -----------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssemblyV2::ReturnToPlatform_start()
+{
+  if(in_action_){
+
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "ReturnToPlatform_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
+
+  const double dx0 = 0.0;
+  const double dy0 = 0.0;
+  const double dz0 = (-makespace_Z - motion_->get_position_Z());
+  const double da0 = 0.0;
+
+  if(dz0 >= 0.)
+  {
+    NQLog("AssemblyAssemblyV2", NQLog::Critical) << "ReturnToPlatform_start"
+       << ": invalid (non-negative) value for vertical downward movement for makespace (dz=" << dz0 << "), no action taken";
+
+    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "ReturnToPlatform_start"
+       << ": emitting signal \"ReturnToPlatform_finished\"";
+
+    emit ReturnToPlatform_finished();
+
+    return;
+  }
+
+  connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(ReturnToPlatform_finish()));
+
+  in_action_ = true;
+
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "ReturnToPlatform_start"
+     << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative_request(dx0, dy0, dz0, da0);
+}
+
+void AssemblyAssemblyV2::ReturnToPlatform_finish()
+{
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(ReturnToPlatform_finish()));
+
+  if(in_action_){ in_action_ = false; }
+
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "ReturnToPlatform_finish"
+     << ": emitting signal \"ReturnToPlatform_finished\"";
+
+  emit MakeSpaceOnPlatform_finished();
+
+  NQLog("AssemblyAssemblyV2", NQLog::Message) << "ReturnToPlatform_finish"
+     << ": assembly-step completed";
+
+  emit DBLogMessage("== Assembly step completed : [Return to platform]");
 }
 // ----------------------------------------------------------------------------------------------------
 

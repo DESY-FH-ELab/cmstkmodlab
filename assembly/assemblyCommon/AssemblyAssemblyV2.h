@@ -100,6 +100,12 @@ class AssemblyAssemblyV2 : public QObject
   void ApplyPSPToPSSXYOffset_start();
   void ApplyPSPToPSSXYOffset_finish();
 
+  void MakeSpaceOnPlatform_start();
+  void MakeSpaceOnPlatform_finish();
+
+  void ReturnToPlatform_start();
+  void ReturnToPlatform_finish();
+
   void GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start();
   void GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finish();
 
@@ -182,6 +188,8 @@ class AssemblyAssemblyV2 : public QObject
   void GoToPSPMarkerIdealPosition_finished();
 
   void ApplyPSPToPSSXYOffset_finished();
+  void MakeSpaceOnPlatform_finished();
+  void ReturnToPlatform_finished();
   void PSSPlusSpacersToMaPSAPosition_registered();
 
   void GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished();
