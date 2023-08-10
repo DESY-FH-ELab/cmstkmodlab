@@ -545,7 +545,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   // Connections to text changes
   for(const auto& key : this->entries_map())
   {
-    connect(this->get(key.first), SIGNAL(textChanged(const QString&)), this, SLOT(overwriteParameter(const QString&)));
+    connect(this->get(key.first), SIGNAL(textEdited(const QString&)), this, SLOT(overwriteParameter(const QString&)));
   }
 }
 
@@ -693,6 +693,7 @@ void AssemblyParametersView::overwriteParameter(const QString& value)
            << ": changing parameter " << key.first << " to " << val;
         ptr_qedit->setStyleSheet("");
         config_->setValue("parameters", key.first, value);
+        ptr_qedit->setText(value);
       } else
       {
         NQLog("AssemblyParametersView", NQLog::Fatal) << "overwriteParameter"
