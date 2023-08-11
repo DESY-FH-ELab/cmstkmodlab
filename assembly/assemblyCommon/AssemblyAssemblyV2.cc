@@ -34,6 +34,7 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
 
  , pickup1_Z_(0.)
  , pickup2_Z_(0.)
+ , makespace_Z(0.)
 
  , use_smartMove_(false)
  , in_action_(false)
@@ -1382,7 +1383,7 @@ void AssemblyAssemblyV2::ReturnToPlatform_finish()
   NQLog("AssemblyAssemblyV2", NQLog::Spam) << "ReturnToPlatform_finish"
      << ": emitting signal \"ReturnToPlatform_finished\"";
 
-  emit MakeSpaceOnPlatform_finished();
+  emit ReturnToPlatform_finished();
 
   NQLog("AssemblyAssemblyV2", NQLog::Message) << "ReturnToPlatform_finish"
      << ": assembly-step completed";
