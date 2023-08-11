@@ -1285,7 +1285,7 @@ void AssemblyAssemblyV2::MakeSpaceOnPlatform_start()
 
   const double dx0 = 0.0;
   const double dy0 = 0.0;
-  const double dz0 = (makespace_Z - motion_->get_position_Z());
+  const double dz0 = makespace_Z;
   const double da0 = 0.0;
 
   if(dz0 <= 0.)
@@ -1346,7 +1346,7 @@ void AssemblyAssemblyV2::ReturnToPlatform_start()
 
   const double dx0 = 0.0;
   const double dy0 = 0.0;
-  const double dz0 = (-makespace_Z - motion_->get_position_Z());
+  const double dz0 = -makespace_Z;
   const double da0 = 0.0;
 
   if(dz0 >= 0.)
