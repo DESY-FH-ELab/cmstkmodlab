@@ -631,9 +631,9 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
           {
             ++assembly_step_N;
 
-            AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+            AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
             tmp_wid->label()->setText(QString::number(assembly_step_N));
-            tmp_wid->text()->setText("Move up pickup tool to make space for glue dispensing");
+            tmp_wid->button()->setText("Move up pickup tool to make space for glue dispensing");
             PSSToMaPSA_lay->addWidget(tmp_wid);
 
             tmp_wid->connect_action(assembly, SLOT(MakeSpaceOnPlatform_start()), SIGNAL(MakeSpaceOnPlatform_finished()));
@@ -644,9 +644,9 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
           {
             ++assembly_step_N;
 
-            AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+            AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
             tmp_wid->label()->setText(QString::number(assembly_step_N));
-            tmp_wid->text()->setText("Return to previous position");
+            tmp_wid->button()->setText("Return to previous position");
             PSSToMaPSA_lay->addWidget(tmp_wid);
 
             tmp_wid->connect_action(assembly, SLOT(ReturnToPlatform_start()), SIGNAL(ReturnToPlatform_finished()));
