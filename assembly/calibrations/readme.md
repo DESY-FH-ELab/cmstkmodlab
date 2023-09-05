@@ -3,6 +3,7 @@ This holds a python script for the calibration of the orientation of the camera 
 To be executed interactively as follows:
  * Place a sensor on the assembly platform
  * Perform a pattern recognition (PatRec) on the top left marker
+ * Start the script via `python3 AngleOfCameraFrameInRefFrame_dA.py`
  * Enter ...
    * the best-match angle of the PatRec
    * the camera pixel coordinates (x/y) of the best-match location
