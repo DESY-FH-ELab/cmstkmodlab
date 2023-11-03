@@ -126,6 +126,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
       1000
     );
 
+    connect(motion_model_, SIGNAL(motionInformationChanged()), this, SLOT(update_stage_position()));
+    connect(motion_model_, SIGNAL(informationChanged()), this, SLOT(update_stage_position()));
+
     motion_manager_ = new LStepExpressMotionManager(motion_model_);
     connect(motion_manager_->model(), SIGNAL(emergencyStop_request()), motion_manager_, SLOT(clear_motion_queue()));
 
@@ -471,6 +474,29 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     QWidget *spacer = new QWidget();
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     toolBar_->addWidget(spacer);
+
+    QWidget *stage_wid = new QWidget();
+
+    QGridLayout* stage_lay = new QGridLayout;
+    QLabel* x_label = new QLabel("X [mm]");
+    QLabel* y_label = new QLabel("Y [mm]");
+    QLabel* z_label = new QLabel("Z [mm]");
+    QLabel* a_label = new QLabel("A [deg]");
+
+    stage_lay->addWidget(x_label, 0, 0);
+    stage_lay->addWidget(y_label, 0, 1);
+    stage_lay->addWidget(z_label, 0, 2);
+    stage_lay->addWidget(a_label, 0, 3);
+
+    for(unsigned int i=0; i<4; ++i) {
+      stage_values_.push_back(new QLabel("-"));
+      stage_lay->addWidget(stage_values_.at(i), 1, i);
+    }
+
+    stage_wid->setLayout(stage_lay);
+
+    toolBar_->addWidget(stage_wid);
+
     button_info_ = new QPushButton(tr("Information"));
     button_info_->setStyleSheet("QPushButton { background-color: rgb(215, 214, 213); font: 16px;} QPushButton:hover { background-color: rgb(174, 173, 172); font: 16px;}");
     toolBar_->addWidget(button_info_);
@@ -1016,4 +1042,23 @@ void AssemblyMainWindow::switchAndUpdate_alignment_tab(bool psp_mode)
     else {emit set_alignmentMode_PSS_request();}
 
     return;
+}
+
+void AssemblyMainWindow::update_stage_position()
+{
+
+  const auto x_status  = motion_model_->getAxisStatusText(0);
+  const auto y_status  = motion_model_->getAxisStatusText(1);
+  const auto z_status  = motion_model_->getAxisStatusText(2);
+  const auto a_status  = motion_model_->getAxisStatusText(3);
+
+  for(unsigned int i=0; i<4; ++i)
+  {
+    if(motion_model_->getAxisStatusText(i) == "@")
+    {
+      stage_values_.at(i)->setText(QString::number(motion_model_->getPosition(i), 'f', 2));
+    } else {
+      stage_values_.at(i)->setText(motion_model_->getAxisStatusText(i));
+    }
+  }
 }

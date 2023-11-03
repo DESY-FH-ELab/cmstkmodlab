@@ -115,6 +115,8 @@ class AssemblyMainWindow : public QMainWindow
   void update_alignment_tab_psp();
   void update_alignment_tab_pss();
 
+  void update_stage_position();
+
  signals:
 
   void images_ON();
@@ -157,6 +159,8 @@ class AssemblyMainWindow : public QMainWindow
   LStepExpressMotionThread*   motion_thread_;
   LStepExpressSettings*       motionSettings_;
   LStepExpressSettingsWidget* motionSettingsWidget_;
+
+  std::vector<QLabel*>        stage_values_;
 
   AssemblyUEyeModel_t*      camera_model_;
   AssemblyUEyeCameraThread* camera_thread_;
