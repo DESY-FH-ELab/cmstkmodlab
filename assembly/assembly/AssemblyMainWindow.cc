@@ -41,6 +41,16 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   motionSettings_(nullptr),
   motionSettingsWidget_(nullptr),
 
+  status_grey_(nullptr),
+  status_green_(nullptr),
+  status_red_(nullptr),
+  PU_status_(nullptr),
+  SP_status_(nullptr),
+  BP_status_(nullptr),
+  vacuum_pickup_(0),
+  vacuum_spacer_(0),
+  vacuum_basepl_(0),
+
   camera_model_(nullptr),
   camera_thread_(nullptr),
 //  camera_widget_(nullptr),
@@ -335,6 +345,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     connect(relayCardManager_, SIGNAL(vacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
 
+    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, bool)), this, SLOT(update_vacuum_information(int, bool)));
+
     connect(relayCardManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
     connect(relayCardManager_, SIGNAL(disableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(disableVacuumButton()));
 
@@ -474,6 +486,48 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     QWidget *spacer = new QWidget();
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     toolBar_->addWidget(spacer);
+
+    QWidget *vac_wid = new QWidget();
+
+    QGridLayout* vac_lay = new QGridLayout;
+
+    QLabel* vac_label = new QLabel("Vacuum status");
+    vac_lay->addWidget(vac_label, 0, 0, 2, 1);
+
+    QLabel* PU_label = new QLabel("PU");
+    QLabel* SP_label = new QLabel("SP");
+    QLabel* BP_label = new QLabel("BP");
+
+    vac_lay->addWidget(PU_label, 0, 1);
+    vac_lay->addWidget(SP_label, 0, 2);
+    vac_lay->addWidget(BP_label, 0, 3);
+
+    QString filename(Config::CMSTkModLabBasePath.c_str());
+
+    status_grey_ = new QPixmap(filename + "/share/common/button_grey.png");
+    status_green_ = new QPixmap(filename + "/share/common/button_green.png");
+    status_red_ = new QPixmap(filename + "/share/common/button_red.png");
+    vacuum_pickup_ = config->getValue<int>("main", "Vacuum_PickupTool");
+    vacuum_spacer_ = config->getValue<int>("main", "Vacuum_Spacers");
+    vacuum_basepl_ = config->getValue<int>("main", "Vacuum_Baseplate");
+
+    PU_status_ = new QLabel();
+    SP_status_ = new QLabel();
+    BP_status_ = new QLabel();
+    PU_status_->setPixmap(status_grey_->scaled(20,20));
+    SP_status_->setPixmap(status_grey_->scaled(20,20));
+    BP_status_->setPixmap(status_grey_->scaled(20,20));
+
+    vac_lay->addWidget(PU_status_, 1, 1);
+    vac_lay->addWidget(SP_status_, 1, 2);
+    vac_lay->addWidget(BP_status_, 1, 3);
+
+    vac_wid->setLayout(vac_lay);
+
+    toolBar_->addWidget(vac_wid);
+
+    hwctr_view_->Vacuum_Widget()->updateVacuumChannelsStatus();
+
 
     QWidget *stage_wid = new QWidget();
 
@@ -1060,5 +1114,32 @@ void AssemblyMainWindow::update_stage_position()
     } else {
       stage_values_.at(i)->setText(motion_model_->getAxisStatusText(i));
     }
+  }
+}
+
+void AssemblyMainWindow::update_vacuum_information(const int channel, const bool state)
+{
+  NQLog("AssemblyMainWindow", NQLog::Critical) << "Vacuum channel " << channel << " received, is it the pickup? " << vacuum_pickup_;
+  QLabel* to_be_updated;
+  if(channel == vacuum_pickup_)
+  {
+    to_be_updated = PU_status_;
+  } else if(channel == vacuum_spacer_)
+  {
+    to_be_updated = SP_status_;
+  } else if(channel == vacuum_basepl_)
+  {
+    to_be_updated = BP_status_;
+  } else {
+    NQLog("AssemblyMainWindow", NQLog::Critical) << "Vacuum channel " << channel << " not known!";
+    return;
+  }
+
+  to_be_updated->clear();
+  if(state)
+  {
+    to_be_updated->setPixmap(status_red_->scaled(20,20));
+  } else {
+    to_be_updated->setPixmap(status_green_->scaled(20,20));
   }
 }

@@ -117,6 +117,8 @@ class AssemblyMainWindow : public QMainWindow
 
   void update_stage_position();
 
+  void update_vacuum_information(const int, const bool);
+
  signals:
 
   void images_ON();
@@ -161,6 +163,16 @@ class AssemblyMainWindow : public QMainWindow
   LStepExpressSettingsWidget* motionSettingsWidget_;
 
   std::vector<QLabel*>        stage_values_;
+
+  QPixmap* status_grey_;
+  QPixmap* status_green_;
+  QPixmap* status_red_;
+  int vacuum_basepl_;
+  int vacuum_pickup_;
+  int vacuum_spacer_;
+  QLabel* PU_status_;
+  QLabel* SP_status_;
+  QLabel* BP_status_;
 
   AssemblyUEyeModel_t*      camera_model_;
   AssemblyUEyeCameraThread* camera_thread_;
