@@ -1,7 +1,6 @@
 import math
 import numpy as np
-
-import ROOT
+import matplotlib.pyplot as plt
 
 # constants
 mm_per_pixel = 0.0012
@@ -74,50 +73,33 @@ if __name__ == "__main__":
         return ang_deg_offset_diff
 
 
-    best_angle = 999.
-    best_angle_FOM = -1.
-
-    dict_offset_diff = {}
-
-    diff_vs_offset = ROOT.TGraph()
-    diff_vs_offset_central = ROOT.TGraph()
+    offset_arr = np.arange(-180, 180, 0.005)
+    angle_diff_arr = np.zeros(offset_arr.size)
     
-    for offset in np.arange(-180, 180, 0.005):
-        new_diff = calc_angle_offset_diff(offset)
+    for i,offset in enumerate(offset_arr):
+        angle_diff_arr[i] = calc_angle_offset_diff(offset)
 
-        dict_offset_diff[offset] = new_diff
-        if new_diff < best_angle_FOM or best_angle_FOM < 0.:
-            best_angle = offset
-            best_angle_FOM = new_diff
-
+    best_angle_FOM = np.min(angle_diff_arr)
+    best_angle_idx = np.argmin(angle_diff_arr)
+    best_angle = offset_arr[best_angle_idx]
+    
     print("  Camera frame angle in motion stage ref frame [deg] = " + str(best_angle) + "  (FOM= " + str(best_angle_FOM) + ")")
 
     # Plotting result
 
-    for offset in dict_offset_diff:
-        diff_vs_offset.SetPoint(diff_vs_offset.GetN(), offset, dict_offset_diff[offset])
-        if abs(offset - best_angle) < 0.1:
-            diff_vs_offset_central.SetPoint(diff_vs_offset_central.GetN(), offset, dict_offset_diff[offset])
+    fig, axs = plt.subplots(1, 2, figsize=(12,6))
+    axs[0].plot(offset_arr, angle_diff_arr, '.c')
+    axs[0].set_xlabel("Offset angle [deg]")
+    axs[0].set_ylabel("Computed difference from target [deg]")
 
-    diff_vs_offset.GetXaxis().SetTitle("Offset angle [deg]")
-    diff_vs_offset.GetYaxis().SetTitle("Computed difference from target [deg]")
-    diff_vs_offset_central.GetXaxis().SetTitle("Offset angle [deg]")
-    diff_vs_offset_central.GetYaxis().SetTitle("Computed difference from target [deg]")
+    axs[1].plot(offset_arr, angle_diff_arr, '.c')
+    axs[1].set(xlim=(best_angle-0.1,best_angle+0.1), ylim=(best_angle_FOM, np.max([angle_diff_arr[best_angle_idx-20],angle_diff_arr[best_angle_idx+20]])))
+    axs[1].set_xlabel("Offset angle [deg]")
+    axs[1].set_ylabel("Computed difference from target [deg]")
 
-    c1 = ROOT.TCanvas("c1","diff vs. offset",1200,600)
-    c1.Divide(2,1)
+    plt.ion()
+    plt.show()
     
-    c1.cd(1)
-    diff_vs_offset.Draw("AP")
-    
-    c1.cd(2)
-    diff_vs_offset_central.SetMarkerStyle(23)
-    diff_vs_offset_central.Draw("AP")
-    
-    c1.cd(2).SetLogy()
-
-    c1.Update()
-
     input("\nPress enter to close")
 
     
