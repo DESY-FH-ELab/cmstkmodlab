@@ -1108,11 +1108,19 @@ void AssemblyMainWindow::update_stage_position()
 
   for(unsigned int i=0; i<4; ++i)
   {
-    if(motion_model_->getAxisStatusText(i) == "@")
+    if(!motion_model_->getAxisEnabled(i)) {
+      QString tpl = tr("<font color='%1'>%2</font>");
+      stage_values_.at(i)->setText(tpl.arg("darkred","D"));
+    } else if(motion_model_->getAxisStatusText(i) == "@")
     {
-      stage_values_.at(i)->setText(QString::number(motion_model_->getPosition(i), 'f', 2));
+      QString tpl = tr("<font color='%1'>%2</font>");
+      stage_values_.at(i)->setText(tpl.arg("darkgreen",QString::number(motion_model_->getPosition(i), 'f', 2)));
+    } else if(motion_model_->getAxisStatusText(i) == "M") {
+      QString tpl = tr("<font color='%1'>%2</font>");
+      stage_values_.at(i)->setText(tpl.arg("darkblue",QString::number(motion_model_->getPosition(i), 'f', 2)));
     } else {
-      stage_values_.at(i)->setText(motion_model_->getAxisStatusText(i));
+      QString tpl = tr("<font color='%1'>%2</font>");
+      stage_values_.at(i)->setText(tpl.arg("darkred",motion_model_->getAxisStatusText(i)));
     }
   }
 }
