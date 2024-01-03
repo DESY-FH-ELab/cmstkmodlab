@@ -1125,7 +1125,9 @@ void AssemblyMainWindow::update_stage_position()
 
 void AssemblyMainWindow::update_vacuum_information(const int channel, const bool state)
 {
-  NQLog("AssemblyMainWindow", NQLog::Critical) << "Vacuum channel " << channel << " received, is it the pickup? " << vacuum_pickup_;
+  NQLog("AssemblyMainWindow", NQLog::Debug) << "update_vacuum_information("
+  << channel << ", " << state << "): updating vacuum information";
+
   QLabel* to_be_updated;
   if(channel == vacuum_pickup_)
   {
