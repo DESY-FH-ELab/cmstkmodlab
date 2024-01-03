@@ -91,7 +91,27 @@ void RelayCardManager::vacuumToggled()
   NQLog("RelayCardManager", NQLog::Debug) << "vacuumToggled"
      << ": emitting signal \"vacuumChannelState(" << channelNumber_ << ", " << relayCardModel()->getSwitchState(channelNumber_) << ")\"";
 
-  emit vacuumChannelState(channelNumber_, relayCardModel()->getSwitchState(channelNumber_));
+  SwitchState state;
+  if(relayCardModel()->getDeviceState() == State::OFF) {
+    state = SwitchState::DEVICE_OFF;
+  } else {
+    switch(relayCardModel()->getSwitchState(channelNumber_)) {
+      case OFF:
+        state = SwitchState::CHANNEL_OFF;
+        break;
+      case READY:
+        state = SwitchState::CHANNEL_ON;
+        break;
+      case INITIALIZING:
+        state = SwitchState::CHANNEL_SWITCHING;
+        break;
+      case CLOSING:
+        state = SwitchState::CHANNEL_SWITCHING;
+        break;
+    }
+  }
+
+  emit vacuumChannelState(channelNumber_, state);
 
   NQLog("RelayCardManager", NQLog::Debug) << "vacuumToggled"
      << ": emitting signal \"enableVacuumButton\"";
@@ -110,7 +130,27 @@ void RelayCardManager::transmit_vacuumChannelState(const int chNumber)
      << ": emitting signal \"vacuumChannelState("
      << chNumber << ", " << relayCardModel()->getSwitchState(chNumber) << ")\"";
 
-  emit vacuumChannelState(chNumber, relayCardModel()->getSwitchState(chNumber));
+  SwitchState state;
+  if(relayCardModel()->getDeviceState() == State::OFF) {
+    state = SwitchState::DEVICE_OFF;
+  } else {
+    switch(relayCardModel()->getSwitchState(chNumber)) {
+      case OFF:
+        state = SwitchState::CHANNEL_OFF;
+        break;
+      case READY:
+        state = SwitchState::CHANNEL_ON;
+        break;
+      case INITIALIZING:
+        state = SwitchState::CHANNEL_SWITCHING;
+        break;
+      case CLOSING:
+        state = SwitchState::CHANNEL_SWITCHING;
+        break;
+    }
+  }
+
+  emit vacuumChannelState(chNumber, state);
 }
 
 // maybe need checkStatus SLOT

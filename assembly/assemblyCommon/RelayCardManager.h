@@ -18,6 +18,13 @@
 #include <QObject>
 #include <QTimer>
 
+enum class SwitchState {
+  DEVICE_OFF = 0             // Device is off
+  , CHANNEL_OFF = 1          // Channel is off
+  , CHANNEL_ON = 2           // Channel is on
+  , CHANNEL_SWITCHING = 3    // Channekl is currently switching
+};
+
 class RelayCardManager : public QObject
 {
  Q_OBJECT
@@ -53,7 +60,7 @@ class RelayCardManager : public QObject
 
  signals:
 
-  void vacuumChannelState(int, bool);
+  void vacuumChannelState(int, SwitchState);
 
   void  enableVacuumButton();
   void disableVacuumButton();
