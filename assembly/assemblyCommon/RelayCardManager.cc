@@ -56,6 +56,8 @@ void RelayCardManager::toggleVacuum(const int chNumber)
     relayCardModel()->setSwitchEnabled(chNumber, true);
     channelNumber_ = chNumber;
 
+    emit vacuumChannelState(channelNumber_, SwitchState::CHANNEL_SWITCHING);
+
     // here will be a QtTimer for about 2 secs
     liveTimer_->start(togglingVacuumDelay);
 
@@ -71,6 +73,8 @@ void RelayCardManager::toggleVacuum(const int chNumber)
     //NQLog("RelayCardManager") << ": attempt to turn OFF the vacuum on channel " << chNumber;
     relayCardModel()->setSwitchEnabled(chNumber, false);
     channelNumber_ = chNumber;
+
+    emit vacuumChannelState(channelNumber_, SwitchState::CHANNEL_SWITCHING);
 
     // here will be a QtTimer for about 2 secs
     liveTimer_->start(togglingVacuumDelay);
@@ -164,6 +168,8 @@ void RelayCardManager::enableVacuum(const int chNumber)
   	relayCardModel()->setSwitchEnabled(chNumber, true);
     channelNumber_ = chNumber;
 
+    emit vacuumChannelState(channelNumber_, SwitchState::CHANNEL_SWITCHING);
+
     liveTimer_->start(togglingVacuumDelay);
 
     emit DBLogMessage("Turned vacuum ON");
@@ -208,6 +214,8 @@ void RelayCardManager::disableVacuum(const int chNumber)
   {
   	relayCardModel()->setSwitchEnabled(chNumber, false);
     channelNumber_ = chNumber;
+
+    emit vacuumChannelState(channelNumber_, SwitchState::CHANNEL_SWITCHING);
 
     liveTimer_->start(togglingVacuumDelay);
 
