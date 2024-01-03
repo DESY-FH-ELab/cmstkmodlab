@@ -1139,8 +1139,12 @@ void AssemblyMainWindow::update_vacuum_information(const int channel, const bool
   {
     to_be_updated = BP_status_;
   } else {
-    NQLog("AssemblyMainWindow", NQLog::Critical) << "Vacuum channel " << channel << " not known!";
+    NQLog("AssemblyMainWindow", NQLog::Fatal) << "Vacuum channel " << channel << " not known!";
     return;
+  }
+
+  if(to_be_updated == nullptr) {
+    NQLog("AssemblyMainWindow", NQLog::Fatal) << "Vacuum channel " << channel << " not initialised!";
   }
 
   to_be_updated->clear();
