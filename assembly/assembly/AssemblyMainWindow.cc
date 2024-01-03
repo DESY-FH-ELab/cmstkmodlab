@@ -20,6 +20,7 @@
 #include <AssemblyLogFileController.h>
 #include <AssemblyLogFileView.h>
 #include <AssemblyUtilities.h>
+#include <DeviceState.h>
 
 #include <string>
 
@@ -330,7 +331,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))              , relayCardManager_, SLOT(toggleVacuum(int)));
     connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), relayCardManager_, SLOT(transmit_vacuumChannelState(int)));
 
-    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
+    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, SwitchState)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, SwitchState)));
 
     connect(relayCardManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
     connect(relayCardManager_, SIGNAL(disableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(disableVacuumButton()));
