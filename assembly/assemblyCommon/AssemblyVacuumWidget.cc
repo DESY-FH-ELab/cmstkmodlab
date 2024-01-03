@@ -137,26 +137,36 @@ void AssemblyVacuumWidget::disableVacuumButton()
   button_->setEnabled(false);
 }
 
-void AssemblyVacuumWidget::updateVacuumChannelState(const int channelNumber, const bool channelState)
+void AssemblyVacuumWidget::updateVacuumChannelState(const int channelNumber, const SwitchState channelState)
 {
   if(this->has(channelNumber) == false)
   {
     NQLog("AssemblyVacuumWidget", NQLog::Warning) << "updateVacuumChannelState"
-       << "(" << channelNumber << ", " << channelState << ")"
+       << "(" << channelNumber << ", " << static_cast<int>(channelState) << ")"
        << ": vacuum line with index " << channelNumber << " not found, no action taken";
 
     return;
   }
 
-  if(channelState)
+  if(channelState==SwitchState::CHANNEL_ON)
   {
     this->get(channelNumber).label_->setText(" VACUUM ON");
     this->get(channelNumber).label_->setStyleSheet("QLabel { background-color : red; color : black; }");
   }
-  else
+  else if(channelState==SwitchState::CHANNEL_SWITCHING)
+  {
+    this->get(channelNumber).label_->setText(" VACUUM SWITCHING");
+    this->get(channelNumber).label_->setStyleSheet("QLabel { background-color : orange; color : black; }");
+  }
+  else if(channelState==SwitchState::CHANNEL_OFF)
   {
     this->get(channelNumber).label_->setText(" VACUUM OFF");
     this->get(channelNumber).label_->setStyleSheet("QLabel { background-color : green; color : black; }");
+  }
+  else if(channelState==SwitchState::DEVICE_OFF)
+  {
+    this->get(channelNumber).label_->setText(" DEVICE OFF");
+    this->get(channelNumber).label_->setStyleSheet("QLabel { background-color : grey; color : black; }");
   }
 
   return;
