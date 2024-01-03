@@ -340,18 +340,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     hwctr_view_ = new AssemblyHardwareControlView(motion_manager_, controls_tab);
     controls_tab->addTab(hwctr_view_, tabname_HWCtrl);
 
-    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))              , relayCardManager_, SLOT(toggleVacuum(int)));
-    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), relayCardManager_, SLOT(transmit_vacuumChannelState(int)));
-
-    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
-
-    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, bool)), this, SLOT(update_vacuum_information(int, bool)));
-
-    connect(relayCardManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
-    connect(relayCardManager_, SIGNAL(disableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(disableVacuumButton()));
-
-    hwctr_view_->Vacuum_Widget()->updateVacuumChannelsStatus();
-
     // enable motion stage controllers at startup
     const bool startup_motion_stage = config->getDefaultValue<bool>("main", "startup_motion_stage", false);
 
@@ -525,6 +513,16 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     vac_wid->setLayout(vac_lay);
 
     toolBar_->addWidget(vac_wid);
+
+    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))              , relayCardManager_, SLOT(toggleVacuum(int)));
+    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), relayCardManager_, SLOT(transmit_vacuumChannelState(int)));
+
+    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
+
+    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, bool)), this, SLOT(update_vacuum_information(int, bool)));
+
+    connect(relayCardManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
+    connect(relayCardManager_, SIGNAL(disableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(disableVacuumButton()));
 
     hwctr_view_->Vacuum_Widget()->updateVacuumChannelsStatus();
 
