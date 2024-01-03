@@ -161,6 +161,17 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     	relayCardModel_ = new ConradModel(config->getValue<std::string>("main", "ConradDevice"));
     }
 
+    if(relayCardModel_->getDeviceState()==State::OFF) {
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "Relay card device off - cannot continue.";
+
+      QMessageBox* msgBox = new QMessageBox;
+      msgBox->setInformativeText("Relay card device not available!");
+
+      msgBox->setStandardButtons(QMessageBox::Ok);
+
+      int ret = msgBox->exec();
+    }
+
     relayCardManager_ = new RelayCardManager(relayCardModel_);
     /// -------------------
 
@@ -336,6 +347,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(relayCardManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
     connect(relayCardManager_, SIGNAL(disableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(disableVacuumButton()));
 
+    if(relayCardModel_->getDeviceState()==State::OFF) {
+      hwctr_view_->Vacuum_Widget()->disableVacuumButton();
+    }
     hwctr_view_->Vacuum_Widget()->updateVacuumChannelsStatus();
 
     // enable motion stage controllers at startup
