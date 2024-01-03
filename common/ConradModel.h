@@ -61,6 +61,10 @@ public:
   // Methods for power control and status querying of the devices connected to the switch
   const State& getSwitchState( int device ) const;
 
+  /// Returns the current (cached) state of the device.
+  const State& getDeviceState() const {
+      return state_; }
+
 public slots:
   // Methods for control and status querying of the device itself, as specified
   // by the abstract parent class
