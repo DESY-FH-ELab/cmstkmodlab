@@ -87,9 +87,8 @@ std::string LStepExpressComHandler::ReceiveString()
     size_t n_read = read(fIoPortFileDescriptor, &readbyte, 1);
 
     if(n_read != 0) {
-      // Read until we see the end-of-command CR
+      // Read until we see the end-of-command (CR) marker
       if(readbyte == '\r') {
-        std::cout << "[LStepExpressComHandler::OpenIoPort] Found command-end marker" << std::endl;
         break;
       }
 
@@ -97,13 +96,13 @@ std::string LStepExpressComHandler::ReceiveString()
       value += readbyte;
     }
 
+    // Check for communication timeout:
     if(std::chrono::steady_clock::now() - start_time > timeout) {
-      std::cout << "[LStepExpressComHandler::OpenIoPort] ** ERROR: Communication seems to have timed out" << std::endl;
+      std::cout << "[LStepExpressComHandler::ReceiveString] ** ERROR: Communication seems to have timed out" << std::endl;
       return {};
     }
   }
 
-  std::cout << "[LStepExpressComHandler::OpenIoPort] Returning reading \"" << value << "\"" << std::endl;
   return value;
 }
 
