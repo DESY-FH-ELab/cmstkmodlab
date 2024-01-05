@@ -59,8 +59,14 @@ void LStepExpress::SendCommand(const std::string & command)
   comHandler_->SendCommand(command.c_str());
 }
 
-std::string LStepExpress::ReceiveString()
+std::string LStepExpress::ReceiveString(const std::string & command)
 {
+#ifdef LSTEPDEBUG
+  std::cout << "Device SendCommand: " << command << std::endl;
+#endif
+
+  comHandler_->SendCommand(command.c_str());
+
   auto buffer = comHandler_->ReceiveString();
 
 #ifdef LSTEPDEBUG

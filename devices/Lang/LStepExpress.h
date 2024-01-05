@@ -137,7 +137,7 @@ class LStepExpress : public VLStepExpress
 
   // low level debugging methods
   void SendCommand(const std::string &);
-  std::string ReceiveString();
+  std::string ReceiveString(const std::string &);
 
   void DeviceInit(const std::string& lstep_ver, const std::string& lstep_iver);
 
