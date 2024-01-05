@@ -10,9 +10,10 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <string.h>
-
+#include <chrono>
 #include <iostream>
+#include <string>
+#include <string.h>
 
 #include "LStepExpressComHandler.h"
 
@@ -66,40 +67,44 @@ void LStepExpressComHandler::SendCommand( const char *commandString )
 
   See example program in class description.
 */
-void LStepExpressComHandler::ReceiveString( char *receiveString )
+std::string LStepExpressComHandler::ReceiveString()
 {
-  // Nothing ready, send null-terminated empty buffer back:
+  // Nothing ready
   if (!fDeviceAvailable) {
-    receiveString[0] = '\0';
-    return;
+    return {};
   }
 
-  int timeout = 0;
-  size_t nbytes_read = 0;
+  // Define a timeout and start a timer:
+  const auto timeout = std::chrono::duration<double, std::milli>(3000);
+  const auto start_time = std::chrono::steady_clock::now();
+
+  std::string value{};
+
   char readbyte = 0;
 
-  // Read until we see the end-of-command CR
-  do {
-
+  while(true) {
     // Let's read byte-by-byte from the file descriptor:
     size_t n_read = read(fIoPortFileDescriptor, &readbyte, 1);
 
     if(n_read != 0) {
+      // Read until we see the end-of-command CR
+      if(readbyte == '\r') {
+        std::cout << "[LStepExpressComHandler::OpenIoPort] Found command-end marker" << std::endl;
+        break;
+      }
+
       // We read one byte, let's add it to the output and continue.
-      receiveString[nbytes_read] = readbyte;
-      nbytes_read++;
+      value += readbyte;
     }
 
-    if(timeout > 1000000) {
+    if(std::chrono::steady_clock::now() - start_time > timeout) {
       std::cout << "[LStepExpressComHandler::OpenIoPort] ** ERROR: Communication seems to have timed out" << std::endl;
-      return;
+      return {};
     }
-    timeout++;
+  }
 
-  } while(readbyte != '\r');
-
-  std::cout << "[LStepExpressComHandler::OpenIoPort] Found command-end marker, returning reading" << std::endl;
-  receiveString[nbytes_read] = '\0';
+  std::cout << "[LStepExpressComHandler::OpenIoPort] Returning reading \"" << value << "\"" << std::endl;
+  return value;
 }
 
 //! Open I/O port.
