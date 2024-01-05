@@ -75,7 +75,7 @@ std::string LStepExpressComHandler::ReceiveString()
   }
 
   // Define a timeout and start a timer:
-  const auto timeout = std::chrono::duration<double, std::milli>(3000);
+  const auto timeout = std::chrono::duration<double, std::milli>(500);
   const auto start_time = std::chrono::steady_clock::now();
 
   std::string value{};
