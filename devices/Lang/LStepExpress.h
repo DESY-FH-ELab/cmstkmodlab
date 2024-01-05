@@ -135,13 +135,12 @@ class LStepExpress : public VLStepExpress
   void Calibrate();
   void EmergencyStop();
 
+ private:
+
   // low level debugging methods
   void SendCommand(const std::string &);
   void ReceiveString(std::string &);
 
- private:
-
-  void StripBuffer( char* ) const;
   void DeviceInit(const std::string& lstep_ver, const std::string& lstep_iver);
 
   LStepExpressComHandler* comHandler_;

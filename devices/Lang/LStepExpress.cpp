@@ -68,16 +68,6 @@ void LStepExpress::ReceiveString(std::string & buffer)
 #endif
 }
 
-void LStepExpress::StripBuffer(char* buffer) const
-{
-  for (unsigned int c=0; c<strlen(buffer);++c) {
-    if(buffer[c]=='\r') {
-      buffer[c] = '\0';
-      break;
-    }
-  }
-}
-
 void LStepExpress::DeviceInit(const std::string& lstep_ver, const std::string& lstep_iver)
 {
   isDeviceAvailable_ = false;
@@ -124,7 +114,6 @@ void LStepExpress::DeviceInit(const std::string& lstep_ver, const std::string& l
     comHandler_->SendCommand("readsn"); // read serial number
     comHandler_->ReceiveString(buffer);
 
-    StripBuffer(buffer);
     unsigned long serialNumber = std::atol(buffer);
 
     if(   (serialNumber != 40052435759) // pre-DAF
