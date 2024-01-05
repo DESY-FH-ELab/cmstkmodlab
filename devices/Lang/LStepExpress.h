@@ -39,8 +39,6 @@ class LStepExpress : public VLStepExpress
   LStepExpress(const std::string& ioPort, const std::string& lstep_ver="", const std::string& lstep_iver="");
   ~LStepExpress();
 
- public:
-
   std::string ioPort() const;
 
   bool DeviceAvailable() const;
@@ -139,7 +137,7 @@ class LStepExpress : public VLStepExpress
 
   // low level debugging methods
   void SendCommand(const std::string &);
-  void ReceiveString(std::string &);
+  std::string ReceiveString();
 
   void DeviceInit(const std::string& lstep_ver, const std::string& lstep_iver);
 

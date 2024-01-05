@@ -166,7 +166,7 @@ void VLStepExpress::GetValue(const std::string & command,
                              std::string & value)
 {
   this->SendCommand(command);
-  this->ReceiveString(value);
+  value = this->ReceiveString();
 }
 
 void VLStepExpress::GetValue(const std::string & command,
@@ -174,9 +174,8 @@ void VLStepExpress::GetValue(const std::string & command,
 {
   this->SendCommand(command);
 
-  std::string buffer;
   int temp;
-  this->ReceiveString(buffer);
+  auto buffer = this->ReceiveString();
   std::istringstream is(buffer);
   is >> temp;
   value = temp;
@@ -187,9 +186,8 @@ void VLStepExpress::GetValue(const std::string & command,
 {
   this->SendCommand(command);
 
-  std::string buffer;
   double temp;
-  this->ReceiveString(buffer);
+  auto buffer = this->ReceiveString();
   std::istringstream is(buffer);
   is >> temp;
   value = temp;
@@ -201,7 +199,7 @@ void VLStepExpress::GetValue(const std::string & command, VLStepExpress::Axis ax
   std::ostringstream os;
   os << command << " " << GetAxisName(axis);
   this->SendCommand(os.str());
-  this->ReceiveString(value);
+  value = this->ReceiveString();
 }
 
 void VLStepExpress::GetValue(const std::string & command,
@@ -209,9 +207,8 @@ void VLStepExpress::GetValue(const std::string & command,
 {
   this->SendCommand(command);
 
-  std::string buffer;
   int temp;
-  this->ReceiveString(buffer);
+  auto buffer = this->ReceiveString();
 
   values.clear();
   std::istringstream is(buffer);
@@ -227,9 +224,8 @@ void VLStepExpress::GetValue(const std::string & command,
   os << command << " " << GetAxisName(axis);
   this->SendCommand(os.str());
 
-  std::string buffer;
   int temp;
-  this->ReceiveString(buffer);
+  auto buffer = this->ReceiveString();
   std::istringstream is(buffer);
   is >> temp;
   value = temp;
@@ -240,9 +236,8 @@ void VLStepExpress::GetValue(const std::string & command,
 {
   this->SendCommand(command);
 
-  std::string buffer;
   double temp;
-  this->ReceiveString(buffer);
+  auto buffer = this->ReceiveString();
 
   values.clear();
   std::istringstream is(buffer);
@@ -258,9 +253,8 @@ void VLStepExpress::GetValue(const std::string & command, VLStepExpress::Axis ax
   os << command << " " << GetAxisName(axis);
   this->SendCommand(os.str());
 
-  std::string buffer;
   double temp;
-  this->ReceiveString(buffer);
+  auto buffer = this->ReceiveString();
   std::istringstream is(buffer);
   is >> temp;
   value = temp;
@@ -273,9 +267,8 @@ void VLStepExpress::GetValue(const std::string & command, VLStepExpress::Axis ax
   os << command << " " << GetAxisName(axis);
   this->SendCommand(os.str());
 
-  std::string buffer;
   double temp;
-  this->ReceiveString(buffer);
+  auto buffer = this->ReceiveString();
 
   values.clear();
   std::istringstream is(buffer);
