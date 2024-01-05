@@ -37,14 +37,15 @@ LStepExpress::~LStepExpress()
 }
 
 //! Return name of port used to initialize LStepExpressComHandler
-std::string LStepExpress::ioPort() const
+std::string LStepExpress::ioPort()
 {
   assert(comHandler_);
 
+  std::lock_guard<std::mutex> lock(mutex_);
   return comHandler_->ioPort();
 }
 
-bool LStepExpress::DeviceAvailable() const
+bool LStepExpress::DeviceAvailable()
 {
   return isDeviceAvailable_;
 }
@@ -56,6 +57,7 @@ void LStepExpress::SendCommand(const std::string & command)
   std::cout << "Device SendCommand: " << command << std::endl;
 #endif
 
+  std::lock_guard<std::mutex> lock(mutex_);
   comHandler_->SendCommand(command.c_str());
 }
 
@@ -65,8 +67,8 @@ std::string LStepExpress::ReceiveString(const std::string & command)
   std::cout << "Device SendCommand: " << command << std::endl;
 #endif
 
+  std::lock_guard<std::mutex> lock(mutex_);
   comHandler_->SendCommand(command.c_str());
-
   auto buffer = comHandler_->ReceiveString();
 
 #ifdef LSTEPDEBUG
@@ -80,6 +82,7 @@ void LStepExpress::DeviceInit(const std::string& lstep_ver, const std::string& l
 {
   isDeviceAvailable_ = false;
 
+  std::lock_guard<std::mutex> lock(mutex_);
   if(comHandler_->DeviceAvailable())
   {
     isDeviceAvailable_ = true;
