@@ -82,12 +82,9 @@ void LStepExpressComHandler::ReceiveString( char *receiveString )
   do {
 
     // Let's read byte-by-byte from the file descriptor:
-    nbytes_read = read(fIoPortFileDescriptor, &readbyte, 1);
+    size_t n_read = read(fIoPortFileDescriptor, &readbyte, 1);
 
-    if(nbytes_read == 0) {
-      // No bytes read from descriptor indicates eof / no data
-      std::cout << "[LStepExpressComHandler::OpenIoPort] Reached EOF, communication still ongoing" << std::endl;
-    } else {
+    if(n_read != 0) {
       // We read one byte, let's add it to the output and continue.
       receiveString[nbytes_read] = readbyte;
       nbytes_read++;
