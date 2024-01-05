@@ -1050,8 +1050,7 @@ void LStepExpressModel::initialize()
          << ": successfully accessed port " << controller_->ioPort();
 
       QMutexLocker locker(&mutex_);
-
-      controller_->SetAutoStatus(2);
+      controller_->SetAutoStatus(0);
 
       std::vector<int> allZerosI{ 0, 0, 0, 0 };
       std::vector<int> OnI{1,1,1,1};
