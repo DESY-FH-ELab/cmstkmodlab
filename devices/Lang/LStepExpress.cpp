@@ -61,15 +61,11 @@ void LStepExpress::SendCommand(const std::string & command)
 
 void LStepExpress::ReceiveString(std::string & buffer)
 {
-  char buf[1000];
-  comHandler_->ReceiveString(buf);
+  buffer = comHandler_->ReceiveString();
 
 #ifdef LSTEPDEBUG
-  std::cout << "Device ReceiveString: " << buf << std::endl;
+  std::cout << "Device ReceiveString: " << buffer << std::endl;
 #endif
-
-  StripBuffer(buf);
-  buffer = buf;
 }
 
 void LStepExpress::StripBuffer(char* buffer) const
@@ -90,14 +86,9 @@ void LStepExpress::DeviceInit(const std::string& lstep_ver, const std::string& l
   {
     isDeviceAvailable_ = true;
 
-    char buffer[1000];
-    std::string buf;
-
     // read version
     comHandler_->SendCommand("ver");
-    comHandler_->ReceiveString(buffer);
-    StripBuffer(buffer);
-    buf = buffer;
+    auto buf = comHandler_->ReceiveString();
 
     if(buf != lstep_ver)
     {
@@ -114,9 +105,7 @@ void LStepExpress::DeviceInit(const std::string& lstep_ver, const std::string& l
 
     // read internal version
     comHandler_->SendCommand("iver");
-    comHandler_->ReceiveString(buffer);
-    StripBuffer(buffer);
-    buf = buffer;
+    buf = comHandler_->ReceiveString();
 
     if(buf != lstep_iver)
     {
