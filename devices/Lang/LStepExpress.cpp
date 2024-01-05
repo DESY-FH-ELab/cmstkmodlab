@@ -45,11 +45,6 @@ std::string LStepExpress::ioPort()
   return comHandler_->ioPort();
 }
 
-bool LStepExpress::DeviceAvailable()
-{
-  return isDeviceAvailable_;
-}
-
 // low level debugging methods
 void LStepExpress::SendCommand(const std::string & command)
 {

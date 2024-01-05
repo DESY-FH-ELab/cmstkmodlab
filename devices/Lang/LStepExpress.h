@@ -42,7 +42,7 @@ class LStepExpress : public VLStepExpress
 
   std::string ioPort();
 
-  bool DeviceAvailable();
+  bool DeviceAvailable() const { return isDeviceAvailable_; };
 
   void GetAutoStatus(int & value);
   void SetAutoStatus(int value);
