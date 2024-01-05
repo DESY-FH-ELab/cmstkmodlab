@@ -76,8 +76,6 @@ void LStepExpressComHandler::ReceiveString( char *receiveString )
 
   receiveString[0] = 0;
 
-  usleep( 20000 );
-
   int timeout = 0;
   size_t readResult = 0;
 
