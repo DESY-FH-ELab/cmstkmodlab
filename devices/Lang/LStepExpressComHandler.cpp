@@ -68,8 +68,9 @@ void LStepExpressComHandler::SendCommand( const char *commandString )
 */
 void LStepExpressComHandler::ReceiveString( char *receiveString )
 {
+  // Nothing ready, send null-terminated empty buffer back:
   if (!fDeviceAvailable) {
-    receiveString[0] = 0;
+    receiveString[0] = '\0';
     return;
   }
 
