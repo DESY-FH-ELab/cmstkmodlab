@@ -14,6 +14,7 @@
 #define _VMARTA_H_
 
 #include <string>
+#include <stdint.h>
 
 typedef const char* ipaddress_t;
 typedef unsigned int port_t;
