@@ -74,22 +74,35 @@ void LStepExpressComHandler::ReceiveString( char *receiveString )
     return;
   }
 
-  receiveString[0] = 0;
-
   int timeout = 0;
-  size_t readResult = 0;
+  size_t nbytes_read = 0;
+  char readbyte = 0;
 
-  while ( timeout < 100000 )  {
+  // Read until we see the end-of-command CR
+  do {
 
-    readResult = read( fIoPortFileDescriptor, receiveString, 1024 );
+    // Let's read byte-by-byte from the file descriptor:
+    nbytes_read = read(fIoPortFileDescriptor, &readbyte, 1);
 
-    if ( readResult > 0 ) {
-      receiveString[readResult-1] = '\0';
-      break;
+    if(nbytes_read == 0) {
+      // No bytes read from descriptor indicates eof / no data
+      std::cout << "[LStepExpressComHandler::OpenIoPort] Reached EOF, communication still ongoing" << std::endl;
+    } else {
+      // We read one byte, let's add it to the output and continue.
+      receiveString[nbytes_read] = readbyte;
+      nbytes_read++;
     }
-    
+
+    if(timeout > 1000000) {
+      std::cout << "[LStepExpressComHandler::OpenIoPort] ** ERROR: Communication seems to have timed out" << std::endl;
+      return;
+    }
     timeout++;
-  }
+
+  } while(readbyte != '\r');
+
+  std::cout << "[LStepExpressComHandler::OpenIoPort] Found command-end marker, returning reading" << std::endl;
+  receiveString[nbytes_read] = '\0';
 }
 
 //! Open I/O port.
