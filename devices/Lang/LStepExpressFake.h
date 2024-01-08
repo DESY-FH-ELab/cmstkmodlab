@@ -33,7 +33,7 @@ class LStepExpressFake : public VLStepExpress
   LStepExpressFake(const std::string&, const std::string& lstep_ver="", const std::string& lstep_iver="");
   ~LStepExpressFake();
 
-  std::string ioPort() const;
+  std::string ioPort();
 
   bool DeviceAvailable() const { return true; }
 
@@ -129,7 +129,7 @@ class LStepExpressFake : public VLStepExpress
 
   // low level debugging methods
   void SendCommand(const std::string & command);
-  void ReceiveString(std::string &) { }
+  std::string ReceiveString(const std::string &) { return {};}
 
  private:
 
