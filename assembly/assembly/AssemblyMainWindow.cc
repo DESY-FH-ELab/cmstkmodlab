@@ -207,9 +207,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     assembly_tab->addTab(image_view_, tabname_Image);
 
     // Z-focus finder
-    zfocus_finder_ = new AssemblyZFocusFinder(outputdir_path+"/AssemblyZFocusFinder", camera_, motion_manager_);
+    zfocus_finder_ = new AssemblyZFocusFinder(camera_, motion_manager_);
 
-    connect(zfocus_finder_, SIGNAL(show_zscan(QString))          , image_view_   , SLOT(update_image_zscan(QString)));
+    connect(zfocus_finder_, SIGNAL(show_zscan(QLineSeries&))     , image_view_   , SLOT(update_image_zscan(QLineSeries&)));
     connect(zfocus_finder_, SIGNAL(text_update_request(double))  , image_view_   , SLOT(update_text(double)));
 
     connect(zfocus_finder_, SIGNAL(focus_config_request())       , image_view_   , SLOT(acquire_autofocus_config()));
