@@ -24,6 +24,7 @@
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QTimer>
+#include <QLineSeries>
 
 using namespace std;
 
@@ -108,7 +109,7 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   autofocus_scroll_->setPalette(palette);
   autofocus_scroll_->setBackgroundRole(QPalette::Window);
   autofocus_scroll_->setAlignment(Qt::AlignCenter);
-  autofocus_scroll_->setWidget(autofocus_ueye_);
+  //autofocus_scroll_->setWidget(autofocus_ueye_);
 
   autofocus_result_lay->addWidget(autofocus_scroll_);
 
@@ -438,22 +439,33 @@ void AssemblyImageView::acquire_autofocus_config()
   emit autofocus_config(maxDZ, Nstep);
 }
 
-void AssemblyImageView::update_image_zscan(const QString& img_path)
+void AssemblyImageView::update_image_zscan(QLineSeries& zscan_graph)
 {
-  if(assembly::IsFile(img_path))
+  NQLog("AssemblyImageView", NQLog::Spam) << "update_image_zscan"
+    << ": zscan graph received with " << zscan_graph.pointsVector().size() << " points";
+
+  if(!zscan_graph.pointsVector().empty())
   {
-    image_zscan_ = assembly::cv_imread(img_path.toStdString(), cv::IMREAD_COLOR);
+      auto chart = new QChart;
+      chart->legend()->hide();
+      chart->addSeries(&zscan_graph);
+      chart->createDefaultAxes();
+      chart->setTitle("Simple Line Chart");
 
-    NQLog("AssemblyImageView", NQLog::Spam) << "update_image_zscan"
-       << ": emitting signal \"image_zscan_updated\"";
+      autofocus_chart_view_ = new QChartView(chart);
+      autofocus_chart_view_->setRenderHint(QPainter::Antialiasing);
+      autofocus_chart_view_->setMinimumSize(500, 300);
+      autofocus_chart_view_->setBackgroundRole(QPalette::Window);
+      autofocus_chart_view_->setAlignment(Qt::AlignCenter);
+      autofocus_chart_view_->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
 
-    emit image_zscan_updated(image_zscan_);
-    emit image_zscan_updated();
+      autofocus_scroll_->setWidget(autofocus_chart_view_);
+
   }
   else
   {
     NQLog("AssemblyImageView", NQLog::Warning) << "update_image_zscan"
-       << ": invalid path to input file, no action taken (file=" << img_path << ")";
+       << ": Graph is empty - do not update";
 
     return;
   }
