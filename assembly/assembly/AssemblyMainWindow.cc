@@ -22,6 +22,7 @@
 #include <AssemblyUtilities.h>
 
 #include <string>
+#include <filesystem>
 
 #include <QApplication>
 
@@ -107,7 +108,19 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     /// Parameters
     ///   * instance created up here, so controllers can access it
     try{
-      config->append(config->getValue<std::string>("main", "AssemblyParameters_file_path"), "parameters");
+      auto parameters_file_str = config->getValue<std::string>("main", "AssemblyParameters_file_path");
+      std::filesystem::path parameters_file_path(parameters_file_str);
+      if(parameters_file_path.is_absolute())
+      {
+        NQLog("AssemblyMainWindow", NQLog::Debug) << "Provided absolute path to parameter file. Opening file: " << parameters_file_path;
+        config->append(parameters_file_path, "parameters");
+      } else {
+        auto abs_path = std::filesystem::path(Config::CMSTkModLabBasePath);
+        abs_path /= parameters_file_path;
+        NQLog("AssemblyMainWindow", NQLog::Debug) << "Provided relative path to parameter file - compiled absolute path. Opening file: " << abs_path;
+        config->append(abs_path, "parameters");
+      }
+
     } catch (...) {
       NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
       NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31mInitialization error: ApplicationConfig::append(\"parameters\") is invalid ! Abort !\e[0m";
