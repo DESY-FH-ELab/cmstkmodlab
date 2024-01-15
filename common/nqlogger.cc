@@ -133,6 +133,23 @@ void NQLogger::addDestiniation(FILE * fileHandle, NQLog::LogLevel level, std::st
   destinations_.push_back(std::tuple<NQLog::LogLevel,QTextStream*,std::string>(level,stream,dest_name));
 }
 
+void NQLogger::setLogLevel(std::string dest_name, NQLog::LogLevel level)
+{
+  if(dest_name == "") {
+    throw(InvalidLoggerException("Cannot alter loglevel with empty destination name. Please assign another destination name."));
+  }
+  for(auto& dest_tuple : destinations_)
+  {
+    if(std::get<2>(dest_tuple) == dest_name)
+    {
+      std::get<0>(dest_tuple) = level;
+      std::cout << "Altered log level to " << level << std::endl;
+      return;
+    }
+  }
+  throw(InvalidLoggerException("Logger has no destination with name \"" + dest_name + "\". Cannot alter log level of this destination."));
+}
+
 bool NQLogger::hasDestination(std::string dest_name)
 {
   for(auto& dest_tuple : destinations_)

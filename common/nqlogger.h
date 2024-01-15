@@ -159,6 +159,8 @@ public:
     void addDestiniation(QIODevice * device, NQLog::LogLevel level = NQLog::Message, std::string dest_name = "");
     void addDestiniation(FILE * fileHandle, NQLog::LogLevel level = NQLog::Message, std::string dest_name = "");
 
+    void setLogLevel(std::string dest_name, NQLog::LogLevel level);
+
     bool hasDestination(std::string dest_name);
 
 protected:
