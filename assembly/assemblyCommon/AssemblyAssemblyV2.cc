@@ -34,7 +34,7 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
 
  , pickup1_Z_(0.)
  , pickup2_Z_(0.)
- , makespace_Z(0.)
+ , makespace_Z_(0.)
 
  , use_smartMove_(false)
  , in_action_(false)
@@ -67,7 +67,7 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
   // (1: PSs to Spacers, 2: PSs+Spacers to MaPSA)
   pickup1_Z_ = config_->getValue<double>("main", "AssemblyAssembly_pickup1_Z");
   pickup2_Z_ = config_->getValue<double>("main", "AssemblyAssembly_pickup2_Z");
-  makespace_Z = config_->getValue<double>("main", "AssemblyAssembly_makespace_Z");
+  makespace_Z_ = config_->getValue<double>("main", "AssemblyAssembly_makespace_Z");
 
   alreadyClicked_LowerPickupToolOntoMaPSA = false; alreadyClicked_LowerPickupToolOntoPSS = false; alreadyClicked_LowerMaPSAOntoBaseplate = false; alreadyClicked_LowerPSSOntoSpacers = false; alreadyClicked_LowerPSSPlusSpacersOntoGluingStage = false; alreadyClicked_LowerPSSPlusSpacersOntoMaPSA = false;
 
@@ -1285,7 +1285,7 @@ void AssemblyAssemblyV2::MakeSpaceOnPlatform_start()
 
   const double dx0 = 0.0;
   const double dy0 = 0.0;
-  const double dz0 = makespace_Z;
+  const double dz0 = makespace_Z_;
   const double da0 = 0.0;
 
   if(dz0 <= 0.)
@@ -1346,7 +1346,7 @@ void AssemblyAssemblyV2::ReturnToPlatform_start()
 
   const double dx0 = 0.0;
   const double dy0 = 0.0;
-  const double dz0 = -makespace_Z;
+  const double dz0 = -makespace_Z_;
   const double da0 = 0.0;
 
   if(dz0 >= 0.)
