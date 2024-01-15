@@ -139,6 +139,10 @@ void AssemblyVacuumWidget::disableVacuumButton()
 
 void AssemblyVacuumWidget::updateVacuumChannelState(const int channelNumber, const bool channelState)
 {
+  NQLog("AssemblyVacuumWidget", NQLog::Debug) << "updateVacuumChannelState"
+  << "(" << channelNumber << ", " << channelState << ")"
+  << ": vacuum line with index " << channelNumber << " found. Updating status to " << channelState;
+
   if(this->has(channelNumber) == false)
   {
     NQLog("AssemblyVacuumWidget", NQLog::Warning) << "updateVacuumChannelState"

@@ -41,6 +41,16 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   motionSettings_(nullptr),
   motionSettingsWidget_(nullptr),
 
+  status_grey_(nullptr),
+  status_green_(nullptr),
+  status_red_(nullptr),
+  PU_status_(nullptr),
+  SP_status_(nullptr),
+  BP_status_(nullptr),
+  vacuum_pickup_(0),
+  vacuum_spacer_(0),
+  vacuum_basepl_(0),
+
   camera_model_(nullptr),
   camera_thread_(nullptr),
 //  camera_widget_(nullptr),
@@ -125,6 +135,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
       1000,
       1000
     );
+
+    connect(motion_model_, SIGNAL(motionInformationChanged()), this, SLOT(update_stage_position()));
+    connect(motion_model_, SIGNAL(informationChanged()), this, SLOT(update_stage_position()));
 
     motion_manager_ = new LStepExpressMotionManager(motion_model_);
     connect(motion_manager_->model(), SIGNAL(emergencyStop_request()), motion_manager_, SLOT(clear_motion_queue()));
@@ -327,16 +340,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     hwctr_view_ = new AssemblyHardwareControlView(motion_manager_, controls_tab);
     controls_tab->addTab(hwctr_view_, tabname_HWCtrl);
 
-    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))              , relayCardManager_, SLOT(toggleVacuum(int)));
-    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), relayCardManager_, SLOT(transmit_vacuumChannelState(int)));
-
-    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
-
-    connect(relayCardManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
-    connect(relayCardManager_, SIGNAL(disableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(disableVacuumButton()));
-
-    hwctr_view_->Vacuum_Widget()->updateVacuumChannelsStatus();
-
     // enable motion stage controllers at startup
     const bool startup_motion_stage = config->getDefaultValue<bool>("main", "startup_motion_stage", false);
 
@@ -471,6 +474,81 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     QWidget *spacer = new QWidget();
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     toolBar_->addWidget(spacer);
+
+    QWidget *vac_wid = new QWidget();
+
+    QGridLayout* vac_lay = new QGridLayout;
+
+    QLabel* vac_label = new QLabel("Vacuum status");
+    vac_lay->addWidget(vac_label, 0, 0, 2, 1);
+
+    QLabel* PU_label = new QLabel("PU");
+    QLabel* SP_label = new QLabel("SP");
+    QLabel* BP_label = new QLabel("BP");
+
+    vac_lay->addWidget(PU_label, 0, 1);
+    vac_lay->addWidget(SP_label, 0, 2);
+    vac_lay->addWidget(BP_label, 0, 3);
+
+    QString filename(Config::CMSTkModLabBasePath.c_str());
+
+    status_grey_ = new QPixmap(filename + "/share/common/button_grey.png");
+    status_green_ = new QPixmap(filename + "/share/common/button_green.png");
+    status_red_ = new QPixmap(filename + "/share/common/button_red.png");
+    vacuum_pickup_ = config->getValue<int>("main", "Vacuum_PickupTool");
+    vacuum_spacer_ = config->getValue<int>("main", "Vacuum_Spacers");
+    vacuum_basepl_ = config->getValue<int>("main", "Vacuum_Baseplate");
+
+    PU_status_ = new QLabel();
+    SP_status_ = new QLabel();
+    BP_status_ = new QLabel();
+    PU_status_->setPixmap(status_grey_->scaled(20,20));
+    SP_status_->setPixmap(status_grey_->scaled(20,20));
+    BP_status_->setPixmap(status_grey_->scaled(20,20));
+
+    vac_lay->addWidget(PU_status_, 1, 1);
+    vac_lay->addWidget(SP_status_, 1, 2);
+    vac_lay->addWidget(BP_status_, 1, 3);
+
+    vac_wid->setLayout(vac_lay);
+
+    toolBar_->addWidget(vac_wid);
+
+    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))              , relayCardManager_, SLOT(toggleVacuum(int)));
+    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), relayCardManager_, SLOT(transmit_vacuumChannelState(int)));
+
+    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
+
+    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, bool)), this, SLOT(update_vacuum_information(int, bool)));
+
+    connect(relayCardManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
+    connect(relayCardManager_, SIGNAL(disableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(disableVacuumButton()));
+
+    hwctr_view_->Vacuum_Widget()->updateVacuumChannelsStatus();
+
+
+    QWidget *stage_wid = new QWidget();
+
+    QGridLayout* stage_lay = new QGridLayout;
+    QLabel* x_label = new QLabel("X [mm]");
+    QLabel* y_label = new QLabel("Y [mm]");
+    QLabel* z_label = new QLabel("Z [mm]");
+    QLabel* a_label = new QLabel("A [deg]");
+
+    stage_lay->addWidget(x_label, 0, 0);
+    stage_lay->addWidget(y_label, 0, 1);
+    stage_lay->addWidget(z_label, 0, 2);
+    stage_lay->addWidget(a_label, 0, 3);
+
+    for(unsigned int i=0; i<4; ++i) {
+      stage_values_.push_back(new QLabel("-"));
+      stage_lay->addWidget(stage_values_.at(i), 1, i);
+    }
+
+    stage_wid->setLayout(stage_lay);
+
+    toolBar_->addWidget(stage_wid);
+
     button_info_ = new QPushButton(tr("Information"));
     button_info_->setStyleSheet("QPushButton { background-color: rgb(215, 214, 213); font: 16px;} QPushButton:hover { background-color: rgb(174, 173, 172); font: 16px;}");
     toolBar_->addWidget(button_info_);
@@ -1016,4 +1094,64 @@ void AssemblyMainWindow::switchAndUpdate_alignment_tab(bool psp_mode)
     else {emit set_alignmentMode_PSS_request();}
 
     return;
+}
+
+void AssemblyMainWindow::update_stage_position()
+{
+
+  const auto x_status  = motion_model_->getAxisStatusText(0);
+  const auto y_status  = motion_model_->getAxisStatusText(1);
+  const auto z_status  = motion_model_->getAxisStatusText(2);
+  const auto a_status  = motion_model_->getAxisStatusText(3);
+
+  for(unsigned int i=0; i<4; ++i)
+  {
+    if(!motion_model_->getAxisEnabled(i)) {
+      QString tpl = tr("<font color='%1'>%2</font>");
+      stage_values_.at(i)->setText(tpl.arg("darkred","D"));
+    } else if(motion_model_->getAxisStatusText(i) == "@")
+    {
+      QString tpl = tr("<font color='%1'>%2</font>");
+      stage_values_.at(i)->setText(tpl.arg("darkgreen",QString::number(motion_model_->getPosition(i), 'f', 2)));
+    } else if(motion_model_->getAxisStatusText(i) == "M") {
+      QString tpl = tr("<font color='%1'>%2</font>");
+      stage_values_.at(i)->setText(tpl.arg("darkblue",QString::number(motion_model_->getPosition(i), 'f', 2)));
+    } else {
+      QString tpl = tr("<font color='%1'>%2</font>");
+      stage_values_.at(i)->setText(tpl.arg("darkred",motion_model_->getAxisStatusText(i)));
+    }
+  }
+}
+
+void AssemblyMainWindow::update_vacuum_information(const int channel, const bool state)
+{
+  NQLog("AssemblyMainWindow", NQLog::Debug) << "update_vacuum_information("
+  << channel << ", " << state << "): updating vacuum information";
+
+  QLabel* to_be_updated;
+  if(channel == vacuum_pickup_)
+  {
+    to_be_updated = PU_status_;
+  } else if(channel == vacuum_spacer_)
+  {
+    to_be_updated = SP_status_;
+  } else if(channel == vacuum_basepl_)
+  {
+    to_be_updated = BP_status_;
+  } else {
+    NQLog("AssemblyMainWindow", NQLog::Fatal) << "Vacuum channel " << channel << " not known!";
+    return;
+  }
+
+  if(to_be_updated == nullptr) {
+    NQLog("AssemblyMainWindow", NQLog::Fatal) << "Vacuum channel " << channel << " not initialised!";
+  }
+
+  to_be_updated->clear();
+  if(state)
+  {
+    to_be_updated->setPixmap(status_red_->scaled(20,20));
+  } else {
+    to_be_updated->setPixmap(status_green_->scaled(20,20));
+  }
 }

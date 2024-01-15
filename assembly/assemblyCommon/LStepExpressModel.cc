@@ -842,6 +842,9 @@ void LStepExpressModel::setAxisEnabled(unsigned int axis, bool enabled)
     int temp2;
     controller_->GetAxisEnabled((VLStepExpress::Axis)axis, temp2);
     axis_[axis] = temp2;
+    if(!enabled) {
+      emit informationChanged();
+    }
 
     if(axis_[axis] != temp)
     {
