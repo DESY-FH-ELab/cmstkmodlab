@@ -48,7 +48,7 @@ class AssemblyAssemblyV2 : public QObject
 
   double pickup1_Z_;
   double pickup2_Z_;
-  double makespace_Z;
+  double makespace_Z_;
 
   bool use_smartMove_;
   bool in_action_;
