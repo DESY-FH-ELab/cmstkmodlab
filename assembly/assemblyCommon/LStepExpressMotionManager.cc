@@ -211,24 +211,28 @@ void LStepExpressMotionManager::moveRelative(const std::vector<double>& values)
     const double x1(this->get_position_X() + values[0]);
     if(x1 < x_lowerBound_ || x1 > x_upperBound_){
       NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Relative movement not executed, Motion Stage would exceed its boundary in X:" << x1;
+      warn_user_limit(x1, 'x', x_lowerBound_, x_upperBound_);
       return;
     }
 
     const double y1(this->get_position_Y() + values[1]);
     if(y1 < y_lowerBound_ || y1 > y_upperBound_){
       NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Relative movement not executed, Motion Stage would exceed its boundary in Y:" << y1;
+      warn_user_limit(y1, 'y', y_lowerBound_, y_upperBound_);
       return;
     }
 
     const double z1(this->get_position_Z() + values[2]);
     if(z1 < z_lowerBound_ || z1 > z_upperBound_){
       NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Relative movement not executed, Motion Stage would exceed its boundary in Z:" << z1;
+      warn_user_limit(z1, 'z', z_lowerBound_, z_upperBound_);
       return;
     }
 
     const double a1(this->get_position_A() + values[3]);
     if(a1 < a_lowerBound_ || a1 > a_upperBound_){
       NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Relative movement not executed, Motion Stage would exceed its boundary in A:" << a1;
+      warn_user_limit(a1, 'a', a_lowerBound_, a_upperBound_);
       return;
     }
 
@@ -247,24 +251,28 @@ void LStepExpressMotionManager::moveRelative(const double dx, const double dy, c
     const double x1(this->get_position_X() + dx);
     if(x1 < x_lowerBound_ || x1 > x_upperBound_){
       NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Relative movement not executed, Motion Stage would exceed its boundary in X:" << x1;
+      warn_user_limit(x1, 'x', x_lowerBound_, x_upperBound_);
       return;
     }
 
     const double y1(this->get_position_Y() + dy);
     if(y1 < y_lowerBound_ || y1 > y_upperBound_){
       NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Relative movement not executed, Motion Stage would exceed its boundary in Y:" << y1;
+      warn_user_limit(y1, 'y', y_lowerBound_, y_upperBound_);
       return;
     }
 
     const double z1(this->get_position_Z() + dz);
     if(z1 < z_lowerBound_ || z1 > z_upperBound_){
       NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Relative movement not executed, Motion Stage would exceed its boundary in Z:" << z1;
+      warn_user_limit(z1, 'z', z_lowerBound_, z_upperBound_);
       return;
     }
 
     const double a1(this->get_position_A() + da);
     if(a1 < a_lowerBound_ || a1 > a_upperBound_){
       NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Relative movement not executed, Motion Stage would exceed its boundary in A:" << a1;
+      warn_user_limit(a1, 'a', a_lowerBound_, a_upperBound_);
       return;
     }
 
@@ -284,6 +292,7 @@ void LStepExpressMotionManager::moveRelative(const unsigned int axis, const doub
       const double x1(this->get_position_X() + value);
       if(x1 < x_lowerBound_ || x1 > x_upperBound_){
         NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Relative movement not executed, Motion Stage would exceed its boundary in X:" << x1;
+        warn_user_limit(x1, 'x', x_lowerBound_, x_upperBound_);
         return;
       }
     }
@@ -291,6 +300,7 @@ void LStepExpressMotionManager::moveRelative(const unsigned int axis, const doub
       const double y1(this->get_position_Y() + value);
       if(y1 < y_lowerBound_ || y1 > y_upperBound_){
         NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Relative movement not executed, Motion Stage would exceed its boundary in Y:" << y1;
+        warn_user_limit(y1, 'y', y_lowerBound_, y_upperBound_);
         return;
       }
     }
@@ -298,6 +308,7 @@ void LStepExpressMotionManager::moveRelative(const unsigned int axis, const doub
       const double z1(this->get_position_Z() + value);
       if(z1 < z_lowerBound_ || z1 > z_upperBound_){
         NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Relative movement not executed, Motion Stage would exceed its boundary in Z:" << z1;
+        warn_user_limit(z1, 'z', z_lowerBound_, z_upperBound_);
         return;
       }
     }
@@ -305,6 +316,7 @@ void LStepExpressMotionManager::moveRelative(const unsigned int axis, const doub
       const double a1(this->get_position_A() + value);
       if(a1 < a_lowerBound_ || a1 > a_upperBound_){
         NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Relative movement not executed, Motion Stage would exceed its boundary in A:" << a1;
+        warn_user_limit(a1, 'a', a_lowerBound_, a_upperBound_);
         return;
       }
     }
@@ -329,24 +341,28 @@ void LStepExpressMotionManager::moveAbsolute(const std::vector<double>& values)
     const double x1(values[0]);
     if(x1 < x_lowerBound_ || x1 > x_upperBound_){
       NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Absolute movement not executed, Motion Stage would exceed its boundary in X:" << x1;
+      warn_user_limit(x1, 'x', x_lowerBound_, x_upperBound_);
       return;
     }
 
     const double y1(values[1]);
     if(y1 < y_lowerBound_ || y1 > y_upperBound_){
       NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Absolute movement not executed, Motion Stage would exceed its boundary in Y:" << y1;
+      warn_user_limit(y1, 'y', y_lowerBound_, y_upperBound_);
       return;
     }
 
     const double z1(values[2]);
     if(z1 < z_lowerBound_ || z1 > z_upperBound_){
       NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Absolute movement not executed, Motion Stage would exceed its boundary in Z:" << z1;
+      warn_user_limit(z1, 'z', z_lowerBound_, z_upperBound_);
       return;
     }
 
     const double a1(values[3]);
     if(a1 < a_lowerBound_ || a1 > a_upperBound_){
       NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Absolute movement not executed, Motion Stage would exceed its boundary in A:" << a1;
+      warn_user_limit(a1, 'a', a_lowerBound_, a_upperBound_);
       return;
     }
 
@@ -364,21 +380,25 @@ void LStepExpressMotionManager::moveAbsolute(const double x, const double y, con
     //Checks on MS boundaries
     if(x < x_lowerBound_ || x > x_upperBound_){
       NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Absolute movement not executed, Motion Stage would exceed its boundary in X:" << x;
+      warn_user_limit(x, 'x', x_lowerBound_, x_upperBound_);
       return;
     }
 
     if(y < y_lowerBound_ || y > y_upperBound_){
       NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Absolute movement not executed, Motion Stage would exceed its boundary in Y:" << y;
+      warn_user_limit(y, 'y', y_lowerBound_, y_upperBound_);
       return;
     }
 
     if(z < z_lowerBound_ || z > z_upperBound_){
       NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Absolute movement not executed, Motion Stage would exceed its boundary in Z:" << z;
+      warn_user_limit(z, 'z', z_lowerBound_, z_upperBound_);
       return;
     }
 
     if(a < a_lowerBound_ || a > a_upperBound_){
       NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Absolute movement not executed, Motion Stage would exceed its boundary in A:" << a;
+      warn_user_limit(a, 'a', a_lowerBound_, a_upperBound_);
       return;
     }
 
@@ -397,24 +417,28 @@ void LStepExpressMotionManager::moveAbsolute(const unsigned int axis, const doub
     if(axis == 0){
       if(value < x_lowerBound_ || value > x_upperBound_){
         NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Absolute movement not executed, Motion Stage would exceed its boundary in X:" << value;
+        warn_user_limit(value, 'x', x_lowerBound_, x_upperBound_);
         return;
       }
     }
     else if(axis == 1){
       if(value < y_lowerBound_ || value > y_upperBound_){
         NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Absolute movement not executed, Motion Stage would exceed its boundary in Y:" << value;
+        warn_user_limit(value, 'y', y_lowerBound_, y_upperBound_);
         return;
       }
     }
     else if(axis == 2){
       if(value < z_lowerBound_ || value > z_upperBound_){
         NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Absolute movement not executed, Motion Stage would exceed its boundary in Z:" << value;
+        warn_user_limit(value, 'z', z_lowerBound_, z_upperBound_);
         return;
       }
     }
     else if(axis == 3){
       if(value < a_lowerBound_ || value > a_upperBound_){
         NQLog("LStepExpressMotionManager", NQLog::Warning) << "ERROR ! Absolute movement not executed, Motion Stage would exceed its boundary in A:" << value;
+        warn_user_limit(value, 'a', a_lowerBound_, a_upperBound_);
         return;
       }
     }
@@ -631,4 +655,12 @@ void LStepExpressMotionManager::set_movements_priorities_XYZA(const double x, co
     }
 
     return;
+}
+
+void LStepExpressMotionManager::warn_user_limit(double target_pos, char axis, double limit_pos_lower, double limit_pos_upper)
+{
+    QMessageBox::warning(0, tr("[LStepExpressMotionManager]"),
+    QString("Attempting to move %1-axis to %2 . This is beyond the limit of this stage: [ %3 , %4 ]").arg(axis).arg(target_pos).arg(limit_pos_lower).arg(limit_pos_upper),
+        QMessageBox::Ok
+    );
 }
