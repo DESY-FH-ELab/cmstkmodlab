@@ -63,6 +63,10 @@ public:
   const State& getChannelState(int channel) const;
   const State& getSwitchState( int device ) const { return getChannelState(device); }
 
+  /// Returns the current (cached) state of the device.
+  const State& getDeviceState() const {
+      return state_; }
+
 public slots:
   // Methods for control and querying statuses of device itself (as specified
   // by abstract parent class)

@@ -20,6 +20,7 @@
 #include <AssemblyLogFileController.h>
 #include <AssemblyLogFileView.h>
 #include <AssemblyUtilities.h>
+#include <DeviceState.h>
 
 #include <string>
 
@@ -44,6 +45,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   status_grey_(nullptr),
   status_green_(nullptr),
   status_red_(nullptr),
+  status_orange_(nullptr),
   PU_status_(nullptr),
   SP_status_(nullptr),
   BP_status_(nullptr),
@@ -171,6 +173,17 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     	relayCardModel_ = new VellemanModel(config->getValue<std::string>("main", "VellemanDevice"));
     } else {
     	relayCardModel_ = new ConradModel(config->getValue<std::string>("main", "ConradDevice"));
+    }
+
+    if(relayCardModel_->getDeviceState()==State::OFF) {
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "Relay card device off - cannot continue.";
+
+      QMessageBox* msgBox = new QMessageBox;
+      msgBox->setInformativeText("Relay card device not available!");
+
+      msgBox->setStandardButtons(QMessageBox::Ok);
+
+      int ret = msgBox->exec();
     }
 
     relayCardManager_ = new RelayCardManager(relayCardModel_);
@@ -495,6 +508,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     status_grey_ = new QPixmap(filename + "/share/common/button_grey.png");
     status_green_ = new QPixmap(filename + "/share/common/button_green.png");
     status_red_ = new QPixmap(filename + "/share/common/button_red.png");
+    status_orange_ = new QPixmap(filename + "/share/common/button_orange.png");
     vacuum_pickup_ = config->getValue<int>("main", "Vacuum_PickupTool");
     vacuum_spacer_ = config->getValue<int>("main", "Vacuum_Spacers");
     vacuum_basepl_ = config->getValue<int>("main", "Vacuum_Baseplate");
@@ -517,13 +531,16 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))              , relayCardManager_, SLOT(toggleVacuum(int)));
     connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), relayCardManager_, SLOT(transmit_vacuumChannelState(int)));
 
-    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
+    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, SwitchState)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, SwitchState)));
 
-    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, bool)), this, SLOT(update_vacuum_information(int, bool)));
+    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, SwitchState)), this, SLOT(update_vacuum_information(int, SwitchState)));
 
     connect(relayCardManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
     connect(relayCardManager_, SIGNAL(disableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(disableVacuumButton()));
 
+    if(relayCardModel_->getDeviceState()==State::OFF) {
+      hwctr_view_->Vacuum_Widget()->disableVacuumButton();
+    }
     hwctr_view_->Vacuum_Widget()->updateVacuumChannelsStatus();
 
 
@@ -1123,10 +1140,10 @@ void AssemblyMainWindow::update_stage_position()
   }
 }
 
-void AssemblyMainWindow::update_vacuum_information(const int channel, const bool state)
+void AssemblyMainWindow::update_vacuum_information(const int channel, const SwitchState state)
 {
   NQLog("AssemblyMainWindow", NQLog::Debug) << "update_vacuum_information("
-  << channel << ", " << state << "): updating vacuum information";
+  << channel << ", " << static_cast<int>(state) << "): updating vacuum information";
 
   QLabel* to_be_updated;
   if(channel == vacuum_pickup_)
@@ -1148,10 +1165,19 @@ void AssemblyMainWindow::update_vacuum_information(const int channel, const bool
   }
 
   to_be_updated->clear();
-  if(state)
+  if(state==SwitchState::CHANNEL_ON)
   {
     to_be_updated->setPixmap(status_red_->scaled(20,20));
-  } else {
+} else if(state==SwitchState::CHANNEL_SWITCHING)
+  {
+    to_be_updated->setPixmap(status_orange_->scaled(20,20));
+  }
+  else if(state==SwitchState::CHANNEL_OFF)
+  {
     to_be_updated->setPixmap(status_green_->scaled(20,20));
+  }
+  else if(state==SwitchState::DEVICE_OFF)
+  {
+    to_be_updated->setPixmap(status_grey_->scaled(20,20));
   }
 }
