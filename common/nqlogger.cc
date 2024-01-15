@@ -117,7 +117,7 @@ void NQLogger::addActiveModule(const QString& module)
 
 void NQLogger::addDestiniation(QIODevice * device, NQLog::LogLevel level, std::string dest_name)
 {
-  if(hasDestination(dest_name)){
+  if(dest_name != "" && hasDestination(dest_name)){
     throw(InvalidLoggerException("Logger already has a destination with name \"" + dest_name + "\". Please assign another destination name."));
   }
   QTextStream* stream = new QTextStream(device);
@@ -126,7 +126,7 @@ void NQLogger::addDestiniation(QIODevice * device, NQLog::LogLevel level, std::s
 
 void NQLogger::addDestiniation(FILE * fileHandle, NQLog::LogLevel level, std::string dest_name)
 {
-  if(hasDestination(dest_name)){
+  if(dest_name != "" && hasDestination(dest_name)){
     throw(InvalidLoggerException("Logger already has a destination with name \"" + dest_name + "\". Please assign another destination name."));
   }
   QTextStream* stream = new QTextStream(fileHandle);
