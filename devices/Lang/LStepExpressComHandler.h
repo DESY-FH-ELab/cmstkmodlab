@@ -45,7 +45,7 @@ class LStepExpressComHandler {
   const std::string& ioPort() const { return fIoPort; }
 
   void SendCommand( const char* );
-  void ReceiveString( char* );
+  std::string ReceiveString();
 
   bool DeviceAvailable();
 

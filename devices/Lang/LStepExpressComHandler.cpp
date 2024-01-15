@@ -10,9 +10,10 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <string.h>
-
+#include <chrono>
 #include <iostream>
+#include <string>
+#include <string.h>
 
 #include "LStepExpressComHandler.h"
 
@@ -66,31 +67,43 @@ void LStepExpressComHandler::SendCommand( const char *commandString )
 
   See example program in class description.
 */
-void LStepExpressComHandler::ReceiveString( char *receiveString )
+std::string LStepExpressComHandler::ReceiveString()
 {
+  // Nothing ready
   if (!fDeviceAvailable) {
-    receiveString[0] = 0;
-    return;
+    return {};
   }
 
-  receiveString[0] = 0;
+  // Define a timeout and start a timer:
+  const auto timeout = std::chrono::duration<double, std::milli>(500);
+  const auto start_time = std::chrono::steady_clock::now();
 
-  usleep( 20000 );
+  std::string value{};
 
-  int timeout = 0;
-  size_t readResult = 0;
+  char readbyte = 0;
 
-  while ( timeout < 100000 )  {
+  while(true) {
+    // Let's read byte-by-byte from the file descriptor:
+    size_t n_read = read(fIoPortFileDescriptor, &readbyte, 1);
 
-    readResult = read( fIoPortFileDescriptor, receiveString, 1024 );
+    if(n_read != 0) {
+      // Read until we see the end-of-command (CR) marker
+      if(readbyte == '\r') {
+        break;
+      }
 
-    if ( readResult > 0 ) {
-      receiveString[readResult-1] = '\0';
-      break;
+      // We read one byte, let's add it to the output and continue.
+      value += readbyte;
     }
-    
-    timeout++;
+
+    // Check for communication timeout:
+    if(std::chrono::steady_clock::now() - start_time > timeout) {
+      std::cout << "[LStepExpressComHandler::ReceiveString] ** ERROR: Communication seems to have timed out" << std::endl;
+      return {};
+    }
   }
+
+  return value;
 }
 
 //! Open I/O port.

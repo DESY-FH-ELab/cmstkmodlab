@@ -842,6 +842,9 @@ void LStepExpressModel::setAxisEnabled(unsigned int axis, bool enabled)
     int temp2;
     controller_->GetAxisEnabled((VLStepExpress::Axis)axis, temp2);
     axis_[axis] = temp2;
+    if(!enabled) {
+      emit informationChanged();
+    }
 
     if(axis_[axis] != temp)
     {
@@ -1050,8 +1053,7 @@ void LStepExpressModel::initialize()
          << ": successfully accessed port " << controller_->ioPort();
 
       QMutexLocker locker(&mutex_);
-
-      controller_->SetAutoStatus(2);
+      controller_->SetAutoStatus(0);
 
       std::vector<int> allZerosI{ 0, 0, 0, 0 };
       std::vector<int> OnI{1,1,1,1};

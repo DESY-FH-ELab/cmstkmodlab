@@ -45,7 +45,7 @@ LStepExpressFake::LStepExpressFake(const std::string& ioPort, const std::string&
 }
 
 //! Return name of port used to initialize LStepExpressFake
-std::string LStepExpressFake::ioPort() const
+std::string LStepExpressFake::ioPort()
 {
   return ioPort_;
 }
