@@ -117,7 +117,7 @@ class AssemblyMainWindow : public QMainWindow
 
   void update_stage_position();
 
-  void update_vacuum_information(const int, const bool);
+  void update_vacuum_information(const int, const SwitchState);
 
  signals:
 
@@ -167,6 +167,7 @@ class AssemblyMainWindow : public QMainWindow
   QPixmap* status_grey_;
   QPixmap* status_green_;
   QPixmap* status_red_;
+  QPixmap* status_orange_;
   int vacuum_basepl_;
   int vacuum_pickup_;
   int vacuum_spacer_;
