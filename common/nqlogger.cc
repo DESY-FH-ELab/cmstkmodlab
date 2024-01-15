@@ -115,14 +115,32 @@ void NQLogger::addActiveModule(const QString& module)
   activeModules_.insert(std::pair<QString,bool>(module,false));
 }
 
-void NQLogger::addDestiniation(QIODevice * device, NQLog::LogLevel level)
+void NQLogger::addDestiniation(QIODevice * device, NQLog::LogLevel level, std::string dest_name)
 {
+  if(hasDestination(dest_name)){
+    throw(InvalidLoggerException("Logger already has a destination with name \"" + dest_name + "\". Please assign another destination name."));
+  }
   QTextStream* stream = new QTextStream(device);
-  destinations_.push_back(std::pair<NQLog::LogLevel,QTextStream*>(level,stream));
+  destinations_.push_back(std::tuple<NQLog::LogLevel,QTextStream*,std::string>(level,stream,dest_name));
 }
 
-void NQLogger::addDestiniation(FILE * fileHandle, NQLog::LogLevel level)
+void NQLogger::addDestiniation(FILE * fileHandle, NQLog::LogLevel level, std::string dest_name)
 {
+  if(hasDestination(dest_name)){
+    throw(InvalidLoggerException("Logger already has a destination with name \"" + dest_name + "\". Please assign another destination name."));
+  }
   QTextStream* stream = new QTextStream(fileHandle);
-  destinations_.push_back(std::pair<NQLog::LogLevel,QTextStream*>(level,stream));
+  destinations_.push_back(std::tuple<NQLog::LogLevel,QTextStream*,std::string>(level,stream,dest_name));
+}
+
+bool NQLogger::hasDestination(std::string dest_name)
+{
+  for(auto& dest_tuple : destinations_)
+  {
+    if(std::get<2>(dest_tuple) == dest_name)
+    {
+      return true;
+    }
+  }
+  return false;
 }
