@@ -35,6 +35,8 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
  , pickup1_Z_(0.)
  , pickup2_Z_(0.)
  , makespace_Z_(0.)
+ , position_z_before_makespace_(0.)
+ , position_z_before_makespace_stored_(false)
 
  , use_smartMove_(false)
  , in_action_(false)
@@ -1301,6 +1303,11 @@ void AssemblyAssemblyV2::MakeSpaceOnPlatform_start()
     return;
   }
 
+  position_z_before_makespace_ = motion_->get_position_Z();
+  position_z_before_makespace_stored_ = true;
+  NQLog("AssemblyAssemblyV2", NQLog::Message) << "MakeSpaceOnPlatform_start"
+     << ": Position of z stage before making space on the platform is " << position_z_before_makespace_;
+
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(MakeSpaceOnPlatform_finish()));
 
@@ -1344,9 +1351,20 @@ void AssemblyAssemblyV2::ReturnToPlatform_start()
     return;
   }
 
+  if(!position_z_before_makespace_stored_)
+  {
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "ReturnToPlatform_start"
+       << ": stage position before making space on platform has not been stored. Cannot continue.";
+    QMessageBox::warning(0, tr("[LStepExpressMotionManager]"),
+       QString("Stage position before making space on platform has not been stored. Cannot continue."),
+       QMessageBox::Abort
+    );
+    return;
+  }
+
   const double dx0 = 0.0;
   const double dy0 = 0.0;
-  const double dz0 = -makespace_Z_;
+  const double dz0 = position_z_before_makespace_ - motion_->get_position_Z();
   const double da0 = 0.0;
 
   if(dz0 >= 0.)
@@ -1360,6 +1378,34 @@ void AssemblyAssemblyV2::ReturnToPlatform_start()
     emit ReturnToPlatform_finished();
 
     return;
+  }
+
+  QMessageBox* msgBox = new QMessageBox;
+  msgBox->setInformativeText(QString("This will move the z stage to the absolute position %1 (relative: %2).\nContinue?").arg(position_z_before_makespace_).arg(dz0));
+  msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+  msgBox->setDefaultButton(QMessageBox::Yes);
+  int ret = msgBox->exec();
+  switch(ret)
+  {
+    case QMessageBox::No:
+      NQLog("AssemblyAssemblyV2", NQLog::Warning) << "ReturnToPlatform_start"
+         << ": abort motion after user decision.";
+      NQLog("AssemblyAssemblyV2", NQLog::Spam) << "ReturnToPlatform_start"
+            << ": emitting signal \"ReturnToPlatform_finished\"";
+      emit ReturnToPlatform_finished();
+      return;
+
+    case QMessageBox::Yes:
+      NQLog("AssemblyAssemblyV2", NQLog::Warning) << "ReturnToPlatform_start"
+       << ": start motion after user decision.";
+      break;
+    default:
+      NQLog("AssemblyAssemblyV2", NQLog::Warning) << "ReturnToPlatform_start"
+         << ": Invalid user selection. Finish this step.";
+      NQLog("AssemblyAssemblyV2", NQLog::Spam) << "ReturnToPlatform_start"
+         << ": emitting signal \"ReturnToPlatform_finished\"";
+      emit ReturnToPlatform_finished();
+      return;
   }
 
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
