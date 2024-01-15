@@ -123,13 +123,19 @@ int main(int argc, char** argv)
     }
     // ----------------------
 
-    AssemblyMainWindow mainWindow(outputdir_path, logfile_path, DBlogfile_path);
+    try{
+        AssemblyMainWindow mainWindow(outputdir_path, logfile_path, DBlogfile_path);
+        mainWindow.setWindowTitle("Automated Pixel-Strip Module Assembly ["+QString(APPLICATIONVERSIONSTR)+"]");
+        mainWindow.setWindowState(Qt::WindowMaximized);
 
-    mainWindow.setWindowTitle("Automated Pixel-Strip Module Assembly ["+QString(APPLICATIONVERSIONSTR)+"]");
-    mainWindow.setWindowState(Qt::WindowMaximized);
+        mainWindow.show();
 
-    mainWindow.show();
-
-    return app.exec();
+        return app.exec();
+    } catch (ApplicationConfig::InvalidConfigFileException) {
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31mInitialization error: ApplicationConfig::append(\"parameters\") is invalid ! Abort !\e[0m";
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+        return 1;
+    }
     // ----------------------
 }

@@ -44,7 +44,7 @@ void ApplicationConfigReader::fill(ApplicationConfig::storage_t &keyvalueMap)
         QMessageBox::Abort
     );
 
-    throw; // must abort
+    throw ApplicationConfig::InvalidConfigFileException(" [ApplicationConfigReader::openAndCheckFile] ** ERROR: failed to open file: " + filename_ + "."); // throw exception
   }
 
   std::string Key;
