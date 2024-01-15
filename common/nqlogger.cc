@@ -95,9 +95,9 @@ void NQLogger::write(const QString& module, NQLog::LogLevel level, const QString
   message += buffer;
   message += "\n";
 
-  for (std::pair<NQLog::LogLevel,QTextStream*> v : destinations_) {
-    if (level>=v.first) {
-      QTextStream* stream = v.second;
+  for (std::tuple<NQLog::LogLevel,QTextStream*,std::string> v : destinations_) {
+    if (level>=std::get<0>(v)) {
+      QTextStream* stream = std::get<1>(v);
       QMutexLocker locker(&mutex_);
       stream->operator <<(message);
       stream->flush();
