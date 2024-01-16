@@ -30,6 +30,11 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
  , wid_PSPToBasep_(nullptr)
  , wid_PSSToSpacers_(nullptr)
  , wid_PSSToMaPSA_(nullptr)
+ , baseplate_id_lineed_(nullptr)
+ , mapsa_id_lineed_(nullptr)
+ , pss_id_lineed_(nullptr)
+ , module_id_lineed_(nullptr)
+ , push_to_db_button_(nullptr)
 {
   if(assembly == nullptr)
   {
@@ -53,6 +58,45 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   connect(smartMove_checkbox_, SIGNAL(stateChanged(int)), assembly, SLOT(use_smartMove(int)));
 
   smartMove_checkbox_->setChecked(true);
+  //// -----------------------------------------------
+
+  opts_lay->addStretch();
+
+  QLabel* baseplate_id_label = new QLabel("Baseplate ID: ");
+  baseplate_id_lineed_ = new QLineEdit("");
+  baseplate_id_lineed_->setPlaceholderText("Baseplate ID");
+  baseplate_id_lineed_->setMaximumWidth(200);
+
+  opts_lay->addWidget(baseplate_id_label);
+  opts_lay->addWidget(baseplate_id_lineed_);
+
+  QLabel* mapsa_id_label = new QLabel("MaPSA ID: ");
+  mapsa_id_lineed_ = new QLineEdit("");
+  mapsa_id_lineed_->setPlaceholderText("MaPSA ID");
+  mapsa_id_lineed_->setMaximumWidth(200);
+
+  opts_lay->addWidget(mapsa_id_label);
+  opts_lay->addWidget(mapsa_id_lineed_);
+
+  QLabel* pss_id_label = new QLabel("Strip Sensor ID: ");
+  pss_id_lineed_ = new QLineEdit("");
+  pss_id_lineed_->setPlaceholderText("Strip Sensor ID");
+  pss_id_lineed_->setMaximumWidth(200);
+
+  opts_lay->addWidget(pss_id_label);
+  opts_lay->addWidget(pss_id_lineed_);
+
+  QLabel* module_id_label = new QLabel("Module ID: ");
+  module_id_lineed_ = new QLineEdit("");
+  module_id_lineed_->setPlaceholderText("Module ID");
+  module_id_lineed_->setMaximumWidth(200);
+
+  opts_lay->addWidget(module_id_label);
+  opts_lay->addWidget(module_id_lineed_);
+
+  push_to_db_button_ = new QPushButton("Push to database");
+  opts_lay->addWidget(push_to_db_button_);
+
   //// -----------------------------------------------
 
   QToolBox* toolbox = new QToolBox;
