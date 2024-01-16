@@ -17,6 +17,8 @@
 #include <QWidget>
 #include <QCheckBox>
 #include <QMessageBox>
+#include <QLineEdit>
+#include <QPushButton>
 
 class AssemblyAssemblyV2View : public QWidget
 {
@@ -35,6 +37,12 @@ class AssemblyAssemblyV2View : public QWidget
   QWidget* wid_PSPToBasep_;
   QWidget* wid_PSSToSpacers_;
   QWidget* wid_PSSToMaPSA_;
+
+  QLineEdit* baseplate_id_lineed_;
+  QLineEdit* mapsa_id_lineed_;
+  QLineEdit* pss_id_lineed_;
+  QLineEdit* module_id_lineed_;
+  QPushButton* push_to_db_button_;
 };
 
 #endif // ASSEMBLYASSEMBLYV2VIEW_H
