@@ -61,6 +61,9 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyDBLoggerModel.h>
 #include <AssemblyDBLoggerController.h>
 #include <AssemblyDBLoggerView.h>
+#include <Metrology.h>
+#include <MetrologyView.h>
+
 
 #include <QMainWindow>
 #include <QString>
@@ -96,6 +99,9 @@ class AssemblyMainWindow : public QMainWindow
 
   void start_objectAligner(const AssemblyObjectAligner::Configuration&);
   void disconnect_objectAligner();
+
+  void start_metrology(const Metrology::Configuration&);
+  void disconnect_metrology();
 
   void start_multiPickupTest(const AssemblyMultiPickupTester::Configuration&);
   void disconnect_multiPickupTest();
@@ -133,6 +139,9 @@ class AssemblyMainWindow : public QMainWindow
 
   void objectAligner_connected();
   void objectAligner_disconnected();
+
+  void metrology_connected();
+  void metrology_disconnected();
 
   void multiPickupTest_disconnected();
 
@@ -186,6 +195,7 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyZFocusFinder*       zfocus_finder_;
   AssemblyThresholder*        thresholder_;
   AssemblyObjectAligner*      aligner_;
+  Metrology*                  metrology_;
   AssemblyAssembly*           assembly_;
   AssemblyAssemblyV2*         assemblyV2_;
   AssemblyMultiPickupTester*  multipickup_tester_;
@@ -209,6 +219,7 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyObjectFinderPatRecView* finder_view_;
   AssemblyObjectAlignerView* aligner_view_;
   AssemblyAssemblyView* assembly_view_;
+  MetrologyView* metrology_view_;
   AssemblyAssemblyV2View* assemblyV2_view_;
   AssemblyToolboxView* toolbox_view_;
   AssemblyParametersView* params_view_;
@@ -225,6 +236,7 @@ class AssemblyMainWindow : public QMainWindow
   // flags
   bool images_enabled_;
   bool aligner_connected_;
+  bool metrology_connected_;
 
   // timing
   double testTimerCount_;
