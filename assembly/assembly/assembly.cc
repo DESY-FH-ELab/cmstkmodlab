@@ -84,14 +84,39 @@ int main(int argc, char** argv)
       relative_config_path = "/assembly/assembly_glass.cfg";
     }
 
-    // log output -----------
-    ApplicationConfig* config = ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath)+relative_config_path, "main");
+    // log output - default -----------
+    NQLog::LogLevel nqloglevel_stdout  = NQLog::Message;
 
-    const NQLog::LogLevel nqloglevel_stdout  = ((NQLog::LogLevel) config->getDefaultValue<int>("main", "LogLevel_stdout" , 2));
+    try{
+      NQLogger::instance()->addActiveModule("*");
+      NQLogger::instance()->addDestiniation(stdout, nqloglevel_stdout, "stdout");
+    } catch(NQLogger::InvalidLoggerException& exc){
+        std::cerr << "Initialization error. Message: " << exc.what() << std::endl;
+    }
+
+    ApplicationConfig* config;
+    try{
+      config = ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath)+relative_config_path, "main");
+    } catch (ApplicationConfig::InvalidConfigFileException& exc) {
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31mInitialization error: ApplicationConfig::append(\"main\") is invalid ! Abort !\e[0m";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31mMessage: " << exc.what() << "\e[0m";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+      return 1;
+    }
+
+    // log output - set correct parameters -----------
+    nqloglevel_stdout = ((NQLog::LogLevel) config->getDefaultValue<int>("main", "LogLevel_stdout" , 2));
+    try{
+      NQLogger::instance()->setLogLevel("stdout", nqloglevel_stdout);
+    } catch(NQLogger::InvalidLoggerException& exc){
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31mInitialization error: " << exc.what() << "\e[0m";
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+        return 1;
+    }
+
     const NQLog::LogLevel nqloglevel_logfile = ((NQLog::LogLevel) config->getDefaultValue<int>("main", "LogLevel_logfile", 2));
-
-    NQLogger::instance()->addActiveModule("*");
-    NQLogger::instance()->addDestiniation(stdout, nqloglevel_stdout);
 
     const QString timestamp = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss");
 
@@ -119,17 +144,30 @@ int main(int argc, char** argv)
     QFile* logfile = new QFile(logfile_path);
     if(logfile->open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
     {
-      NQLogger::instance()->addDestiniation(logfile, nqloglevel_logfile);
+      try{
+        NQLogger::instance()->addDestiniation(logfile, nqloglevel_logfile, "logfile");
+      } catch(NQLogger::InvalidLoggerException& exc){
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31mInitialization error: " << exc.what() << "\e[0m";
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+        return 1;
+      }
     }
     // ----------------------
 
-    AssemblyMainWindow mainWindow(outputdir_path, logfile_path, DBlogfile_path);
+    try{
+        AssemblyMainWindow mainWindow(outputdir_path, logfile_path, DBlogfile_path);
+        mainWindow.setWindowTitle("Automated Pixel-Strip Module Assembly ["+QString(APPLICATIONVERSIONSTR)+"]");
+        mainWindow.setWindowState(Qt::WindowMaximized);
 
-    mainWindow.setWindowTitle("Automated Pixel-Strip Module Assembly ["+QString(APPLICATIONVERSIONSTR)+"]");
-    mainWindow.setWindowState(Qt::WindowMaximized);
+        mainWindow.show();
 
-    mainWindow.show();
-
-    return app.exec();
+        return app.exec();
+    } catch (ApplicationConfig::InvalidConfigFileException) {
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31mInitialization error: ApplicationConfig::append(\"parameters\") is invalid ! Abort !\e[0m";
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+        return 1;
+    }
     // ----------------------
 }
