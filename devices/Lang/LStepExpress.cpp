@@ -37,16 +37,12 @@ LStepExpress::~LStepExpress()
 }
 
 //! Return name of port used to initialize LStepExpressComHandler
-std::string LStepExpress::ioPort() const
+std::string LStepExpress::ioPort()
 {
   assert(comHandler_);
 
+  std::lock_guard<std::mutex> lock(mutex_);
   return comHandler_->ioPort();
-}
-
-bool LStepExpress::DeviceAvailable() const
-{
-  return isDeviceAvailable_;
 }
 
 // low level debugging methods
@@ -56,50 +52,39 @@ void LStepExpress::SendCommand(const std::string & command)
   std::cout << "Device SendCommand: " << command << std::endl;
 #endif
 
+  std::lock_guard<std::mutex> lock(mutex_);
   comHandler_->SendCommand(command.c_str());
 }
 
-void LStepExpress::ReceiveString(std::string & buffer)
+std::string LStepExpress::ReceiveString(const std::string & command)
 {
-  usleep(1000);
-
-  char buf[1000];
-  comHandler_->ReceiveString(buf);
-
 #ifdef LSTEPDEBUG
-  std::cout << "Device ReceiveString: " << buf << std::endl;
+  std::cout << "Device SendCommand: " << command << std::endl;
 #endif
 
-  StripBuffer(buf);
-  buffer = buf;
-}
+  std::lock_guard<std::mutex> lock(mutex_);
+  comHandler_->SendCommand(command.c_str());
+  auto buffer = comHandler_->ReceiveString();
 
-void LStepExpress::StripBuffer(char* buffer) const
-{
-  for (unsigned int c=0; c<strlen(buffer);++c) {
-    if(buffer[c]=='\r') {
-      buffer[c] = '\0';
-      break;
-    }
-  }
+#ifdef LSTEPDEBUG
+  std::cout << "Device ReceiveString: " << buffer << std::endl;
+#endif
+
+  return buffer;
 }
 
 void LStepExpress::DeviceInit(const std::string& lstep_ver, const std::string& lstep_iver)
 {
   isDeviceAvailable_ = false;
 
+  std::lock_guard<std::mutex> lock(mutex_);
   if(comHandler_->DeviceAvailable())
   {
     isDeviceAvailable_ = true;
 
-    char buffer[1000];
-    std::string buf;
-
     // read version
     comHandler_->SendCommand("ver");
-    comHandler_->ReceiveString(buffer);
-    StripBuffer(buffer);
-    buf = buffer;
+    auto buf = comHandler_->ReceiveString();
 
     if(buf != lstep_ver)
     {
@@ -116,9 +101,7 @@ void LStepExpress::DeviceInit(const std::string& lstep_ver, const std::string& l
 
     // read internal version
     comHandler_->SendCommand("iver");
-    comHandler_->ReceiveString(buffer);
-    StripBuffer(buffer);
-    buf = buffer;
+    buf = comHandler_->ReceiveString();
 
     if(buf != lstep_iver)
     {
@@ -137,7 +120,6 @@ void LStepExpress::DeviceInit(const std::string& lstep_ver, const std::string& l
     comHandler_->SendCommand("readsn"); // read serial number
     comHandler_->ReceiveString(buffer);
 
-    StripBuffer(buffer);
     unsigned long serialNumber = std::atol(buffer);
 
     if(   (serialNumber != 40052435759) // pre-DAF

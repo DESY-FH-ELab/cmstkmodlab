@@ -61,6 +61,9 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblyDBLoggerModel.h>
 #include <AssemblyDBLoggerController.h>
 #include <AssemblyDBLoggerView.h>
+#include <Metrology.h>
+#include <MetrologyView.h>
+
 
 #include <QMainWindow>
 #include <QString>
@@ -97,6 +100,9 @@ class AssemblyMainWindow : public QMainWindow
   void start_objectAligner(const AssemblyObjectAligner::Configuration&);
   void disconnect_objectAligner();
 
+  void start_metrology(const Metrology::Configuration&);
+  void disconnect_metrology();
+
   void start_multiPickupTest(const AssemblyMultiPickupTester::Configuration&);
   void disconnect_multiPickupTest();
 
@@ -115,6 +121,10 @@ class AssemblyMainWindow : public QMainWindow
   void update_alignment_tab_psp();
   void update_alignment_tab_pss();
 
+  void update_stage_position();
+
+  void update_vacuum_information(const int, const SwitchState);
+
   void warn_on_stage_limits(const double target_pos, const char axis, const double limit_pos_lower, const double limit_pos_upper);
 
  signals:
@@ -131,6 +141,9 @@ class AssemblyMainWindow : public QMainWindow
 
   void objectAligner_connected();
   void objectAligner_disconnected();
+
+  void metrology_connected();
+  void metrology_disconnected();
 
   void multiPickupTest_disconnected();
 
@@ -160,6 +173,19 @@ class AssemblyMainWindow : public QMainWindow
   LStepExpressSettings*       motionSettings_;
   LStepExpressSettingsWidget* motionSettingsWidget_;
 
+  std::vector<QLabel*>        stage_values_;
+
+  QPixmap* status_grey_;
+  QPixmap* status_green_;
+  QPixmap* status_red_;
+  QPixmap* status_orange_;
+  int vacuum_basepl_;
+  int vacuum_pickup_;
+  int vacuum_spacer_;
+  QLabel* PU_status_;
+  QLabel* SP_status_;
+  QLabel* BP_status_;
+
   AssemblyUEyeModel_t*      camera_model_;
   AssemblyUEyeCameraThread* camera_thread_;
 //  AssemblyUEyeWidget*      camera_widget_;
@@ -171,6 +197,7 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyZFocusFinder*       zfocus_finder_;
   AssemblyThresholder*        thresholder_;
   AssemblyObjectAligner*      aligner_;
+  Metrology*                  metrology_;
   AssemblyAssembly*           assembly_;
   AssemblyAssemblyV2*         assemblyV2_;
   AssemblyMultiPickupTester*  multipickup_tester_;
@@ -194,6 +221,7 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyObjectFinderPatRecView* finder_view_;
   AssemblyObjectAlignerView* aligner_view_;
   AssemblyAssemblyView* assembly_view_;
+  MetrologyView* metrology_view_;
   AssemblyAssemblyV2View* assemblyV2_view_;
   AssemblyToolboxView* toolbox_view_;
   AssemblyParametersView* params_view_;
@@ -210,6 +238,7 @@ class AssemblyMainWindow : public QMainWindow
   // flags
   bool images_enabled_;
   bool aligner_connected_;
+  bool metrology_connected_;
 
   // timing
   double testTimerCount_;

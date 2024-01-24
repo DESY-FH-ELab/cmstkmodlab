@@ -20,6 +20,8 @@
 #include <QRadioButton>
 #include <QLabel>
 
+#include <RelayCardManager.h>
+
 #include <map>
 
 class AssemblyVacuumWidget : public QWidget
@@ -56,7 +58,7 @@ class AssemblyVacuumWidget : public QWidget
  public slots:
 
   void toggleVacuum();
-  void updateVacuumChannelState(const int, const bool);
+  void updateVacuumChannelState(const int, const SwitchState);
 
   void updateVacuumChannelsStatus();
 

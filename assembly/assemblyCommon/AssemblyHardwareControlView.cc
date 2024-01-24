@@ -72,8 +72,8 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
 
   connect(manager_->model(), SIGNAL(deviceStateChanged(State)), this, SLOT(stateChanged(State)));
 
-//  connect(manager_->model(), SIGNAL(motionStarted ()), this, SLOT(disableMotionTools()));
-//  connect(manager_->model(), SIGNAL(motionFinished()), this, SLOT( enableMotionTools()));
+  connect(manager_->model(), SIGNAL(motionStarted ()), this, SLOT(disableMotionTools()));
+  connect(manager_, SIGNAL(motion_finished()), this, SLOT( enableMotionTools()));
 
   g1->addWidget(box_move, 60);
   /// -------------

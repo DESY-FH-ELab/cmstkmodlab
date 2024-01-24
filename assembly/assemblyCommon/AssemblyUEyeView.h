@@ -47,6 +47,7 @@ class AssemblyUEyeView : public QLabel
  public slots:
 
   void setImage(const cv::Mat&);
+  void resetImage();
 };
 
 #endif // ASSEMBLYUEYEVIEW_H

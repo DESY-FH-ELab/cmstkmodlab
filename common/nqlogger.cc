@@ -25,12 +25,12 @@
 
 #include "nqlogger.h"
 
-NQLog::NQLog(const QString& module, LogLevel level)
+NQLog::NQLog(const QString& module, LogLevel level, int precision)
 : module_(module),
   level_(level),
   stream_(&buffer_)
 {
-
+  stream_.setRealNumberPrecision(precision);
 }
 
 NQLog::~NQLog()
@@ -95,9 +95,9 @@ void NQLogger::write(const QString& module, NQLog::LogLevel level, const QString
   message += buffer;
   message += "\n";
 
-  for (std::pair<NQLog::LogLevel,QTextStream*> v : destinations_) {
-    if (level>=v.first) {
-      QTextStream* stream = v.second;
+  for (std::tuple<NQLog::LogLevel,QTextStream*,std::string> v : destinations_) {
+    if (level>=std::get<0>(v)) {
+      QTextStream* stream = std::get<1>(v);
       QMutexLocker locker(&mutex_);
       stream->operator <<(message);
       stream->flush();
@@ -115,14 +115,49 @@ void NQLogger::addActiveModule(const QString& module)
   activeModules_.insert(std::pair<QString,bool>(module,false));
 }
 
-void NQLogger::addDestiniation(QIODevice * device, NQLog::LogLevel level)
+void NQLogger::addDestiniation(QIODevice * device, NQLog::LogLevel level, std::string dest_name)
 {
+  if(dest_name != "" && hasDestination(dest_name)){
+    throw(InvalidLoggerException("Logger already has a destination with name \"" + dest_name + "\". Please assign another destination name."));
+  }
   QTextStream* stream = new QTextStream(device);
-  destinations_.push_back(std::pair<NQLog::LogLevel,QTextStream*>(level,stream));
+  destinations_.push_back(std::tuple<NQLog::LogLevel,QTextStream*,std::string>(level,stream,dest_name));
 }
 
-void NQLogger::addDestiniation(FILE * fileHandle, NQLog::LogLevel level)
+void NQLogger::addDestiniation(FILE * fileHandle, NQLog::LogLevel level, std::string dest_name)
 {
+  if(dest_name != "" && hasDestination(dest_name)){
+    throw(InvalidLoggerException("Logger already has a destination with name \"" + dest_name + "\". Please assign another destination name."));
+  }
   QTextStream* stream = new QTextStream(fileHandle);
-  destinations_.push_back(std::pair<NQLog::LogLevel,QTextStream*>(level,stream));
+  destinations_.push_back(std::tuple<NQLog::LogLevel,QTextStream*,std::string>(level,stream,dest_name));
+}
+
+void NQLogger::setLogLevel(std::string dest_name, NQLog::LogLevel level)
+{
+  if(dest_name == "") {
+    throw(InvalidLoggerException("Cannot alter loglevel with empty destination name. Please assign another destination name."));
+  }
+  for(auto& dest_tuple : destinations_)
+  {
+    if(std::get<2>(dest_tuple) == dest_name)
+    {
+      std::get<0>(dest_tuple) = level;
+      std::cout << "Altered log level to " << level << std::endl;
+      return;
+    }
+  }
+  throw(InvalidLoggerException("Logger has no destination with name \"" + dest_name + "\". Cannot alter log level of this destination."));
+}
+
+bool NQLogger::hasDestination(std::string dest_name)
+{
+  for(auto& dest_tuple : destinations_)
+  {
+    if(std::get<2>(dest_tuple) == dest_name)
+    {
+      return true;
+    }
+  }
+  return false;
 }

@@ -20,6 +20,7 @@
 #include <utility>
 #include <fstream>
 #include <cmath>
+#include <mutex>
 
 #include "VLStepExpress.h"
 #include "LStepExpressComHandler.h"
@@ -39,11 +40,9 @@ class LStepExpress : public VLStepExpress
   LStepExpress(const std::string& ioPort, const std::string& lstep_ver="", const std::string& lstep_iver="");
   ~LStepExpress();
 
- public:
+  std::string ioPort();
 
-  std::string ioPort() const;
-
-  bool DeviceAvailable() const;
+  bool DeviceAvailable() const { return isDeviceAvailable_; };
 
   void GetAutoStatus(int & value);
   void SetAutoStatus(int value);
@@ -135,13 +134,14 @@ class LStepExpress : public VLStepExpress
   void Calibrate();
   void EmergencyStop();
 
-  // low level debugging methods
-  void SendCommand(const std::string &);
-  void ReceiveString(std::string &);
-
  private:
 
-  void StripBuffer( char* ) const;
+  // Device access mutex:
+  std::mutex mutex_;
+
+  void SendCommand(const std::string &);
+  std::string ReceiveString(const std::string &);
+
   void DeviceInit(const std::string& lstep_ver, const std::string& lstep_iver);
 
   LStepExpressComHandler* comHandler_;

@@ -20,8 +20,10 @@
 #include <AssemblyLogFileController.h>
 #include <AssemblyLogFileView.h>
 #include <AssemblyUtilities.h>
+#include <DeviceState.h>
 
 #include <string>
+#include <filesystem>
 
 #include <QApplication>
 
@@ -41,6 +43,17 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   motionSettings_(nullptr),
   motionSettingsWidget_(nullptr),
 
+  status_grey_(nullptr),
+  status_green_(nullptr),
+  status_red_(nullptr),
+  status_orange_(nullptr),
+  PU_status_(nullptr),
+  SP_status_(nullptr),
+  BP_status_(nullptr),
+  vacuum_pickup_(0),
+  vacuum_spacer_(0),
+  vacuum_basepl_(0),
+
   camera_model_(nullptr),
   camera_thread_(nullptr),
 //  camera_widget_(nullptr),
@@ -52,6 +65,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   zfocus_finder_(nullptr),
   thresholder_(nullptr),
   aligner_(nullptr),
+  metrology_(nullptr),
   assembly_(nullptr),
   assemblyV2_(nullptr),
   multipickup_tester_(nullptr),
@@ -73,6 +87,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   finder_view_(nullptr),
   aligner_view_(nullptr),
   assembly_view_(nullptr),
+  metrology_view_(nullptr),
   assemblyV2_view_(nullptr),
   toolbox_view_(nullptr),
   params_view_(nullptr),
@@ -89,6 +104,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   // flags
   images_enabled_(false),
   aligner_connected_(false),
+  metrology_connected_(false),
 
   // timing
   testTimerCount_(0.),
@@ -106,14 +122,17 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     /// Parameters
     ///   * instance created up here, so controllers can access it
-    try{
-      config->append(config->getValue<std::string>("main", "AssemblyParameters_file_path"), "parameters");
-    } catch (...) {
-      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
-      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31mInitialization error: ApplicationConfig::append(\"parameters\") is invalid ! Abort !\e[0m";
-      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
-
-      return;
+    auto parameters_file_str = config->getValue<std::string>("main", "AssemblyParameters_file_path");
+    std::filesystem::path parameters_file_path(parameters_file_str);
+    if(parameters_file_path.is_absolute())
+    {
+      NQLog("AssemblyMainWindow", NQLog::Debug) << "Provided absolute path to parameter file. Opening file: " << parameters_file_path;
+      config->append(parameters_file_path, "parameters");
+    } else {
+      auto abs_path = std::filesystem::path(Config::CMSTkModLabBasePath);
+      abs_path /= parameters_file_path;
+      NQLog("AssemblyMainWindow", NQLog::Debug) << "Provided relative path to parameter file - compiled absolute path. Opening file: " << abs_path;
+      config->append(abs_path, "parameters");
     }
     /// -------------------
 
@@ -125,6 +144,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
       1000,
       1000
     );
+
+    connect(motion_model_, SIGNAL(motionInformationChanged()), this, SLOT(update_stage_position()));
+    connect(motion_model_, SIGNAL(informationChanged()), this, SLOT(update_stage_position()));
 
     motion_manager_ = new LStepExpressMotionManager(motion_model_);
     connect(motion_manager_->model(), SIGNAL(emergencyStop_request()), motion_manager_, SLOT(clear_motion_queue()));
@@ -160,6 +182,17 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     	relayCardModel_ = new VellemanModel(config->getValue<std::string>("main", "VellemanDevice"));
     } else {
     	relayCardModel_ = new ConradModel(config->getValue<std::string>("main", "ConradDevice"));
+    }
+
+    if(relayCardModel_->getDeviceState()==State::OFF) {
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "Relay card device off - cannot continue.";
+
+      QMessageBox* msgBox = new QMessageBox;
+      msgBox->setInformativeText("Relay card device not available!");
+
+      msgBox->setStandardButtons(QMessageBox::Ok);
+
+      int ret = msgBox->exec();
     }
 
     relayCardManager_ = new RelayCardManager(relayCardModel_);
@@ -293,6 +326,36 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
       NQLog("AssemblyMainWindow", NQLog::Fatal) << "invalid value for configuration parameter \"assembly_sequence\" ("
          << assembly_sequence << ") -> GUI Tab " << tabname_Assembly << " will not be created";
     }
+    // ---------------------------------------------------------
+
+    // Metrology VIEW ------------------------------------------
+    const QString tabname_Metrology("Metrology");
+
+    metrology_view_ = new MetrologyView(assembly_tab);
+    assembly_tab->addTab(metrology_view_, tabname_Metrology);
+
+    // metrology
+    metrology_ = new Metrology(motion_manager_);
+
+    connect(metrology_view_, SIGNAL(configuration(Metrology::Configuration)), this, SLOT(start_metrology(Metrology::Configuration)));
+
+    connect(metrology_view_, SIGNAL(go_to_marker_signal()), metrology_, SLOT(move_to_start()));
+    connect(metrology_view_, SIGNAL(enable_vacuum_baseplate(int)), relayCardManager_, SLOT(enableVacuum(int)));
+    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, bool)), metrology_view_, SLOT(updateVacuumChannelState(int, bool)));
+
+    metrology_view_->PatRecOne_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecOne(cv::Mat)));
+    metrology_view_->PatRecTwo_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecTwo(cv::Mat)));
+    metrology_view_->PatRecThree_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecThree(cv::Mat)));
+    metrology_view_->PatRecFour_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecFour(cv::Mat)));
+
+    connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_Metrology()));
+    connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
+    connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
+    connect(metrology_view_->button_metrologyClearResults(), SIGNAL(clicked()), metrology_, SLOT(clear_results()));
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Metrology;
+    // ---------------------------------------------------------
+
 
     connect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
     connect(motion_manager_, SIGNAL(motion_finished()), image_view_, SLOT(InfoMotionFinished()));
@@ -328,16 +391,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     hwctr_view_ = new AssemblyHardwareControlView(motion_manager_, controls_tab);
     controls_tab->addTab(hwctr_view_, tabname_HWCtrl);
-
-    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))              , relayCardManager_, SLOT(toggleVacuum(int)));
-    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), relayCardManager_, SLOT(transmit_vacuumChannelState(int)));
-
-    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, bool)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, bool)));
-
-    connect(relayCardManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
-    connect(relayCardManager_, SIGNAL(disableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(disableVacuumButton()));
-
-    hwctr_view_->Vacuum_Widget()->updateVacuumChannelsStatus();
 
     // enable motion stage controllers at startup
     const bool startup_motion_stage = config->getDefaultValue<bool>("main", "startup_motion_stage", false);
@@ -473,6 +526,85 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     QWidget *spacer = new QWidget();
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     toolBar_->addWidget(spacer);
+
+    QWidget *vac_wid = new QWidget();
+
+    QGridLayout* vac_lay = new QGridLayout;
+
+    QLabel* vac_label = new QLabel("Vacuum status");
+    vac_lay->addWidget(vac_label, 0, 0, 2, 1);
+
+    QLabel* PU_label = new QLabel("PU");
+    QLabel* SP_label = new QLabel("SP");
+    QLabel* BP_label = new QLabel("BP");
+
+    vac_lay->addWidget(PU_label, 0, 1);
+    vac_lay->addWidget(SP_label, 0, 2);
+    vac_lay->addWidget(BP_label, 0, 3);
+
+    QString filename(Config::CMSTkModLabBasePath.c_str());
+
+    status_grey_ = new QPixmap(filename + "/share/common/button_grey.png");
+    status_green_ = new QPixmap(filename + "/share/common/button_green.png");
+    status_red_ = new QPixmap(filename + "/share/common/button_red.png");
+    status_orange_ = new QPixmap(filename + "/share/common/button_orange.png");
+    vacuum_pickup_ = config->getValue<int>("main", "Vacuum_PickupTool");
+    vacuum_spacer_ = config->getValue<int>("main", "Vacuum_Spacers");
+    vacuum_basepl_ = config->getValue<int>("main", "Vacuum_Baseplate");
+
+    PU_status_ = new QLabel();
+    SP_status_ = new QLabel();
+    BP_status_ = new QLabel();
+    PU_status_->setPixmap(status_grey_->scaled(20,20));
+    SP_status_->setPixmap(status_grey_->scaled(20,20));
+    BP_status_->setPixmap(status_grey_->scaled(20,20));
+
+    vac_lay->addWidget(PU_status_, 1, 1);
+    vac_lay->addWidget(SP_status_, 1, 2);
+    vac_lay->addWidget(BP_status_, 1, 3);
+
+    vac_wid->setLayout(vac_lay);
+
+    toolBar_->addWidget(vac_wid);
+
+    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(toggleVacuum(int))              , relayCardManager_, SLOT(toggleVacuum(int)));
+    connect(hwctr_view_->Vacuum_Widget(), SIGNAL(vacuumChannelState_request(int)), relayCardManager_, SLOT(transmit_vacuumChannelState(int)));
+
+    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, SwitchState)), hwctr_view_->Vacuum_Widget(), SLOT(updateVacuumChannelState(int, SwitchState)));
+
+    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, SwitchState)), this, SLOT(update_vacuum_information(int, SwitchState)));
+
+    connect(relayCardManager_, SIGNAL( enableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT( enableVacuumButton()));
+    connect(relayCardManager_, SIGNAL(disableVacuumButton()), hwctr_view_->Vacuum_Widget(), SLOT(disableVacuumButton()));
+
+    if(relayCardModel_->getDeviceState()==State::OFF) {
+      hwctr_view_->Vacuum_Widget()->disableVacuumButton();
+    }
+    hwctr_view_->Vacuum_Widget()->updateVacuumChannelsStatus();
+
+
+    QWidget *stage_wid = new QWidget();
+
+    QGridLayout* stage_lay = new QGridLayout;
+    QLabel* x_label = new QLabel("X [mm]");
+    QLabel* y_label = new QLabel("Y [mm]");
+    QLabel* z_label = new QLabel("Z [mm]");
+    QLabel* a_label = new QLabel("A [deg]");
+
+    stage_lay->addWidget(x_label, 0, 0);
+    stage_lay->addWidget(y_label, 0, 1);
+    stage_lay->addWidget(z_label, 0, 2);
+    stage_lay->addWidget(a_label, 0, 3);
+
+    for(unsigned int i=0; i<4; ++i) {
+      stage_values_.push_back(new QLabel("-"));
+      stage_lay->addWidget(stage_values_.at(i), 1, i);
+    }
+
+    stage_wid->setLayout(stage_lay);
+
+    toolBar_->addWidget(stage_wid);
+
     button_info_ = new QPushButton(tr("Information"));
     button_info_->setStyleSheet("QPushButton { background-color: rgb(215, 214, 213); font: 16px;} QPushButton:hover { background-color: rgb(174, 173, 172); font: 16px;}");
     toolBar_->addWidget(button_info_);
@@ -827,6 +959,117 @@ void AssemblyMainWindow::disconnect_objectAligner()
   return;
 }
 
+
+void AssemblyMainWindow::start_metrology(const Metrology::Configuration& conf)
+{
+  if(image_ctr_ == nullptr)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "start_metrology"
+       << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+
+    return;
+  }
+
+  if(metrology_connected_)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "start_metrology"
+       << ": Metrology already connected, no action taken";
+
+    return;
+  }
+
+  // acquire image
+  connect(metrology_, SIGNAL(image_request()), image_ctr_, SLOT(acquire_image()));
+  connect(metrology_, SIGNAL(autofocused_image_request()), image_ctr_, SLOT(acquire_autofocused_image()));
+
+  // master-image updated, go to next step (PatRec)
+  connect(finder_, SIGNAL(updated_image_master()), metrology_, SLOT(launch_next_metrology_step()));
+
+  // launch PatRec
+  connect(metrology_, SIGNAL(PatRec_request(AssemblyObjectFinderPatRec::Configuration)), finder_, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
+
+  // show PatRec-edited image in Aligner widget
+  connect(finder_, SIGNAL(PatRec_res_image_master_edited(cv::Mat)), metrology_, SLOT(redirect_image(cv::Mat)));
+
+  // use PatRec results for next alignment step
+  connect(finder_, SIGNAL(PatRec_results(double, double, double)), metrology_, SLOT(run_metrology(double, double, double)));
+
+  // show measured angle
+  connect(metrology_, SIGNAL(measured_angle(bool, double)), metrology_view_, SLOT(show_measured_angle(bool, double)));
+
+  // show measured Results
+  connect(metrology_, SIGNAL(measured_results(double, double, double, double, double, double, double)), metrology_view_, SLOT(show_results(double, double, double, double, double, double, double)));
+
+  // once completed, disable connections between controllers used for alignment
+  connect(metrology_, SIGNAL(execution_completed()), this, SLOT(disconnect_metrology()));
+
+  // kick-start alignment
+  connect(metrology_, SIGNAL(configuration_updated()), metrology_, SLOT(execute()));
+
+  metrology_view_->Configuration_Widget()->setEnabled(false);
+
+  metrology_connected_ = true;
+
+  // if successful, emits signal "configuration_updated()"
+  metrology_->update_configuration(conf);
+
+  return;
+}
+
+
+void AssemblyMainWindow::disconnect_metrology()
+{
+  if(image_ctr_ == nullptr)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "disconnect_metrology"
+       << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+
+    return;
+  }
+
+  if(metrology_connected_ == false)
+  {
+    NQLog("AssemblyMainWindow", NQLog::Warning) << "disconnect_metrology"
+       << ": Metrology already disconnected, no action taken";
+
+    return;
+  }
+
+  // acquire image
+  disconnect(metrology_, SIGNAL(image_request()), image_ctr_, SLOT(acquire_image()));
+  disconnect(metrology_, SIGNAL(autofocused_image_request()), image_ctr_, SLOT(acquire_autofocused_image()));
+
+  // master-image updated, go to next step (PatRec)
+  disconnect(finder_, SIGNAL(updated_image_master()), metrology_, SLOT(launch_next_metrology_step()));
+
+  // launch PatRec
+  disconnect(metrology_, SIGNAL(PatRec_request(AssemblyObjectFinderPatRec::Configuration)), finder_, SLOT(launch_PatRec(AssemblyObjectFinderPatRec::Configuration)));
+
+  // show PatRec-edited image in Aligner widget
+  disconnect(finder_, SIGNAL(PatRec_res_image_master_edited(cv::Mat)), metrology_, SLOT(redirect_image(cv::Mat)));
+
+  // use PatRec results for next alignment step
+  disconnect(finder_, SIGNAL(PatRec_results(double, double, double)), metrology_, SLOT(run_metrology(double, double, double)));
+
+  // show measured angle
+  disconnect(metrology_, SIGNAL(measured_angle(bool, double)), metrology_view_, SLOT(show_measured_angle(bool, double)));
+
+  // show measured Results
+  disconnect(metrology_, SIGNAL(measured_results(double, double, double, double, double, double, double)), metrology_view_, SLOT(show_results(double, double, double, double, double, double, double)));
+
+  // once completed, disable connections between controllers used for alignment
+  disconnect(metrology_, SIGNAL(execution_completed()), this, SLOT(disconnect_metrology()));
+
+  // kick-start alignment
+  disconnect(metrology_, SIGNAL(configuration_updated()), metrology_, SLOT(execute()));
+
+  metrology_view_->Configuration_Widget()->setEnabled(true);
+
+  metrology_connected_ = false;
+
+  return;
+}
+
 void AssemblyMainWindow::start_multiPickupTest(const AssemblyMultiPickupTester::Configuration& conf)
 {
   if(image_ctr_ == nullptr)
@@ -1018,6 +1261,75 @@ void AssemblyMainWindow::switchAndUpdate_alignment_tab(bool psp_mode)
     else {emit set_alignmentMode_PSS_request();}
 
     return;
+}
+
+void AssemblyMainWindow::update_stage_position()
+{
+
+  const auto x_status  = motion_model_->getAxisStatusText(0);
+  const auto y_status  = motion_model_->getAxisStatusText(1);
+  const auto z_status  = motion_model_->getAxisStatusText(2);
+  const auto a_status  = motion_model_->getAxisStatusText(3);
+
+  for(unsigned int i=0; i<4; ++i)
+  {
+    if(!motion_model_->getAxisEnabled(i)) {
+      QString tpl = tr("<font color='%1'>%2</font>");
+      stage_values_.at(i)->setText(tpl.arg("darkred","D"));
+    } else if(motion_model_->getAxisStatusText(i) == "@")
+    {
+      QString tpl = tr("<font color='%1'>%2</font>");
+      stage_values_.at(i)->setText(tpl.arg("darkgreen",QString::number(motion_model_->getPosition(i), 'f', 2)));
+    } else if(motion_model_->getAxisStatusText(i) == "M") {
+      QString tpl = tr("<font color='%1'>%2</font>");
+      stage_values_.at(i)->setText(tpl.arg("darkblue",QString::number(motion_model_->getPosition(i), 'f', 2)));
+    } else {
+      QString tpl = tr("<font color='%1'>%2</font>");
+      stage_values_.at(i)->setText(tpl.arg("darkred",motion_model_->getAxisStatusText(i)));
+    }
+  }
+}
+
+void AssemblyMainWindow::update_vacuum_information(const int channel, const SwitchState state)
+{
+  NQLog("AssemblyMainWindow", NQLog::Debug) << "update_vacuum_information("
+  << channel << ", " << static_cast<int>(state) << "): updating vacuum information";
+
+  QLabel* to_be_updated;
+  if(channel == vacuum_pickup_)
+  {
+    to_be_updated = PU_status_;
+  } else if(channel == vacuum_spacer_)
+  {
+    to_be_updated = SP_status_;
+  } else if(channel == vacuum_basepl_)
+  {
+    to_be_updated = BP_status_;
+  } else {
+    NQLog("AssemblyMainWindow", NQLog::Fatal) << "Vacuum channel " << channel << " not known!";
+    return;
+  }
+
+  if(to_be_updated == nullptr) {
+    NQLog("AssemblyMainWindow", NQLog::Fatal) << "Vacuum channel " << channel << " not initialised!";
+  }
+
+  to_be_updated->clear();
+  if(state==SwitchState::CHANNEL_ON)
+  {
+    to_be_updated->setPixmap(status_red_->scaled(20,20));
+} else if(state==SwitchState::CHANNEL_SWITCHING)
+  {
+    to_be_updated->setPixmap(status_orange_->scaled(20,20));
+  }
+  else if(state==SwitchState::CHANNEL_OFF)
+  {
+    to_be_updated->setPixmap(status_green_->scaled(20,20));
+  }
+  else if(state==SwitchState::DEVICE_OFF)
+  {
+    to_be_updated->setPixmap(status_grey_->scaled(20,20));
+  }
 }
 
 void AssemblyMainWindow::warn_on_stage_limits(const double target_pos, const char axis, const double limit_pos_lower, const double limit_pos_upper)

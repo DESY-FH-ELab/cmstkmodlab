@@ -37,7 +37,16 @@ class ApplicationConfig : public QObject
 {
   Q_OBJECT
 public:
-  
+
+    class InvalidConfigFileException : public std::exception
+    {
+    private:
+      std::string message;
+    public:
+      InvalidConfigFileException(std::string msg) : message(std::move(msg)) {}
+      const char * what () {return message.c_str();}
+    };
+
   struct FullKey {
     std::string filename;
     std::string alias;
