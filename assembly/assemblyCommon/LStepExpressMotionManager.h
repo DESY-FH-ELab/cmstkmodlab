@@ -92,8 +92,6 @@ class LStepExpressMotionManager : public QObject
 
     void set_movements_priorities_XYZA(const double x, const double y, const double z, const double a, const bool is_absolute_movements);
 
-    void warn_user_limit(double target_pos, char axis, double limit_pos_lower, double limit_pos_upper);
-
   protected slots:
 
     void motionStarted();
@@ -114,6 +112,8 @@ class LStepExpressMotionManager : public QObject
 
     void position3D(const double, const double, const double);
     void position4D(const double, const double, const double, const double);
+
+    void warn_user_limit(const double, const char, const double, const double);
 };
 
 #endif // LSTEPEXPRESSMOTIONMANAGER_H

@@ -115,6 +115,8 @@ class AssemblyMainWindow : public QMainWindow
   void update_alignment_tab_psp();
   void update_alignment_tab_pss();
 
+  void warn_on_stage_limits(const double target_pos, const char axis, const double limit_pos_lower, const double limit_pos_upper);
+
  signals:
 
   void images_ON();
