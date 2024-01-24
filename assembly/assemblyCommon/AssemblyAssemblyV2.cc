@@ -19,6 +19,7 @@
 #include <unistd.h>
 
 #include <QMessageBox>
+#include <QInputDialog>
 
 AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const motion, const RelayCardManager* const vacuum, const AssemblySmartMotionManager* const smart_motion, QObject* parent)
  : QObject(parent)
@@ -153,6 +154,19 @@ void AssemblyAssemblyV2::use_smartMove(const int state)
   return;
 }
 // ----------------------------------------------------------------------------------------------------
+
+void AssemblyAssemblyV2::ScanMaPSAID_start()
+{
+    bool ok = false;
+    QString MaPSA_ID = QInputDialog::getText(nullptr, tr("QInputDialog::getText()"),
+                                         tr("Scan MaPSA ID:"), QLineEdit::Normal,
+                                         tr(""), &ok);
+    if (!ok || MaPSA_ID.isEmpty()){
+        return;
+    } else {
+        emit ScanMaPSAID_finished();
+    }
+}
 
 // ----------------------------------------------------------------------------------------------------
 // GoToSensorMarkerPreAlignment -----------------------------------------------------------------------
