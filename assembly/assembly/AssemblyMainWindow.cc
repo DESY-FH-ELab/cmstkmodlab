@@ -1346,7 +1346,8 @@ void AssemblyMainWindow::update_vacuum_information(const int channel, const Swit
     to_be_updated->setStyleSheet("QLabel { color : gray ; font: bold }");
     to_be_updated->setAlignment(Qt::AlignCenter);
   }
-  
+}
+
 void AssemblyMainWindow::warn_on_stage_limits(const double target_pos, const char axis, const double limit_pos_lower, const double limit_pos_upper)
 {
     QMessageBox::warning(0, QString("[AssemblyMainWindow]"),
