@@ -1,5 +1,15 @@
-executables for simple calibration operations (temporarily saved here, to be integrated in main interface)
+This holds a python script for the calibration of the orientation of the camera frame w.r.t. the motion stage (`AngleOfCameraFrameInRefFrame_dA`).
 
-* **AngleOfCameraFrameInRefFrame_dA**:
-  * orientation of the camera-view frame in the motion stage reference frame (approx. -90 degrees)
-  * this corresponds to the assembly parameter called `AngleOfCameraFrameInRefFrame_dA`
+To be executed interactively as follows:
+ * Place a sensor on the assembly platform
+ * Perform a pattern recognition (PatRec) on the top left marker
+ * Start the script via `python3 AngleOfCameraFrameInRefFrame_dA.py`
+ * Enter ...
+   * the best-match angle of the PatRec
+   * the camera pixel coordinates (x/y) of the best-match location
+   * the current stage position (x/y)
+ * Move to the top right marker and perform another PatRec and enter the values as above:
+   * the best-match angle of the PatRec
+   * the camera pixel coordinates (x/y) of the best-match location
+   * the current stage position (x/y)
+ * The routine will provide the angle of the camera w.r.t. the motion stage, which can be applied in the assembly parameter files as `AngleOfCameraFrameInRefFrame_dA`
