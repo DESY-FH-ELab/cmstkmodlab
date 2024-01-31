@@ -173,10 +173,6 @@ class AssemblyMainWindow : public QMainWindow
 
   std::vector<QLabel*>        stage_values_;
 
-  QPixmap* status_grey_;
-  QPixmap* status_green_;
-  QPixmap* status_red_;
-  QPixmap* status_orange_;
   int vacuum_basepl_;
   int vacuum_pickup_;
   int vacuum_spacer_;
