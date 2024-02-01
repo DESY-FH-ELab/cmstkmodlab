@@ -36,6 +36,12 @@ AssemblySubassemblyPickupWidget::AssemblySubassemblyPickupWidget(const QObject* 
 
   QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
+  //// -----------------------------------------------
+
+  QLabel* disclaimer = new QLabel("Note: This is an experimental procedure!");
+  disclaimer->setStyleSheet("QLabel { color : red ; font: bold }");
+
+  layout->addWidget(disclaimer);
 
   //// Assembly Options ------------------------------
   QHBoxLayout* opts_lay = new QHBoxLayout;
