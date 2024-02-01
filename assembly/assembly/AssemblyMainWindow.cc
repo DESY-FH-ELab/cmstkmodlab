@@ -43,10 +43,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   motionSettings_(nullptr),
   motionSettingsWidget_(nullptr),
 
-  status_grey_(nullptr),
-  status_green_(nullptr),
-  status_red_(nullptr),
-  status_orange_(nullptr),
   PU_status_(nullptr),
   SP_status_(nullptr),
   BP_status_(nullptr),
@@ -536,16 +532,12 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     QLabel* SP_label = new QLabel("SP");
     QLabel* BP_label = new QLabel("BP");
 
-    vac_lay->addWidget(PU_label, 0, 1);
-    vac_lay->addWidget(SP_label, 0, 2);
-    vac_lay->addWidget(BP_label, 0, 3);
+    vac_lay->addWidget(PU_label, 0, 1, Qt::AlignCenter);
+    vac_lay->addWidget(SP_label, 0, 2, Qt::AlignCenter);
+    vac_lay->addWidget(BP_label, 0, 3, Qt::AlignCenter);
 
     QString filename(Config::CMSTkModLabBasePath.c_str());
 
-    status_grey_ = new QPixmap(filename + "/share/common/button_grey.png");
-    status_green_ = new QPixmap(filename + "/share/common/button_green.png");
-    status_red_ = new QPixmap(filename + "/share/common/button_red.png");
-    status_orange_ = new QPixmap(filename + "/share/common/button_orange.png");
     vacuum_pickup_ = config->getValue<int>("main", "Vacuum_PickupTool");
     vacuum_spacer_ = config->getValue<int>("main", "Vacuum_Spacers");
     vacuum_basepl_ = config->getValue<int>("main", "Vacuum_Baseplate");
@@ -553,13 +545,22 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     PU_status_ = new QLabel();
     SP_status_ = new QLabel();
     BP_status_ = new QLabel();
-    PU_status_->setPixmap(status_grey_->scaled(20,20));
-    SP_status_->setPixmap(status_grey_->scaled(20,20));
-    BP_status_->setPixmap(status_grey_->scaled(20,20));
 
-    vac_lay->addWidget(PU_status_, 1, 1);
-    vac_lay->addWidget(SP_status_, 1, 2);
-    vac_lay->addWidget(BP_status_, 1, 3);
+    PU_status_->setMinimumWidth(30);
+    SP_status_->setMinimumWidth(30);
+    BP_status_->setMinimumWidth(30);
+
+    PU_status_->setText("OFF");
+    SP_status_->setText("OFF");
+    BP_status_->setText("OFF");
+
+    PU_status_->setStyleSheet("QLabel { color : green ; font: bold }");
+    SP_status_->setStyleSheet("QLabel { color : green ; font: bold }");
+    BP_status_->setStyleSheet("QLabel { color : green ; font: bold }");
+
+    vac_lay->addWidget(PU_status_, 1, 1, Qt::AlignCenter);
+    vac_lay->addWidget(SP_status_, 1, 2, Qt::AlignCenter);
+    vac_lay->addWidget(BP_status_, 1, 3, Qt::AlignCenter);
 
     vac_wid->setLayout(vac_lay);
 
@@ -1315,17 +1316,25 @@ void AssemblyMainWindow::update_vacuum_information(const int channel, const Swit
   to_be_updated->clear();
   if(state==SwitchState::CHANNEL_ON)
   {
-    to_be_updated->setPixmap(status_red_->scaled(20,20));
-} else if(state==SwitchState::CHANNEL_SWITCHING)
+    to_be_updated->setText("ON");
+    to_be_updated->setStyleSheet("QLabel { color : red ; font: bold }");
+    to_be_updated->setAlignment(Qt::AlignCenter);
+  } else if(state==SwitchState::CHANNEL_SWITCHING)
   {
-    to_be_updated->setPixmap(status_orange_->scaled(20,20));
+    to_be_updated->setText("SW");
+    to_be_updated->setStyleSheet("QLabel { color : orange ; font: bold }");
+    to_be_updated->setAlignment(Qt::AlignCenter);
   }
   else if(state==SwitchState::CHANNEL_OFF)
   {
-    to_be_updated->setPixmap(status_green_->scaled(20,20));
+    to_be_updated->setText("OFF");
+    to_be_updated->setStyleSheet("QLabel { color : green ; font: bold }");
+    to_be_updated->setAlignment(Qt::AlignCenter);
   }
   else if(state==SwitchState::DEVICE_OFF)
   {
-    to_be_updated->setPixmap(status_grey_->scaled(20,20));
+    to_be_updated->setText("-");
+    to_be_updated->setStyleSheet("QLabel { color : gray ; font: bold }");
+    to_be_updated->setAlignment(Qt::AlignCenter);
   }
 }
