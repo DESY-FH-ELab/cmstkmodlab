@@ -12,3 +12,10 @@ target_link_libraries(Thermo2Common_test
 	PRIVATE Thermo2Common
 	PRIVATE PkgConfig::GSL)
 set_target_properties(Thermo2Common_test PROPERTIES OUTPUT_NAME test)
+
+INSTALL(
+  TARGETS Thermo2Common
+  EXPORT Thermo
+  RUNTIME DESTINATION bin
+  ARCHIVE DESTINATION lib
+)
