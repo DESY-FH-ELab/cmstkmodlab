@@ -41,6 +41,9 @@ class LStepExpressMotionManager : public QObject
     double get_position_Z() const { return this->get_position(2); }
     double get_position_A() const { return this->get_position(3); }
 
+    double   get_velocity_Z() const { return this->model()->getVelocity(2); }
+    void     set_velocity_Z(const double velocity) const { this->model()->setVelocity(2, velocity); }
+
     void myMoveToThread(QThread*);
 
   protected:
