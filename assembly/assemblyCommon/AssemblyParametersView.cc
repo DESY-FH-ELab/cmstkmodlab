@@ -737,14 +737,19 @@ void AssemblyParametersView::transmit_entries()
 void AssemblyParametersView::copy_values()
 {
   //-- Values read from parameters (<-> calibrations) file
-  for(const auto& i_key : config_->getKeys()) {
+  std::vector<std::string> exceptions;
+  exceptions.push_back("AssemblyObjectAlignerView_PSP_deltaX");
+  exceptions.push_back("AssemblyObjectAlignerView_PSP_deltaX_neg");
+  exceptions.push_back("AssemblyObjectAlignerView_PSS_deltaX");
+  exceptions.push_back("AssemblyObjectAlignerView_PSS_deltaX_neg");
+  exceptions.push_back("AssemblyParameters_file_path");
 
-    if(!(i_key.alias == "parameters"))
-    {
-      continue;
-    }
+  for(const auto& key : map_lineEdit_)
+  {
+    if (std::count(exceptions.begin(), exceptions.end(), key.first))
+        continue;
 
-    this->setText(i_key.key, config_->getValue<double>(i_key));
+    this->setText(key.first, config_->getValue<double>("parameters", key.first));
   }
 
   //-- Values read from config file
