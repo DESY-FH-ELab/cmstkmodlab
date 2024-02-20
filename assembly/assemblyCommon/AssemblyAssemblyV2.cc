@@ -1110,6 +1110,7 @@ void AssemblyAssemblyV2::LowerPSSOntoSpacers_start()
     const double dx0 = 0.0;
     const double dy0 = 0.0;
 
+    bool use_spacer_clamp = GetAssemblyCenter()==assembly::Center::FNAL || GetAssemblyCenter()==assembly::Center::BROWN;
     const double dz0 =
         config_->getValue<double>("parameters", "CameraFocusOnAssemblyStage_Z")
       - config_->getValue<double>("parameters", "Depth_SpacerSlots")
@@ -1117,6 +1118,7 @@ void AssemblyAssemblyV2::LowerPSSOntoSpacers_start()
       + config_->getValue<double>("parameters", "FromCameraBestFocusToPickupHeight_dZ")
       + config_->getValue<double>("parameters", "Thickness_PSS")
       + config_->getValue<double>("parameters", "Thickness_GlueLayer")
+      + (use_spacer_clamp ? config_->getValue<double>("parameters", "Thickness_SpacerClamp") : 0)
       - motion_->get_position_Z();
 
     const double da0 = 0.0;
