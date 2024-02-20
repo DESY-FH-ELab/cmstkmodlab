@@ -29,7 +29,7 @@
 
 #include <opencv2/opencv.hpp>
 
-AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const QString& DBlogfile_path, const unsigned int camera_ID, QWidget* parent) :
+AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const QString& DBlogfile_path, QWidget* parent) :
   QMainWindow(parent),
 
   // Low-Level Controllers (Motion, Camera, Vacuum)
@@ -54,7 +54,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   camera_thread_(nullptr),
 //  camera_widget_(nullptr),
   camera_(nullptr),
-  camera_ID_(camera_ID),
+  camera_ID_(0),
 
   // High-Level Controllers
   image_ctr_(nullptr),
@@ -163,6 +163,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     camera_thread_ = new AssemblyUEyeCameraThread(camera_model_, this);
     camera_thread_->start();
 
+    camera_ID_ = config->getDefaultValue<unsigned int>("main", "camera_ID", 1);
     camera_ = camera_model_->getCameraByID(camera_ID_);
     if(camera_ == nullptr)
     {
