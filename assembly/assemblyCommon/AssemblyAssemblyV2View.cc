@@ -451,7 +451,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   }
   // ----------
 
-  if(skip_dipping){
+  if(assembly->GetAssemblyCenter() == assembly::Center::DESY){
     // step: Dispense Slow Glue on Spacers and Place them on Assembly Platform
     {
       ++assembly_step_N;
@@ -579,7 +579,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N));
-    if(skip_dipping){
+    if(assembly->GetAssemblyCenter() == assembly::Center::DESY){
       tmp_wid->text()->setText("Dispense Slow Glue on \"MaPSA + Baseplate\" and Place on Assembly Platform with Baseplate Pins");
     } else {
       tmp_wid->text()->setText("Place \"MaPSA + Baseplate\" on Assembly Platform with Baseplate Pins");
@@ -667,7 +667,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   }
   // ----------
 
-  if (skip_dipping)
+  if (assembly->GetAssemblyCenter() == assembly::Center::DESY)
       {
           // step: Make space on the platform by raising the pickup tool
           {
