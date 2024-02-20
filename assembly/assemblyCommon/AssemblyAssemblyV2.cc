@@ -161,7 +161,8 @@ void AssemblyAssemblyV2::GoToSensorMarkerPreAlignment_start(bool isMapsa)
 
   const double x0 = config_->getValue<double>("parameters", "RefPointSensor_X");
   const double y0 = config_->getValue<double>("parameters", "RefPointSensor_Y");
-  const double z0 = config_->getValue<double>("parameters", "CameraFocusOnAssemblyStage_Z") + (isMapsa ? config_->getValue<double>("parameters", "Thickness_PSP") : config_->getValue<double>("parameters", "Thickness_PSS"));
+  const double z0 = config_->getValue<double>("parameters", "CameraFocusOnAssemblyStage_Z")
+   + (isMapsa ? config_->getValue<double>("parameters", "Thickness_PSP") : config_->getValue<double>("parameters", "Thickness_PSS"));
   const double a0 = config_->getValue<double>("parameters", "RefPointSensor_A");
 
   connect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));

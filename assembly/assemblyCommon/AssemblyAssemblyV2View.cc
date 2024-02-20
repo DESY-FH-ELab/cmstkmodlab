@@ -88,7 +88,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Go To Measurement Position on MaPSA");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoToSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoToPSPSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
   }
   // ----------
 
@@ -340,7 +340,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Go To Measurement Position on PS-s");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoToSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoToPSSSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
   }
   // ----------
 
