@@ -41,6 +41,19 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
 
+  // Get information on assembly center to accommodate for different parameters required
+  std::string assembly_center_str = QString::fromStdString(config_->getValue<std::string>("main", "assembly_center")).toUpper().toStdString();
+  assembly::Center assembly_center;
+  if(assembly_center_str == "FNAL") {
+      assembly_center = assembly::Center::FNAL;
+  } else if(assembly_center_str == "BROWN") {
+      assembly_center = assembly::Center::BROWN;
+  } else if(assembly_center_str == "DESY") {
+      assembly_center = assembly::Center::DESY;
+  } else {
+      NQLog("AssemblyAssemblyV2", NQLog::Warning) << "Invalid assembly center provided: \"" << assembly_center_str << "\". Provide one of the following options: \"FNAL\", \"BROWN\", \"DESY\"";
+  }
+
   //// Display parameter filename -------------------
   QHBoxLayout* filename_lay = new QHBoxLayout;
   layout->addLayout(filename_lay);
@@ -167,6 +180,22 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dime_lay->addWidget(new QLabel(tmp_des) , row_index, 0, Qt::AlignLeft);
   dime_lay->addWidget(new QLabel(tr("dZ")), row_index, 5, Qt::AlignRight);
   dime_lay->addWidget(this->get(tmp_tag)  , row_index, 6, Qt::AlignRight);
+
+
+  if(assembly_center == assembly::Center::FNAL || assembly_center == assembly::Center::BROWN)
+  {
+    // dimension: thickness of SpacerClamp
+    ++row_index;
+
+    tmp_tag = "Thickness_SpacerClamp";
+    tmp_des = "Thickness of SpacerClamp :";
+
+    map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
+
+    dime_lay->addWidget(new QLabel(tmp_des) , row_index, 0, Qt::AlignLeft);
+    dime_lay->addWidget(new QLabel(tr("dZ")), row_index, 5, Qt::AlignRight);
+    dime_lay->addWidget(this->get(tmp_tag)  , row_index, 6, Qt::AlignRight);
+  }
 
   //// ---------------------
 
