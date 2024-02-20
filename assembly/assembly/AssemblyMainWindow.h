@@ -136,6 +136,8 @@ class AssemblyMainWindow : public QMainWindow
 
   void image_request();
 
+  void changeExposureTime(double);
+
   void updateVacuumChannelsStatus();
 
   void autofocus_ON();

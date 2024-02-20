@@ -660,6 +660,15 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     {
       this->enable_images();
     }
+
+    if(config->hasKey("main", "camera_exposure_time") && camera_ != nullptr)
+    {
+        connect(this, SIGNAL(changeExposureTime(double)), camera_, SLOT(setExposureTime(double)));
+        auto camera_exposure_time = config->getValue<double>("main", "camera_exposure_time");
+        NQLog("AssemblyMainWindow", NQLog::Message) << QString("Setting camera exposure time to %1 ms").arg(camera_exposure_time);
+        emit changeExposureTime(camera_exposure_time);
+        disconnect(this, SIGNAL(changeExposureTime(double)), camera_, SLOT(setExposureTime(double)));
+    }
     // ------------------------
 }
 
