@@ -23,7 +23,7 @@ class AssemblyAssemblyV2View : public QWidget
  Q_OBJECT
 
  public:
-  explicit AssemblyAssemblyV2View(const QObject* const, QWidget* parent=nullptr);
+  explicit AssemblyAssemblyV2View(const AssemblyAssemblyV2* const, QWidget* parent=nullptr);
   virtual ~AssemblyAssemblyV2View() {}
 
  public slots:

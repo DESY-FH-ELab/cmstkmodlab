@@ -22,7 +22,9 @@
 #include <AssemblyAssemblyActionWidget.h>
 #include <AssemblyAssemblyTextWidget.h>
 
-AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QWidget* parent)
+#include <AssemblyUtilities.h>
+
+AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const assembly, QWidget* parent)
  : QWidget(parent)
  , smartMove_checkbox_(nullptr)
  , wid_PSPToBasep_(nullptr)
@@ -32,12 +34,10 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
   if(assembly == nullptr)
   {
     NQLog("AssemblyAssemblyView", NQLog::Fatal) << "AssemblyAssemblyView(" << assembly << ", " << parent << ")"
-       << ": null pointer to QObject --> GUI layout will not be created";
+       << ": null pointer to AssemblyAssemblyV2 --> GUI layout will not be created";
 
     return;
   }
-
-  bool skip_dipping = dynamic_cast<const AssemblyAssemblyV2*>(assembly) -> IsSkipDipping();
 
   QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
