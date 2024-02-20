@@ -760,6 +760,22 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
       }
       // ----------
 
+      if(assembly->GetAssemblyCenter() == assembly::Center::FNAL || assembly->GetAssemblyCenter() == assembly::Center::BROWN)
+      {
+        // step: Slowly lift from gluing stage
+        {
+          ++assembly_step_N;
+
+          AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+          tmp_wid->label()->setText(QString::number(assembly_step_N));
+          tmp_wid->button()->setText("Slowly lift from gluing stage by 5 mm");
+          PSSToMaPSA_lay->addWidget(tmp_wid);
+
+          tmp_wid->connect_action(assembly, SLOT(SlowlyLiftFromGluingStage_start()), SIGNAL(SlowlyLiftFromGluingStage_finished()));
+        }
+      }
+      // ----------
+
       // step: Return To "PS-s to MaPSA" XYZA Position
       // (step prior to lowering pickup tool; camera height must correspond to best-focus height on PS-p surface)
       {
