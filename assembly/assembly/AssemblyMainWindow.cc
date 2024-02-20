@@ -171,6 +171,16 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     }
     /// -------------------
 
+    std::string assembly_center_str = QString::fromStdString(config->getValue<std::string>("main", "assembly_center")).toUpper().toStdString();
+    if(!(assembly_center_str == "FNAL" || assembly_center_str == "BROWN" || assembly_center_str == "DESY")) {
+        NQLog("AssemblyAssemblyV2", NQLog::Fatal) << "Invalid assembly center provided: \"" << assembly_center_str << "\". Provide one of the following options: \"FNAL\", \"BROWN\", \"DESY\"";
+        QMessageBox* msgBox = new QMessageBox;
+        msgBox->setInformativeText(QString("Invalid assembly center provided (\"%1\").\nProvide one of the following options: \"FNAL\", \"BROWN\", \"DESY\"").arg(QString::fromStdString(assembly_center_str)));
+        msgBox->setStandardButtons(QMessageBox::Ok);
+        int ret = msgBox->exec();
+        exit(1);
+    }
+
     /// Vacuum Manager
     std::string relayCardDevice = config->getValue<std::string>("main", "RelayCardDevice");
     if (relayCardDevice=="Velleman")
