@@ -29,7 +29,7 @@
 
 #include <opencv2/opencv.hpp>
 
-AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const QString& DBlogfile_path, const unsigned int camera_ID, QWidget* parent) :
+AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const QString& DBlogfile_path, QWidget* parent) :
   QMainWindow(parent),
 
   // Low-Level Controllers (Motion, Camera, Vacuum)
@@ -54,7 +54,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   camera_thread_(nullptr),
 //  camera_widget_(nullptr),
   camera_(nullptr),
-  camera_ID_(camera_ID),
+  camera_ID_(0),
 
   // High-Level Controllers
   image_ctr_(nullptr),
@@ -151,15 +151,19 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     motion_thread_->start();
 
     connect(motion_manager_, SIGNAL(restartMotionStage_request()), this, SLOT(messageBox_restartMotionStage())); //Display a pop-up GUI message whenever the MS gets automatically restarted
+
+    connect(motion_manager_, SIGNAL(warn_user_limit(double, char, double, double)), this, SLOT(warn_on_stage_limits(double, char, double, double)));
     /// -------------------
 
     /// Camera
-    camera_model_ = new AssemblyUEyeModel_t(10);
+    auto camera_config_interval = config->getDefaultValue<int>("main", "camera_config_interval", 10);
+    camera_model_ = new AssemblyUEyeModel_t(camera_config_interval);
     camera_model_->updateInformation();
 
     camera_thread_ = new AssemblyUEyeCameraThread(camera_model_, this);
     camera_thread_->start();
 
+    camera_ID_ = config->getDefaultValue<unsigned int>("main", "camera_ID", 1);
     camera_ = camera_model_->getCameraByID(camera_ID_);
     if(camera_ == nullptr)
     {
@@ -168,6 +172,16 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
       NQLog("AssemblyMainWindow", NQLog::Critical) << "---------------------------------------------------------------------------------";
     }
     /// -------------------
+
+    std::string assembly_center_str = QString::fromStdString(config->getValue<std::string>("main", "assembly_center")).toUpper().toStdString();
+    if(!(assembly_center_str == "FNAL" || assembly_center_str == "BROWN" || assembly_center_str == "DESY")) {
+        NQLog("AssemblyAssemblyV2", NQLog::Fatal) << "Invalid assembly center provided: \"" << assembly_center_str << "\". Provide one of the following options: \"FNAL\", \"BROWN\", \"DESY\"";
+        QMessageBox* msgBox = new QMessageBox;
+        msgBox->setInformativeText(QString("Invalid assembly center provided (\"%1\").\nProvide one of the following options: \"FNAL\", \"BROWN\", \"DESY\"").arg(QString::fromStdString(assembly_center_str)));
+        msgBox->setStandardButtons(QMessageBox::Ok);
+        int ret = msgBox->exec();
+        exit(1);
+    }
 
     /// Vacuum Manager
     std::string relayCardDevice = config->getValue<std::string>("main", "RelayCardDevice");
@@ -310,10 +324,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
       NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly
          << " (assembly_sequence = " << assembly_sequence << ")";
-
-      if (assemblyV2_->IsSkipDipping()) {
-          NQLog("AssemblyMainWindow", NQLog::Message) << "skipping dipping of PSs-Spacers at stage 3";
-      }
     }
     else
     {
@@ -430,7 +440,11 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     // TOOLBOX VIEW --------------------------------------------
     const QString tabname_Toolbox("Toolbox");
 
-    toolbox_view_ = new AssemblyToolboxView(motion_manager_, controls_tab);
+    subassembly_pickup_ = new AssemblySubassemblyPickup(motion_manager_, relayCardManager_, smart_motion_);
+
+    connect(subassembly_pickup_, SIGNAL(switchToAlignmentTab_PSS_request()), this, SLOT(update_alignment_tab_pss()));
+
+    toolbox_view_ = new AssemblyToolboxView(motion_manager_, subassembly_pickup_, controls_tab);
     controls_tab->addTab(toolbox_view_, tabname_Toolbox);
 
     // multi-pickup tester
@@ -485,9 +499,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     }
     else if(assembly_sequence == 2) {
         emit DBLogMessage("== Using modified assembly sequence == (MaPSA glued to baseplate first)");
-        if (assemblyV2_->IsSkipDipping()) {
-            emit DBLogMessage("== Skipping spacer dipping at stage 3 == (Glue dispenser is used for PSs-to-MaPSA)");
-        }
     }
 
     controls_tab->addTab(DBLog_view_, tabname_DBLog);
@@ -614,8 +625,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     main_tab->setTabPosition(QTabWidget::North);
 
-    main_tab->addTab(assembly_tab, tr("Module Assembly"));
-    main_tab->addTab(controls_tab, tr("Manual Controls and Parameters"));
+    idx_module_tab = main_tab->addTab(assembly_tab, tr("Module Assembly"));
+    idx_manual_tab = main_tab->addTab(controls_tab, tr("Manual Controls and Parameters"));
 
     assembly_tab->setStyleSheet(assembly_tab->styleSheet()+" QTabBar::tab {width: 300px; }");
     controls_tab->setStyleSheet(controls_tab->styleSheet()+" QTabBar::tab {width: 375px; }");
@@ -648,6 +659,15 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     if(startup_camera)
     {
       this->enable_images();
+    }
+
+    if(config->hasKey("main", "camera_exposure_time") && camera_ != nullptr)
+    {
+        connect(this, SIGNAL(changeExposureTime(double)), camera_, SLOT(setExposureTime(double)));
+        auto camera_exposure_time = config->getValue<double>("main", "camera_exposure_time");
+        NQLog("AssemblyMainWindow", NQLog::Message) << QString("Setting camera exposure time to %1 ms").arg(camera_exposure_time);
+        emit changeExposureTime(camera_exposure_time);
+        disconnect(this, SIGNAL(changeExposureTime(double)), camera_, SLOT(setExposureTime(double)));
     }
     // ------------------------
 }
@@ -1145,6 +1165,7 @@ void AssemblyMainWindow::disconnect_otherSlots()
     disconnect(motion_manager_, SIGNAL(restartMotionStage_request()), this, SLOT(messageBox_restartMotionStage()));
     disconnect(assemblyV2_, SIGNAL(switchToAlignmentTab_PSP_request()), this, SLOT(update_alignment_tab_psp()));
     disconnect(assemblyV2_, SIGNAL(switchToAlignmentTab_PSS_request()), this, SLOT(update_alignment_tab_pss()));
+    disconnect(subassembly_pickup_, SIGNAL(switchToAlignmentTab_PSS_request()), this, SLOT(update_alignment_tab_pss()));
     disconnect(this, SIGNAL(set_alignmentMode_PSP_request()), aligner_view_, SLOT(set_alignmentMode_PSP()));
     disconnect(this, SIGNAL(set_alignmentMode_PSS_request()), aligner_view_, SLOT(set_alignmentMode_PSS()));
 
@@ -1249,6 +1270,8 @@ void AssemblyMainWindow::switchAndUpdate_alignment_tab(bool psp_mode)
 {
     // std::cout<<"There are "<<main_tab->count()<<" main tabs"<<std::endl; //Count main tabs
     // QTabWidget* assemblyTab = main_tab->findChild<QTabWidget*>("Module Assembly");
+    main_tab->setCurrentIndex(idx_module_tab);
+
     QList<QTabWidget*> widgets = main_tab->findChildren<QTabWidget*>(); //Get main tabs
     QTabWidget* assemblyTab = widgets[1]; //Get 'Module Assembly' main tab
     // std::cout<<"There are "<<assemblyTab->count()<<" sub-tabs"<<std::endl; //Count sub-tabs
@@ -1337,4 +1360,12 @@ void AssemblyMainWindow::update_vacuum_information(const int channel, const Swit
     to_be_updated->setStyleSheet("QLabel { color : gray ; font: bold }");
     to_be_updated->setAlignment(Qt::AlignCenter);
   }
+}
+
+void AssemblyMainWindow::warn_on_stage_limits(const double target_pos, const char axis, const double limit_pos_lower, const double limit_pos_upper)
+{
+    QMessageBox::warning(0, QString("[AssemblyMainWindow]"),
+    QString("Attempting to move %1-axis to %2 . This is beyond the limit of this stage: [ %3 , %4 ]").arg(axis).arg(target_pos).arg(limit_pos_lower).arg(limit_pos_upper),
+        QMessageBox::Ok
+    );
 }

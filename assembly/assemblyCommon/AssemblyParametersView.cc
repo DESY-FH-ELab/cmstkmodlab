@@ -41,6 +41,19 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
 
+  // Get information on assembly center to accommodate for different parameters required
+  std::string assembly_center_str = QString::fromStdString(config_->getValue<std::string>("main", "assembly_center")).toUpper().toStdString();
+  assembly::Center assembly_center;
+  if(assembly_center_str == "FNAL") {
+      assembly_center = assembly::Center::FNAL;
+  } else if(assembly_center_str == "BROWN") {
+      assembly_center = assembly::Center::BROWN;
+  } else if(assembly_center_str == "DESY") {
+      assembly_center = assembly::Center::DESY;
+  } else {
+      NQLog("AssemblyAssemblyV2", NQLog::Warning) << "Invalid assembly center provided: \"" << assembly_center_str << "\". Provide one of the following options: \"FNAL\", \"BROWN\", \"DESY\"";
+  }
+
   //// Display parameter filename -------------------
   QHBoxLayout* filename_lay = new QHBoxLayout;
   layout->addLayout(filename_lay);
@@ -167,6 +180,22 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dime_lay->addWidget(new QLabel(tmp_des) , row_index, 0, Qt::AlignLeft);
   dime_lay->addWidget(new QLabel(tr("dZ")), row_index, 5, Qt::AlignRight);
   dime_lay->addWidget(this->get(tmp_tag)  , row_index, 6, Qt::AlignRight);
+
+
+  if(assembly_center == assembly::Center::FNAL || assembly_center == assembly::Center::BROWN)
+  {
+    // dimension: thickness of SpacerClamp
+    ++row_index;
+
+    tmp_tag = "Thickness_SpacerClamp";
+    tmp_des = "Thickness of SpacerClamp :";
+
+    map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
+
+    dime_lay->addWidget(new QLabel(tmp_des) , row_index, 0, Qt::AlignLeft);
+    dime_lay->addWidget(new QLabel(tr("dZ")), row_index, 5, Qt::AlignRight);
+    dime_lay->addWidget(this->get(tmp_tag)  , row_index, 6, Qt::AlignRight);
+  }
 
   //// ---------------------
 
@@ -545,7 +574,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   // Connections to text changes
   for(const auto& key : this->entries_map())
   {
-    connect(this->get(key.first), SIGNAL(textChanged(const QString&)), this, SLOT(overwriteParameter(const QString&)));
+    connect(this->get(key.first), SIGNAL(textEdited(const QString&)), this, SLOT(overwriteParameter(const QString&)));
   }
 }
 
@@ -693,6 +722,7 @@ void AssemblyParametersView::overwriteParameter(const QString& value)
            << ": changing parameter " << key.first << " to " << val;
         ptr_qedit->setStyleSheet("");
         config_->setValue("parameters", key.first, value);
+        ptr_qedit->setText(value);
       } else
       {
         NQLog("AssemblyParametersView", NQLog::Fatal) << "overwriteParameter"
@@ -736,14 +766,19 @@ void AssemblyParametersView::transmit_entries()
 void AssemblyParametersView::copy_values()
 {
   //-- Values read from parameters (<-> calibrations) file
-  for(const auto& i_key : config_->getKeys()) {
+  std::vector<std::string> exceptions;
+  exceptions.push_back("AssemblyObjectAlignerView_PSP_deltaX");
+  exceptions.push_back("AssemblyObjectAlignerView_PSP_deltaX_neg");
+  exceptions.push_back("AssemblyObjectAlignerView_PSS_deltaX");
+  exceptions.push_back("AssemblyObjectAlignerView_PSS_deltaX_neg");
+  exceptions.push_back("AssemblyParameters_file_path");
 
-    if(!(i_key.alias == "parameters"))
-    {
-      continue;
-    }
+  for(const auto& key : map_lineEdit_)
+  {
+    if (std::count(exceptions.begin(), exceptions.end(), key.first))
+        continue;
 
-    this->setText(i_key.key, config_->getValue<double>(i_key));
+    this->setText(key.first, config_->getValue<double>("parameters", key.first));
   }
 
   //-- Values read from config file

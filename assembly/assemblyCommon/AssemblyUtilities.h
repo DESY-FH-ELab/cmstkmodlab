@@ -54,6 +54,12 @@ namespace assembly {
   // geometry helpers
   void rotation2D_deg(double&, double&, const double, const double, const double);
 
+  enum Center {
+      FNAL = 1,
+      BROWN = 2,
+      DESY = 3
+  };
+
 }
 
 template <class T>

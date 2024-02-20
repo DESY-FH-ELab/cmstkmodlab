@@ -41,6 +41,9 @@ class LStepExpressMotionManager : public QObject
     double get_position_Z() const { return this->get_position(2); }
     double get_position_A() const { return this->get_position(3); }
 
+    double   get_velocity_Z() const { return this->model()->getVelocity(2); }
+    void     set_velocity_Z(const double velocity) const { this->model()->setVelocity(2, velocity); }
+
     void myMoveToThread(QThread*);
 
   protected:
@@ -92,6 +95,8 @@ class LStepExpressMotionManager : public QObject
 
     void set_movements_priorities_XYZA(const double x, const double y, const double z, const double a, const bool is_absolute_movements);
 
+    void warn_on_limit(const double target_pos, const char axis, const double limit_pos_lower, const double limit_pos_upper);
+
   protected slots:
 
     void motionStarted();
@@ -112,6 +117,8 @@ class LStepExpressMotionManager : public QObject
 
     void position3D(const double, const double, const double);
     void position4D(const double, const double, const double, const double);
+
+    void warn_user_limit(const double, const char, const double, const double);
 };
 
 #endif // LSTEPEXPRESSMOTIONMANAGER_H

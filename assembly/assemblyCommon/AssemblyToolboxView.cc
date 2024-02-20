@@ -17,7 +17,7 @@
 #include <QVBoxLayout>
 #include <QToolBox>
 
-AssemblyToolboxView::AssemblyToolboxView(const LStepExpressMotionManager* const motion_manager, QWidget* parent) :
+AssemblyToolboxView::AssemblyToolboxView(const LStepExpressMotionManager* const motion_manager, const AssemblySubassemblyPickup* const subassembly_pickup, QWidget* parent) :
   QWidget(parent),
 
   posreg_wid_(nullptr),
@@ -49,6 +49,15 @@ AssemblyToolboxView::AssemblyToolboxView(const LStepExpressMotionManager* const 
   // ---------------------
 
   //
+  // Subassembly Pickup
+  //  * widget to pick up PSS+spacers subassembly
+  //  * used to process subassembly
+  //
+  subassembly_pickup_wid_ = new AssemblySubassemblyPickupWidget(subassembly_pickup);
+
+  toolbox->addItem(subassembly_pickup_wid_, tr("PSS+spacers subassembly pickup"));
+  // ---------------------
+  //
   // Multi-Pickup Tester Widget
   //  * multiple iterations of "PatRec + pick-up + put-down" sequence
   //  * used to measure module-misplacement introduced by the pick-up
@@ -60,8 +69,6 @@ AssemblyToolboxView::AssemblyToolboxView(const LStepExpressMotionManager* const 
 
   toolbox->addItem(mupite_wid_, tr("Multi-Pickup Tester (PatRec + pick-up + put-down)"));
   // ---------------------
-
-  layout->addStretch(1);
 }
 
 //-- Information about this tab in GUI
@@ -76,6 +83,8 @@ void AssemblyToolboxView::display_infoTab()
 
     "<ul>"
     "<li> <u>Record positions</u>: Save the current absolute position of the Motion Stage, and comment it if desired. It is possible to determine the relative distance between 2 registered positions.</li>"
+    "<br>"
+    "<li> <u>PSS+spacers Subassembly Pickup:</u> Pick up PSS+spacers assembly for processing such a subassembly</li>"
     "<br>"
     "<li> <u>Multi-Pickup Tester</u>: advanced functionality. Used to calibrate the relative movement required along the z-axis to pickup an object, when the camera is focused on that object. The basic procedure is: a) PatRec on sensor ref. marker; b) lower pickup tool; c) pickup object; d) lift up; e) put back down; f) rerun PatRec; g) repeat. At each repetition, can monitor in the PatRec tab whether the object was displaced in XY by the pickup, which indicates that excessive/insufficient pressure was applied to the object. Repeat this test until you are satisfied with the z-axis movement, and store its value in the cfg file.</li>"
     "<p style=color:orange><b>WARNING: you must activate the baseplate vacuum before starting !</p></b>"

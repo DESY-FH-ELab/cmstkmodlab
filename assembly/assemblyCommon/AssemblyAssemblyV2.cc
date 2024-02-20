@@ -14,9 +14,9 @@
 #include <ApplicationConfig.h>
 
 #include <AssemblyAssemblyV2.h>
-#include <AssemblyUtilities.h>
 
 #include <string>
+#include <unistd.h>
 
 #include <QMessageBox>
 
@@ -34,6 +34,9 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
 
  , pickup1_Z_(0.)
  , pickup2_Z_(0.)
+ , makespace_Z_(0.)
+ , position_z_before_makespace_(0.)
+ , position_z_before_makespace_stored_(false)
 
  , use_smartMove_(false)
  , in_action_(false)
@@ -66,16 +69,22 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
   // (1: PSs to Spacers, 2: PSs+Spacers to MaPSA)
   pickup1_Z_ = config_->getValue<double>("main", "AssemblyAssembly_pickup1_Z");
   pickup2_Z_ = config_->getValue<double>("main", "AssemblyAssembly_pickup2_Z");
+  makespace_Z_ = config_->getValue<double>("main", "AssemblyAssembly_makespace_Z");
+
+  original_Z_velocity_ = motion_->get_velocity_Z();
 
   alreadyClicked_LowerPickupToolOntoMaPSA = false; alreadyClicked_LowerPickupToolOntoPSS = false; alreadyClicked_LowerMaPSAOntoBaseplate = false; alreadyClicked_LowerPSSOntoSpacers = false; alreadyClicked_LowerPSSPlusSpacersOntoGluingStage = false; alreadyClicked_LowerPSSPlusSpacersOntoMaPSA = false;
 
-  skip_dipping_ = config_->getDefaultValue<bool>("main", "skip_dipping", false);
-
-}
-
-bool AssemblyAssemblyV2::IsSkipDipping() const
-{
-    return skip_dipping_;
+  std::string assembly_center_str = QString::fromStdString(config_->getValue<std::string>("main", "assembly_center")).toUpper().toStdString();
+  if(assembly_center_str == "FNAL") {
+      assembly_center_ = assembly::Center::FNAL;
+  } else if(assembly_center_str == "BROWN") {
+      assembly_center_ = assembly::Center::BROWN;
+  } else if(assembly_center_str == "DESY") {
+      assembly_center_ = assembly::Center::DESY;
+  } else {
+      NQLog("AssemblyAssemblyV2", NQLog::Warning) << "Invalid assembly center provided: \"" << assembly_center_str << "\". Provide one of the following options: \"FNAL\", \"BROWN\", \"DESY\"";
+  }
 }
 
 const LStepExpressMotionManager* AssemblyAssemblyV2::motion() const
@@ -143,7 +152,7 @@ void AssemblyAssemblyV2::use_smartMove(const int state)
 // ----------------------------------------------------------------------------------------------------
 // GoToSensorMarkerPreAlignment -----------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
-void AssemblyAssemblyV2::GoToSensorMarkerPreAlignment_start()
+void AssemblyAssemblyV2::GoToSensorMarkerPreAlignment_start(bool isMapsa)
 {
   if(in_action_){
 
@@ -155,7 +164,8 @@ void AssemblyAssemblyV2::GoToSensorMarkerPreAlignment_start()
 
   const double x0 = config_->getValue<double>("parameters", "RefPointSensor_X");
   const double y0 = config_->getValue<double>("parameters", "RefPointSensor_Y");
-  const double z0 = config_->getValue<double>("parameters", "RefPointSensor_Z");
+  const double z0 = config_->getValue<double>("parameters", "CameraFocusOnAssemblyStage_Z")
+   + (isMapsa ? config_->getValue<double>("parameters", "Thickness_PSP") : config_->getValue<double>("parameters", "Thickness_PSS"));
   const double a0 = config_->getValue<double>("parameters", "RefPointSensor_A");
 
   connect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
@@ -1103,6 +1113,7 @@ void AssemblyAssemblyV2::LowerPSSOntoSpacers_start()
     const double dx0 = 0.0;
     const double dy0 = 0.0;
 
+    bool use_spacer_clamp = GetAssemblyCenter()==assembly::Center::FNAL || GetAssemblyCenter()==assembly::Center::BROWN;
     const double dz0 =
         config_->getValue<double>("parameters", "CameraFocusOnAssemblyStage_Z")
       - config_->getValue<double>("parameters", "Depth_SpacerSlots")
@@ -1110,6 +1121,7 @@ void AssemblyAssemblyV2::LowerPSSOntoSpacers_start()
       + config_->getValue<double>("parameters", "FromCameraBestFocusToPickupHeight_dZ")
       + config_->getValue<double>("parameters", "Thickness_PSS")
       + config_->getValue<double>("parameters", "Thickness_GlueLayer")
+      + (use_spacer_clamp ? config_->getValue<double>("parameters", "Thickness_SpacerClamp") : 0)
       - motion_->get_position_Z();
 
     const double da0 = 0.0;
@@ -1265,6 +1277,172 @@ void AssemblyAssemblyV2::ApplyPSPToPSSXYOffset_finish()
      << ": assembly-step completed";
 
   emit DBLogMessage("== Assembly step completed : [Move by PS-s/PS-p relative XY offset]");
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// Make Space in Z -----------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssemblyV2::MakeSpaceOnPlatform_start()
+{
+  if(in_action_){
+
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "MakeSpaceOnPlatform_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
+
+  const double dx0 = 0.0;
+  const double dy0 = 0.0;
+  const double dz0 = makespace_Z_;
+  const double da0 = 0.0;
+
+  if(dz0 <= 0.)
+  {
+    NQLog("AssemblyAssemblyV2", NQLog::Critical) << "MakeSpaceOnPlatform_start"
+       << ": invalid (non-positive) value for vertical upward movement for makespace (dz=" << dz0 << "), no action taken";
+
+    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "MakeSpaceOnPlatform_start"
+       << ": emitting signal \"MakeSpaceOnPlatform_finished\"";
+
+    emit MakeSpaceOnPlatform_finished();
+
+    return;
+  }
+
+  position_z_before_makespace_ = motion_->get_position_Z();
+  position_z_before_makespace_stored_ = true;
+  NQLog("AssemblyAssemblyV2", NQLog::Message) << "MakeSpaceOnPlatform_start"
+     << ": Position of z stage before making space on the platform is " << position_z_before_makespace_;
+
+  connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(MakeSpaceOnPlatform_finish()));
+
+  in_action_ = true;
+
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "MakeSpaceOnPlatform_start"
+     << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative_request(dx0, dy0, dz0, da0);
+}
+
+void AssemblyAssemblyV2::MakeSpaceOnPlatform_finish()
+{
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(MakeSpaceOnPlatform_finish()));
+
+  if(in_action_){ in_action_ = false; }
+
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "MakeSpaceOnPlatform_finish"
+     << ": emitting signal \"LiftUpPickupTool_finished\"";
+
+  emit MakeSpaceOnPlatform_finished();
+
+  NQLog("AssemblyAssemblyV2", NQLog::Message) << "MakeSpaceOnPlatform_finish"
+     << ": assembly-step completed";
+
+  emit DBLogMessage("== Assembly step completed : [Make space on platform]");
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// Return to initial position -----------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssemblyV2::ReturnToPlatform_start()
+{
+  if(in_action_){
+
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "ReturnToPlatform_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
+
+  if(!position_z_before_makespace_stored_)
+  {
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "ReturnToPlatform_start"
+       << ": stage position before making space on platform has not been stored. Cannot continue.";
+    QMessageBox::warning(0, tr("[LStepExpressMotionManager]"),
+       QString("Stage position before making space on platform has not been stored. Cannot continue."),
+       QMessageBox::Abort
+    );
+    return;
+  }
+
+  const double dx0 = 0.0;
+  const double dy0 = 0.0;
+  const double dz0 = position_z_before_makespace_ - motion_->get_position_Z();
+  const double da0 = 0.0;
+
+  if(dz0 >= 0.)
+  {
+    NQLog("AssemblyAssemblyV2", NQLog::Critical) << "ReturnToPlatform_start"
+       << ": invalid (non-negative) value for vertical downward movement for makespace (dz=" << dz0 << "), no action taken";
+
+    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "ReturnToPlatform_start"
+       << ": emitting signal \"ReturnToPlatform_finished\"";
+
+    emit ReturnToPlatform_finished();
+
+    return;
+  }
+
+  QMessageBox* msgBox = new QMessageBox;
+  msgBox->setInformativeText(QString("This will move the z stage to the absolute position %1 (relative: %2).\nContinue?").arg(position_z_before_makespace_).arg(dz0));
+  msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+  msgBox->setDefaultButton(QMessageBox::Yes);
+  int ret = msgBox->exec();
+  switch(ret)
+  {
+    case QMessageBox::No:
+      NQLog("AssemblyAssemblyV2", NQLog::Warning) << "ReturnToPlatform_start"
+         << ": abort motion after user decision.";
+      NQLog("AssemblyAssemblyV2", NQLog::Spam) << "ReturnToPlatform_start"
+            << ": emitting signal \"ReturnToPlatform_finished\"";
+      emit ReturnToPlatform_finished();
+      return;
+
+    case QMessageBox::Yes:
+      NQLog("AssemblyAssemblyV2", NQLog::Warning) << "ReturnToPlatform_start"
+       << ": start motion after user decision.";
+      break;
+    default:
+      NQLog("AssemblyAssemblyV2", NQLog::Warning) << "ReturnToPlatform_start"
+         << ": Invalid user selection. Finish this step.";
+      NQLog("AssemblyAssemblyV2", NQLog::Spam) << "ReturnToPlatform_start"
+         << ": emitting signal \"ReturnToPlatform_finished\"";
+      emit ReturnToPlatform_finished();
+      return;
+  }
+
+  connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(ReturnToPlatform_finish()));
+
+  in_action_ = true;
+
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "ReturnToPlatform_start"
+     << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative_request(dx0, dy0, dz0, da0);
+}
+
+void AssemblyAssemblyV2::ReturnToPlatform_finish()
+{
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(ReturnToPlatform_finish()));
+
+  if(in_action_){ in_action_ = false; }
+
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "ReturnToPlatform_finish"
+     << ": emitting signal \"ReturnToPlatform_finished\"";
+
+  emit ReturnToPlatform_finished();
+
+  NQLog("AssemblyAssemblyV2", NQLog::Message) << "ReturnToPlatform_finish"
+     << ": assembly-step completed";
+
+  emit DBLogMessage("== Assembly step completed : [Return to platform]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1481,6 +1659,92 @@ void AssemblyAssemblyV2::LowerPSSPlusSpacersOntoGluingStage_finish()
   emit DBLogMessage("== Assembly step completed : [Lower {PS-s + spacers} onto gluing stage]");
 }
 // ----------------------------------------------------------------------------------------------------
+
+
+// ----------------------------------------------------------------------------------------------------
+// SlowlyLiftFromGluingStage --------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssemblyV2::SlowlyLiftFromGluingStage_start()
+{
+  if(in_action_){
+
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "SlowlyLiftFromGluingStage_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
+
+  if(use_smartMove_)
+  {
+
+    original_Z_velocity_ = motion_->get_velocity_Z();
+
+    double slowVelocity = 0.5; // mm/s
+    motion_->set_velocity_Z(slowVelocity);
+
+    while(slowVelocity != motion_->get_velocity_Z())
+    {
+      sleep(1);
+    }
+
+    const double dx0 = 0.;
+    const double dy0 = 0.;
+    const double dz0 = 5.;
+    const double da0 = 0.;
+
+    connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+    connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(SlowlyLiftFromGluingStage_finish()));
+
+    in_action_ = true;
+
+    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "SlowlyLiftFromGluingStage_start"
+       << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+    emit move_relative_request(dx0, dy0, dz0, da0);
+  }
+  else
+  {
+    NQLog("AssemblyAssemblyV2", NQLog::Critical) << "SlowlyLiftFromGluingStage_start"
+       << ": please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step";
+
+    QMessageBox msgBox;
+    msgBox.setText(tr("AssemblyAssemblyV2::SlowlyLiftFromGluingStage_start -- please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step"));
+    msgBox.exec();
+
+    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "SlowlyLiftFromGluingStage_finish"
+       << ": emitting signal \"SlowlyLiftFromGluingStage_finished\"";
+
+    emit SlowlyLiftFromGluingStage_finished();
+
+    return;
+  }
+}
+
+void AssemblyAssemblyV2::SlowlyLiftFromGluingStage_finish()
+{
+  motion_->set_velocity_Z(original_Z_velocity_);
+  while(original_Z_velocity_ != motion_->get_velocity_Z())
+  {
+    sleep(1);
+  }
+
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+  disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(SlowlyLiftFromGluingStage_finish()));
+
+  if(in_action_){ in_action_ = false; }
+
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "SlowlyLiftFromGluingStage_finish"
+     << ": emitting signal \"SlowlyLiftFromGluingStage_finished\"";
+
+  emit SlowlyLiftFromGluingStage_finished();
+
+  NQLog("AssemblyAssemblyV2", NQLog::Message) << "SlowlyLiftFromGluingStage_finish"
+     << ": assembly-step completed";
+
+  emit DBLogMessage("== Assembly step completed : [Slowly lifted PSS + spacers from gluing station]");
+}
+// ----------------------------------------------------------------------------------------------------
+
 
 // ----------------------------------------------------------------------------------------------------
 // ReturnToPSSPlusSpacersToMaPSAPosition --------------------------------------------------------------

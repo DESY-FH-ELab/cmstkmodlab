@@ -79,7 +79,7 @@ class AssemblyMainWindow : public QMainWindow
 
  public:
 
-  explicit AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const QString& DBlogfile_path, const unsigned int camera_ID=10, QWidget* parent=nullptr);
+  explicit AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const QString& DBlogfile_path, QWidget* parent=nullptr);
   virtual ~AssemblyMainWindow()
   {
       disconnect_otherSlots();
@@ -125,12 +125,16 @@ class AssemblyMainWindow : public QMainWindow
 
   void update_vacuum_information(const int, const SwitchState);
 
+  void warn_on_stage_limits(const double target_pos, const char axis, const double limit_pos_lower, const double limit_pos_upper);
+
  signals:
 
   void images_ON();
   void images_OFF();
 
   void image_request();
+
+  void changeExposureTime(double);
 
   void updateVacuumChannelsStatus();
 
@@ -195,6 +199,7 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyAssembly*           assembly_;
   AssemblyAssemblyV2*         assemblyV2_;
   AssemblyMultiPickupTester*  multipickup_tester_;
+  AssemblySubassemblyPickup*  subassembly_pickup_;
 
   AssemblyObjectFinderPatRec*       finder_;
   AssemblyObjectFinderPatRecThread* finder_thread_;
@@ -239,6 +244,8 @@ class AssemblyMainWindow : public QMainWindow
   QTimer* liveTimer_;
 
   int idx_alignment_tab;
+  int idx_module_tab;
+  int idx_manual_tab;
 };
 
 #endif // ASSEMBLYMAINWINDOW_H
