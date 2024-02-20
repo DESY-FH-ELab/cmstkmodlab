@@ -17,6 +17,7 @@
 
 #include <LStepExpressMotionManager.h>
 #include <RelayCardManager.h>
+#include <AssemblyUtilities.h>
 
 #include <AssemblySmartMotionManager.h>
 #include <ApplicationConfig.h>
@@ -64,6 +65,8 @@ class AssemblyAssemblyV2 : public QObject
   bool alreadyClicked_LowerPickupToolOntoMaPSA, alreadyClicked_LowerPickupToolOntoPSS, alreadyClicked_LowerMaPSAOntoBaseplate, alreadyClicked_LowerPSSOntoSpacers, alreadyClicked_LowerPSSPlusSpacersOntoGluingStage, alreadyClicked_LowerPSSPlusSpacersOntoMaPSA;
 
   bool skip_dipping_;
+
+  assembly::Center assembly_center_;
 
  public:
   bool IsSkipDipping() const;
