@@ -156,7 +156,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     /// -------------------
 
     /// Camera
-    camera_model_ = new AssemblyUEyeModel_t(10);
+    auto camera_config_interval = config->getDefaultValue<int>("main", "camera_config_interval", 10);
+    camera_model_ = new AssemblyUEyeModel_t(camera_config_interval);
     camera_model_->updateInformation();
 
     camera_thread_ = new AssemblyUEyeCameraThread(camera_model_, this);
