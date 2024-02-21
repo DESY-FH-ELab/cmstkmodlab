@@ -450,7 +450,10 @@ void AssemblyImageView::update_image_zscan(QLineSeries& zscan_graph)
       chart->legend()->hide();
       chart->addSeries(&zscan_graph);
       chart->createDefaultAxes();
-      chart->setTitle("Simple Line Chart");
+      chart->setTitle("Result of Z Autofocus Scan");
+
+      chart->axes(Qt::Horizontal).back()->setTitleText("z position [mm]");
+      chart->axes(Qt::Vertical).back()->setTitleText("Focus discriminant");
 
       autofocus_chart_view_ = new QChartView(chart);
       autofocus_chart_view_->setRenderHint(QPainter::Antialiasing);
