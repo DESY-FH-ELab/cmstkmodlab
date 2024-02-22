@@ -256,6 +256,8 @@ AssemblyObjectFinderPatRec::Configuration AssemblyObjectFinderPatRecWidget::get_
 
     conf.reset();
 
+    emit invalid_configuration();
+
     return conf;
   }
   else if(thresh_thresh_radbu_->isChecked())
@@ -278,6 +280,8 @@ AssemblyObjectFinderPatRec::Configuration AssemblyObjectFinderPatRecWidget::get_
       valid_conf = false;
 
       conf.reset();
+
+      emit invalid_configuration();
 
       return conf;
     }
@@ -302,6 +306,8 @@ AssemblyObjectFinderPatRec::Configuration AssemblyObjectFinderPatRecWidget::get_
       valid_conf = false;
 
       conf.reset();
+
+      emit invalid_configuration();
 
       return conf;
     }
@@ -329,6 +335,8 @@ AssemblyObjectFinderPatRec::Configuration AssemblyObjectFinderPatRecWidget::get_
 
       conf.reset();
 
+      emit invalid_configuration();
+
       return conf;
     }
 
@@ -349,6 +357,8 @@ AssemblyObjectFinderPatRec::Configuration AssemblyObjectFinderPatRecWidget::get_
 
     conf.reset();
 
+    emit invalid_configuration();
+
     return conf;
   }
 
@@ -365,6 +375,8 @@ AssemblyObjectFinderPatRec::Configuration AssemblyObjectFinderPatRecWidget::get_
     valid_conf = false;
 
     conf.reset();
+
+    emit invalid_configuration();
 
     return conf;
   }

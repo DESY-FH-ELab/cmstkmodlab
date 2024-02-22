@@ -163,8 +163,10 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   patrec_wid_ = new AssemblyObjectFinderPatRecWidget(true);
   patrec_wid_->setToolTip("Pattern Recognition Configuration");
 
-  connect(patrec_exe_button_, SIGNAL(clicked()), this->PatRec_Widget(), SLOT(transmit_configuration()));
   connect(patrec_exe_button_, SIGNAL(clicked()), this, SLOT(started()));
+  connect(patrec_exe_button_, SIGNAL(clicked()), this->PatRec_Widget(), SLOT(transmit_configuration()));
+
+  connect(this->PatRec_Widget(), SIGNAL(invalid_configuration()), this, SLOT(config_error()));
 
   imageView_4_->connectImageProducer(this->PatRec_Widget(), SIGNAL(updated_image_template(cv::Mat)));
 
@@ -425,6 +427,12 @@ void AssemblyObjectFinderPatRecView::started()
 {
     update_label(2);
     patrec_exe_button_->setEnabled(false);
+}
+
+void AssemblyObjectFinderPatRecView::config_error()
+{
+    update_label(1);
+    patrec_exe_button_->setEnabled(true);
 }
 
 void AssemblyObjectFinderPatRecView::update_label(const int state)

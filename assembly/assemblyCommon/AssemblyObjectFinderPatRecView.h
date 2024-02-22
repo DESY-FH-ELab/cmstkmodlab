@@ -97,6 +97,7 @@ class AssemblyObjectFinderPatRecView : public QWidget
   void display_infoTab();
 
   void started();
+  void config_error();
 };
 
 #endif // ASSEMBLYOBJECTFINDERPATRECVIEW_H
