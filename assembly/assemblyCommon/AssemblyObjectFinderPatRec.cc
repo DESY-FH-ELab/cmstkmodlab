@@ -22,11 +22,6 @@
 #include <QTextStream>
 #include <QMutexLocker>
 
-#include <TFile.h>
-#include <TGraph.h>
-#include <TCanvas.h>
-#include <TH1.h>
-
 int AssemblyObjectFinderPatRec::exe_counter_ = -1;
 
 AssemblyObjectFinderPatRec::AssemblyObjectFinderPatRec(AssemblyThresholder* const thresholder, const QString& output_dir_path, const QString& output_subdir_name, QObject* parent) :
