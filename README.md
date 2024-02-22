@@ -12,7 +12,7 @@ sudo apt-get install git cmake cmake-curses-gui build-essential qt5-qmake qtchoo
 
 ### ROOT
 
-The framework requires an installation of ROOT. For completeness, the following will provide the basic commands for the installation. Please refer to the [ROOT web page](https://root.cern/install/build_from_source/) for more information. Please note that ROOT requires to be built with the option `CXX_STANDARD=17` for c++17 support, see below.
+The framework, except for the assembly part, requires an installation of ROOT. For completeness, the following will provide the basic commands for the installation. Please refer to the [ROOT web page](https://root.cern/install/build_from_source/) for more information. Please note that ROOT requires to be built with the option `CXX_STANDARD=17` for c++17 support, see below.
 
 Note: compatibility was tested for ROOT versions 6.26 and 6.28.
 
