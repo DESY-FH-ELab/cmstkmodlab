@@ -426,28 +426,38 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
   // First, get angle-prescan angle: best guess of central value for finer angular scan
   double angle_prescan(-9999.);
 
-  if(prescan_angles.size() > 0)
-  {
-    double best_FOM(0.);
-
-    for(unsigned int i=0; i<prescan_angles.size(); ++i)
-    {
-      const double i_angle = prescan_angles.at(i);
-
-      double i_FOM(0.);
-      cv::Point i_matchLoc;
-
-      this->PatRec(i_FOM, i_matchLoc, img_master_PatRec, img_templa_PatRec_gs, i_angle, match_method);
-
-      const bool update = (i==0) || (use_minFOM ? (i_FOM < best_FOM) : (i_FOM > best_FOM));
-
-      if(update){ best_FOM = i_FOM; angle_prescan = i_angle; }
-    }
-  }
-  else
+  if(prescan_angles.size() == 0)
   {
     NQLog("AssemblyObjectFinderPatRec", NQLog::Critical) << "template_matching"
-       << ": empty list of pre-scan angles, stopping Pattern Recognition";
+     << ": empty list of pre-scan angles, stopping Pattern Recognition";
+
+    return;
+  }
+
+  double best_FOM(0.);
+
+  for(unsigned int i=0; i<prescan_angles.size(); ++i)
+  {
+    const double i_angle = prescan_angles.at(i);
+
+    double i_FOM(0.);
+    cv::Point i_matchLoc;
+
+    this->PatRec(i_FOM, i_matchLoc, img_master_PatRec, img_templa_PatRec_gs, i_angle, match_method);
+
+    const bool update = (i==0) || (use_minFOM ? (i_FOM < best_FOM) : (i_FOM > best_FOM));
+
+    if(update){ best_FOM = i_FOM; angle_prescan = i_angle; }
+  }
+
+  if(fabs(best_FOM-1.) < std::numeric_limits<double>::epsilon()) {
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Critical) << "template_matching"
+     << ": best FOM found is 1.0. No matching pattern found.";
+
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+     << ": emitting signal \"PatRec_exitcode(1)\"";
+
+    emit PatRec_exitcode(1);
 
     return;
   }
@@ -475,7 +485,7 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
 
   QList<QPointF>* vec_angleNfom = new QList<QPointF>();
 
-  double    best_FOM  (0.);
+  best_FOM = 0.;
   double    best_angle(0.);
   cv::Point best_matchLoc;
 
@@ -503,6 +513,18 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
 
     NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
        << ": angular scan: [" << scan_counter << "] angle=" << i_angle << ", FOM=" << i_FOM;
+  }
+
+  if(fabs(best_FOM-1.) < std::numeric_limits<double>::epsilon()) {
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Critical) << "template_matching"
+     << ": best FOM found is 1.0. No matching pattern found.";
+
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
+     << ": emitting signal \"PatRec_exitcode(1)\"";
+
+    emit PatRec_exitcode(1);
+
+    return;
   }
 
   NQLog("AssemblyObjectFinderPatRec", NQLog::Message) << "template_matching"
