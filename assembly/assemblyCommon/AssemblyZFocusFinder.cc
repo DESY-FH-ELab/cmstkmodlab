@@ -24,10 +24,6 @@
 #include <cstdio>
 #include <memory>
 
-#include <TCanvas.h>
-#include <TGraph.h>
-#include <TFile.h>
-
 int AssemblyZFocusFinder::exe_counter_ = -1;
 
 AssemblyZFocusFinder::AssemblyZFocusFinder(const QString& output_dir_prepath, const AssemblyVUEyeCamera* camera, const LStepExpressMotionManager* motion_manager, QObject* parent)
@@ -309,12 +305,7 @@ void AssemblyZFocusFinder::test_focus()
 
     double zposi_best(zposi_init_);
     {
-      std::unique_ptr<TGraph> zscan_gra(new TGraph(v_focus_vals_.size()));
-      zscan_gra->SetName("zfocus_graph");
-      zscan_gra->SetTitle(";z-axis position [mm];focus discriminant");
-      zscan_gra->SetMarkerColor(2);
-      zscan_gra->SetMarkerStyle(20);
-      zscan_gra->SetMarkerSize(1.25);
+      QLineSeries* zscan_graph = new QLineSeries();
 
       double focus_best(-1.);
       for(unsigned int i=0; i<v_focus_vals_.size(); ++i)
@@ -322,31 +313,15 @@ void AssemblyZFocusFinder::test_focus()
         const double i_zposi = v_focus_vals_.at(i).z_position;
         const double i_focus = v_focus_vals_.at(i).focus_disc;
 
-        zscan_gra->SetPoint(i, i_zposi, i_focus);
+        zscan_graph->append(i_zposi, i_focus);
 
         if((i == 0) || (i_focus > focus_best)){ focus_best = i_focus; zposi_best = i_zposi; }
       }
 
-      std::unique_ptr<TCanvas> zscan_can(new TCanvas());
-      zscan_can->SetName("zfocus_plot");
-      zscan_can->cd();
-      zscan_gra->Draw("alp");
-
-      const std::string zscan_plot_path_png  = output_dir_+"/AssemblyZFocusFinder_zscan.png";
-      const std::string zscan_plot_path_root = output_dir_+"/AssemblyZFocusFinder_zscan.root";
-
-      zscan_can->SaveAs(zscan_plot_path_png.c_str());
-
-      std::unique_ptr<TFile> zscan_fil(new TFile(zscan_plot_path_root.c_str(), "recreate"));
-      zscan_fil->cd();
-      zscan_can->Write();
-      zscan_gra->Write();
-      zscan_fil->Close();
-
       NQLog("AssemblyZFocusFinder", NQLog::Spam) << "test_focus"
-         << ": emitting signal \"show_zscan(" << zscan_plot_path_png << ")\"";
+         << ": emitting signal \"show_zscan(...)\"";
 
-      emit show_zscan(QString(zscan_plot_path_png.c_str()));
+      emit show_zscan(*zscan_graph);
 
       NQLog("AssemblyZFocusFinder", NQLog::Spam) << "test_focus"
          << ": emitting signal \"text_update_request(" << zposi_best << ")\"";
