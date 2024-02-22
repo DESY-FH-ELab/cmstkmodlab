@@ -37,6 +37,7 @@ int main(int argc, char** argv)
     // Qt application -------
     qRegisterMetaType<State>("State");
     qRegisterMetaType<cv::Mat>("cv::Mat");
+    qRegisterMetaType<QList<QPointF>>("QList<QPointF>");
 
 #ifdef SINGLETON
     SingletonApplication app(argc, argv, assemblyGUID);

@@ -473,8 +473,7 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
 
   const int N_rotations = (2 * int((angle_fine_max-angle_fine_min) / angle_fine_step));
 
-  std::vector<std::pair<double, double> > vec_angleNfom;
-  vec_angleNfom.reserve(N_rotations);
+  QList<QPointF>* vec_angleNfom = new QList<QPointF>();
 
   double    best_FOM  (0.);
   double    best_angle(0.);
@@ -482,7 +481,7 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
 
   for(double angle_fine=angle_fine_min; angle_fine<=angle_fine_max; angle_fine += angle_fine_step)
   {
-    const unsigned int scan_counter = vec_angleNfom.size();
+    const unsigned int scan_counter = vec_angleNfom->size();
 
     const double i_angle = angle_prescan + angle_fine;
 
@@ -500,7 +499,7 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
       best_matchLoc = i_matchLoc;
     }
 
-    vec_angleNfom.emplace_back(std::make_pair(i_angle, i_FOM));
+    vec_angleNfom->append(QPointF(i_angle, i_FOM));
 
     NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
        << ": angular scan: [" << scan_counter << "] angle=" << i_angle << ", FOM=" << i_FOM;
@@ -533,49 +532,12 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
   // ----------------------------------------
 
   // FOM(angle) plot
-  if(vec_angleNfom.size() > 0)
+  if(vec_angleNfom->size() > 0)
   {
-    TCanvas c1("FOM", "Rotation extraction", 200, 10, 700, 500);
-
-    TGraph gr_scan;
-    for(unsigned int idx=0; idx<vec_angleNfom.size(); ++idx)
-    {
-      gr_scan.SetPoint(idx, vec_angleNfom.at(idx).first, vec_angleNfom.at(idx).second);
-    }
-
-//    gr_scan.Fit("pol6");
-
-    gr_scan.Draw("AC*");
-    gr_scan.SetName("PatRec_FOM");
-    gr_scan.GetHistogram()->GetXaxis()->SetTitle("angle (degrees)");
-    gr_scan.GetHistogram()->GetYaxis()->SetTitle("PatRec FOM");
-    gr_scan.GetHistogram()->SetTitle("");
-
-    TGraph gr_best;
-    gr_best.SetPoint(0, best_angle, best_FOM);
-    gr_best.SetMarkerColor(2);
-    gr_best.SetMarkerStyle(22);
-    gr_best.SetMarkerSize(3);
-    gr_best.Draw("PSAME");
-    gr_best.SetName("PatRec_FOM_best");
-
-    const std::string filepath_FOM_base = output_dir+"/RotationExtraction";
-
-    const std::string filepath_FOM_png  = filepath_FOM_base+".png";
-    const std::string filepath_FOM_root = filepath_FOM_base+".root";
-
-    c1.SaveAs(filepath_FOM_png.c_str());
-
-    TFile o_file(filepath_FOM_root.c_str(), "recreate");
-    o_file.cd();
-    gr_scan.Write();
-    gr_best.Write();
-    o_file.Close();
-
     NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching"
-       << ": emitting signal \"PatRec_res_image_angscan(" << filepath_FOM_png << ")\"";
+       << ": emitting signal \"PatRec_res_image_angscan(...)\"";
 
-    emit PatRec_res_image_angscan(QString::fromStdString(filepath_FOM_png));
+    emit PatRec_res_image_angscan(*vec_angleNfom);
   }
   // ---
 
