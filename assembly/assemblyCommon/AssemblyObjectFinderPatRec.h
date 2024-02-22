@@ -118,8 +118,7 @@ class AssemblyObjectFinderPatRec : public QObject
   void PatRec_res_image_master_edited(const QString&);
   void PatRec_res_image_master_edited(const cv::Mat&);
 
-  void PatRec_res_image_angscan(const QString&);
-  void PatRec_res_image_angscan(const cv::Mat&);
+  void PatRec_res_image_angscan(const QList<QPointF>&);
 
   void PatRec_res_image_master_PatRec(const QString&);
   void PatRec_res_image_master_PatRec(const cv::Mat&);
