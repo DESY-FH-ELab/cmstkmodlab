@@ -144,8 +144,8 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
 
   patrec_exe_label_ = new QLabel("", this);
   patrec_exe_label_->setPixmap(pixmap);
-  patrec_exe_label_->setText(" WAITING");
-  patrec_exe_label_->setStyleSheet("QLabel { background-color : orange; color : black; }");
+  patrec_exe_label_->setText(" IDLE");
+  patrec_exe_label_->setStyleSheet("QLabel { background-color : grey; color : black; }");
 
   patrec_exe_lay->addWidget(patrec_exe_label_, 0, 1);
 
@@ -164,6 +164,7 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   patrec_wid_->setToolTip("Pattern Recognition Configuration");
 
   connect(patrec_exe_button_, SIGNAL(clicked()), this->PatRec_Widget(), SLOT(transmit_configuration()));
+  connect(patrec_exe_button_, SIGNAL(clicked()), this, SLOT(started()));
 
   imageView_4_->connectImageProducer(this->PatRec_Widget(), SIGNAL(updated_image_template(cv::Mat)));
 
@@ -350,11 +351,6 @@ void AssemblyObjectFinderPatRecView::update_image(const int stage, const cv::Mat
     imageView_1_->setImage(img);
 //    imageView_1_->setZoomFactor(0.3);
   }
-  else if(stage == 2)
-  {
-    imageView_2_->setImage(img);
-//    imageView_2_->setZoomFactor(0.5);
-  }
   else if(stage == 3)
   {
     imageView_3_->setImage(img);
@@ -425,6 +421,12 @@ void AssemblyObjectFinderPatRecView::update_FOM_vs_Angle(const QList<QPointF>& l
 
 }
 
+void AssemblyObjectFinderPatRecView::started()
+{
+    update_label(2);
+    patrec_exe_button_->setEnabled(false);
+}
+
 void AssemblyObjectFinderPatRecView::update_label(const int state)
 {
   NQLog("AssemblyObjectFinderPatRecView", NQLog::Spam) << "update_label(" << state << ")";
@@ -435,11 +437,18 @@ void AssemblyObjectFinderPatRecView::update_label(const int state)
   {
     patrec_exe_label_->setText(" FOUND MARKER");
     patrec_exe_label_->setStyleSheet("QLabel { background-color : green; color : black; }");
+    patrec_exe_button_->setEnabled(true);
   }
-  else
+  else if(state == 1)
   {
     patrec_exe_label_->setText(" ERROR");
     patrec_exe_label_->setStyleSheet("QLabel { background-color : red; color : black; }");
+    patrec_exe_button_->setEnabled(true);
+  }
+  else if(state == 2)
+  {
+    patrec_exe_label_->setText(" RUNNING");
+    patrec_exe_label_->setStyleSheet("QLabel { background-color : orange; color : black; }");
   }
 
   return;
