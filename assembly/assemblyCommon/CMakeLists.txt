@@ -77,8 +77,6 @@ endif()
 
 include_directories(${PROJECT_SOURCE_DIR})
 
-include_directories(${ROOT_INCLUDE_DIRS})
-
 include_directories(${OPENCV4_INCLUDE_DIRS})
 
 include_directories(${Qt5Core_INCLUDE_DIRS})
@@ -116,7 +114,6 @@ target_link_libraries(AssemblyCommon
         PRIVATE Qt5::Charts
         PRIVATE Qt5::Svg
         PRIVATE Common
-        PRIVATE ROOT::Gpad
 	PUBLIC  ${UEYE_LIBRARY}
 )
 
