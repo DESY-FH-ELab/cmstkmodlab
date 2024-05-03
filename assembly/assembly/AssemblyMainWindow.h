@@ -195,6 +195,7 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyAssembly*           assembly_;
   AssemblyAssemblyV2*         assemblyV2_;
   AssemblyMultiPickupTester*  multipickup_tester_;
+  AssemblySubassemblyPickup*  subassembly_pickup_;
 
   AssemblyObjectFinderPatRec*       finder_;
   AssemblyObjectFinderPatRecThread* finder_thread_;
@@ -239,6 +240,8 @@ class AssemblyMainWindow : public QMainWindow
   QTimer* liveTimer_;
 
   int idx_alignment_tab;
+  int idx_module_tab;
+  int idx_manual_tab;
 };
 
 #endif // ASSEMBLYMAINWINDOW_H

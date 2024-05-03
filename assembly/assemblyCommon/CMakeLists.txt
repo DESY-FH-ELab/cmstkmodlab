@@ -29,6 +29,8 @@ add_library(AssemblyCommon SHARED
         AssemblyAssemblyTextWidget.cc
         AssemblyMultiPickupTester.cc
         AssemblyMultiPickupTesterWidget.cc
+        AssemblySubassemblyPickup.cc
+        AssemblySubassemblyPickupWidget.cc
         AssemblyPositionsRegistryWidget.cc
         AssemblyToolboxView.cc
         AssemblySmartMotionManager.cc

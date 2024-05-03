@@ -430,7 +430,11 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     // TOOLBOX VIEW --------------------------------------------
     const QString tabname_Toolbox("Toolbox");
 
-    toolbox_view_ = new AssemblyToolboxView(motion_manager_, controls_tab);
+    subassembly_pickup_ = new AssemblySubassemblyPickup(motion_manager_, relayCardManager_, smart_motion_);
+
+    connect(subassembly_pickup_, SIGNAL(switchToAlignmentTab_PSS_request()), this, SLOT(update_alignment_tab_pss()));
+
+    toolbox_view_ = new AssemblyToolboxView(motion_manager_, subassembly_pickup_, controls_tab);
     controls_tab->addTab(toolbox_view_, tabname_Toolbox);
 
     // multi-pickup tester
@@ -614,8 +618,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     main_tab->setTabPosition(QTabWidget::North);
 
-    main_tab->addTab(assembly_tab, tr("Module Assembly"));
-    main_tab->addTab(controls_tab, tr("Manual Controls and Parameters"));
+    idx_module_tab = main_tab->addTab(assembly_tab, tr("Module Assembly"));
+    idx_manual_tab = main_tab->addTab(controls_tab, tr("Manual Controls and Parameters"));
 
     assembly_tab->setStyleSheet(assembly_tab->styleSheet()+" QTabBar::tab {width: 300px; }");
     controls_tab->setStyleSheet(controls_tab->styleSheet()+" QTabBar::tab {width: 375px; }");
@@ -1145,6 +1149,7 @@ void AssemblyMainWindow::disconnect_otherSlots()
     disconnect(motion_manager_, SIGNAL(restartMotionStage_request()), this, SLOT(messageBox_restartMotionStage()));
     disconnect(assemblyV2_, SIGNAL(switchToAlignmentTab_PSP_request()), this, SLOT(update_alignment_tab_psp()));
     disconnect(assemblyV2_, SIGNAL(switchToAlignmentTab_PSS_request()), this, SLOT(update_alignment_tab_pss()));
+    disconnect(subassembly_pickup_, SIGNAL(switchToAlignmentTab_PSS_request()), this, SLOT(update_alignment_tab_pss()));
     disconnect(this, SIGNAL(set_alignmentMode_PSP_request()), aligner_view_, SLOT(set_alignmentMode_PSP()));
     disconnect(this, SIGNAL(set_alignmentMode_PSS_request()), aligner_view_, SLOT(set_alignmentMode_PSS()));
 
@@ -1249,6 +1254,8 @@ void AssemblyMainWindow::switchAndUpdate_alignment_tab(bool psp_mode)
 {
     // std::cout<<"There are "<<main_tab->count()<<" main tabs"<<std::endl; //Count main tabs
     // QTabWidget* assemblyTab = main_tab->findChild<QTabWidget*>("Module Assembly");
+    main_tab->setCurrentIndex(idx_module_tab);
+
     QList<QTabWidget*> widgets = main_tab->findChildren<QTabWidget*>(); //Get main tabs
     QTabWidget* assemblyTab = widgets[1]; //Get 'Module Assembly' main tab
     // std::cout<<"There are "<<assemblyTab->count()<<" sub-tabs"<<std::endl; //Count sub-tabs
