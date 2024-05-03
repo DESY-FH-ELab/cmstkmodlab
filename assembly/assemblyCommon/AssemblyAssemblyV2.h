@@ -48,6 +48,9 @@ class AssemblyAssemblyV2 : public QObject
 
   double pickup1_Z_;
   double pickup2_Z_;
+  double makespace_Z_;
+  double position_z_before_makespace_;
+  bool position_z_before_makespace_stored_;
 
   bool use_smartMove_;
   bool in_action_;
@@ -99,6 +102,12 @@ class AssemblyAssemblyV2 : public QObject
 
   void ApplyPSPToPSSXYOffset_start();
   void ApplyPSPToPSSXYOffset_finish();
+
+  void MakeSpaceOnPlatform_start();
+  void MakeSpaceOnPlatform_finish();
+
+  void ReturnToPlatform_start();
+  void ReturnToPlatform_finish();
 
   void GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start();
   void GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finish();
@@ -182,6 +191,8 @@ class AssemblyAssemblyV2 : public QObject
   void GoToPSPMarkerIdealPosition_finished();
 
   void ApplyPSPToPSSXYOffset_finished();
+  void MakeSpaceOnPlatform_finished();
+  void ReturnToPlatform_finished();
   void PSSPlusSpacersToMaPSAPosition_registered();
 
   void GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished();

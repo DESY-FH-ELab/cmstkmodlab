@@ -151,6 +151,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     motion_thread_->start();
 
     connect(motion_manager_, SIGNAL(restartMotionStage_request()), this, SLOT(messageBox_restartMotionStage())); //Display a pop-up GUI message whenever the MS gets automatically restarted
+
+    connect(motion_manager_, SIGNAL(warn_user_limit(double, char, double, double)), this, SLOT(warn_on_stage_limits(double, char, double, double)));
     /// -------------------
 
     /// Camera
@@ -1344,4 +1346,12 @@ void AssemblyMainWindow::update_vacuum_information(const int channel, const Swit
     to_be_updated->setStyleSheet("QLabel { color : gray ; font: bold }");
     to_be_updated->setAlignment(Qt::AlignCenter);
   }
+}
+
+void AssemblyMainWindow::warn_on_stage_limits(const double target_pos, const char axis, const double limit_pos_lower, const double limit_pos_upper)
+{
+    QMessageBox::warning(0, QString("[AssemblyMainWindow]"),
+    QString("Attempting to move %1-axis to %2 . This is beyond the limit of this stage: [ %3 , %4 ]").arg(axis).arg(target_pos).arg(limit_pos_lower).arg(limit_pos_upper),
+        QMessageBox::Ok
+    );
 }
