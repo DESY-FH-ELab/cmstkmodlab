@@ -1369,11 +1369,3 @@ void AssemblyMainWindow::warn_on_stage_limits(const double target_pos, const cha
         QMessageBox::Ok
     );
 }
-
-void AssemblyMainWindow::warn_on_stage_limits(const double target_pos, const char axis, const double limit_pos_lower, const double limit_pos_upper)
-{
-    QMessageBox::warning(0, QString("[AssemblyMainWindow]"),
-    QString("Attempting to move %1-axis to %2 . This is beyond the limit of this stage: [ %3 , %4 ]").arg(axis).arg(target_pos).arg(limit_pos_lower).arg(limit_pos_upper),
-        QMessageBox::Ok
-    );
-}
