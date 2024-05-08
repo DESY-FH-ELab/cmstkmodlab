@@ -76,8 +76,8 @@ class AssemblyAssemblyV2 : public QObject
   void use_smartMove(const int);
 
   // motion
-  void GoToPspSensorMarkerPreAlignment_start() {GoToSensorMarkerPreAlignment_start(true );};
-  void GoToPssSensorMarkerPreAlignment_start() {GoToSensorMarkerPreAlignment_start(false);};
+  void GoToPSPSensorMarkerPreAlignment_start() {GoToSensorMarkerPreAlignment_start(true );};
+  void GoToPSSSensorMarkerPreAlignment_start() {GoToSensorMarkerPreAlignment_start(false);};
 
   void GoToSensorMarkerPreAlignment_start(const bool isMapsa);
   void GoToSensorMarkerPreAlignment_finish();
