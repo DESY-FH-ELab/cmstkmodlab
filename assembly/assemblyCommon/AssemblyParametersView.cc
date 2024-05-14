@@ -281,31 +281,35 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   button_moveAbsRefPos4_  = new QPushButton(tr("Move To Abs. Position"));
   posi_lay->addWidget(button_moveAbsRefPos4_, row_index, 9, Qt::AlignRight);
 
-  // position: z-position where camera is focused on Gluing Stage surface
-  ++row_index;
 
-  tmp_tag = "CameraFocusOnGluingStage";
-  tmp_des = "Camera Focused on Gluing Stage Surface :";
+  if(assembly_center == assembly::Center::FNAL || assembly_center == assembly::Center::BROWN)
+  {
+    // position: z-position where camera is focused on Gluing Stage surface
+    ++row_index;
 
-  map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
-  map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
-  map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
-  map_lineEdit_[tmp_tag+"_A"] = new QLineEdit(tr(""));
+    tmp_tag = "CameraFocusOnGluingStage";
+    tmp_des = "Camera Focused on Gluing Stage Surface :";
 
-  posi_lay->addWidget(new QLabel(tmp_des)    , row_index, 0, Qt::AlignLeft);
-  posi_lay->addWidget(new QLabel(tr("X"))    , row_index, 1, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_X"), row_index, 2, Qt::AlignRight);
-  posi_lay->addWidget(new QLabel(tr("Y"))    , row_index, 3, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_Y"), row_index, 4, Qt::AlignRight);
-  posi_lay->addWidget(new QLabel(tr("Z"))    , row_index, 5, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_Z"), row_index, 6, Qt::AlignRight);
-  posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
+    map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
+    map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
+    map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
+    map_lineEdit_[tmp_tag+"_A"] = new QLineEdit(tr(""));
 
-  button_moveAbsRefPos5_  = new QPushButton(tr("Move To Abs. Position")); //NB: make sure that the priority is correctly set between the XYA and Z movements (otherwise the robot arm may crash into the platform...)
-  posi_lay->addWidget(button_moveAbsRefPos5_, row_index, 9, Qt::AlignRight);
+    posi_lay->addWidget(new QLabel(tmp_des)    , row_index, 0, Qt::AlignLeft);
+    posi_lay->addWidget(new QLabel(tr("X"))    , row_index, 1, Qt::AlignRight);
+    posi_lay->addWidget(this->get(tmp_tag+"_X"), row_index, 2, Qt::AlignRight);
+    posi_lay->addWidget(new QLabel(tr("Y"))    , row_index, 3, Qt::AlignRight);
+    posi_lay->addWidget(this->get(tmp_tag+"_Y"), row_index, 4, Qt::AlignRight);
+    posi_lay->addWidget(new QLabel(tr("Z"))    , row_index, 5, Qt::AlignRight);
+    posi_lay->addWidget(this->get(tmp_tag+"_Z"), row_index, 6, Qt::AlignRight);
+    posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
+    posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
 
-  //// ---------------------
+    button_moveAbsRefPos5_  = new QPushButton(tr("Move To Abs. Position")); //NB: make sure that the priority is correctly set between the XYA and Z movements (otherwise the robot arm may crash into the platform...)
+    posi_lay->addWidget(button_moveAbsRefPos5_, row_index, 9, Qt::AlignRight);
+    //// ---------------------
+
+  }
 
   row_index = -1;
 
