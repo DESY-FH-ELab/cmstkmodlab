@@ -97,10 +97,6 @@ set(CMAKE_AUTOMOC ON)
 
 find_package(Qt5 5.14 COMPONENTS Core Gui Widgets OpenGL Script Xml Svg Network Charts REQUIRED)
 
-set(ENV{ROOT_DIR} ENV{ROOTSYS}/cmake)
-find_package(ROOT 6.16 REQUIRED)
-message(STATUS "Found ROOT (${ROOT_VERSION})")
-
 option(CMSTKMODLAB_MARTA "Build with support for MARTA CO2 chiller" OFF)
 
 if(CMSTKMODLAB_MARTA)
@@ -126,12 +122,22 @@ else()
         message(STATUS "Support for version 2 of thermal test setup: OFF")
 endif()
 
+option(CMSTKMODLAB_PUMPSTATION "Build with support for pump station" OFF)
+option(CMSTKMODLAB_PLASMA "Build with support for plasma cleaner test setup" OFF)
+option(CMSTKMODLAB_DEFO "Build with support for defo setup" OFF)
+
+if(CMSTKMODLAB_THERMO1 OR CMSTKMODLAB_THERMO2 OR CMSTKMODLAB_PUMPSTATION OR CMSTKMODLAB_PLASMA OR CMSTKMODLAB_DEFO)
+        set(ENV{ROOT_DIR} ENV{ROOTSYS}/cmake)
+	find_package(ROOT 6.16 REQUIRED)
+	message(STATUS "Found ROOT (${ROOT_VERSION})")
+endif()
+
+
 if(CMSTKMODLAB_THERMO1 OR CMSTKMODLAB_THERMO2)
         pkg_check_modules(GSL REQUIRED IMPORTED_TARGET gsl)
         add_subdirectory(thermo)
 endif()
 
-option(CMSTKMODLAB_PUMPSTATION "Build with support for pump station" OFF)
 if(CMSTKMODLAB_PUMPSTATION)
         message(STATUS "Support for pump station: ON")
         add_subdirectory(pumpstation)
@@ -161,7 +167,6 @@ else()
         message(STATUS "Support for PS automated assembly: OFF")
 endif()
 
-option(CMSTKMODLAB_PLASMA "Build with support for plasma cleaner test setup" OFF)
 if(CMSTKMODLAB_PLASMA)
         message(STATUS "Support for plasma cleaner test setup: ON")
         add_subdirectory(plasma)
@@ -169,7 +174,6 @@ else()
         message(STATUS "Support for plasma cleaner test setup: OFF")
 endif()
 
-option(CMSTKMODLAB_DEFO "Build with support for defo setup" OFF)
 if(CMSTKMODLAB_DEFO)
         message(STATUS "Support for defo setup: ON")
         include(FindQWT)

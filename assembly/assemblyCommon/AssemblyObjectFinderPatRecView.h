@@ -24,6 +24,8 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QMutex>
+#include <QChartView>
+#include <QtCharts>
 
 #include <opencv2/opencv.hpp>
 
@@ -57,7 +59,7 @@ class AssemblyObjectFinderPatRecView : public QWidget
   QScrollArea* scrollArea_4_;
 
   AssemblyUEyeView* imageView_1_;
-  AssemblyUEyeView* imageView_2_;
+  QChartView* patrec_chart_view_;
   AssemblyUEyeView* imageView_3_;
   AssemblyUEyeView* imageView_4_;
 
@@ -77,8 +79,7 @@ class AssemblyObjectFinderPatRecView : public QWidget
   void update_image_1(const QString&);
   void update_image_1(const cv::Mat&);
 
-  void update_image_2(const QString&);
-  void update_image_2(const cv::Mat&);
+  void update_FOM_vs_Angle(const QList<QPointF>&);
 
   void update_image_3(const QString&);
   void update_image_3(const cv::Mat&);
@@ -94,6 +95,9 @@ class AssemblyObjectFinderPatRecView : public QWidget
   void update_label(const int);
 
   void display_infoTab();
+
+  void started();
+  void config_error();
 };
 
 #endif // ASSEMBLYOBJECTFINDERPATRECVIEW_H

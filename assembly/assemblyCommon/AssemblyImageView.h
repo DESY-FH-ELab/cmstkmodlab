@@ -24,6 +24,8 @@
 #include <QToolTip>
 #include <QEventLoop>
 #include <QProgressBar>
+#include <QChartView>
+#include <QtCharts>
 
 #include <opencv2/opencv.hpp>
 
@@ -67,6 +69,7 @@ class AssemblyImageView : public QWidget
 
   // auto-focusing
   AssemblyUEyeView *autofocus_ueye_;
+  QChartView       *autofocus_chart_view_;
   QScrollArea      *autofocus_scroll_;
   QLineEdit        *autofocus_result_bestZ_lineed_;
   QPushButton      *autofocus_exe_button_;
@@ -95,7 +98,7 @@ class AssemblyImageView : public QWidget
   void update_text(const double);
 
   void   save_image_zscan();
-  void update_image_zscan(const QString&);
+  void update_image_zscan(QLineSeries& zscan_graph);
 
   void  update_autofocus_config(const double, const int);
   void acquire_autofocus_config();

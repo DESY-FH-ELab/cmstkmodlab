@@ -46,7 +46,7 @@ equals(NOUEYE,"X1") {
   DEFINES += NOUEYE
 }
 
-QT += core gui xml network script svg
+QT += core gui xml network script svg charts
 greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
 }

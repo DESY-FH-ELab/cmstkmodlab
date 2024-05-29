@@ -103,6 +103,8 @@ class AssemblyObjectFinderPatRecWidget : public QWidget
   void updated_image_template(const cv::Mat&);
 
   void configuration(const AssemblyObjectFinderPatRec::Configuration&);
+
+  void invalid_configuration() const;
 };
 
 #endif // ASSEMBLYOBJECTFINDERPATRECWIDGET_H

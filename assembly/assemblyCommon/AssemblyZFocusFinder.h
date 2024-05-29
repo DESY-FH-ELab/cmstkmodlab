@@ -18,6 +18,8 @@
 
 #include <QObject>
 #include <QString>
+#include <QLineSeries>
+#include <QtCharts>
 
 #include <vector>
 #include <string>
@@ -99,7 +101,7 @@ class AssemblyZFocusFinder : public QObject
 
     void image_acquired(const cv::Mat&);
 
-    void show_zscan(const QString&);
+    void show_zscan(QLineSeries&);
 
     void text_update_request(const double);
 
