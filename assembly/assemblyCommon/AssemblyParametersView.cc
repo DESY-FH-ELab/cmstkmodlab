@@ -41,6 +41,19 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
 
+  // Get information on assembly center to accommodate for different parameters required
+  std::string assembly_center_str = QString::fromStdString(config_->getValue<std::string>("main", "assembly_center")).toUpper().toStdString();
+  assembly::Center assembly_center;
+  if(assembly_center_str == "FNAL") {
+      assembly_center = assembly::Center::FNAL;
+  } else if(assembly_center_str == "BROWN") {
+      assembly_center = assembly::Center::BROWN;
+  } else if(assembly_center_str == "DESY") {
+      assembly_center = assembly::Center::DESY;
+  } else {
+      NQLog("AssemblyAssemblyV2", NQLog::Warning) << "Invalid assembly center provided: \"" << assembly_center_str << "\". Provide one of the following options: \"FNAL\", \"BROWN\", \"DESY\"";
+  }
+
   //// Display parameter filename -------------------
   QHBoxLayout* filename_lay = new QHBoxLayout;
   layout->addLayout(filename_lay);
@@ -168,6 +181,22 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dime_lay->addWidget(new QLabel(tr("dZ")), row_index, 5, Qt::AlignRight);
   dime_lay->addWidget(this->get(tmp_tag)  , row_index, 6, Qt::AlignRight);
 
+
+  if(assembly_center == assembly::Center::FNAL || assembly_center == assembly::Center::BROWN)
+  {
+    // dimension: thickness of SpacerClamp
+    ++row_index;
+
+    tmp_tag = "Thickness_SpacerClamp";
+    tmp_des = "Thickness of SpacerClamp :";
+
+    map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
+
+    dime_lay->addWidget(new QLabel(tmp_des) , row_index, 0, Qt::AlignLeft);
+    dime_lay->addWidget(new QLabel(tr("dZ")), row_index, 5, Qt::AlignRight);
+    dime_lay->addWidget(this->get(tmp_tag)  , row_index, 6, Qt::AlignRight);
+  }
+
   //// ---------------------
 
   row_index = -1;
@@ -252,31 +281,35 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   button_moveAbsRefPos4_  = new QPushButton(tr("Move To Abs. Position"));
   posi_lay->addWidget(button_moveAbsRefPos4_, row_index, 9, Qt::AlignRight);
 
-  // position: z-position where camera is focused on Gluing Stage surface
-  ++row_index;
 
-  tmp_tag = "CameraFocusOnGluingStage";
-  tmp_des = "Camera Focused on Gluing Stage Surface :";
+  if(assembly_center == assembly::Center::FNAL || assembly_center == assembly::Center::BROWN)
+  {
+    // position: z-position where camera is focused on Gluing Stage surface
+    ++row_index;
 
-  map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
-  map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
-  map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
-  map_lineEdit_[tmp_tag+"_A"] = new QLineEdit(tr(""));
+    tmp_tag = "CameraFocusOnGluingStage";
+    tmp_des = "Camera Focused on Gluing Stage Surface :";
 
-  posi_lay->addWidget(new QLabel(tmp_des)    , row_index, 0, Qt::AlignLeft);
-  posi_lay->addWidget(new QLabel(tr("X"))    , row_index, 1, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_X"), row_index, 2, Qt::AlignRight);
-  posi_lay->addWidget(new QLabel(tr("Y"))    , row_index, 3, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_Y"), row_index, 4, Qt::AlignRight);
-  posi_lay->addWidget(new QLabel(tr("Z"))    , row_index, 5, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_Z"), row_index, 6, Qt::AlignRight);
-  posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
-  posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
+    map_lineEdit_[tmp_tag+"_X"] = new QLineEdit(tr(""));
+    map_lineEdit_[tmp_tag+"_Y"] = new QLineEdit(tr(""));
+    map_lineEdit_[tmp_tag+"_Z"] = new QLineEdit(tr(""));
+    map_lineEdit_[tmp_tag+"_A"] = new QLineEdit(tr(""));
 
-  button_moveAbsRefPos5_  = new QPushButton(tr("Move To Abs. Position")); //NB: make sure that the priority is correctly set between the XYA and Z movements (otherwise the robot arm may crash into the platform...)
-  posi_lay->addWidget(button_moveAbsRefPos5_, row_index, 9, Qt::AlignRight);
+    posi_lay->addWidget(new QLabel(tmp_des)    , row_index, 0, Qt::AlignLeft);
+    posi_lay->addWidget(new QLabel(tr("X"))    , row_index, 1, Qt::AlignRight);
+    posi_lay->addWidget(this->get(tmp_tag+"_X"), row_index, 2, Qt::AlignRight);
+    posi_lay->addWidget(new QLabel(tr("Y"))    , row_index, 3, Qt::AlignRight);
+    posi_lay->addWidget(this->get(tmp_tag+"_Y"), row_index, 4, Qt::AlignRight);
+    posi_lay->addWidget(new QLabel(tr("Z"))    , row_index, 5, Qt::AlignRight);
+    posi_lay->addWidget(this->get(tmp_tag+"_Z"), row_index, 6, Qt::AlignRight);
+    posi_lay->addWidget(new QLabel(tr("A"))    , row_index, 7, Qt::AlignRight);
+    posi_lay->addWidget(this->get(tmp_tag+"_A"), row_index, 8, Qt::AlignRight);
 
-  //// ---------------------
+    button_moveAbsRefPos5_  = new QPushButton(tr("Move To Abs. Position")); //NB: make sure that the priority is correctly set between the XYA and Z movements (otherwise the robot arm may crash into the platform...)
+    posi_lay->addWidget(button_moveAbsRefPos5_, row_index, 9, Qt::AlignRight);
+    //// ---------------------
+
+  }
 
   row_index = -1;
 
@@ -737,14 +770,19 @@ void AssemblyParametersView::transmit_entries()
 void AssemblyParametersView::copy_values()
 {
   //-- Values read from parameters (<-> calibrations) file
-  for(const auto& i_key : config_->getKeys()) {
+  std::vector<std::string> exceptions;
+  exceptions.push_back("AssemblyObjectAlignerView_PSP_deltaX");
+  exceptions.push_back("AssemblyObjectAlignerView_PSP_deltaX_neg");
+  exceptions.push_back("AssemblyObjectAlignerView_PSS_deltaX");
+  exceptions.push_back("AssemblyObjectAlignerView_PSS_deltaX_neg");
+  exceptions.push_back("AssemblyParameters_file_path");
 
-    if(!(i_key.alias == "parameters"))
-    {
-      continue;
-    }
+  for(const auto& key : map_lineEdit_)
+  {
+    if (std::count(exceptions.begin(), exceptions.end(), key.first))
+        continue;
 
-    this->setText(i_key.key, config_->getValue<double>(i_key));
+    this->setText(key.first, config_->getValue<double>("parameters", key.first));
   }
 
   //-- Values read from config file

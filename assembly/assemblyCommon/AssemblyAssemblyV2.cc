@@ -14,9 +14,9 @@
 #include <ApplicationConfig.h>
 
 #include <AssemblyAssemblyV2.h>
-#include <AssemblyUtilities.h>
 
 #include <string>
+#include <unistd.h>
 
 #include <QMessageBox>
 
@@ -71,15 +71,20 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
   pickup2_Z_ = config_->getValue<double>("main", "AssemblyAssembly_pickup2_Z");
   makespace_Z_ = config_->getValue<double>("main", "AssemblyAssembly_makespace_Z");
 
+  original_Z_velocity_ = motion_->get_velocity_Z();
+
   alreadyClicked_LowerPickupToolOntoMaPSA = false; alreadyClicked_LowerPickupToolOntoPSS = false; alreadyClicked_LowerMaPSAOntoBaseplate = false; alreadyClicked_LowerPSSOntoSpacers = false; alreadyClicked_LowerPSSPlusSpacersOntoGluingStage = false; alreadyClicked_LowerPSSPlusSpacersOntoMaPSA = false;
 
-  skip_dipping_ = config_->getDefaultValue<bool>("main", "skip_dipping", false);
-
-}
-
-bool AssemblyAssemblyV2::IsSkipDipping() const
-{
-    return skip_dipping_;
+  std::string assembly_center_str = QString::fromStdString(config_->getValue<std::string>("main", "assembly_center")).toUpper().toStdString();
+  if(assembly_center_str == "FNAL") {
+      assembly_center_ = assembly::Center::FNAL;
+  } else if(assembly_center_str == "BROWN") {
+      assembly_center_ = assembly::Center::BROWN;
+  } else if(assembly_center_str == "DESY") {
+      assembly_center_ = assembly::Center::DESY;
+  } else {
+      NQLog("AssemblyAssemblyV2", NQLog::Warning) << "Invalid assembly center provided: \"" << assembly_center_str << "\". Provide one of the following options: \"FNAL\", \"BROWN\", \"DESY\"";
+  }
 }
 
 const LStepExpressMotionManager* AssemblyAssemblyV2::motion() const
@@ -147,7 +152,7 @@ void AssemblyAssemblyV2::use_smartMove(const int state)
 // ----------------------------------------------------------------------------------------------------
 // GoToSensorMarkerPreAlignment -----------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
-void AssemblyAssemblyV2::GoToSensorMarkerPreAlignment_start()
+void AssemblyAssemblyV2::GoToSensorMarkerPreAlignment_start(bool isMapsa)
 {
   if(in_action_){
 
@@ -159,7 +164,8 @@ void AssemblyAssemblyV2::GoToSensorMarkerPreAlignment_start()
 
   const double x0 = config_->getValue<double>("parameters", "RefPointSensor_X");
   const double y0 = config_->getValue<double>("parameters", "RefPointSensor_Y");
-  const double z0 = config_->getValue<double>("parameters", "RefPointSensor_Z");
+  const double z0 = config_->getValue<double>("parameters", "CameraFocusOnAssemblyStage_Z")
+   + (isMapsa ? config_->getValue<double>("parameters", "Thickness_PSP") : config_->getValue<double>("parameters", "Thickness_PSS"));
   const double a0 = config_->getValue<double>("parameters", "RefPointSensor_A");
 
   connect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
@@ -1107,6 +1113,7 @@ void AssemblyAssemblyV2::LowerPSSOntoSpacers_start()
     const double dx0 = 0.0;
     const double dy0 = 0.0;
 
+    bool use_spacer_clamp = GetAssemblyCenter()==assembly::Center::FNAL || GetAssemblyCenter()==assembly::Center::BROWN;
     const double dz0 =
         config_->getValue<double>("parameters", "CameraFocusOnAssemblyStage_Z")
       - config_->getValue<double>("parameters", "Depth_SpacerSlots")
@@ -1114,6 +1121,7 @@ void AssemblyAssemblyV2::LowerPSSOntoSpacers_start()
       + config_->getValue<double>("parameters", "FromCameraBestFocusToPickupHeight_dZ")
       + config_->getValue<double>("parameters", "Thickness_PSS")
       + config_->getValue<double>("parameters", "Thickness_GlueLayer")
+      + (use_spacer_clamp ? config_->getValue<double>("parameters", "Thickness_SpacerClamp") : 0)
       - motion_->get_position_Z();
 
     const double da0 = 0.0;
@@ -1651,6 +1659,92 @@ void AssemblyAssemblyV2::LowerPSSPlusSpacersOntoGluingStage_finish()
   emit DBLogMessage("== Assembly step completed : [Lower {PS-s + spacers} onto gluing stage]");
 }
 // ----------------------------------------------------------------------------------------------------
+
+
+// ----------------------------------------------------------------------------------------------------
+// SlowlyLiftFromGluingStage --------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssemblyV2::SlowlyLiftFromGluingStage_start()
+{
+  if(in_action_){
+
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "SlowlyLiftFromGluingStage_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
+
+  if(use_smartMove_)
+  {
+
+    original_Z_velocity_ = motion_->get_velocity_Z();
+
+    double slowVelocity = 0.5; // mm/s
+    motion_->set_velocity_Z(slowVelocity);
+
+    while(slowVelocity != motion_->get_velocity_Z())
+    {
+      sleep(1);
+    }
+
+    const double dx0 = 0.;
+    const double dy0 = 0.;
+    const double dz0 = 5.;
+    const double da0 = 0.;
+
+    connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+    connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(SlowlyLiftFromGluingStage_finish()));
+
+    in_action_ = true;
+
+    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "SlowlyLiftFromGluingStage_start"
+       << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+    emit move_relative_request(dx0, dy0, dz0, da0);
+  }
+  else
+  {
+    NQLog("AssemblyAssemblyV2", NQLog::Critical) << "SlowlyLiftFromGluingStage_start"
+       << ": please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step";
+
+    QMessageBox msgBox;
+    msgBox.setText(tr("AssemblyAssemblyV2::SlowlyLiftFromGluingStage_start -- please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step"));
+    msgBox.exec();
+
+    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "SlowlyLiftFromGluingStage_finish"
+       << ": emitting signal \"SlowlyLiftFromGluingStage_finished\"";
+
+    emit SlowlyLiftFromGluingStage_finished();
+
+    return;
+  }
+}
+
+void AssemblyAssemblyV2::SlowlyLiftFromGluingStage_finish()
+{
+  motion_->set_velocity_Z(original_Z_velocity_);
+  while(original_Z_velocity_ != motion_->get_velocity_Z())
+  {
+    sleep(1);
+  }
+
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+  disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(SlowlyLiftFromGluingStage_finish()));
+
+  if(in_action_){ in_action_ = false; }
+
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "SlowlyLiftFromGluingStage_finish"
+     << ": emitting signal \"SlowlyLiftFromGluingStage_finished\"";
+
+  emit SlowlyLiftFromGluingStage_finished();
+
+  NQLog("AssemblyAssemblyV2", NQLog::Message) << "SlowlyLiftFromGluingStage_finish"
+     << ": assembly-step completed";
+
+  emit DBLogMessage("== Assembly step completed : [Slowly lifted PSS + spacers from gluing station]");
+}
+// ----------------------------------------------------------------------------------------------------
+
 
 // ----------------------------------------------------------------------------------------------------
 // ReturnToPSSPlusSpacersToMaPSAPosition --------------------------------------------------------------

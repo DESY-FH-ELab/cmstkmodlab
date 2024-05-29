@@ -29,7 +29,7 @@
 
 #include <opencv2/opencv.hpp>
 
-AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const QString& DBlogfile_path, const unsigned int camera_ID, QWidget* parent) :
+AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const QString& DBlogfile_path, QWidget* parent) :
   QMainWindow(parent),
 
   // Low-Level Controllers (Motion, Camera, Vacuum)
@@ -54,7 +54,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   camera_thread_(nullptr),
 //  camera_widget_(nullptr),
   camera_(nullptr),
-  camera_ID_(camera_ID),
+  camera_ID_(0),
 
   // High-Level Controllers
   image_ctr_(nullptr),
@@ -156,12 +156,14 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     /// -------------------
 
     /// Camera
-    camera_model_ = new AssemblyUEyeModel_t(10);
+    auto camera_config_interval = config->getDefaultValue<int>("main", "camera_config_interval", 10);
+    camera_model_ = new AssemblyUEyeModel_t(camera_config_interval);
     camera_model_->updateInformation();
 
     camera_thread_ = new AssemblyUEyeCameraThread(camera_model_, this);
     camera_thread_->start();
 
+    camera_ID_ = config->getDefaultValue<unsigned int>("main", "camera_ID", 1);
     camera_ = camera_model_->getCameraByID(camera_ID_);
     if(camera_ == nullptr)
     {
@@ -170,6 +172,16 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
       NQLog("AssemblyMainWindow", NQLog::Critical) << "---------------------------------------------------------------------------------";
     }
     /// -------------------
+
+    std::string assembly_center_str = QString::fromStdString(config->getValue<std::string>("main", "assembly_center")).toUpper().toStdString();
+    if(!(assembly_center_str == "FNAL" || assembly_center_str == "BROWN" || assembly_center_str == "DESY")) {
+        NQLog("AssemblyAssemblyV2", NQLog::Fatal) << "Invalid assembly center provided: \"" << assembly_center_str << "\". Provide one of the following options: \"FNAL\", \"BROWN\", \"DESY\"";
+        QMessageBox* msgBox = new QMessageBox;
+        msgBox->setInformativeText(QString("Invalid assembly center provided (\"%1\").\nProvide one of the following options: \"FNAL\", \"BROWN\", \"DESY\"").arg(QString::fromStdString(assembly_center_str)));
+        msgBox->setStandardButtons(QMessageBox::Ok);
+        int ret = msgBox->exec();
+        exit(1);
+    }
 
     /// Vacuum Manager
     std::string relayCardDevice = config->getValue<std::string>("main", "RelayCardDevice");
@@ -312,10 +324,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
       NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly
          << " (assembly_sequence = " << assembly_sequence << ")";
-
-      if (assemblyV2_->IsSkipDipping()) {
-          NQLog("AssemblyMainWindow", NQLog::Message) << "skipping dipping of PSs-Spacers at stage 3";
-      }
     }
     else
     {
@@ -491,9 +499,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     }
     else if(assembly_sequence == 2) {
         emit DBLogMessage("== Using modified assembly sequence == (MaPSA glued to baseplate first)");
-        if (assemblyV2_->IsSkipDipping()) {
-            emit DBLogMessage("== Skipping spacer dipping at stage 3 == (Glue dispenser is used for PSs-to-MaPSA)");
-        }
     }
 
     controls_tab->addTab(DBLog_view_, tabname_DBLog);
@@ -654,6 +659,15 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     if(startup_camera)
     {
       this->enable_images();
+    }
+
+    if(config->hasKey("main", "camera_exposure_time") && camera_ != nullptr)
+    {
+        connect(this, SIGNAL(changeExposureTime(double)), camera_, SLOT(setExposureTime(double)));
+        auto camera_exposure_time = config->getValue<double>("main", "camera_exposure_time");
+        NQLog("AssemblyMainWindow", NQLog::Message) << QString("Setting camera exposure time to %1 ms").arg(camera_exposure_time);
+        emit changeExposureTime(camera_exposure_time);
+        disconnect(this, SIGNAL(changeExposureTime(double)), camera_, SLOT(setExposureTime(double)));
     }
     // ------------------------
 }

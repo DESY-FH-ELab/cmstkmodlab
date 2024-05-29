@@ -22,7 +22,9 @@
 #include <AssemblyAssemblyActionWidget.h>
 #include <AssemblyAssemblyTextWidget.h>
 
-AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QWidget* parent)
+#include <AssemblyUtilities.h>
+
+AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const assembly, QWidget* parent)
  : QWidget(parent)
  , smartMove_checkbox_(nullptr)
  , wid_PSPToBasep_(nullptr)
@@ -32,12 +34,10 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
   if(assembly == nullptr)
   {
     NQLog("AssemblyAssemblyView", NQLog::Fatal) << "AssemblyAssemblyView(" << assembly << ", " << parent << ")"
-       << ": null pointer to QObject --> GUI layout will not be created";
+       << ": null pointer to AssemblyAssemblyV2 --> GUI layout will not be created";
 
     return;
   }
-
-  bool skip_dipping = dynamic_cast<const AssemblyAssemblyV2*>(assembly) -> IsSkipDipping();
 
   QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
@@ -88,7 +88,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
     tmp_wid->button()->setText("Go To Measurement Position on MaPSA");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoToSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoToPSPSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
   }
   // ----------
 
@@ -340,7 +340,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
     tmp_wid->button()->setText("Go To Measurement Position on PS-s");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoToSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoToPSSSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
   }
   // ----------
 
@@ -451,7 +451,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
   }
   // ----------
 
-  if(skip_dipping){
+  if(assembly->GetAssemblyCenter() == assembly::Center::DESY){
     // step: Dispense Slow Glue on Spacers and Place them on Assembly Platform
     {
       ++assembly_step_N;
@@ -579,7 +579,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N));
-    if(skip_dipping){
+    if(assembly->GetAssemblyCenter() == assembly::Center::DESY){
       tmp_wid->text()->setText("Dispense Slow Glue on \"MaPSA + Baseplate\" and Place on Assembly Platform with Baseplate Pins");
     } else {
       tmp_wid->text()->setText("Place \"MaPSA + Baseplate\" on Assembly Platform with Baseplate Pins");
@@ -667,7 +667,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
   }
   // ----------
 
-  if (skip_dipping)
+  if (assembly->GetAssemblyCenter() == assembly::Center::DESY)
       {
           // step: Make space on the platform by raising the pickup tool
           {
@@ -757,6 +757,22 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
         PSSToMaPSA_lay->addWidget(tmp_wid);
 
         tmp_wid->connect_action(assembly, SLOT(LowerPSSPlusSpacersOntoGluingStage_start()), SIGNAL(LowerPSSPlusSpacersOntoGluingStage_finished()));
+      }
+      // ----------
+
+      if(assembly->GetAssemblyCenter() == assembly::Center::FNAL || assembly->GetAssemblyCenter() == assembly::Center::BROWN)
+      {
+        // step: Slowly lift from gluing stage
+        {
+          ++assembly_step_N;
+
+          AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+          tmp_wid->label()->setText(QString::number(assembly_step_N));
+          tmp_wid->button()->setText("Slowly lift from gluing stage by 5 mm");
+          PSSToMaPSA_lay->addWidget(tmp_wid);
+
+          tmp_wid->connect_action(assembly, SLOT(SlowlyLiftFromGluingStage_start()), SIGNAL(SlowlyLiftFromGluingStage_finished()));
+        }
       }
       // ----------
 
