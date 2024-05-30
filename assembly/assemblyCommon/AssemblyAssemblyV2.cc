@@ -50,6 +50,11 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
  , PSSPlusSpacersToMaPSAPosition_Y_(0.)
  , PSSPlusSpacersToMaPSAPosition_Z_(0.)
  , PSSPlusSpacersToMaPSAPosition_A_(0.)
+
+ , Baseplate_ID_()
+ , MaPSA_ID_()
+ , PSS_ID_()
+ , Module_ID_()
 {
   // validate pointers to controllers
   this->motion();
@@ -164,7 +169,54 @@ void AssemblyAssemblyV2::ScanMaPSAID_start()
     if (!ok || MaPSA_ID.isEmpty()){
         return;
     } else {
+        MaPSA_ID_ = MaPSA_ID;
+        emit MaPSA_ID_updated(MaPSA_ID);
         emit ScanMaPSAID_finished();
+    }
+}
+
+void AssemblyAssemblyV2::ScanPSSID_start()
+{
+    bool ok = false;
+    QString PSS_ID = QInputDialog::getText(nullptr, tr("QInputDialog::getText()"),
+                                         tr("Scan PS-s ID:"), QLineEdit::Normal,
+                                         tr(""), &ok);
+    if (!ok || PSS_ID.isEmpty()){
+        return;
+    } else {
+        PSS_ID_ = PSS_ID;
+        emit PSS_ID_updated(PSS_ID);
+        emit ScanPSSID_finished();
+    }
+}
+
+void AssemblyAssemblyV2::ScanBaseplateID_start()
+{
+    bool ok = false;
+    QString Baseplate_ID = QInputDialog::getText(nullptr, tr("QInputDialog::getText()"),
+                                         tr("Scan Baseplate ID:"), QLineEdit::Normal,
+                                         tr(""), &ok);
+    if (!ok || Baseplate_ID.isEmpty()){
+        return;
+    } else {
+        Baseplate_ID_ = Baseplate_ID;
+        emit Baseplate_ID_updated(Baseplate_ID);
+        emit ScanBaseplateID_finished();
+    }
+}
+
+void AssemblyAssemblyV2::ScanModuleID_start()
+{
+    bool ok = false;
+    QString Module_ID = QInputDialog::getText(nullptr, tr("QInputDialog::getText()"),
+                                         tr("Scan Module ID:"), QLineEdit::Normal,
+                                         tr(""), &ok);
+    if (!ok || Module_ID.isEmpty()){
+        return;
+    } else {
+        Module_ID_ = Module_ID;
+        emit Module_ID_updated(Module_ID);
+        emit ScanModuleID_finished();
     }
 }
 

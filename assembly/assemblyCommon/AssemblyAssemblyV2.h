@@ -67,6 +67,8 @@ class AssemblyAssemblyV2 : public QObject
 
   double original_Z_velocity_;
 
+  QString Baseplate_ID_, MaPSA_ID_, PSS_ID_, Module_ID_;
+
   bool alreadyClicked_LowerPickupToolOntoMaPSA, alreadyClicked_LowerPickupToolOntoPSS, alreadyClicked_LowerMaPSAOntoBaseplate, alreadyClicked_LowerPSSOntoSpacers, alreadyClicked_LowerPSSPlusSpacersOntoGluingStage, alreadyClicked_LowerPSSPlusSpacersOntoMaPSA;
 
   assembly::Center assembly_center_;
@@ -171,6 +173,15 @@ class AssemblyAssemblyV2 : public QObject
   // others
 
   void ScanMaPSAID_start();
+  void ScanPSSID_start();
+  void ScanBaseplateID_start();
+  void ScanModuleID_start();
+  void PushToDB_start();
+
+  void Update_Baseplate_ID(QString ID) {Baseplate_ID_ = ID;};
+  void Update_MaPSA_ID(QString ID) {MaPSA_ID_ = ID;};
+  void Update_PSS_ID(QString ID) {PSS_ID_ = ID;};
+  void Update_Module_ID(QString ID) {Module_ID_ = ID;};
 
   void RegisterPSSPlusSpacersToMaPSAPosition_start();
   void RegisterPSSPlusSpacersToMaPSAPosition_finish();
@@ -186,6 +197,10 @@ class AssemblyAssemblyV2 : public QObject
   void move_relative_request(const double, const double, const double, const double);
 
   void ScanMaPSAID_finished();
+  void ScanPSSID_finished();
+  void ScanBaseplateID_finished();
+  void ScanModuleID_finished();
+  void PushToDB_finished();
 
   void GoToSensorMarkerPreAlignment_finished();
 
@@ -240,6 +255,11 @@ class AssemblyAssemblyV2 : public QObject
   void RegisterPSSPlusSpacersToMaPSAPosition_finished();
   void switchToAlignmentTab_PSP_request();
   void switchToAlignmentTab_PSS_request();
+
+  void MaPSA_ID_updated(const QString);
+  void PSS_ID_updated(const QString);
+  void Baseplate_ID_updated(const QString);
+  void Module_ID_updated(const QString);
   // ------
 
 

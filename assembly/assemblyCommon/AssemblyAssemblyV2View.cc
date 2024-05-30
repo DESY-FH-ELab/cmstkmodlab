@@ -70,6 +70,9 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   opts_lay->addWidget(baseplate_id_label);
   opts_lay->addWidget(baseplate_id_lineed_);
 
+  connect(assembly, SIGNAL(Baseplate_ID_updated(QString)), baseplate_id_lineed_, SLOT(setText(QString)));
+  connect(baseplate_id_lineed_, SIGNAL(textEdited(QString)), assembly, SLOT(Update_Baseplate_ID(QString)));
+
   QLabel* mapsa_id_label = new QLabel("MaPSA ID: ");
   mapsa_id_lineed_ = new QLineEdit("");
   mapsa_id_lineed_->setPlaceholderText("MaPSA ID");
@@ -78,13 +81,19 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   opts_lay->addWidget(mapsa_id_label);
   opts_lay->addWidget(mapsa_id_lineed_);
 
-  QLabel* pss_id_label = new QLabel("Strip Sensor ID: ");
+  connect(assembly, SIGNAL(MaPSA_ID_updated(QString)), mapsa_id_lineed_, SLOT(setText(QString)));
+  connect(mapsa_id_lineed_, SIGNAL(textEdited(QString)), assembly, SLOT(Update_MaPSA_ID(QString)));
+
+  QLabel* pss_id_label = new QLabel("PS-s Sensor ID: ");
   pss_id_lineed_ = new QLineEdit("");
-  pss_id_lineed_->setPlaceholderText("Strip Sensor ID");
+  pss_id_lineed_->setPlaceholderText("PS-s Sensor ID");
   pss_id_lineed_->setMaximumWidth(200);
 
   opts_lay->addWidget(pss_id_label);
   opts_lay->addWidget(pss_id_lineed_);
+
+  connect(assembly, SIGNAL(PSS_ID_updated(QString)), pss_id_lineed_, SLOT(setText(QString)));
+  connect(pss_id_lineed_, SIGNAL(textEdited(QString)), assembly, SLOT(Update_PSS_ID(QString)));
 
   QLabel* module_id_label = new QLabel("Module ID: ");
   module_id_lineed_ = new QLineEdit("");
@@ -93,6 +102,9 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
 
   opts_lay->addWidget(module_id_label);
   opts_lay->addWidget(module_id_lineed_);
+
+  connect(assembly, SIGNAL(Module_ID_updated(QString)), module_id_lineed_, SLOT(setText(QString)));
+  connect(module_id_lineed_, SIGNAL(textEdited(QString)), assembly, SLOT(Update_Module_ID(QString)));
 
   push_to_db_button_ = new QPushButton("Push to database");
   opts_lay->addWidget(push_to_db_button_);
@@ -240,6 +252,19 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     PSPToBasep_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(PickupMaPSA_start()), SIGNAL(PickupMaPSA_finished()));
+  }
+  // ----------
+
+  // step: Scan Baseplate ID
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->button()->setText("Scan Baseplate ID");
+    PSPToBasep_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(ScanBaseplateID_start()), SIGNAL(ScanBaseplateID_finished()));
   }
   // ----------
 
@@ -441,6 +466,19 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
 
   QVBoxLayout* PSSToSpacers_lay = new QVBoxLayout;
   wid_PSSToSpacers_->setLayout(PSSToSpacers_lay);
+
+  // step: Scan PSS ID
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->button()->setText("Scan PS-s ID");
+    PSSToSpacers_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(ScanPSSID_start()), SIGNAL(ScanPSSID_finished()));
+  }
+  // ----------
 
   // step: Place PS-s on Assembly Platform
   {
@@ -1065,6 +1103,19 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(DisableVacuumBaseplate_start()), SIGNAL(DisableVacuumBaseplate_finished()));
+  }
+  // ----------
+
+  // step: Scan Module ID
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->button()->setText("Scan Module ID");
+    PSSToMaPSA_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(ScanModuleID_start()), SIGNAL(ScanModuleID_finished()));
   }
   // ----------
 
