@@ -1119,6 +1119,19 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   }
   // ----------
 
+  // step: Push IDs to Database
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->button()->setText("Push Assembly Information to Database");
+    PSSToMaPSA_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(PushToDB_start()), SIGNAL(PushToDB_finished()));
+  }
+  // ----------
+
   // step: Remove PS Module from Assembly Platform
   {
     ++assembly_step_N;

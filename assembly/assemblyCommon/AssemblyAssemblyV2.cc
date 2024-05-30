@@ -220,6 +220,29 @@ void AssemblyAssemblyV2::ScanModuleID_start()
     }
 }
 
+void AssemblyAssemblyV2::PushToDB_start()
+{
+    QMessageBox msgBox;
+    msgBox.setWindowTitle(tr("Push Module Information to Database"));
+    msgBox.setText(QString("Push the following information to database:\n\tBaseplate:\t%1\n\tMaPSA:\t%2\n\tPS-s:\t%3\n\tModule:\t%4").arg(Baseplate_ID_).arg(MaPSA_ID_).arg(PSS_ID_).arg(Module_ID_));
+    msgBox.setInformativeText("Do you want to push this information to the Database?");
+    msgBox.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+    int ret = msgBox.exec();
+
+    switch(ret)
+    {
+      case QMessageBox::No: return; //Exit
+      case QMessageBox::Yes:
+        // Insert function to push to database here.
+        NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushToDB_start: "
+           << QString("Push the following information to database:\n\tBaseplate:\t%1\n\tMaPSA:\t\t%2\n\tPS-s:\t\t%3\n\tModule:\t\t%4").arg(Baseplate_ID_).arg(MaPSA_ID_).arg(PSS_ID_).arg(Module_ID_).toStdString();
+        emit PushToDB_finished();
+        break; //Continue function execution
+      default: return; //Exit
+    }
+}
+
 // ----------------------------------------------------------------------------------------------------
 // GoToSensorMarkerPreAlignment -----------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
