@@ -167,6 +167,7 @@ void AssemblyAssemblyV2::ScanMaPSAID_start()
                                          tr("Scan MaPSA ID:"), QLineEdit::Normal,
                                          tr(""), &ok);
     if (!ok || MaPSA_ID.isEmpty()){
+        emit ScanMaPSAID_aborted();
         return;
     } else {
         MaPSA_ID_ = MaPSA_ID;
@@ -182,6 +183,7 @@ void AssemblyAssemblyV2::ScanPSSID_start()
                                          tr("Scan PS-s ID:"), QLineEdit::Normal,
                                          tr(""), &ok);
     if (!ok || PSS_ID.isEmpty()){
+        emit ScanPSSID_aborted();
         return;
     } else {
         PSS_ID_ = PSS_ID;
@@ -197,6 +199,7 @@ void AssemblyAssemblyV2::ScanBaseplateID_start()
                                          tr("Scan Baseplate ID:"), QLineEdit::Normal,
                                          tr(""), &ok);
     if (!ok || Baseplate_ID.isEmpty()){
+        emit ScanBaseplateID_aborted();
         return;
     } else {
         Baseplate_ID_ = Baseplate_ID;
@@ -212,6 +215,7 @@ void AssemblyAssemblyV2::ScanModuleID_start()
                                          tr("Scan Module ID:"), QLineEdit::Normal,
                                          tr(""), &ok);
     if (!ok || Module_ID.isEmpty()){
+        emit ScanModuleID_aborted();
         return;
     } else {
         Module_ID_ = Module_ID;
@@ -232,14 +236,18 @@ void AssemblyAssemblyV2::PushToDB_start()
 
     switch(ret)
     {
-      case QMessageBox::No: return; //Exit
+      case QMessageBox::No:
+        emit PushToDB_aborted();
+        return;
       case QMessageBox::Yes:
-        // Insert function to push to database here.
+        // <--- Insert function to push to database here. --->
         NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushToDB_start: "
            << QString("Push the following information to database:\n\tBaseplate:\t%1\n\tMaPSA:\t\t%2\n\tPS-s:\t\t%3\n\tModule:\t\t%4").arg(Baseplate_ID_).arg(MaPSA_ID_).arg(PSS_ID_).arg(Module_ID_).toStdString();
         emit PushToDB_finished();
-        break; //Continue function execution
-      default: return; //Exit
+        break;
+      default:
+        emit PushToDB_aborted();
+        return;
     }
 }
 

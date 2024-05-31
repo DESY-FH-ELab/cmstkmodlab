@@ -202,6 +202,12 @@ class AssemblyAssemblyV2 : public QObject
   void ScanModuleID_finished();
   void PushToDB_finished();
 
+  void ScanMaPSAID_aborted();
+  void ScanBaseplateID_aborted();
+  void ScanPSSID_aborted();
+  void ScanModuleID_aborted();
+  void PushToDB_aborted();
+
   void GoToSensorMarkerPreAlignment_finished();
 
   void GoFromSensorMarkerToPickupXY_finished();
