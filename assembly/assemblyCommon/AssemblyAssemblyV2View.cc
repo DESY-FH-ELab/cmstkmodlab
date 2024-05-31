@@ -19,7 +19,6 @@
 
 #include <AssemblyAssemblyV2.h>
 #include <AssemblyAssemblyV2View.h>
-#include <AssemblyAssemblyActionWidget.h>
 #include <AssemblyAssemblyTextWidget.h>
 
 #include <AssemblyUtilities.h>
@@ -30,6 +29,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
  , wid_PSPToBasep_(nullptr)
  , wid_PSSToSpacers_(nullptr)
  , wid_PSSToMaPSA_(nullptr)
+ , push_to_db_wid_(nullptr)
  , baseplate_id_lineed_(nullptr)
  , mapsa_id_lineed_(nullptr)
  , pss_id_lineed_(nullptr)
@@ -108,6 +108,9 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
 
   push_to_db_button_ = new QPushButton("Push to database");
   opts_lay->addWidget(push_to_db_button_);
+
+  connect(push_to_db_button_, SIGNAL(clicked()), assembly, SLOT(PushToDB_start()));
+  connect(assembly, SIGNAL(PushToDB_finished()), this, SLOT(disable_DB()));
 
   //// -----------------------------------------------
 
@@ -1123,12 +1126,12 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   {
     ++assembly_step_N;
 
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->button()->setText("Push Assembly Information to Database");
-    PSSToMaPSA_lay->addWidget(tmp_wid);
+    push_to_db_wid_ = new AssemblyAssemblyActionWidget;
+    push_to_db_wid_->label()->setText(QString::number(assembly_step_N));
+    push_to_db_wid_->button()->setText("Push Assembly Information to Database");
+    PSSToMaPSA_lay->addWidget(push_to_db_wid_);
 
-    tmp_wid->connect_action(assembly, SLOT(PushToDB_start()), SIGNAL(PushToDB_finished()), SIGNAL(PushToDB_aborted()));
+    push_to_db_wid_->connect_action(assembly, SLOT(PushToDB_start()), SIGNAL(PushToDB_finished()), SIGNAL(PushToDB_aborted()));
   }
   // ----------
 
@@ -1147,6 +1150,12 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
 
   PSSToMaPSA_lay->addStretch(1);
   //// -----------------------------------------------
+}
+
+void AssemblyAssemblyV2View::disable_DB()
+{
+    push_to_db_button_->setEnabled(false);
+    push_to_db_wid_->disable_action();
 }
 
 //-- Information about this tab in GUI

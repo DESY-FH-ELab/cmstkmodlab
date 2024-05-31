@@ -20,6 +20,8 @@
 #include <QLineEdit>
 #include <QPushButton>
 
+#include <AssemblyAssemblyActionWidget.h>
+
 class AssemblyAssemblyV2View : public QWidget
 {
  Q_OBJECT
@@ -30,6 +32,7 @@ class AssemblyAssemblyV2View : public QWidget
 
  public slots:
   void display_infoTab();
+  void disable_DB();
 
  protected:
   QCheckBox* smartMove_checkbox_;
@@ -38,11 +41,14 @@ class AssemblyAssemblyV2View : public QWidget
   QWidget* wid_PSSToSpacers_;
   QWidget* wid_PSSToMaPSA_;
 
+  AssemblyAssemblyActionWidget* push_to_db_wid_;
+
   QLineEdit* baseplate_id_lineed_;
   QLineEdit* mapsa_id_lineed_;
   QLineEdit* pss_id_lineed_;
   QLineEdit* module_id_lineed_;
   QPushButton* push_to_db_button_;
+
 };
 
 #endif // ASSEMBLYASSEMBLYV2VIEW_H
