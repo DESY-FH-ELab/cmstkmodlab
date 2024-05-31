@@ -163,7 +163,7 @@ void AssemblyAssemblyV2::use_smartMove(const int state)
 void AssemblyAssemblyV2::ScanMaPSAID_start()
 {
     bool ok = false;
-    QString MaPSA_ID = QInputDialog::getText(nullptr, tr("QInputDialog::getText()"),
+    QString MaPSA_ID = QInputDialog::getText(nullptr, tr("Scan MaPSA ID"),
                                          tr("Scan MaPSA ID:"), QLineEdit::Normal,
                                          tr(""), &ok);
     if (!ok || MaPSA_ID.isEmpty()){
@@ -179,7 +179,7 @@ void AssemblyAssemblyV2::ScanMaPSAID_start()
 void AssemblyAssemblyV2::ScanPSSID_start()
 {
     bool ok = false;
-    QString PSS_ID = QInputDialog::getText(nullptr, tr("QInputDialog::getText()"),
+    QString PSS_ID = QInputDialog::getText(nullptr, tr("Scan PS-s ID"),
                                          tr("Scan PS-s ID:"), QLineEdit::Normal,
                                          tr(""), &ok);
     if (!ok || PSS_ID.isEmpty()){
@@ -195,7 +195,7 @@ void AssemblyAssemblyV2::ScanPSSID_start()
 void AssemblyAssemblyV2::ScanBaseplateID_start()
 {
     bool ok = false;
-    QString Baseplate_ID = QInputDialog::getText(nullptr, tr("QInputDialog::getText()"),
+    QString Baseplate_ID = QInputDialog::getText(nullptr, tr("Scan Baseplate ID"),
                                          tr("Scan Baseplate ID:"), QLineEdit::Normal,
                                          tr(""), &ok);
     if (!ok || Baseplate_ID.isEmpty()){
@@ -211,7 +211,7 @@ void AssemblyAssemblyV2::ScanBaseplateID_start()
 void AssemblyAssemblyV2::ScanModuleID_start()
 {
     bool ok = false;
-    QString Module_ID = QInputDialog::getText(nullptr, tr("QInputDialog::getText()"),
+    QString Module_ID = QInputDialog::getText(nullptr, tr("Scan Module ID"),
                                          tr("Scan Module ID:"), QLineEdit::Normal,
                                          tr(""), &ok);
     if (!ok || Module_ID.isEmpty()){
