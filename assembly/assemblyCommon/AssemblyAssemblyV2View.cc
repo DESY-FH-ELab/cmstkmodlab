@@ -1156,6 +1156,11 @@ void AssemblyAssemblyV2View::disable_DB()
 {
     push_to_db_button_->setEnabled(false);
     push_to_db_wid_->disable_action();
+
+    mapsa_id_lineed_->setReadOnly(true);
+    baseplate_id_lineed_->setReadOnly(true);
+    pss_id_lineed_->setReadOnly(true);
+    module_id_lineed_->setReadOnly(true);
 }
 
 //-- Information about this tab in GUI
