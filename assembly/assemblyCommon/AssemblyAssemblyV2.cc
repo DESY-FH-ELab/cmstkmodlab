@@ -226,6 +226,20 @@ void AssemblyAssemblyV2::ScanModuleID_start()
 
 void AssemblyAssemblyV2::PushToDB_start()
 {
+    if(Baseplate_ID_.isEmpty() || MaPSA_ID_.isEmpty() || PSS_ID_.isEmpty() || Module_ID_.isEmpty())
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Information for Database Upload missing"));
+        QString msg = QString("The following IDs are missing:") + (Baseplate_ID_.isEmpty() ? "\n\tBaseplate ID" : "") + (MaPSA_ID_.isEmpty() ? "\n\tMaPSA ID" : "") + (PSS_ID_.isEmpty() ? "\n\tPSS ID" : "") + (Module_ID_.isEmpty() ? "\n\tModule ID" : "");
+        msgBox.setText(msg);
+        msgBox.setInformativeText("Please add this information via the toolbar.");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        int ret = msgBox.exec();
+
+        emit PushToDB_aborted();
+        return;
+    }
+
     QMessageBox msgBox;
     msgBox.setWindowTitle(tr("Push Module Information to Database"));
     msgBox.setText(QString("Push the following information to database:\n\tBaseplate:\t%1\n\tMaPSA:\t%2\n\tPS-s:\t%3\n\tModule:\t%4").arg(Baseplate_ID_).arg(MaPSA_ID_).arg(PSS_ID_).arg(Module_ID_));
