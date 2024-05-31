@@ -133,7 +133,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
     tmp_wid->button()->setText("Scan MaPSA ID");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(ScanMaPSAID_start()), SIGNAL(ScanMaPSAID_finished()));
+    tmp_wid->connect_action(assembly, SLOT(ScanMaPSAID_start()), SIGNAL(ScanMaPSAID_finished()), SIGNAL(ScanMaPSAID_aborted()));
   }
   // ----------
 
@@ -264,7 +264,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
     tmp_wid->button()->setText("Scan Baseplate ID");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(ScanBaseplateID_start()), SIGNAL(ScanBaseplateID_finished()));
+    tmp_wid->connect_action(assembly, SLOT(ScanBaseplateID_start()), SIGNAL(ScanBaseplateID_finished()), SIGNAL(ScanBaseplateID_aborted()));
   }
   // ----------
 
@@ -411,7 +411,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
     tmp_wid->button()->setText("Scan PS-s ID");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(ScanPSSID_start()), SIGNAL(ScanPSSID_finished()));
+    tmp_wid->connect_action(assembly, SLOT(ScanPSSID_start()), SIGNAL(ScanPSSID_finished()), SIGNAL(ScanPSSID_aborted()));
   }
   // ----------
 
@@ -941,7 +941,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
     tmp_wid->button()->setText("Scan Module ID");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(ScanModuleID_start()), SIGNAL(ScanModuleID_finished()));
+    tmp_wid->connect_action(assembly, SLOT(ScanModuleID_start()), SIGNAL(ScanModuleID_finished()), SIGNAL(ScanModuleID_aborted()));
   }
   // ----------
 
@@ -954,7 +954,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
     tmp_wid->button()->setText("Push Assembly Information to Database");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(PushToDB_start()), SIGNAL(PushToDB_finished()));
+    tmp_wid->connect_action(assembly, SLOT(PushToDB_start()), SIGNAL(PushToDB_finished()), SIGNAL(PushToDB_aborted()));
   }
   // ----------
 
