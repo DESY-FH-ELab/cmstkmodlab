@@ -97,7 +97,7 @@ void AssemblyAssemblyActionWidget::disable(const int state)
   return;
 }
 
-void AssemblyAssemblyActionWidget::connect_action(const QObject* qobject, const char* start_slot, const char* stop_signal)
+void AssemblyAssemblyActionWidget::connect_action(const QObject* qobject, const char* start_slot, const char* stop_signal, const char* abort_signal)
 {
   if(qobject_){ this->reset_action(); }
 
@@ -106,6 +106,7 @@ void AssemblyAssemblyActionWidget::connect_action(const QObject* qobject, const 
     qobject_ = qobject;
     start_slot_ = start_slot;
     stop_signal_ = stop_signal;
+    abort_signal_ = abort_signal;
 
     connect(this->button(), SIGNAL(clicked()), this, SLOT(start_action()));
   }
@@ -121,6 +122,7 @@ void AssemblyAssemblyActionWidget::reset_action()
   qobject_ = nullptr;
   start_slot_ = nullptr;
   stop_signal_ = nullptr;
+  abort_signal_ = nullptr;
 }
 
 void AssemblyAssemblyActionWidget::start_action()
@@ -130,6 +132,11 @@ void AssemblyAssemblyActionWidget::start_action()
     connect(this, SIGNAL(action_request()), qobject_, start_slot_);
 
     connect(qobject_, stop_signal_, this, SLOT(disable_action()));
+
+    if(abort_signal_ != nullptr)
+    {
+        connect(qobject_, abort_signal_, this, SLOT(abort_action()));
+    }
 
     emit action_request();
   }
@@ -154,6 +161,25 @@ void AssemblyAssemblyActionWidget::disable_action()
   else
   {
     NQLog("AssemblyAssemblyActionWidget", NQLog::Warning) << "disable_action"
+       << ": invalid (NULL) pointer to QObject, no action taken";
+  }
+}
+
+void AssemblyAssemblyActionWidget::abort_action()
+{
+  if(qobject_)
+  {
+    disconnect(this, SIGNAL(action_request()), qobject_, start_slot_);
+
+    disconnect(qobject_, stop_signal_, this, SLOT(disable_action()));
+
+    disconnect(qobject_, abort_signal_, this, SLOT(abort_action()));
+
+    inhibit_dialogue_ = true;
+  }
+  else
+  {
+    NQLog("AssemblyAssemblyActionWidget", NQLog::Warning) << "abort_action"
        << ": invalid (NULL) pointer to QObject, no action taken";
   }
 }
