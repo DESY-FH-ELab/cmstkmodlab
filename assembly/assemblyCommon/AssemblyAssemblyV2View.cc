@@ -33,6 +33,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
  , baseplate_id_lineed_(nullptr)
  , mapsa_id_lineed_(nullptr)
  , pss_id_lineed_(nullptr)
+ , glue_id_lineed_(nullptr)
  , module_id_lineed_(nullptr)
  , push_to_db_button_(nullptr)
 {
@@ -94,6 +95,17 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
 
   connect(assembly, SIGNAL(PSS_ID_updated(QString)), pss_id_lineed_, SLOT(setText(QString)));
   connect(pss_id_lineed_, SIGNAL(textEdited(QString)), assembly, SLOT(Update_PSS_ID(QString)));
+
+  QLabel* glue_id_label = new QLabel("Slow Glue ID: ");
+  glue_id_lineed_ = new QLineEdit("");
+  glue_id_lineed_->setPlaceholderText("Slow Glue ID");
+  glue_id_lineed_->setMaximumWidth(200);
+
+  opts_lay->addWidget(glue_id_label);
+  opts_lay->addWidget(glue_id_lineed_);
+
+  connect(assembly, SIGNAL(Glue_ID_updated(QString)), glue_id_lineed_, SLOT(setText(QString)));
+  connect(glue_id_lineed_, SIGNAL(textEdited(QString)), assembly, SLOT(Update_Glue_ID(QString)));
 
   QLabel* module_id_label = new QLabel("Module ID: ");
   module_id_lineed_ = new QLineEdit("");
@@ -268,6 +280,19 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     PSPToBasep_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(ScanBaseplateID_start()), SIGNAL(ScanBaseplateID_finished()), SIGNAL(ScanBaseplateID_aborted()));
+  }
+  // ----------
+
+  // step: Scan Glue ID
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->button()->setText("Scan Slow Glue ID");
+    PSPToBasep_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(ScanGlueID_start()), SIGNAL(ScanGlueID_finished()), SIGNAL(ScanGlueID_aborted()));
   }
   // ----------
 
@@ -1160,6 +1185,7 @@ void AssemblyAssemblyV2View::disable_DB()
     mapsa_id_lineed_->setReadOnly(true);
     baseplate_id_lineed_->setReadOnly(true);
     pss_id_lineed_->setReadOnly(true);
+    glue_id_lineed_->setReadOnly(true);
     module_id_lineed_->setReadOnly(true);
 }
 
