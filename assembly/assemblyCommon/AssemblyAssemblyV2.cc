@@ -51,6 +51,7 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
  , Baseplate_ID_()
  , MaPSA_ID_()
  , PSS_ID_()
+ , Glue_ID_()
  , Module_ID_()
 {
   // validate pointers to controllers
@@ -198,6 +199,22 @@ void AssemblyAssemblyV2::ScanBaseplateID_start()
     }
 }
 
+void AssemblyAssemblyV2::ScanGlueID_start()
+{
+    bool ok = false;
+    QString Glue_ID = QInputDialog::getText(nullptr, tr("Scan Slow Glue ID"),
+                                         tr("Scan Slow Glue ID:"), QLineEdit::Normal,
+                                         tr(""), &ok);
+    if (!ok || Glue_ID.isEmpty()){
+        emit ScanGlueID_aborted();
+        return;
+    } else {
+        Glue_ID_ = Glue_ID;
+        emit Glue_ID_updated(Glue_ID);
+        emit ScanGlueID_finished();
+    }
+}
+
 void AssemblyAssemblyV2::ScanModuleID_start()
 {
     bool ok = false;
@@ -216,11 +233,11 @@ void AssemblyAssemblyV2::ScanModuleID_start()
 
 void AssemblyAssemblyV2::PushToDB_start()
 {
-    if(Baseplate_ID_.isEmpty() || MaPSA_ID_.isEmpty() || PSS_ID_.isEmpty() || Module_ID_.isEmpty())
+    if(Baseplate_ID_.isEmpty() || MaPSA_ID_.isEmpty() || PSS_ID_.isEmpty() || Module_ID_.isEmpty() || Glue_ID_.isEmpty())
     {
         QMessageBox msgBox;
         msgBox.setWindowTitle(tr("Information for Database Upload missing"));
-        QString msg = QString("The following IDs are missing:") + (Baseplate_ID_.isEmpty() ? "\n\tBaseplate ID" : "") + (MaPSA_ID_.isEmpty() ? "\n\tMaPSA ID" : "") + (PSS_ID_.isEmpty() ? "\n\tPSS ID" : "") + (Module_ID_.isEmpty() ? "\n\tModule ID" : "");
+        QString msg = QString("The following IDs are missing:") + (Baseplate_ID_.isEmpty() ? "\n\tBaseplate ID" : "") + (MaPSA_ID_.isEmpty() ? "\n\tMaPSA ID" : "") + (PSS_ID_.isEmpty() ? "\n\tPSS ID" : "") + (Glue_ID_.isEmpty() ? "\n\tGlue ID" : "") + (Module_ID_.isEmpty() ? "\n\tModule ID" : "");
         msgBox.setText(msg);
         msgBox.setInformativeText("Please add this information via the toolbar.");
         msgBox.setStandardButtons(QMessageBox::Ok);
@@ -232,7 +249,7 @@ void AssemblyAssemblyV2::PushToDB_start()
 
     QMessageBox msgBox;
     msgBox.setWindowTitle(tr("Push Module Information to Database"));
-    msgBox.setText(QString("Push the following information to database:\n\tBaseplate:\t%1\n\tMaPSA:\t%2\n\tPS-s:\t%3\n\tModule:\t%4").arg(Baseplate_ID_).arg(MaPSA_ID_).arg(PSS_ID_).arg(Module_ID_));
+    msgBox.setText(QString("Push the following information to database:\n\tBaseplate:\t%1\n\tMaPSA:\t%2\n\tPS-s:\t%3\n\tGlue:\t%4\n\tModule:\t%5").arg(Baseplate_ID_).arg(MaPSA_ID_).arg(PSS_ID_).arg(Glue_ID_).arg(Module_ID_));
     msgBox.setInformativeText("Do you want to push this information to the Database?");
     msgBox.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
     msgBox.setDefaultButton(QMessageBox::Yes);
@@ -246,7 +263,7 @@ void AssemblyAssemblyV2::PushToDB_start()
       case QMessageBox::Yes:
         // <--- Insert function to push to database here. --->
         NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushToDB_start: "
-           << QString("Push the following information to database:\n\tBaseplate:\t%1\n\tMaPSA:\t\t%2\n\tPS-s:\t\t%3\n\tModule:\t\t%4").arg(Baseplate_ID_).arg(MaPSA_ID_).arg(PSS_ID_).arg(Module_ID_).toStdString();
+           << QString("Push the following information to database:\n\tBaseplate:\t%1\n\tMaPSA:\t\t%2\n\tPS-s:\t\t%3\n\tPS-s:\t\t%4\n\tModule:\t\t%5").arg(Baseplate_ID_).arg(MaPSA_ID_).arg(PSS_ID_).arg(Glue_ID_).arg(Module_ID_).toStdString();
         emit PushToDB_finished();
         break;
       default:
