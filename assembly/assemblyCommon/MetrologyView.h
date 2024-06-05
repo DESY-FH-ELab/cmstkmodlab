@@ -50,6 +50,7 @@ class MetrologyView : public QWidget
   AssemblyUEyeView* PatRecThree_Image() const { return patrecThree_image_; }
   AssemblyUEyeView* PatRecFour_Image() const { return patrecFour_image_; }
 
+  QPushButton* button_pushToDatabase() const { return button_pushToDatabase_; }
   QPushButton* button_metrologyClearResults() const { return button_metrologyClearResults_; }
   QPushButton* button_metrologyEmergencyStop() const { return button_metrologyEmergencyStop_; }
 
@@ -101,7 +102,8 @@ class MetrologyView : public QWidget
   AssemblyUEyeView* patrecFour_image_;
   QScrollArea*      patrecFour_scroll_;
 
-  QPushButton*  button_metrologyClearResults_;
+  QPushButton* button_pushToDatabase_;
+  QPushButton* button_metrologyClearResults_;
   QPushButton* button_metrologyEmergencyStop_;
 
   bool finder_connected_;
@@ -131,6 +133,8 @@ class MetrologyView : public QWidget
   void enable_vacuum_on_baseplate();
 
   void go_to_marker();
+
+  void push_results_to_DB();
 
   void clearResults();
 
