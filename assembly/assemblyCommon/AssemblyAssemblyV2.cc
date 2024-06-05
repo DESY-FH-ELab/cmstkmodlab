@@ -20,6 +20,11 @@
 
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QTextEdit>
 
 AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const motion, const RelayCardManager* const vacuum, const AssemblySmartMotionManager* const smart_motion, QObject* parent)
  : QObject(parent)
@@ -257,23 +262,51 @@ void AssemblyAssemblyV2::PushToDB_start()
         return;
     }
 
-    QMessageBox msgBox;
-    msgBox.setWindowTitle(tr("Push Module Information to Database"));
-    msgBox.setText(QString("Push the following information to database:\n\tBaseplate:\t%1\n\tMaPSA:\t%2\n\tPS-s:\t%3\n\tGlue:\t%4\n\tModule:\t%5").arg(Baseplate_ID_).arg(MaPSA_ID_).arg(PSS_ID_).arg(Glue_ID_).arg(Module_ID_));
-    msgBox.setInformativeText("Do you want to push this information to the Database?");
-    msgBox.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-    msgBox.setDefaultButton(QMessageBox::Yes);
-    int ret = msgBox.exec();
+    QDialog* msgBox = new QDialog();
+    msgBox->setWindowTitle(tr("Push Module Information to Database"));
 
-    switch(ret)
+    QVBoxLayout* vlay = new QVBoxLayout();
+    msgBox->setLayout(vlay);
+
+    QLabel* main_txt = new QLabel(QString("Push the following information to database:\n\tBP:\t%1\n\tMaPSA:\t%2\n\tPS-s:\t%3\n\tGlue:\t%4\n\tModule:\t%5").arg(Baseplate_ID_).arg(MaPSA_ID_).arg(PSS_ID_).arg(Glue_ID_).arg(Module_ID_));
+    vlay->addWidget(main_txt);
+
+    QHBoxLayout* comment_lay = new QHBoxLayout();
+
+    QLabel* comment_lab = new QLabel("Comments:");
+    QTextEdit* comment_lin = new QTextEdit("");
+    comment_lin->setTabChangesFocus(true);
+    comment_lin->setFixedHeight(60);
+
+    comment_lay->addWidget(comment_lab);
+    comment_lay->addWidget(comment_lin);
+
+    vlay->addLayout(comment_lay);
+
+    QLabel* info_txt = new QLabel("Do you want to push this information to the Database?");
+    vlay->addWidget(info_txt);
+
+    QDialogButtonBox* button_box = new QDialogButtonBox(Qt::Horizontal);
+    button_box->addButton(QDialogButtonBox::Yes);
+    button_box->addButton(QDialogButtonBox::No);
+    button_box->setCenterButtons(true);
+
+    vlay->addWidget(button_box);
+
+    connect(button_box, SIGNAL(accepted()), msgBox, SLOT(accept()));
+    connect(button_box, SIGNAL(rejected()), msgBox, SLOT(reject()));
+
+    int ret = msgBox->exec();
+
+    switch(msgBox->result())
     {
-      case QMessageBox::No:
+      case QDialog::Rejected:
         emit PushToDB_aborted();
         return;
-      case QMessageBox::Yes:
+      case QDialog::Accepted:
         // <--- Insert function to push to database here. --->
         NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushToDB_start: "
-           << QString("Push the following information to database:\n\tBaseplate:\t%1\n\tMaPSA:\t\t%2\n\tPS-s:\t\t%3\n\tPS-s:\t\t%4\n\tModule:\t\t%5").arg(Baseplate_ID_).arg(MaPSA_ID_).arg(PSS_ID_).arg(Glue_ID_).arg(Module_ID_).toStdString();
+           << QString("Push the following information to database:\n\tBaseplate:\t%1\n\tMaPSA:\t\t%2\n\tPS-s:\t\t%3\n\tPS-s:\t\t%4\n\tModule:\t\t%5\n\tComment:\t\t%6").arg(Baseplate_ID_).arg(MaPSA_ID_).arg(PSS_ID_).arg(Glue_ID_).arg(Module_ID_).arg(comment_lin->toPlainText()).toStdString();
         emit PushToDB_finished();
         break;
       default:
