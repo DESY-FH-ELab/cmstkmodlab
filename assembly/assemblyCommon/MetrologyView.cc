@@ -888,9 +888,10 @@ void MetrologyView::push_results_to_DB()
     QLabel* info_txt = new QLabel("Do you want to push this information to the Database?");
     vlay->addWidget(info_txt);
 
-    QDialogButtonBox* button_box = new QDialogButtonBox(Qt::Vertical);
-    button_box->addButton(QDialogButtonBox::No);
+    QDialogButtonBox* button_box = new QDialogButtonBox(Qt::Horizontal);
     button_box->addButton(QDialogButtonBox::Yes);
+    button_box->addButton(QDialogButtonBox::No);
+    button_box->setCenterButtons(true);
 
     vlay->addWidget(button_box);
 
@@ -904,6 +905,17 @@ void MetrologyView::push_results_to_DB()
       case QDialog::Rejected:
         return;
       case QDialog::Accepted:
+        if(mod_ID_lin->text().isEmpty())
+        {
+            QMessageBox* warnBox = new QMessageBox;
+            warnBox->setStyleSheet("QLabel{min-width: 300px;}");
+            warnBox->setInformativeText("No Module ID provided. Please try again.");
+            warnBox->setStandardButtons(QMessageBox::Ok);
+            warnBox->setDefaultButton(QMessageBox::Ok);
+            int ret = warnBox->exec();
+            return;
+        }
+
         // <--- Insert function to push to database here. --->
         NQLog("AssemblyAssemblyV2", NQLog::Spam) << "push_results_to_DB: "
            << QString("Push the following information to database:\n\tModule ID:\t%1\n\tdx [mm]:\t%2\n\tdy [mm]:\t%3\n\tdz [mm]:\t%4\n\tda [urad]:\t%5").arg(mod_ID_lin->text()).arg(metro_dx_corr_).arg(metro_dy_corr_).arg(metro_dz_).arg(metro_da_urad_);
