@@ -91,6 +91,8 @@ class MetrologyView : public QWidget
   QLineEdit* metro_da_deg_linee_;
   QLineEdit* metro_da_urad_linee_;
 
+  double metro_dx_corr_, metro_dy_corr_, metro_dz_, metro_da_urad_;
+
   AssemblyUEyeView* patrecOne_image_;
   QScrollArea*      patrecOne_scroll_;
 

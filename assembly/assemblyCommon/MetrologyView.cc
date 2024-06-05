@@ -65,6 +65,11 @@ MetrologyView::MetrologyView(QWidget* parent)
  , metro_da_deg_linee_(nullptr)
  , metro_da_urad_linee_(nullptr)
 
+ , metro_dx_corr_(0)
+ , metro_dy_corr_(0)
+ , metro_dz_(0)
+ , metro_da_urad_(0)
+
  , patrecOne_image_ (nullptr)
  , patrecOne_scroll_(nullptr)
 
@@ -763,6 +768,7 @@ void MetrologyView::show_results(const double dx, const double dx_corr, const do
   std::stringstream posi_strs_dx_corr;
   posi_strs_dx_corr << dx_corr;
   metro_dx_corr_linee_->setText(QString::fromStdString(posi_strs_dx_corr.str()));
+  metro_dx_corr_ = dx_corr;
 
   std::stringstream posi_strs_dy;
   posi_strs_dy << dy;
@@ -771,10 +777,12 @@ void MetrologyView::show_results(const double dx, const double dx_corr, const do
   std::stringstream posi_strs_dy_corr;
   posi_strs_dy_corr << dy_corr;
   metro_dy_corr_linee_->setText(QString::fromStdString(posi_strs_dy_corr.str()));
+  metro_dy_corr_ = dy_corr;
 
   std::stringstream posi_strs_dz;
   posi_strs_dz << dz;
   metro_dz_linee_->setText(QString::fromStdString(posi_strs_dz.str()));
+  metro_dz_ = dz;
 
   std::stringstream posi_strs_da_deg;
   posi_strs_da_deg << da_deg;
@@ -783,6 +791,7 @@ void MetrologyView::show_results(const double dx, const double dx_corr, const do
   std::stringstream posi_strs_da_urad;
   posi_strs_da_urad << da_urad;
   metro_da_urad_linee_->setText(QString::fromStdString(posi_strs_da_urad.str()));
+  metro_da_urad_ = da_urad;
 
   button_metrologyClearResults_->setEnabled(true);
 
@@ -858,6 +867,11 @@ void MetrologyView::clearResults()
   metro_dz_linee_->setText("");
   metro_da_deg_linee_->setText("");
   metro_da_urad_linee_->setText("");
+
+  metro_dx_corr_ = 0;
+  metro_dy_corr_ = 0;
+  metro_dz_ = 0;
+  metro_da_urad_ = 0;
 
   button_metrologyClearResults_->setEnabled(false);
 
