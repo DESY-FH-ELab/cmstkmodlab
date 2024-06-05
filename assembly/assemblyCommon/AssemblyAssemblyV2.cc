@@ -19,6 +19,12 @@
 #include <string>
 
 #include <QMessageBox>
+#include <QInputDialog>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QTextEdit>
 
 AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const motion, const RelayCardManager* const vacuum, const AssemblySmartMotionManager* const smart_motion, QObject* parent)
  : QObject(parent)
@@ -46,6 +52,12 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
  , PSSPlusSpacersToMaPSAPosition_Y_(0.)
  , PSSPlusSpacersToMaPSAPosition_Z_(0.)
  , PSSPlusSpacersToMaPSAPosition_A_(0.)
+
+ , Baseplate_ID_()
+ , MaPSA_ID_()
+ , PSS_ID_()
+ , Glue_ID_()
+ , Module_ID_()
 {
   // validate pointers to controllers
   this->motion();
@@ -143,6 +155,155 @@ void AssemblyAssemblyV2::use_smartMove(const int state)
   return;
 }
 // ----------------------------------------------------------------------------------------------------
+
+void AssemblyAssemblyV2::ScanMaPSAID_start()
+{
+    bool ok = false;
+    QString MaPSA_ID = QInputDialog::getText(nullptr, tr("Scan MaPSA ID"),
+                                         tr("Scan MaPSA ID:"), QLineEdit::Normal,
+                                         tr(""), &ok);
+    if (!ok || MaPSA_ID.isEmpty()){
+        emit ScanMaPSAID_aborted();
+        return;
+    } else {
+        MaPSA_ID_ = MaPSA_ID;
+        emit MaPSA_ID_updated(MaPSA_ID);
+        emit ScanMaPSAID_finished();
+    }
+}
+
+void AssemblyAssemblyV2::ScanPSSID_start()
+{
+    bool ok = false;
+    QString PSS_ID = QInputDialog::getText(nullptr, tr("Scan PS-s ID"),
+                                         tr("Scan PS-s ID:"), QLineEdit::Normal,
+                                         tr(""), &ok);
+    if (!ok || PSS_ID.isEmpty()){
+        emit ScanPSSID_aborted();
+        return;
+    } else {
+        PSS_ID_ = PSS_ID;
+        emit PSS_ID_updated(PSS_ID);
+        emit ScanPSSID_finished();
+    }
+}
+
+void AssemblyAssemblyV2::ScanBaseplateID_start()
+{
+    bool ok = false;
+    QString Baseplate_ID = QInputDialog::getText(nullptr, tr("Scan Baseplate ID"),
+                                         tr("Scan Baseplate ID:"), QLineEdit::Normal,
+                                         tr(""), &ok);
+    if (!ok || Baseplate_ID.isEmpty()){
+        emit ScanBaseplateID_aborted();
+        return;
+    } else {
+        Baseplate_ID_ = Baseplate_ID;
+        emit Baseplate_ID_updated(Baseplate_ID);
+        emit ScanBaseplateID_finished();
+    }
+}
+
+void AssemblyAssemblyV2::ScanGlueID_start()
+{
+    bool ok = false;
+    QString Glue_ID = QInputDialog::getText(nullptr, tr("Scan Slow Glue ID"),
+                                         tr("Scan Slow Glue ID:"), QLineEdit::Normal,
+                                         tr(""), &ok);
+    if (!ok || Glue_ID.isEmpty()){
+        emit ScanGlueID_aborted();
+        return;
+    } else {
+        Glue_ID_ = Glue_ID;
+        emit Glue_ID_updated(Glue_ID);
+        emit ScanGlueID_finished();
+    }
+}
+
+void AssemblyAssemblyV2::ScanModuleID_start()
+{
+    bool ok = false;
+    QString Module_ID = QInputDialog::getText(nullptr, tr("Scan Module ID"),
+                                         tr("Scan Module ID:"), QLineEdit::Normal,
+                                         tr(""), &ok);
+    if (!ok || Module_ID.isEmpty()){
+        emit ScanModuleID_aborted();
+        return;
+    } else {
+        Module_ID_ = Module_ID;
+        emit Module_ID_updated(Module_ID);
+        emit ScanModuleID_finished();
+    }
+}
+
+void AssemblyAssemblyV2::PushToDB_start()
+{
+    if(Baseplate_ID_.isEmpty() || MaPSA_ID_.isEmpty() || PSS_ID_.isEmpty() || Module_ID_.isEmpty() || Glue_ID_.isEmpty())
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Information for Database Upload missing"));
+        QString msg = QString("The following IDs are missing:") + (Baseplate_ID_.isEmpty() ? "\n\tBaseplate ID" : "") + (MaPSA_ID_.isEmpty() ? "\n\tMaPSA ID" : "") + (PSS_ID_.isEmpty() ? "\n\tPSS ID" : "") + (Glue_ID_.isEmpty() ? "\n\tGlue ID" : "") + (Module_ID_.isEmpty() ? "\n\tModule ID" : "");
+        msgBox.setText(msg);
+        msgBox.setInformativeText("Please add this information via the toolbar.");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        int ret = msgBox.exec();
+
+        emit PushToDB_aborted();
+        return;
+    }
+
+    QDialog* msgBox = new QDialog();
+    msgBox->setWindowTitle(tr("Push Module Information to Database"));
+
+    QVBoxLayout* vlay = new QVBoxLayout();
+    msgBox->setLayout(vlay);
+
+    QLabel* main_txt = new QLabel(QString("Push the following information to database:\n\tBP:\t%1\n\tMaPSA:\t%2\n\tPS-s:\t%3\n\tGlue:\t%4\n\tModule:\t%5").arg(Baseplate_ID_).arg(MaPSA_ID_).arg(PSS_ID_).arg(Glue_ID_).arg(Module_ID_));
+    vlay->addWidget(main_txt);
+
+    QHBoxLayout* comment_lay = new QHBoxLayout();
+
+    QLabel* comment_lab = new QLabel("Comments:");
+    QTextEdit* comment_lin = new QTextEdit("");
+    comment_lin->setTabChangesFocus(true);
+    comment_lin->setFixedHeight(60);
+
+    comment_lay->addWidget(comment_lab);
+    comment_lay->addWidget(comment_lin);
+
+    vlay->addLayout(comment_lay);
+
+    QLabel* info_txt = new QLabel("Do you want to push this information to the Database?");
+    vlay->addWidget(info_txt);
+
+    QDialogButtonBox* button_box = new QDialogButtonBox(Qt::Horizontal);
+    button_box->addButton(QDialogButtonBox::Yes);
+    button_box->addButton(QDialogButtonBox::No);
+    button_box->setCenterButtons(true);
+
+    vlay->addWidget(button_box);
+
+    connect(button_box, SIGNAL(accepted()), msgBox, SLOT(accept()));
+    connect(button_box, SIGNAL(rejected()), msgBox, SLOT(reject()));
+
+    int ret = msgBox->exec();
+
+    switch(msgBox->result())
+    {
+      case QDialog::Rejected:
+        emit PushToDB_aborted();
+        return;
+      case QDialog::Accepted:
+        // <--- Insert function to push to database here. --->
+        NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushToDB_start: "
+           << QString("Push the following information to database:\n\tBaseplate:\t%1\n\tMaPSA:\t\t%2\n\tPS-s:\t\t%3\n\tPS-s:\t\t%4\n\tModule:\t\t%5\n\tComment:\t\t%6").arg(Baseplate_ID_).arg(MaPSA_ID_).arg(PSS_ID_).arg(Glue_ID_).arg(Module_ID_).arg(comment_lin->toPlainText()).toStdString();
+        emit PushToDB_finished();
+        break;
+      default:
+        emit PushToDB_aborted();
+        return;
+    }
+}
 
 // ----------------------------------------------------------------------------------------------------
 // GoToSensorMarkerPreAlignment -----------------------------------------------------------------------
