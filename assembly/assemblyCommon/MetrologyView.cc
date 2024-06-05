@@ -26,6 +26,7 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QScriptEngine>
+#include <QDialogButtonBox>
 #include <qnumeric.h>
 
 
@@ -82,6 +83,7 @@ MetrologyView::MetrologyView(QWidget* parent)
  , patrecFour_image_ (nullptr)
  , patrecFour_scroll_(nullptr)
 
+ , button_pushToDatabase_(nullptr)
  , button_metrologyClearResults_(nullptr)
  , button_metrologyEmergencyStop_(nullptr)
 
@@ -423,6 +425,17 @@ MetrologyView::MetrologyView(QWidget* parent)
   metro_da_lay->setStretch(4,  55);
   metro_da_lay->setStretch(5, 101);
 
+  QHBoxLayout* metro_pushDB_lay = new QHBoxLayout;
+  metro_res_lay->addLayout(metro_pushDB_lay);
+
+  button_pushToDatabase_ = new QPushButton(tr("Push results to Database"));
+
+  metro_pushDB_lay->addStretch();
+  metro_pushDB_lay->addWidget(button_pushToDatabase_);
+  metro_pushDB_lay->addStretch();
+
+  button_pushToDatabase_->setEnabled(false);
+  connect(button_pushToDatabase_, SIGNAL(clicked()), this, SLOT(push_results_to_DB()));
 
   // Graphical Results (PatRec Images)
   QGridLayout* metro_img_lay = new QGridLayout;
@@ -794,6 +807,7 @@ void MetrologyView::show_results(const double dx, const double dx_corr, const do
   metro_da_urad_ = da_urad;
 
   button_metrologyClearResults_->setEnabled(true);
+  button_pushToDatabase_->setEnabled(true);
 
   return;
 }
@@ -849,6 +863,57 @@ void MetrologyView::metrology_abort(){
   button_metrologyClearResults_->setEnabled(true);
 }
 
+void MetrologyView::push_results_to_DB()
+{
+    QDialog* msgBox = new QDialog();
+    msgBox->setWindowTitle(tr("Push Metrology Results to Database"));
+
+    QVBoxLayout* vlay = new QVBoxLayout();
+    msgBox->setLayout(vlay);
+
+    QLabel* main_txt = new QLabel(QString("Push the following information to database:\n\tdx [mm]:\t\t%1\n\tdy [mm]:\t\t%2\n\tdz [mm]:\t\t%3\n\tda [urad]:\t%4").arg(metro_dx_corr_).arg(metro_dy_corr_).arg(metro_dz_).arg(metro_da_urad_));
+    vlay->addWidget(main_txt);
+
+    QHBoxLayout* mod_ID_lay = new QHBoxLayout();
+
+    QLabel* mod_ID_lab = new QLabel("Module ID:");
+    QLineEdit* mod_ID_lin = new QLineEdit("");
+    mod_ID_lin->setPlaceholderText("Module ID");
+
+    mod_ID_lay->addWidget(mod_ID_lab);
+    mod_ID_lay->addWidget(mod_ID_lin);
+
+    vlay->addLayout(mod_ID_lay);
+
+    QLabel* info_txt = new QLabel("Do you want to push this information to the Database?");
+    vlay->addWidget(info_txt);
+
+    QDialogButtonBox* button_box = new QDialogButtonBox(Qt::Vertical);
+    button_box->addButton(QDialogButtonBox::No);
+    button_box->addButton(QDialogButtonBox::Yes);
+
+    vlay->addWidget(button_box);
+
+    connect(button_box, SIGNAL(accepted()), msgBox, SLOT(accept()));
+    connect(button_box, SIGNAL(rejected()), msgBox, SLOT(reject()));
+
+    int ret = msgBox->exec();
+
+    switch(msgBox->result())
+    {
+      case QDialog::Rejected:
+        return;
+      case QDialog::Accepted:
+        // <--- Insert function to push to database here. --->
+        NQLog("AssemblyAssemblyV2", NQLog::Spam) << "push_results_to_DB: "
+           << QString("Push the following information to database:\n\tModule ID:\t%1\n\tdx [mm]:\t%2\n\tdy [mm]:\t%3\n\tdz [mm]:\t%4\n\tda [urad]:\t%5").arg(mod_ID_lin->text()).arg(metro_dx_corr_).arg(metro_dy_corr_).arg(metro_dz_).arg(metro_da_urad_);
+        button_pushToDatabase_->setEnabled(false);
+        break;
+      default:
+        return;
+    }
+}
+
 void MetrologyView::clearResults()
 {
   NQLog("MetrologyView", NQLog::Spam) << "clearResults()";
@@ -874,6 +939,7 @@ void MetrologyView::clearResults()
   metro_da_urad_ = 0;
 
   button_metrologyClearResults_->setEnabled(false);
+  button_pushToDatabase_->setEnabled(false);
 
   switch_to_config();
 }
