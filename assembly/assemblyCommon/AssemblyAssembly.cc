@@ -31,6 +31,7 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
  , vacuum_pickup_(0)
  , vacuum_spacer_(0)
  , vacuum_basepl_(0)
+ , vacuum_sub_(0)
 
  , pickup1_Z_(0.)
  , pickup2_Z_(0.)
@@ -61,6 +62,7 @@ AssemblyAssembly::AssemblyAssembly(const LStepExpressMotionManager* const motion
   vacuum_pickup_ = config_->getValue<int>("main", "Vacuum_PickupTool");
   vacuum_spacer_ = config_->getValue<int>("main", "Vacuum_Spacers");
   vacuum_basepl_ = config_->getValue<int>("main", "Vacuum_Baseplate");
+  vacuum_sub_ = config_->getValue<int>("main", "Vacuum_Subassembly");
 
   // absolute Z-position of motion stage for pickup of object after gluing
   // (1: PSs to Spacers, 2: PSs+Spacers to MaPSA)
@@ -469,6 +471,104 @@ void AssemblyAssembly::DisableVacuumBaseplate_finish()
      << ": assembly-step completed";
 
   emit DBLogMessage("== Assembly step completed : [Disable baseplate vacuum]");
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// EnableVacuumSubassembly ------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::EnableVacuumSubassembly_start()
+{
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "EnableVacuumSubassembly_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
+
+  connect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
+
+  connect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumSubassembly_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumSubassembly_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumSubassembly_finish()));
+
+  in_action_ = true;
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "EnableVacuumSubassembly_start"
+     << ": emitting signal \"vacuum_ON_request(" << vacuum_sub_ << ")\"";
+
+  emit vacuum_ON_request(vacuum_sub_);
+}
+
+void AssemblyAssembly::EnableVacuumSubassembly_finish()
+{
+  disconnect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
+
+  disconnect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumSubassembly_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumSubassembly_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumSubassembly_finish()));
+
+  if(in_action_){ in_action_ = false; }
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "EnableVacuumSubassembly_finish"
+     << ": emitting signal \"EnableVacuumSubassembly_finished\"";
+
+  emit EnableVacuumSubassembly_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "EnableVacuumSubassembly_finish"
+     << ": assembly-step completed";
+
+  emit DBLogMessage("== Assembly step completed : [Enable subassembly vacuum]");
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// DisableVacuumSubassembly -----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssembly::DisableVacuumSubassembly_start()
+{
+  if(in_action_){
+
+    NQLog("AssemblyAssembly", NQLog::Warning) << "DisableVacuumSubassembly_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
+
+  connect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
+
+  connect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumSubassembly_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumSubassembly_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumSubassembly_finish()));
+
+  in_action_ = true;
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "DisableVacuumSubassembly_start"
+     << ": emitting signal \"vacuum_OFF_request(" << vacuum_sub_ << ")\"";
+
+  emit vacuum_OFF_request(vacuum_sub_);
+}
+
+void AssemblyAssembly::DisableVacuumSubassembly_finish()
+{
+  disconnect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
+
+  disconnect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumSubassembly_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumSubassembly_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumSubassembly_finish()));
+
+  if(in_action_){ in_action_ = false; }
+
+  NQLog("AssemblyAssembly", NQLog::Spam) << "DisableVacuumSubassembly_finish"
+     << ": emitting signal \"DisableVacuumSubassembly_finished\"";
+
+  emit DisableVacuumSubassembly_finished();
+
+  NQLog("AssemblyAssembly", NQLog::Message) << "DisableVacuumSubassembly_finish"
+     << ": assembly-step completed";
+
+  emit DBLogMessage("== Assembly step completed : [Disable subassembly vacuum]");
 }
 // ----------------------------------------------------------------------------------------------------
 
