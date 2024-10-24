@@ -156,7 +156,7 @@ void AssemblySubassemblyPickup::GoToSensorMarkerPreAlignment_start()
 
   const double z0 =
      config_->getValue<double>("parameters", "CameraFocusOnAssemblyStage_Z")
-   - config_->getValue<double>("parameters", "Depth_SpacerSlots")
+   + config_->getValue<double>("parameters", "Thickness_SubassemblyJig")
    + config_->getValue<double>("parameters", "Thickness_Spacer")
    + config_->getValue<double>("parameters", "Thickness_GlueLayer")
    + config_->getValue<double>("parameters", "Thickness_PSS");
