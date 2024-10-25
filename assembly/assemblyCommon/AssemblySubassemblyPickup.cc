@@ -27,6 +27,7 @@ AssemblySubassemblyPickup::AssemblySubassemblyPickup(const LStepExpressMotionMan
   , vacuum_pickup_(0)
   , vacuum_spacer_(0)
   , vacuum_basepl_(0)
+  , vacuum_sub_(0)
 
   , use_smartMove_(false)
   , in_action_(false)
@@ -48,6 +49,7 @@ AssemblySubassemblyPickup::AssemblySubassemblyPickup(const LStepExpressMotionMan
     vacuum_pickup_ = config_->getValue<int>("main", "Vacuum_PickupTool");
     vacuum_spacer_ = config_->getValue<int>("main", "Vacuum_Spacers");
     vacuum_basepl_ = config_->getValue<int>("main", "Vacuum_Baseplate");
+    vacuum_sub_ = config_->getValue<int>("main", "Vacuum_Subassembly");
 
     alreadyClicked_LowerPickupToolOntoSubassembly = false;
 
@@ -132,6 +134,55 @@ void AssemblySubassemblyPickup::reset()
 }
 
 // ----------------------------------------------------------------------------------------------------
+// EnableVacuumSpacers --------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblySubassemblyPickup::EnableVacuumSpacers_start()
+{
+    if(in_action_){
+
+        NQLog("AssemblySubassemblyPickup", NQLog::Warning) << "EnableVacuumSpacers_start"
+        << ": logic error, an assembly step is still in progress, will not take further action";
+
+        return;
+    }
+
+    connect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
+
+    connect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumSpacers_finish()));
+    connect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumSpacers_finish()));
+    connect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumSpacers_finish()));
+
+    in_action_ = true;
+
+    NQLog("AssemblySubassemblyPickup", NQLog::Spam) << "EnableVacuumSpacers_start"
+    << ": emitting signal \"vacuum_ON_request(" << vacuum_spacer_ << ")\"";
+
+    emit vacuum_ON_request(vacuum_spacer_);
+}
+
+void AssemblySubassemblyPickup::EnableVacuumSpacers_finish()
+{
+    disconnect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
+
+    disconnect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumSpacers_finish()));
+    disconnect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumSpacers_finish()));
+    disconnect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumSpacers_finish()));
+
+    if(in_action_){ in_action_ = false; }
+
+    NQLog("AssemblySubassemblyPickup", NQLog::Spam) << "EnableVacuumSpacers_finish"
+    << ": emitting signal \"EnableVacuumSpacers_finished\"";
+
+    emit EnableVacuumSpacers_finished();
+
+    NQLog("AssemblySubassemblyPickup", NQLog::Message) << "EnableVacuumSpacers_finish"
+    << ": assembly-step completed";
+
+    emit DBLogMessage("== Assembly step completed : [Enable spacers vacuum]");
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
 // GoToSensorMarkerPreAlignment -----------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
 void AssemblySubassemblyPickup::GoToSensorMarkerPreAlignment_start()
@@ -194,51 +245,51 @@ void AssemblySubassemblyPickup::GoToSensorMarkerPreAlignment_finish()
 // ----------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------
-// EnableVacuumSpacers --------------------------------------------------------------------------------
+// EnableVacuumSubassembly --------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
-void AssemblySubassemblyPickup::EnableVacuumSpacers_start()
+void AssemblySubassemblyPickup::EnableVacuumSubassembly_start()
 {
-  if(in_action_){
+    if(in_action_){
 
-    NQLog("AssemblySubassemblyPickup", NQLog::Warning) << "EnableVacuumSpacers_start"
-       << ": logic error, an assembly step is still in progress, will not take further action";
+        NQLog("AssemblySubassemblyPickup", NQLog::Warning) << "EnableVacuumSubassembly_start"
+        << ": logic error, an assembly step is still in progress, will not take further action";
 
-    return;
-  }
+        return;
+    }
 
-  connect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
+    connect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
 
-  connect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumSpacers_finish()));
-  connect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumSpacers_finish()));
-  connect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumSpacers_finish()));
+    connect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumSubassembly_finish()));
+    connect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumSubassembly_finish()));
+    connect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumSubassembly_finish()));
 
-  in_action_ = true;
+    in_action_ = true;
 
-  NQLog("AssemblySubassemblyPickup", NQLog::Spam) << "EnableVacuumSpacers_start"
-     << ": emitting signal \"vacuum_ON_request(" << vacuum_spacer_ << ")\"";
+    NQLog("AssemblySubassemblyPickup", NQLog::Spam) << "EnableVacuumSubassembly_start"
+    << ": emitting signal \"vacuum_ON_request(" << vacuum_sub_ << ")\"";
 
-  emit vacuum_ON_request(vacuum_spacer_);
+    emit vacuum_ON_request(vacuum_sub_);
 }
 
-void AssemblySubassemblyPickup::EnableVacuumSpacers_finish()
+void AssemblySubassemblyPickup::EnableVacuumSubassembly_finish()
 {
-  disconnect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
+    disconnect(this, SIGNAL(vacuum_ON_request(int)), this->vacuum(), SLOT(enableVacuum(int)));
 
-  disconnect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumSpacers_finish()));
-  disconnect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumSpacers_finish()));
-  disconnect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumSpacers_finish()));
+    disconnect(this->vacuum(), SIGNAL(vacuum_enabled()), this, SLOT(EnableVacuumSubassembly_finish()));
+    disconnect(this->vacuum(), SIGNAL(vacuum_toggled()), this, SLOT(EnableVacuumSubassembly_finish()));
+    disconnect(this->vacuum(), SIGNAL(vacuum_error  ()), this, SLOT(EnableVacuumSubassembly_finish()));
 
-  if(in_action_){ in_action_ = false; }
+    if(in_action_){ in_action_ = false; }
 
-  NQLog("AssemblySubassemblyPickup", NQLog::Spam) << "EnableVacuumSpacers_finish"
-     << ": emitting signal \"EnableVacuumSpacers_finished\"";
+    NQLog("AssemblySubassemblyPickup", NQLog::Spam) << "EnableVacuumSubassembly_finish"
+    << ": emitting signal \"EnableVacuumSubassembly_finished\"";
 
-  emit EnableVacuumSpacers_finished();
+    emit EnableVacuumSubassembly_finished();
 
-  NQLog("AssemblySubassemblyPickup", NQLog::Message) << "EnableVacuumSpacers_finish"
-     << ": assembly-step completed";
+    NQLog("AssemblySubassemblyPickup", NQLog::Message) << "EnableVacuumSubassembly_finish"
+    << ": assembly-step completed";
 
-  emit DBLogMessage("== Assembly step completed : [Enable spacers vacuum]");
+    emit DBLogMessage("== Assembly step completed : [Enable subassembly vacuum]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -452,13 +503,13 @@ void AssemblySubassemblyPickup::EnableVacuumPickupTool_finish()
 // ----------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------
-// DisableVacuumSpacers -------------------------------------------------------------------------------
+// DisableVacuumSubassembly -------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
-void AssemblySubassemblyPickup::DisableVacuumSpacers_start()
+void AssemblySubassemblyPickup::DisableVacuumSubassembly_start()
 {
   if(in_action_){
 
-    NQLog("AssemblySubassemblyPickup", NQLog::Warning) << "DisableVacuumSpacers_start"
+    NQLog("AssemblySubassemblyPickup", NQLog::Warning) << "DisableVacuumSubassembly_start"
        << ": logic error, an assembly step is still in progress, will not take further action";
 
     return;
@@ -466,37 +517,37 @@ void AssemblySubassemblyPickup::DisableVacuumSpacers_start()
 
   connect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
 
-  connect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumSpacers_finish()));
-  connect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumSpacers_finish()));
-  connect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumSpacers_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumSubassembly_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumSubassembly_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumSubassembly_finish()));
 
   in_action_ = true;
 
-  NQLog("AssemblySubassemblyPickup", NQLog::Spam) << "DisableVacuumSpacers_start"
-     << ": emitting signal \"vacuum_OFF_request(" << vacuum_spacer_ << ")\"";
+  NQLog("AssemblySubassemblyPickup", NQLog::Spam) << "DisableVacuumSubassembly_start"
+     << ": emitting signal \"vacuum_OFF_request(" << vacuum_sub_ << ")\"";
 
-  emit vacuum_OFF_request(vacuum_spacer_);
+  emit vacuum_OFF_request(vacuum_sub_);
 }
 
-void AssemblySubassemblyPickup::DisableVacuumSpacers_finish()
+void AssemblySubassemblyPickup::DisableVacuumSubassembly_finish()
 {
   disconnect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
 
-  disconnect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumSpacers_finish()));
-  disconnect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumSpacers_finish()));
-  disconnect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumSpacers_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumSubassembly_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumSubassembly_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumSubassembly_finish()));
 
   if(in_action_){ in_action_ = false; }
 
-  NQLog("AssemblySubassemblyPickup", NQLog::Spam) << "DisableVacuumSpacers_finish"
-     << ": emitting signal \"DisableVacuumSpacers_finished\"";
+  NQLog("AssemblySubassemblyPickup", NQLog::Spam) << "DisableVacuumSubassembly_finish"
+     << ": emitting signal \"DisableVacuumSubassembly_finished\"";
 
-  emit DisableVacuumSpacers_finished();
+  emit DisableVacuumSubassembly_finished();
 
-  NQLog("AssemblySubassemblyPickup", NQLog::Message) << "DisableVacuumSpacers_finish"
+  NQLog("AssemblySubassemblyPickup", NQLog::Message) << "DisableVacuumSubassembly_finish"
      << ": assembly-step completed";
 
-  emit DBLogMessage("== Assembly step completed : [Disable spacers vacuum]");
+  emit DBLogMessage("== Assembly step completed : [Disable subassembly vacuum]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -546,6 +597,55 @@ void AssemblySubassemblyPickup::PickupSubassembly_start()
 
   emit move_relative_request(dx0, dy0, dz0, da0);
 }
+
+// ----------------------------------------------------------------------------------------------------
+// DisableVacuumSpacers -------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblySubassemblyPickup::DisableVacuumSpacers_start()
+{
+  if(in_action_){
+
+    NQLog("AssemblySubassemblyPickup", NQLog::Warning) << "DisableVacuumSpacers_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
+
+  connect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
+
+  connect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumSpacers_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumSpacers_finish()));
+  connect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumSpacers_finish()));
+
+  in_action_ = true;
+
+  NQLog("AssemblySubassemblyPickup", NQLog::Spam) << "DisableVacuumSpacers_start"
+     << ": emitting signal \"vacuum_OFF_request(" << vacuum_spacer_ << ")\"";
+
+  emit vacuum_OFF_request(vacuum_spacer_);
+}
+
+void AssemblySubassemblyPickup::DisableVacuumSpacers_finish()
+{
+  disconnect(this, SIGNAL(vacuum_OFF_request(int)), this->vacuum(), SLOT(disableVacuum(int)));
+
+  disconnect(this->vacuum(), SIGNAL(vacuum_disabled()), this, SLOT(DisableVacuumSpacers_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_toggled ()), this, SLOT(DisableVacuumSpacers_finish()));
+  disconnect(this->vacuum(), SIGNAL(vacuum_error   ()), this, SLOT(DisableVacuumSpacers_finish()));
+
+  if(in_action_){ in_action_ = false; }
+
+  NQLog("AssemblySubassemblyPickup", NQLog::Spam) << "DisableVacuumSpacers_finish"
+     << ": emitting signal \"DisableVacuumSpacers_finished\"";
+
+  emit DisableVacuumSpacers_finished();
+
+  NQLog("AssemblySubassemblyPickup", NQLog::Message) << "DisableVacuumSpacers_finish"
+     << ": assembly-step completed";
+
+  emit DBLogMessage("== Assembly step completed : [Disable spacers vacuum]");
+}
+// ----------------------------------------------------------------------------------------------------
 
 void AssemblySubassemblyPickup::PickupSubassembly_finish()
 {
