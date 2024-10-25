@@ -115,7 +115,7 @@ AssemblySubassemblyPickupWidget::AssemblySubassemblyPickupWidget(const QObject* 
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(pickup_step_N));
-    tmp_wid->button()->setText("Go To Measurement Position on PS-s - Spacer \& Jig height considered");
+    tmp_wid->button()->setText("Go To Measurement Position on PS-s - Spacer && Jig height considered");
     sub_pick_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(subassembly_pickup, SLOT(GoToSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
