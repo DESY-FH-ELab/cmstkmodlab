@@ -13,7 +13,6 @@
 #include <nqlogger.h>
 
 #include <AssemblyParametersView.h>
-#include <AssemblyUtilities.h>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -43,13 +42,12 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
 
   // Get information on assembly center to accommodate for different parameters required
   std::string assembly_center_str = QString::fromStdString(config_->getValue<std::string>("main", "assembly_center")).toUpper().toStdString();
-  assembly::Center assembly_center;
   if(assembly_center_str == "FNAL") {
-      assembly_center = assembly::Center::FNAL;
+      assembly_center_ = assembly::Center::FNAL;
   } else if(assembly_center_str == "BROWN") {
-      assembly_center = assembly::Center::BROWN;
+      assembly_center_ = assembly::Center::BROWN;
   } else if(assembly_center_str == "DESY") {
-      assembly_center = assembly::Center::DESY;
+      assembly_center_ = assembly::Center::DESY;
   } else {
       NQLog("AssemblyAssemblyV2", NQLog::Warning) << "Invalid assembly center provided: \"" << assembly_center_str << "\". Provide one of the following options: \"FNAL\", \"BROWN\", \"DESY\"";
   }
@@ -182,7 +180,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dime_lay->addWidget(this->get(tmp_tag)  , row_index, 6, Qt::AlignRight);
 
 
-  if(assembly_center == assembly::Center::FNAL || assembly_center == assembly::Center::BROWN)
+  if(assembly_center_ == assembly::Center::FNAL || assembly_center_ == assembly::Center::BROWN)
   {
     // dimension: thickness of SpacerClamp
     ++row_index;
@@ -282,7 +280,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   posi_lay->addWidget(button_moveAbsRefPos4_, row_index, 9, Qt::AlignRight);
 
 
-  if(assembly_center == assembly::Center::FNAL || assembly_center == assembly::Center::BROWN)
+  if(assembly_center_ == assembly::Center::FNAL || assembly_center_ == assembly::Center::BROWN)
   {
     // position: z-position where camera is focused on Gluing Stage surface
     ++row_index;
@@ -554,8 +552,11 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   connect(button_moveAbsRefPos1_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos1()));
   connect(button_moveAbsRefPos2_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos2()));
   connect(button_moveAbsRefPos4_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos4()));
-  connect(button_moveAbsRefPos5_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos5()));
   connect(this , SIGNAL(click_moveToAbsRefPos(int)), this, SLOT(askConfirmMoveToAbsRefPoint(int)));
+  if(assembly_center_ == assembly::Center::FNAL || assembly_center_ == assembly::Center::BROWN)
+  {
+    connect(button_moveAbsRefPos5_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos5()));
+  }
 
   connect(button_moveRelRefDist1_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist1()));
   connect(button_moveRelRefDist2_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist2()));
@@ -592,8 +593,11 @@ AssemblyParametersView::~AssemblyParametersView()
     disconnect(button_moveAbsRefPos1_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos1()));
     disconnect(button_moveAbsRefPos2_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos2()));
     disconnect(button_moveAbsRefPos4_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos4()));
-    disconnect(button_moveAbsRefPos5_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos5()));
     disconnect(this , SIGNAL(click_moveToAbsRefPos(int)), this, SLOT(askConfirmMoveToAbsRefPoint(int)));
+    if(assembly_center_ == assembly::Center::FNAL || assembly_center_ == assembly::Center::BROWN)
+    {
+      disconnect(button_moveAbsRefPos5_ , SIGNAL(clicked()), this, SLOT(moveToAbsRefPos5()));
+    }
 
     disconnect(button_moveRelRefDist1_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist1()));
     disconnect(button_moveRelRefDist2_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist2()));

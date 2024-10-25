@@ -17,6 +17,7 @@
 #include <AssemblyObjectFinderPatRecWidget.h>
 #include <ApplicationConfig.h>
 #include <Metrology.h>
+#include <RelayCardManager.h>
 
 #include <QToolBox>
 #include <QWidget>
@@ -132,7 +133,7 @@ class MetrologyView : public QWidget
 
   void clearResults();
 
-  void updateVacuumChannelState(int, bool);
+  void updateVacuumChannelState(int, SwitchState);
 
  signals:
 

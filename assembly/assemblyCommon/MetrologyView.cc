@@ -548,14 +548,14 @@ void MetrologyView::switch_to_config()
     return;
 }
 
-void MetrologyView::updateVacuumChannelState(int channel, bool state)
+void MetrologyView::updateVacuumChannelState(int channel, SwitchState state)
 {
     const int vacuum_channel_baseplate = config_->getValue<int>("main", "Vacuum_Baseplate");
     if (channel == vacuum_channel_baseplate) {
-        if(state) {
-            metro_enableVacuum_pusbu_->setEnabled(false);
-        } else {
+        if(state==SwitchState::CHANNEL_OFF) {
             metro_enableVacuum_pusbu_->setEnabled(true);
+        } else {
+            metro_enableVacuum_pusbu_->setEnabled(false);
         }
     }
 }

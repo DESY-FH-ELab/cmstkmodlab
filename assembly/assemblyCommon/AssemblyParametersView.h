@@ -17,6 +17,7 @@
 #include <AssemblyMultiPickupTesterWidget.h>
 #include <AssemblyPositionsRegistryWidget.h>
 #include <ApplicationConfig.h>
+#include <AssemblyUtilities.h>
 
 #include <string>
 #include <map>
@@ -59,6 +60,8 @@ class AssemblyParametersView : public QWidget
   std::map<std::string, QLineEdit*> map_lineEdit_;
 
   ApplicationConfig* config_;
+
+  assembly::Center assembly_center_;
 
  public slots:
 
