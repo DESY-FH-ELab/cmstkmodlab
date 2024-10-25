@@ -192,7 +192,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->text()->setText("Dispense (Slow+Fast) Glue on Baseplate and Place it on Assembly Platform with Pins");
+    tmp_wid->text()->setText("Dispense Slow Glue on Baseplate and Place it on Assembly Platform with Pins");
     PSPToBasep_lay->addWidget(tmp_wid);
   }
   // ----------
@@ -220,6 +220,17 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     PSPToBasep_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(GoToXYAPositionToGlueMaPSAToBaseplate_start()), SIGNAL(GoToXYAPositionToGlueMaPSAToBaseplate_finished()));
+  }
+  // ----------
+
+  // step: Dispense Fast Glue on Baseplate
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->text()->setText("Dispense Fast Glue on Baseplate");
+    PSPToBasep_lay->addWidget(tmp_wid);
   }
   // ----------
 
