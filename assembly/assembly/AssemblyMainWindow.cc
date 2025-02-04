@@ -661,14 +661,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
       this->enable_images();
     }
 
-    if(config->hasKey("main", "camera_exposure_time") && camera_ != nullptr)
-    {
-        connect(this, SIGNAL(changeExposureTime(double)), camera_, SLOT(setExposureTime(double)));
-        auto camera_exposure_time = config->getValue<double>("main", "camera_exposure_time");
-        NQLog("AssemblyMainWindow", NQLog::Message) << QString("Setting camera exposure time to %1 ms").arg(camera_exposure_time);
-        emit changeExposureTime(camera_exposure_time);
-        disconnect(this, SIGNAL(changeExposureTime(double)), camera_, SLOT(setExposureTime(double)));
-    }
     // ------------------------
 }
 
@@ -728,6 +720,15 @@ void AssemblyMainWindow::enable_images()
      << ": emitting signal \"images_ON\"";
 
   emit images_ON();
+
+  if(ApplicationConfig::instance()->hasKey("main", "camera_exposure_time") && camera_ != nullptr)
+  {
+      connect(this, SIGNAL(changeExposureTime(double)), camera_, SLOT(setExposureTime(double)));
+      auto camera_exposure_time = ApplicationConfig::instance()->getValue<double>("main", "camera_exposure_time");
+      NQLog("AssemblyMainWindow", NQLog::Message) << QString("Setting camera exposure time to %1 ms").arg(camera_exposure_time);
+      emit changeExposureTime(camera_exposure_time);
+      disconnect(this, SIGNAL(changeExposureTime(double)), camera_, SLOT(setExposureTime(double)));
+  }
 }
 
 void AssemblyMainWindow::disable_images()
