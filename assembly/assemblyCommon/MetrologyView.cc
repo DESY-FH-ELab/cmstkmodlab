@@ -798,6 +798,12 @@ void MetrologyView::updateImage(const int stage, const cv::Mat& img)
   return;
 }
 
+void MetrologyView::metrology_abort(){
+  NQLog("MetrologyView", NQLog::Spam) << "metrology_abort()";
+
+  button_metrologyClearResults_->setEnabled(true);
+}
+
 void MetrologyView::clearResults()
 {
   NQLog("MetrologyView", NQLog::Spam) << "clearResults()";

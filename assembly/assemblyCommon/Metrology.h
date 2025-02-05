@@ -50,6 +50,8 @@ class Metrology : public QObject
 
   protected:
 
+    mutable QMutex mutex_;
+
     const LStepExpressMotionManager* const motion_manager_;
 
     Configuration configuration_;
@@ -97,6 +99,8 @@ class Metrology : public QObject
 
     void clear_results();
 
+    void patrec_complete(const int);
+
   signals:
 
     void configuration_updated();
@@ -122,6 +126,8 @@ class Metrology : public QObject
     void measured_results(const double, const double, const double, const double, const double, const double, const double);
 
     void execution_completed();
+
+    void execution_failed();
 
     void DBLogMessage(const QString);
 };

@@ -352,6 +352,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     metrology_view_->PatRecThree_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecThree(cv::Mat)));
     metrology_view_->PatRecFour_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecFour(cv::Mat)));
 
+    connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), metrology_view_, SLOT(metrology_abort()));
     connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_metrology()));
     connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
     connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
@@ -518,6 +519,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(autofocus_checkbox_, SIGNAL(stateChanged(int)), this, SLOT(changeState_autofocus(int)));
     connect(autofocus_checkbox_, SIGNAL(stateChanged(int)), aligner_view_, SLOT(update_autofocusing_checkbox(int)));
 
+    connect(zfocus_finder_, SIGNAL(emergencyStopped()), this, SLOT(restore_autofocus_settings()));
+
     // toolBar_ ->addAction("Emergency Stop", motion_manager_->model(), SLOT(emergencyStop()));
     button_mainEmergencyStop_ = new QPushButton(tr("Emergency STOP"));
     button_mainEmergencyStop_->setStyleSheet("QPushButton { background-color: rgb(255, 129, 123); font: 18px; border-radius: 8px; padding: 7px; } QPushButton:hover { background-color: red; font: bold 18px; border-radius: 8px; padding: 2px; }");
@@ -526,6 +529,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), this, SLOT(disconnect_objectAligner()));
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
+    connect(button_mainEmergencyStop_, SIGNAL(clicked()), metrology_view_, SLOT(metrology_abort()));
+    connect(button_mainEmergencyStop_, SIGNAL(clicked()), this, SLOT(disconnect_metrology()));
+    connect(button_mainEmergencyStop_, SIGNAL(clicked()), this, SLOT(disconnect_multiPickupTest()));
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), this , SLOT(writeDBLog_emergencyStop()));
 
     QWidget *spacer = new QWidget();
@@ -804,6 +810,20 @@ void AssemblyMainWindow::changeState_autofocus(const int state)
     return;
 }
 
+void AssemblyMainWindow::restore_autofocus_settings(){
+    if(autofocus_checkbox_->checkState()==Qt::Checked){
+        NQLog("AssemblyMainWindow", NQLog::Spam) << "restore_autofocus_settings"
+           << ": emitting signal \"autofocus_ON\"";
+
+        emit autofocus_ON();
+    }else if(autofocus_checkbox_->checkState()==Qt::Unchecked){
+        NQLog("AssemblyMainWindow", NQLog::Spam) << "restore_autofocus_settings"
+           << ": emitting signal \"autofocus_OFF\"";
+
+        emit autofocus_OFF();
+    }
+}
+
 void AssemblyMainWindow::get_image()
 {
     if(image_ctr_ == nullptr)
@@ -1014,6 +1034,9 @@ void AssemblyMainWindow::start_metrology(const Metrology::Configuration& conf)
   // use PatRec results for next alignment step
   connect(finder_, SIGNAL(PatRec_results(double, double, double)), metrology_, SLOT(run_metrology(double, double, double)));
 
+  // use exitcode of PatRec
+  connect(finder_, SIGNAL(PatRec_exitcode(int)), metrology_, SLOT(patrec_complete(int)));
+
   // show measured angle
   connect(metrology_, SIGNAL(measured_angle(bool, double)), metrology_view_, SLOT(show_measured_angle(bool, double)));
 
@@ -1022,6 +1045,10 @@ void AssemblyMainWindow::start_metrology(const Metrology::Configuration& conf)
 
   // once completed, disable connections between controllers used for alignment
   connect(metrology_, SIGNAL(execution_completed()), this, SLOT(disconnect_metrology()));
+
+  // if failed, also disable connections between controllers used for alignment, but also tell metrology_view_
+  connect(metrology_, SIGNAL(execution_failed()), metrology_view_, SLOT(metrology_abort()));
+  connect(metrology_, SIGNAL(execution_failed()), this, SLOT(disconnect_metrology()));
 
   // kick-start alignment
   connect(metrology_, SIGNAL(configuration_updated()), metrology_, SLOT(execute()));
@@ -1039,6 +1066,8 @@ void AssemblyMainWindow::start_metrology(const Metrology::Configuration& conf)
 
 void AssemblyMainWindow::disconnect_metrology()
 {
+  NQLog("AssemblyMainWindow", NQLog::Warning) << "disconnect_metrology";
+
   if(image_ctr_ == nullptr)
   {
     NQLog("AssemblyMainWindow", NQLog::Warning) << "disconnect_metrology"
@@ -1071,6 +1100,9 @@ void AssemblyMainWindow::disconnect_metrology()
   // use PatRec results for next alignment step
   disconnect(finder_, SIGNAL(PatRec_results(double, double, double)), metrology_, SLOT(run_metrology(double, double, double)));
 
+  // use exitcode of PatRec
+  disconnect(finder_, SIGNAL(PatRec_exitcode(int)), metrology_, SLOT(patrec_complete(int)));
+
   // show measured angle
   disconnect(metrology_, SIGNAL(measured_angle(bool, double)), metrology_view_, SLOT(show_measured_angle(bool, double)));
 
@@ -1079,6 +1111,10 @@ void AssemblyMainWindow::disconnect_metrology()
 
   // once completed, disable connections between controllers used for alignment
   disconnect(metrology_, SIGNAL(execution_completed()), this, SLOT(disconnect_metrology()));
+
+  // if failed, also disable connections between controllers used for alignment, but also tell metrology_view_
+  disconnect(metrology_, SIGNAL(execution_failed()), this, SLOT(disconnect_metrology()));
+  disconnect(metrology_, SIGNAL(execution_failed()), metrology_view_, SLOT(metrology_abort()));
 
   // kick-start alignment
   disconnect(metrology_, SIGNAL(configuration_updated()), metrology_, SLOT(execute()));

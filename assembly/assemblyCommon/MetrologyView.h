@@ -133,6 +133,8 @@ class MetrologyView : public QWidget
 
   void clearResults();
 
+  void metrology_abort();
+
   void updateVacuumChannelState(int, SwitchState);
 
  signals:
