@@ -628,14 +628,14 @@ void Metrology::run_metrology(const double patrec_dX, const double patrec_dY, co
     }
     this->reset();
 
+    emit execution_completed();
+
     QMessageBox* msgBox = new QMessageBox;
     msgBox->setInformativeText("Metrology routine completed successfully!\nSee the results in the Metrology tab.");
 
     msgBox->setStandardButtons(QMessageBox::Ok);
 
     int ret = msgBox->exec();
-
-    emit execution_completed();
   }
 }
 
