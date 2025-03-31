@@ -195,6 +195,21 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
     dime_lay->addWidget(this->get(tmp_tag)  , row_index, 6, Qt::AlignRight);
   }
 
+  if(assembly_center == assembly::Center::DESY)
+  {
+    // dimension: thickness of SpacerClamp
+    ++row_index;
+
+    tmp_tag = "Thickness_SubassemblyJig";
+    tmp_des = "Thickness of Subassembly Pickup Jig :";
+
+    map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
+
+    dime_lay->addWidget(new QLabel(tmp_des) , row_index, 0, Qt::AlignLeft);
+    dime_lay->addWidget(new QLabel(tr("dZ")), row_index, 5, Qt::AlignRight);
+    dime_lay->addWidget(this->get(tmp_tag)  , row_index, 6, Qt::AlignRight);
+  }
+
   //// ---------------------
 
   row_index = -1;

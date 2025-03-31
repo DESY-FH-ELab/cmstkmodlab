@@ -76,6 +76,19 @@ AssemblyVacuumWidget::AssemblyVacuumWidget(const QString& label, QWidget* parent
   grid->addWidget(this->get(vacuum_basepl).label_      , 5, 1);
   /// ------------------------------
 
+  /// SUBASSEMBLY
+  const int vacuum_sub = config->getValue<int>("main", "Vacuum_Subassembly");
+
+  valuemap_[vacuum_sub] = Entry();
+
+  this->get(vacuum_sub).radioButton_ = new QRadioButton(tr("Subassembly"));
+  this->get(vacuum_sub).label_ = new QLabel(tr(" UNKNOWN"));
+  this->get(vacuum_sub).label_->setStyleSheet("QLabel { background-color : gray; color : black; }");
+
+  grid->addWidget(this->get(vacuum_sub).radioButton_, 7, 0);
+  grid->addWidget(this->get(vacuum_sub).label_      , 7, 1);
+  /// ------------------------------
+
   layout_->addLayout(grid);
 
   connect(button_, SIGNAL(clicked()), this, SLOT(toggleVacuum()));

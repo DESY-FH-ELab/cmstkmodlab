@@ -46,9 +46,11 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   PU_status_(nullptr),
   SP_status_(nullptr),
   BP_status_(nullptr),
+  SUB_status_(nullptr),
   vacuum_pickup_(0),
   vacuum_spacer_(0),
   vacuum_basepl_(0),
+  vacuum_sub_(0),
 
   camera_model_(nullptr),
   camera_thread_(nullptr),
@@ -548,36 +550,44 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     QLabel* PU_label = new QLabel("PU");
     QLabel* SP_label = new QLabel("SP");
     QLabel* BP_label = new QLabel("BP");
+    QLabel* SUB_label = new QLabel("SUB");
 
     vac_lay->addWidget(PU_label, 0, 1, Qt::AlignCenter);
     vac_lay->addWidget(SP_label, 0, 2, Qt::AlignCenter);
     vac_lay->addWidget(BP_label, 0, 3, Qt::AlignCenter);
+    vac_lay->addWidget(SUB_label, 0, 4, Qt::AlignCenter);
 
     QString filename(Config::CMSTkModLabBasePath.c_str());
 
     vacuum_pickup_ = config->getValue<int>("main", "Vacuum_PickupTool");
     vacuum_spacer_ = config->getValue<int>("main", "Vacuum_Spacers");
     vacuum_basepl_ = config->getValue<int>("main", "Vacuum_Baseplate");
+    vacuum_sub_ = config->getValue<int>("main", "Vacuum_Subassembly");
 
     PU_status_ = new QLabel();
     SP_status_ = new QLabel();
     BP_status_ = new QLabel();
+    SUB_status_ = new QLabel();
 
     PU_status_->setMinimumWidth(30);
     SP_status_->setMinimumWidth(30);
     BP_status_->setMinimumWidth(30);
+    SUB_status_->setMinimumWidth(30);
 
     PU_status_->setText("OFF");
     SP_status_->setText("OFF");
     BP_status_->setText("OFF");
+    SUB_status_->setText("OFF");
 
     PU_status_->setStyleSheet("QLabel { color : green ; font: bold }");
     SP_status_->setStyleSheet("QLabel { color : green ; font: bold }");
     BP_status_->setStyleSheet("QLabel { color : green ; font: bold }");
+    SUB_status_->setStyleSheet("QLabel { color : green ; font: bold }");
 
     vac_lay->addWidget(PU_status_, 1, 1, Qt::AlignCenter);
     vac_lay->addWidget(SP_status_, 1, 2, Qt::AlignCenter);
     vac_lay->addWidget(BP_status_, 1, 3, Qt::AlignCenter);
+    vac_lay->addWidget(SUB_status_, 1, 4, Qt::AlignCenter);
 
     vac_wid->setLayout(vac_lay);
 
@@ -1364,6 +1374,9 @@ void AssemblyMainWindow::update_vacuum_information(const int channel, const Swit
   } else if(channel == vacuum_basepl_)
   {
     to_be_updated = BP_status_;
+  } else if(channel == vacuum_sub_)
+  {
+    to_be_updated = SUB_status_;
   } else {
     NQLog("AssemblyMainWindow", NQLog::Fatal) << "Vacuum channel " << channel << " not known!";
     return;

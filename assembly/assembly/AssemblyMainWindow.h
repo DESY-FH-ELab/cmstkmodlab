@@ -184,9 +184,11 @@ class AssemblyMainWindow : public QMainWindow
   int vacuum_basepl_;
   int vacuum_pickup_;
   int vacuum_spacer_;
+  int vacuum_sub_;
   QLabel* PU_status_;
   QLabel* SP_status_;
   QLabel* BP_status_;
+  QLabel* SUB_status_;
 
   AssemblyUEyeModel_t*      camera_model_;
   AssemblyUEyeCameraThread* camera_thread_;
