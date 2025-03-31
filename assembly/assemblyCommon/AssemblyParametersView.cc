@@ -203,9 +203,9 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
     dime_lay->addWidget(this->get(tmp_tag)  , row_index, 6, Qt::AlignRight);
   }
 
-  if(assembly_center == assembly::Center::DESY)
+  if(assembly_center_ == assembly::Center::DESY)
   {
-    // dimension: thickness of SpacerClamp
+    // dimension: thickness of Subassembly Pickup Jig
     ++row_index;
 
     tmp_tag = "Thickness_SubassemblyJig";
