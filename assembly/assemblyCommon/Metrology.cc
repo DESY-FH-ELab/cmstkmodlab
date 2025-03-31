@@ -233,6 +233,30 @@ void Metrology::execute()
   this->run_metrology(0., 0., 0.);
 }
 
+void Metrology::patrec_complete(const int exit_code){
+  QMutexLocker ml(&mutex_);
+
+  if(exit_code != 0)
+  {
+      NQLog("Metrology", NQLog::Critical) << "patrec_complete"
+         << ": pattern recognition terminated with non-zero exit code (" << exit_code << "). Stopping metrology.";
+
+      this->reset();
+
+      QMessageBox* msgBox = new QMessageBox;
+      msgBox->setInformativeText("Metrology routine could not be completed due to to a failed pattern recognition process.");
+
+      msgBox->setStandardButtons(QMessageBox::Ok);
+
+      int ret = msgBox->exec();
+
+      NQLog("Metrology", NQLog::Critical) << "patrec_complete"
+         << ": Emitting signal \"execution_failed\"";
+      emit execution_failed();
+  }
+
+}
+
 void Metrology::run_metrology(const double patrec_dX, const double patrec_dY, const double patrec_angle)
 {
   // Step #0:
@@ -604,14 +628,14 @@ void Metrology::run_metrology(const double patrec_dX, const double patrec_dY, co
     }
     this->reset();
 
+    emit execution_completed();
+
     QMessageBox* msgBox = new QMessageBox;
     msgBox->setInformativeText("Metrology routine completed successfully!\nSee the results in the Metrology tab.");
 
     msgBox->setStandardButtons(QMessageBox::Ok);
 
     int ret = msgBox->exec();
-
-    emit execution_completed();
   }
 }
 

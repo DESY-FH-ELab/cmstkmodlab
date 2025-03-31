@@ -81,7 +81,7 @@ class AssemblyMainWindow : public QMainWindow
 
  public:
 
-  explicit AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const QString& DBlogfile_path, const unsigned int camera_ID=10, QWidget* parent=nullptr);
+  explicit AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const QString& DBlogfile_path, QWidget* parent=nullptr);
   virtual ~AssemblyMainWindow()
   {
       disconnect_otherSlots();
@@ -136,6 +136,8 @@ class AssemblyMainWindow : public QMainWindow
 
   void image_request();
 
+  void changeExposureTime(double);
+
   void updateVacuumChannelsStatus();
 
   void autofocus_ON();
@@ -161,6 +163,8 @@ class AssemblyMainWindow : public QMainWindow
   void liveUpdate();
 
   void messageBox_restartMotionStage();
+
+  void restore_autofocus_settings();
 
  protected:
 

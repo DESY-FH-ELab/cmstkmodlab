@@ -29,7 +29,7 @@
 
 #include <opencv2/opencv.hpp>
 
-AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const QString& DBlogfile_path, const unsigned int camera_ID, QWidget* parent) :
+AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const QString& DBlogfile_path, QWidget* parent) :
   QMainWindow(parent),
 
   // Low-Level Controllers (Motion, Camera, Vacuum)
@@ -54,7 +54,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   camera_thread_(nullptr),
 //  camera_widget_(nullptr),
   camera_(nullptr),
-  camera_ID_(camera_ID),
+  camera_ID_(0),
 
   // High-Level Controllers
   image_ctr_(nullptr),
@@ -156,12 +156,14 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     /// -------------------
 
     /// Camera
-    camera_model_ = new AssemblyUEyeModel_t(10);
+    auto camera_config_interval = config->getDefaultValue<int>("main", "camera_config_interval", 10);
+    camera_model_ = new AssemblyUEyeModel_t(camera_config_interval);
     camera_model_->updateInformation();
 
     camera_thread_ = new AssemblyUEyeCameraThread(camera_model_, this);
     camera_thread_->start();
 
+    camera_ID_ = config->getDefaultValue<unsigned int>("main", "camera_ID", 1);
     camera_ = camera_model_->getCameraByID(camera_ID_);
     if(camera_ == nullptr)
     {
@@ -170,6 +172,16 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
       NQLog("AssemblyMainWindow", NQLog::Critical) << "---------------------------------------------------------------------------------";
     }
     /// -------------------
+
+    std::string assembly_center_str = QString::fromStdString(config->getValue<std::string>("main", "assembly_center")).toUpper().toStdString();
+    if(!(assembly_center_str == "FNAL" || assembly_center_str == "BROWN" || assembly_center_str == "DESY")) {
+        NQLog("AssemblyAssemblyV2", NQLog::Fatal) << "Invalid assembly center provided: \"" << assembly_center_str << "\". Provide one of the following options: \"FNAL\", \"BROWN\", \"DESY\"";
+        QMessageBox* msgBox = new QMessageBox;
+        msgBox->setInformativeText(QString("Invalid assembly center provided (\"%1\").\nProvide one of the following options: \"FNAL\", \"BROWN\", \"DESY\"").arg(QString::fromStdString(assembly_center_str)));
+        msgBox->setStandardButtons(QMessageBox::Ok);
+        int ret = msgBox->exec();
+        exit(1);
+    }
 
     /// Vacuum Manager
     std::string relayCardDevice = config->getValue<std::string>("main", "RelayCardDevice");
@@ -312,10 +324,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
       NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly
          << " (assembly_sequence = " << assembly_sequence << ")";
-
-      if (assemblyV2_->IsSkipDipping()) {
-          NQLog("AssemblyMainWindow", NQLog::Message) << "skipping dipping of PSs-Spacers at stage 3";
-      }
     }
     else
     {
@@ -337,14 +345,15 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     connect(metrology_view_, SIGNAL(go_to_marker_signal()), metrology_, SLOT(move_to_start()));
     connect(metrology_view_, SIGNAL(enable_vacuum_baseplate(int)), relayCardManager_, SLOT(enableVacuum(int)));
-    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, bool)), metrology_view_, SLOT(updateVacuumChannelState(int, bool)));
+    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, SwitchState)), metrology_view_, SLOT(updateVacuumChannelState(int, SwitchState)));
 
     metrology_view_->PatRecOne_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecOne(cv::Mat)));
     metrology_view_->PatRecTwo_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecTwo(cv::Mat)));
     metrology_view_->PatRecThree_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecThree(cv::Mat)));
     metrology_view_->PatRecFour_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecFour(cv::Mat)));
 
-    connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_Metrology()));
+    connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), metrology_view_, SLOT(metrology_abort()));
+    connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_metrology()));
     connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
     connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
     connect(metrology_view_->button_metrologyClearResults(), SIGNAL(clicked()), metrology_, SLOT(clear_results()));
@@ -491,9 +500,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     }
     else if(assembly_sequence == 2) {
         emit DBLogMessage("== Using modified assembly sequence == (MaPSA glued to baseplate first)");
-        if (assemblyV2_->IsSkipDipping()) {
-            emit DBLogMessage("== Skipping spacer dipping at stage 3 == (Glue dispenser is used for PSs-to-MaPSA)");
-        }
     }
 
     controls_tab->addTab(DBLog_view_, tabname_DBLog);
@@ -513,6 +519,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(autofocus_checkbox_, SIGNAL(stateChanged(int)), this, SLOT(changeState_autofocus(int)));
     connect(autofocus_checkbox_, SIGNAL(stateChanged(int)), aligner_view_, SLOT(update_autofocusing_checkbox(int)));
 
+    connect(zfocus_finder_, SIGNAL(emergencyStopped()), this, SLOT(restore_autofocus_settings()));
+
     // toolBar_ ->addAction("Emergency Stop", motion_manager_->model(), SLOT(emergencyStop()));
     button_mainEmergencyStop_ = new QPushButton(tr("Emergency STOP"));
     button_mainEmergencyStop_->setStyleSheet("QPushButton { background-color: rgb(255, 129, 123); font: 18px; border-radius: 8px; padding: 7px; } QPushButton:hover { background-color: red; font: bold 18px; border-radius: 8px; padding: 2px; }");
@@ -521,6 +529,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), this, SLOT(disconnect_objectAligner()));
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
+    connect(button_mainEmergencyStop_, SIGNAL(clicked()), metrology_view_, SLOT(metrology_abort()));
+    connect(button_mainEmergencyStop_, SIGNAL(clicked()), this, SLOT(disconnect_metrology()));
+    connect(button_mainEmergencyStop_, SIGNAL(clicked()), this, SLOT(disconnect_multiPickupTest()));
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), this , SLOT(writeDBLog_emergencyStop()));
 
     QWidget *spacer = new QWidget();
@@ -655,6 +666,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     {
       this->enable_images();
     }
+
     // ------------------------
 }
 
@@ -714,6 +726,15 @@ void AssemblyMainWindow::enable_images()
      << ": emitting signal \"images_ON\"";
 
   emit images_ON();
+
+  if(ApplicationConfig::instance()->hasKey("main", "camera_exposure_time") && camera_ != nullptr)
+  {
+      connect(this, SIGNAL(changeExposureTime(double)), camera_, SLOT(setExposureTime(double)));
+      auto camera_exposure_time = ApplicationConfig::instance()->getValue<double>("main", "camera_exposure_time");
+      NQLog("AssemblyMainWindow", NQLog::Message) << QString("Setting camera exposure time to %1 ms").arg(camera_exposure_time);
+      emit changeExposureTime(camera_exposure_time);
+      disconnect(this, SIGNAL(changeExposureTime(double)), camera_, SLOT(setExposureTime(double)));
+  }
 }
 
 void AssemblyMainWindow::disable_images()
@@ -787,6 +808,20 @@ void AssemblyMainWindow::changeState_autofocus(const int state)
     }
 
     return;
+}
+
+void AssemblyMainWindow::restore_autofocus_settings(){
+    if(autofocus_checkbox_->checkState()==Qt::Checked){
+        NQLog("AssemblyMainWindow", NQLog::Spam) << "restore_autofocus_settings"
+           << ": emitting signal \"autofocus_ON\"";
+
+        emit autofocus_ON();
+    }else if(autofocus_checkbox_->checkState()==Qt::Unchecked){
+        NQLog("AssemblyMainWindow", NQLog::Spam) << "restore_autofocus_settings"
+           << ": emitting signal \"autofocus_OFF\"";
+
+        emit autofocus_OFF();
+    }
 }
 
 void AssemblyMainWindow::get_image()
@@ -999,6 +1034,9 @@ void AssemblyMainWindow::start_metrology(const Metrology::Configuration& conf)
   // use PatRec results for next alignment step
   connect(finder_, SIGNAL(PatRec_results(double, double, double)), metrology_, SLOT(run_metrology(double, double, double)));
 
+  // use exitcode of PatRec
+  connect(finder_, SIGNAL(PatRec_exitcode(int)), metrology_, SLOT(patrec_complete(int)));
+
   // show measured angle
   connect(metrology_, SIGNAL(measured_angle(bool, double)), metrology_view_, SLOT(show_measured_angle(bool, double)));
 
@@ -1007,6 +1045,10 @@ void AssemblyMainWindow::start_metrology(const Metrology::Configuration& conf)
 
   // once completed, disable connections between controllers used for alignment
   connect(metrology_, SIGNAL(execution_completed()), this, SLOT(disconnect_metrology()));
+
+  // if failed, also disable connections between controllers used for alignment, but also tell metrology_view_
+  connect(metrology_, SIGNAL(execution_failed()), metrology_view_, SLOT(metrology_abort()));
+  connect(metrology_, SIGNAL(execution_failed()), this, SLOT(disconnect_metrology()));
 
   // kick-start alignment
   connect(metrology_, SIGNAL(configuration_updated()), metrology_, SLOT(execute()));
@@ -1024,6 +1066,8 @@ void AssemblyMainWindow::start_metrology(const Metrology::Configuration& conf)
 
 void AssemblyMainWindow::disconnect_metrology()
 {
+  NQLog("AssemblyMainWindow", NQLog::Warning) << "disconnect_metrology";
+
   if(image_ctr_ == nullptr)
   {
     NQLog("AssemblyMainWindow", NQLog::Warning) << "disconnect_metrology"
@@ -1056,6 +1100,9 @@ void AssemblyMainWindow::disconnect_metrology()
   // use PatRec results for next alignment step
   disconnect(finder_, SIGNAL(PatRec_results(double, double, double)), metrology_, SLOT(run_metrology(double, double, double)));
 
+  // use exitcode of PatRec
+  disconnect(finder_, SIGNAL(PatRec_exitcode(int)), metrology_, SLOT(patrec_complete(int)));
+
   // show measured angle
   disconnect(metrology_, SIGNAL(measured_angle(bool, double)), metrology_view_, SLOT(show_measured_angle(bool, double)));
 
@@ -1064,6 +1111,10 @@ void AssemblyMainWindow::disconnect_metrology()
 
   // once completed, disable connections between controllers used for alignment
   disconnect(metrology_, SIGNAL(execution_completed()), this, SLOT(disconnect_metrology()));
+
+  // if failed, also disable connections between controllers used for alignment, but also tell metrology_view_
+  disconnect(metrology_, SIGNAL(execution_failed()), this, SLOT(disconnect_metrology()));
+  disconnect(metrology_, SIGNAL(execution_failed()), metrology_view_, SLOT(metrology_abort()));
 
   // kick-start alignment
   disconnect(metrology_, SIGNAL(configuration_updated()), metrology_, SLOT(execute()));

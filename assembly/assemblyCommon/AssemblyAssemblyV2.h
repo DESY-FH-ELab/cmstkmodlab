@@ -17,6 +17,7 @@
 
 #include <LStepExpressMotionManager.h>
 #include <RelayCardManager.h>
+#include <AssemblyUtilities.h>
 
 #include <AssemblySmartMotionManager.h>
 #include <ApplicationConfig.h>
@@ -61,19 +62,24 @@ class AssemblyAssemblyV2 : public QObject
   double PSSPlusSpacersToMaPSAPosition_Z_;
   double PSSPlusSpacersToMaPSAPosition_A_;
 
+  double original_Z_velocity_;
+
   bool alreadyClicked_LowerPickupToolOntoMaPSA, alreadyClicked_LowerPickupToolOntoPSS, alreadyClicked_LowerMaPSAOntoBaseplate, alreadyClicked_LowerPSSOntoSpacers, alreadyClicked_LowerPSSPlusSpacersOntoGluingStage, alreadyClicked_LowerPSSPlusSpacersOntoMaPSA;
 
-  bool skip_dipping_;
+  assembly::Center assembly_center_;
 
  public:
-  bool IsSkipDipping() const;
+  assembly::Center GetAssemblyCenter() const {return assembly_center_;};
 
  public slots:
 
   void use_smartMove(const int);
 
   // motion
-  void GoToSensorMarkerPreAlignment_start();
+  void GoToPSPSensorMarkerPreAlignment_start() {GoToSensorMarkerPreAlignment_start(true );};
+  void GoToPSSSensorMarkerPreAlignment_start() {GoToSensorMarkerPreAlignment_start(false);};
+
+  void GoToSensorMarkerPreAlignment_start(const bool isMapsa);
   void GoToSensorMarkerPreAlignment_finish();
 
   void GoFromSensorMarkerToPickupXY_start();
@@ -117,6 +123,9 @@ class AssemblyAssemblyV2 : public QObject
 
   void ReturnToPSSPlusSpacersToMaPSAPosition_start();
   void ReturnToPSSPlusSpacersToMaPSAPosition_finish();
+
+  void SlowlyLiftFromGluingStage_start();
+  void SlowlyLiftFromGluingStage_finish();
 
   void LowerPSSPlusSpacersOntoMaPSA_start();
   void LowerPSSPlusSpacersOntoMaPSA_finish();
@@ -199,6 +208,7 @@ class AssemblyAssemblyV2 : public QObject
   void LowerPSSPlusSpacersOntoGluingStage_finished();
   void ReturnToPSSPlusSpacersToMaPSAPosition_finished();
 
+  void SlowlyLiftFromGluingStage_finished();
   void LowerPSSPlusSpacersOntoMaPSA_finished();
   void LiftUpPickupTool_finished();
   // ------
