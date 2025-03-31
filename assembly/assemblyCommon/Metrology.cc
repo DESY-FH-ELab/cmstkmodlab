@@ -197,19 +197,36 @@ void Metrology::complete_motion()
   emit motion_completed();
 }
 
-void Metrology::move_to_start()
+void Metrology::move_to_PSP_marker()
 {
-  NQLog("Metrology", NQLog::Spam) << "move_to_start";
+  NQLog("Metrology", NQLog::Spam) << "move_to_PSP_marker";
 
   const double dX = config_->getValue<double>("parameters", "RefPointSensor_X") - motion_manager_->get_position_X();
   const double dY = config_->getValue<double>("parameters", "RefPointSensor_Y") - motion_manager_->get_position_Y();
   const double dZ = config_->getValue<double>("parameters", "RefPointSensor_Z") + config_->getValue<double>("parameters", "Thickness_Baseplate") + config_->getValue<double>("parameters", "Thickness_GlueLayer") - motion_manager_->get_position_Z();
   const double dA = config_->getValue<double>("parameters", "RefPointSensor_A") - motion_manager_->get_position_A();
 
-  NQLog("Metrology", NQLog::Spam) << "move_to_start:"
+  NQLog("Metrology", NQLog::Spam) << "move_to_PSP_marker:"
      << ": emitting signal \"move_relative(" << dX << ", " << dY << ", " << dZ << ", " << dA << ")\"";
 
   moving_to_start_ = true;
+
+  this->move_relative(dX, dY, dZ, dA);
+}
+
+void Metrology::move_to_PSS_marker()
+{
+  NQLog("Metrology", NQLog::Spam) << "move_to_PSS_marker";
+
+  const double dX = config_->getValue<double>("parameters", "RefPointSensor_X") + config_->getValue<double>("parameters", "FromPSPRefPointToPSSRefPoint_dX") - motion_manager_->get_position_X();
+  const double dY = config_->getValue<double>("parameters", "RefPointSensor_Y") + config_->getValue<double>("parameters", "FromPSPRefPointToPSSRefPoint_dY") - motion_manager_->get_position_Y();
+  const double dZ = config_->getValue<double>("parameters", "RefPointSensor_Z") + config_->getValue<double>("parameters", "Thickness_Baseplate") + config_->getValue<double>("parameters", "Thickness_Spacer") + config_->getValue<double>("parameters", "Thickness_PSS") + 3. * config_->getValue<double>("parameters", "Thickness_GlueLayer") - motion_manager_->get_position_Z();
+  const double dA = config_->getValue<double>("parameters", "RefPointSensor_A") - motion_manager_->get_position_A();
+
+  NQLog("Metrology", NQLog::Spam) << "move_to_PSS_marker:"
+     << ": emitting signal \"move_relative(" << dX << ", " << dY << ", " << dZ << ", " << dA << ")\"";
+
+  moving_to_start_ = false;
 
   this->move_relative(dX, dY, dZ, dA);
 }

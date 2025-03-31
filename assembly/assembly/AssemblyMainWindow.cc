@@ -343,7 +343,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     connect(metrology_view_, SIGNAL(configuration(Metrology::Configuration)), this, SLOT(start_metrology(Metrology::Configuration)));
 
-    connect(metrology_view_, SIGNAL(go_to_marker_signal()), metrology_, SLOT(move_to_start()));
+    connect(metrology_view_, SIGNAL(go_to_PSP_marker_signal()), metrology_, SLOT(move_to_PSP_marker()));
+    connect(metrology_view_, SIGNAL(go_to_PSS_marker_signal()), metrology_, SLOT(move_to_PSS_marker()));
     connect(metrology_view_, SIGNAL(enable_vacuum_baseplate(int)), relayCardManager_, SLOT(enableVacuum(int)));
     connect(relayCardManager_, SIGNAL(vacuumChannelState(int, SwitchState)), metrology_view_, SLOT(updateVacuumChannelState(int, SwitchState)));
 
