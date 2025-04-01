@@ -223,6 +223,19 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   }
   // ----------
 
+  // step: Make space on the platform by moving the pickup tool
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->button()->setText("Move away pickup tool to make space for dispensing of fast glue");
+    PSPToBasep_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(MakeSpaceOnPlatform_start()), SIGNAL(MakeSpaceOnPlatform_finished()));
+  }
+  // ----------
+
   // step: Dispense Fast Glue on Baseplate
   {
     ++assembly_step_N;
@@ -231,6 +244,19 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->label()->setText(QString::number(assembly_step_N));
     tmp_wid->text()->setText("Dispense Fast Glue on Baseplate");
     PSPToBasep_lay->addWidget(tmp_wid);
+  }
+  // ----------
+
+  // step: Return to the platform by returning the pickup tool to the previous position
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->button()->setText("Return to previous position");
+    PSPToBasep_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(ReturnToPlatform_start()), SIGNAL(ReturnToPlatform_finished()));
   }
   // ----------
 
@@ -487,6 +513,19 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     }
     // ----------
 
+    // step: Make space on the platform by moving the pickup tool
+    {
+      ++assembly_step_N;
+
+      AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+      tmp_wid->label()->setText(QString::number(assembly_step_N));
+      tmp_wid->button()->setText("Move away pickup tool to make space for dispensing of fast glue");
+      PSPToBasep_lay->addWidget(tmp_wid);
+
+      tmp_wid->connect_action(assembly, SLOT(MakeSpaceOnPlatform_start()), SIGNAL(MakeSpaceOnPlatform_finished()));
+    }
+    // ----------
+
     // step: Dispense Fast Glue on Spacers
     {
       ++assembly_step_N;
@@ -495,6 +534,19 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
       tmp_wid->label()->setText(QString::number(assembly_step_N));
       tmp_wid->text()->setText("Dispense Fast Glue on Spacers");
       PSSToSpacers_lay->addWidget(tmp_wid);
+    }
+    // ----------
+
+    // step: Return to the platform by returning the pickup tool to the previous position
+    {
+      ++assembly_step_N;
+
+      AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+      tmp_wid->label()->setText(QString::number(assembly_step_N));
+      tmp_wid->button()->setText("Return to previous position");
+      PSPToBasep_lay->addWidget(tmp_wid);
+
+      tmp_wid->connect_action(assembly, SLOT(ReturnToPlatform_start()), SIGNAL(ReturnToPlatform_finished()));
     }
     // ----------
   } else {
@@ -680,13 +732,13 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
 
   if (assembly->GetAssemblyCenter() == assembly::Center::DESY)
       {
-          // step: Make space on the platform by raising the pickup tool
+          // step: Make space on the platform by moving away the pickup tool
           {
             ++assembly_step_N;
 
             AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
             tmp_wid->label()->setText(QString::number(assembly_step_N));
-            tmp_wid->button()->setText("Move up pickup tool to make space for glue dispensing");
+            tmp_wid->button()->setText("Move away pickup tool to make space for glue dispensing");
             PSSToMaPSA_lay->addWidget(tmp_wid);
 
             tmp_wid->connect_action(assembly, SLOT(MakeSpaceOnPlatform_start()), SIGNAL(MakeSpaceOnPlatform_finished()));
@@ -704,7 +756,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
           }
           // ----------
 
-          // step: Return to the platform by lowering the pickup tool
+          // step: Return to the platform by returning the pickup tool to the previous position
           {
             ++assembly_step_N;
 

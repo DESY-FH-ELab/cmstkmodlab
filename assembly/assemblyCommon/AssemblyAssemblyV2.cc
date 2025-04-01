@@ -34,9 +34,12 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
 
  , pickup1_Z_(0.)
  , pickup2_Z_(0.)
+
+ , makespace_Y_(0.)
  , makespace_Z_(0.)
+ , position_y_before_makespace_(0.)
  , position_z_before_makespace_(0.)
- , position_z_before_makespace_stored_(false)
+ , position_before_makespace_stored_(false)
 
  , use_smartMove_(false)
  , in_action_(false)
@@ -69,6 +72,8 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
   // (1: PSs to Spacers, 2: PSs+Spacers to MaPSA)
   pickup1_Z_ = config_->getValue<double>("main", "AssemblyAssembly_pickup1_Z");
   pickup2_Z_ = config_->getValue<double>("main", "AssemblyAssembly_pickup2_Z");
+
+  makespace_Y_ = config_->getValue<double>("main", "AssemblyAssembly_makespace_Y");
   makespace_Z_ = config_->getValue<double>("main", "AssemblyAssembly_makespace_Z");
 
   original_Z_velocity_ = motion_->get_velocity_Z();
@@ -1294,7 +1299,7 @@ void AssemblyAssemblyV2::MakeSpaceOnPlatform_start()
   }
 
   const double dx0 = 0.0;
-  const double dy0 = 0.0;
+  const double dy0 = makespace_Y_;
   const double dz0 = makespace_Z_;
   const double da0 = 0.0;
 
@@ -1311,10 +1316,11 @@ void AssemblyAssemblyV2::MakeSpaceOnPlatform_start()
     return;
   }
 
+  position_y_before_makespace_ = motion_->get_position_Y();
   position_z_before_makespace_ = motion_->get_position_Z();
-  position_z_before_makespace_stored_ = true;
+  position_before_makespace_stored_ = true;
   NQLog("AssemblyAssemblyV2", NQLog::Message) << "MakeSpaceOnPlatform_start"
-     << ": Position of z stage before making space on the platform is " << position_z_before_makespace_;
+     << ": Position of stage before making space on the platform is (y/z): " << position_y_before_makespace_ << " / " << position_z_before_makespace_;
 
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(MakeSpaceOnPlatform_finish()));
@@ -1359,7 +1365,7 @@ void AssemblyAssemblyV2::ReturnToPlatform_start()
     return;
   }
 
-  if(!position_z_before_makespace_stored_)
+  if(!position_before_makespace_stored_)
   {
     NQLog("AssemblyAssemblyV2", NQLog::Warning) << "ReturnToPlatform_start"
        << ": stage position before making space on platform has not been stored. Cannot continue.";
@@ -1371,7 +1377,7 @@ void AssemblyAssemblyV2::ReturnToPlatform_start()
   }
 
   const double dx0 = 0.0;
-  const double dy0 = 0.0;
+  const double dy0 = position_y_before_makespace_ - motion_->get_position_Y();
   const double dz0 = position_z_before_makespace_ - motion_->get_position_Z();
   const double da0 = 0.0;
 
@@ -1389,7 +1395,7 @@ void AssemblyAssemblyV2::ReturnToPlatform_start()
   }
 
   QMessageBox* msgBox = new QMessageBox;
-  msgBox->setInformativeText(QString("This will move the z stage to the absolute position %1 (relative: %2).\nContinue?").arg(position_z_before_makespace_).arg(dz0));
+  msgBox->setInformativeText(QString("This will move the y / z stages to the absolute position %1 / %2 (relative: %3 / %4).\nContinue?").arg(position_y_before_makespace_).arg(position_z_before_makespace_).arg(dz0).arg(dy0));
   msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
   msgBox->setDefaultButton(QMessageBox::Yes);
   int ret = msgBox->exec();
@@ -1433,6 +1439,8 @@ void AssemblyAssemblyV2::ReturnToPlatform_finish()
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(ReturnToPlatform_finish()));
 
   if(in_action_){ in_action_ = false; }
+
+  position_before_makespace_stored_ = false;
 
   NQLog("AssemblyAssemblyV2", NQLog::Spam) << "ReturnToPlatform_finish"
      << ": emitting signal \"ReturnToPlatform_finished\"";
