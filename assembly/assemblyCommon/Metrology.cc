@@ -639,12 +639,10 @@ void Metrology::run_metrology(const double patrec_dX, const double patrec_dY, co
       const double dZ = (config_->getValue<double>("parameters", "RefPointSensor_Z") - motion_manager_->get_position_Z());
 
       NQLog("Metrology", NQLog::Spam) << "run_metrology: step [" << metrology_step_ << "]"
-      << ": emitting signal \"move_relative(" << dX << ", " << dY << ", 0, 0)\"";
+				      << ": emitting signal \"move_relative(" << dX << ", " << dY << ", " << dZ << ", 0)\"";
 
       this->move_relative(dX, dY, dZ, 0.0);
     }
-    this->reset();
-
     emit execution_completed();
 
     QMessageBox* msgBox = new QMessageBox;
@@ -653,6 +651,10 @@ void Metrology::run_metrology(const double patrec_dX, const double patrec_dY, co
     msgBox->setStandardButtons(QMessageBox::Ok);
 
     int ret = msgBox->exec();
+  } else {
+    NQLog("Metrology", NQLog::Message) << "run_metrology: step [" << metrology_step_ << "]: metrology has been completed, do reset.";
+
+    this->reset();
   }
 }
 
