@@ -226,7 +226,7 @@ void Metrology::move_to_PSS_marker()
   NQLog("Metrology", NQLog::Spam) << "move_to_PSS_marker:"
      << ": emitting signal \"move_relative(" << dX << ", " << dY << ", " << dZ << ", " << dA << ")\"";
 
-  moving_to_start_ = false;
+  moving_to_start_ = true;
 
   this->move_relative(dX, dY, dZ, dA);
 }
