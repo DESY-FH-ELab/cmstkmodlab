@@ -1395,7 +1395,7 @@ void AssemblyAssemblyV2::ReturnToPlatform_start()
   }
 
   QMessageBox* msgBox = new QMessageBox;
-  msgBox->setInformativeText(QString("This will move the y / z stages to the absolute position %1 / %2 (relative: %3 / %4).\nContinue?").arg(position_y_before_makespace_).arg(position_z_before_makespace_).arg(dz0).arg(dy0));
+  msgBox->setInformativeText(QString("This will move the y / z stages to the absolute position %1 / %2 (relative: %3 / %4).\nContinue?").arg(position_y_before_makespace_).arg(position_z_before_makespace_).arg(dy0).arg(dz0));
   msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
   msgBox->setDefaultButton(QMessageBox::Yes);
   int ret = msgBox->exec();
