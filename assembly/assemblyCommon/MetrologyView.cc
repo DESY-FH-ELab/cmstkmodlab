@@ -645,7 +645,7 @@ Metrology::Configuration MetrologyView::get_configuration(bool& valid_conf) cons
 
   if(valid_PatRecOne_conf == false)
   {
-    NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "transmit_configuration"
+    NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "get_configuration"
        << ": invalid AssemblyObjectFinderPatRec::Configuration object from PatRec Widget #1, no action taken";
 
     valid_conf = false;
@@ -663,7 +663,7 @@ Metrology::Configuration MetrologyView::get_configuration(bool& valid_conf) cons
 
   if(valid_PatRecTwo_conf == false)
   {
-    NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "transmit_configuration"
+    NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "get_configuration"
        << ": invalid AssemblyObjectFinderPatRec::Configuration object from PatRec Widget #2, no action taken";
 
     valid_conf = false;
@@ -682,7 +682,7 @@ Metrology::Configuration MetrologyView::get_configuration(bool& valid_conf) cons
 
   if(valid_PatRecThree_conf == false)
   {
-      NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "transmit_configuration"
+      NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "get_configuration"
       << ": invalid AssemblyObjectFinderPatRec::Configuration object from PatRec Widget #1, no action taken";
 
       valid_conf = false;
@@ -700,7 +700,7 @@ Metrology::Configuration MetrologyView::get_configuration(bool& valid_conf) cons
 
   if(valid_PatRecFour_conf == false)
   {
-      NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "transmit_configuration"
+      NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "get_configuration"
          << ": invalid AssemblyObjectFinderPatRec::Configuration object from PatRec Widget #2, no action taken";
 
       valid_conf = false;
