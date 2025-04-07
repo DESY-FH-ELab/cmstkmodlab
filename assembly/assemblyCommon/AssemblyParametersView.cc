@@ -526,6 +526,56 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   button_moveRelRefDist13_  = new QPushButton(tr("Apply Relative Movement"));
   dist_lay->addWidget(button_moveRelRefDist13_, row_index, 9, Qt::AlignLeft);
 
+  // Add separator line
+
+  ++row_index;
+  QFrame* line2 = new QFrame();
+  line2->setFrameShape(QFrame::HLine);
+  line2->setFrameShadow(QFrame::Sunken);
+  dist_lay->addWidget(line2, row_index, 0, 1, 10);
+
+  // distance: from reference marker of platform (top left) to other reference markers on platform
+  // Add buttons to perform +dX/-dX relative movements from one marker to the other
+  // Like the above, these values are read from the "assembly.cfg" file (hardcoded design values, not calibrated)
+  ++row_index;
+  tmp_tag = "RefPointPlatform_Distance_X";
+  tmp_des = "From platform marker left -> right (dX>0) :";
+  map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
+  dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("dX"))    , row_index, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag), row_index, 2, Qt::AlignRight);
+  button_moveRelRefDist14_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist14_, row_index, 9, Qt::AlignLeft);
+
+  ++row_index;
+  tmp_tag = "RefPointPlatform_Distance_X_neg";
+  tmp_des = "From platform marker right -> left (dX<0) :";
+  map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
+  dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("dX"))    , row_index, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag), row_index, 2, Qt::AlignRight);
+  button_moveRelRefDist15_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist15_, row_index, 9, Qt::AlignLeft);
+
+  ++row_index;
+  tmp_tag = "RefPointPlatform_Distance_Y";
+  tmp_des = "From platform marker top -> bottom (dY<0) :";
+  map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
+  dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag), row_index, 3, Qt::AlignRight);
+  button_moveRelRefDist16_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist16_, row_index, 9, Qt::AlignLeft);
+
+  ++row_index;
+  tmp_tag = "RefPointPlatform_Distance_Y_neg";
+  tmp_des = "From platform marker bottom -> top (dY>0) :";
+  map_lineEdit_[tmp_tag] = new QLineEdit(tr(""));
+  dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag), row_index, 3, Qt::AlignRight);
+  button_moveRelRefDist17_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist17_, row_index, 9, Qt::AlignLeft);
   //// ---------------------
 
   copy_values();
@@ -571,6 +621,10 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   connect(button_moveRelRefDist11_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist11()));
   connect(button_moveRelRefDist12_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist12()));
   connect(button_moveRelRefDist13_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist13()));
+  connect(button_moveRelRefDist14_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist14()));
+  connect(button_moveRelRefDist15_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist15()));
+  connect(button_moveRelRefDist16_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist16()));
+  connect(button_moveRelRefDist17_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist17()));
   connect(this , SIGNAL(click_moveByRelRefDist(int)), this, SLOT(askConfirmMoveByRelRefDist(int)));
 
   connect(config_, SIGNAL(valueChanged()), this, SLOT(copy_values()));
@@ -612,6 +666,10 @@ AssemblyParametersView::~AssemblyParametersView()
     disconnect(button_moveRelRefDist11_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist11()));
     disconnect(button_moveRelRefDist12_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist12()));
     disconnect(button_moveRelRefDist13_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist13()));
+    disconnect(button_moveRelRefDist14_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist14()));
+    disconnect(button_moveRelRefDist15_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist15()));
+    disconnect(button_moveRelRefDist16_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist16()));
+    disconnect(button_moveRelRefDist17_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist17()));
     disconnect(this , SIGNAL(click_moveByRelRefDist(int)), this, SLOT(askConfirmMoveByRelRefDist(int)));
 }
 
@@ -779,6 +837,10 @@ void AssemblyParametersView::copy_values()
   exceptions.push_back("AssemblyObjectAlignerView_PSP_deltaX_neg");
   exceptions.push_back("AssemblyObjectAlignerView_PSS_deltaX");
   exceptions.push_back("AssemblyObjectAlignerView_PSS_deltaX_neg");
+  exceptions.push_back("RefPointPlatform_Distance_X");
+  exceptions.push_back("RefPointPlatform_Distance_X_neg");
+  exceptions.push_back("RefPointPlatform_Distance_Y");
+  exceptions.push_back("RefPointPlatform_Distance_Y_neg");
   exceptions.push_back("AssemblyParameters_file_path");
 
   for(const auto& key : map_lineEdit_)
@@ -798,6 +860,14 @@ void AssemblyParametersView::copy_values()
   this->setText(tmp+"_neg", -config_->getValue<double>("main", tmp));
 
   tmp = "AssemblyObjectAlignerView_PSS_deltaX";
+  this->setText(tmp, config_->getValue<double>("main", tmp));
+  this->setText(tmp+"_neg", -config_->getValue<double>("main", tmp));
+
+  tmp = "RefPointPlatform_Distance_X";
+  this->setText(tmp, config_->getValue<double>("main", tmp));
+  this->setText(tmp+"_neg", -config_->getValue<double>("main", tmp));
+
+  tmp = "RefPointPlatform_Distance_Y";
   this->setText(tmp, config_->getValue<double>("main", tmp));
   this->setText(tmp+"_neg", -config_->getValue<double>("main", tmp));
 
@@ -909,6 +979,14 @@ void AssemblyParametersView::askConfirmMoveByRelRefDist(int refPoint)
         case 12: tmp_tag = "AssemblyObjectAlignerView_PSS_deltaX";
             break;
         case 13: tmp_tag = "AssemblyObjectAlignerView_PSS_deltaX_neg";
+            break;
+        case 14: tmp_tag = "RefPointPlatform_Distance_X";
+            break;
+        case 15: tmp_tag = "RefPointPlatform_Distance_X_neg";
+            break;
+        case 16: tmp_tag = "RefPointPlatform_Distance_Y";
+            break;
+        case 17: tmp_tag = "RefPointPlatform_Distance_Y_neg";
             break;
         default: return;
     }
