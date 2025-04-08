@@ -50,15 +50,7 @@ class AssemblyObjectFinderPatRecWidget : public QWidget
   QPushButton* template_load_button()   const { return templa_load_button_; }
   QLineEdit*   template_file_lineEdit() const { return templa_file_linee_; }
 
-  QRadioButton* threshold_button()   const { return thresh_thresh_radbu_; }
   QLineEdit*    threshold_lineEdit() const { return thresh_thresh_linee_; }
-
-  QRadioButton* adaptiveThreshold_button()   const { return thresh_adathr_radbu_; }
-  QLineEdit*    adaptiveThreshold_lineEdit() const { return thresh_adathr_linee_; }
-
-  QLineEdit* angles_prescan_lineEdit()  const { return angles_prescan_linee_; }
-  QLineEdit* angles_finemax_lineEdit()  const { return angles_finemax_linee_; }
-  QLineEdit* angles_finestep_lineEdit() const { return angles_finestep_linee_; }
 
   AssemblyObjectFinderPatRec::Configuration get_configuration(bool&) const;
 
@@ -74,20 +66,7 @@ class AssemblyObjectFinderPatRecWidget : public QWidget
   QPushButton* suggest_pss1_button_;
   QPushButton* suggest_pss2_button_;
 
-  QRadioButton* thresh_thresh_radbu_;
   QLineEdit*    thresh_thresh_linee_;
-
-  QRadioButton* thresh_adathr_radbu_;
-  QLineEdit*    thresh_adathr_linee_;
-
-  QLabel*    angles_prescan_label_;
-  QLineEdit* angles_prescan_linee_;
-
-  QLabel*    angles_finemax_label_;
-  QLineEdit* angles_finemax_linee_;
-
-  QLabel*    angles_finestep_label_;
-  QLineEdit* angles_finestep_linee_;
 
  public slots:
 
