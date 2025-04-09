@@ -40,10 +40,6 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
   imgbin_thresh_button_(nullptr),
   imgbin_thresh_label_ (nullptr),
   imgbin_thresh_linee_ (nullptr),
-
-  imgbin_adathr_button_(nullptr),
-  imgbin_adathr_label_ (nullptr),
-  imgbin_adathr_linee_ (nullptr)
 {
   ApplicationConfig* config = ApplicationConfig::instance();
 
@@ -170,30 +166,6 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
   connect(threshold_slider_, SIGNAL(valueChanged(int)), this, SLOT(set_bw_threshold_slider(int)));
   // -----
 
-  // method-2: adaptiveThreshold
-  lBin->addSpacing(40);
-
-  QVBoxLayout* imgbin_adathr_layout = new QVBoxLayout;
-  lBin->addLayout(imgbin_adathr_layout);
-
-  imgbin_adathr_button_ = new QPushButton("openCV::adaptiveThreshold", this);
-  imgbin_adathr_layout->addWidget(imgbin_adathr_button_, 0, Qt::Alignment());
-
-  connect(imgbin_adathr_button_, SIGNAL(clicked()), this, SLOT(apply_adaptiveThreshold()));
-
-  QHBoxLayout* imgbin_adathr_inputcfg = new QHBoxLayout;
-  imgbin_adathr_layout->addLayout(imgbin_adathr_inputcfg);
-
-  imgbin_adathr_label_ = new QLabel(this);
-  imgbin_adathr_label_->setText("Block Size (pos odd int)");
-
-  imgbin_adathr_linee_ = new QLineEdit(this);
-  assembly::QLineEdit_setText(imgbin_adathr_linee_, config->getDefaultValue<int>("main", "AssemblyThresholderView_adaptiveThreshold", 587));
-
-  imgbin_adathr_inputcfg->addWidget(imgbin_adathr_label_, 40);
-  imgbin_adathr_inputcfg->addWidget(imgbin_adathr_linee_, 60);
-  // -----
-
   lBin->addStretch();
   //// ---------------
 }
@@ -315,26 +287,6 @@ void AssemblyThresholderView::apply_threshold()
      << ": emitting signal \"threshold_value(" << thr << ")\"";
 
   emit threshold_request(thr);
-}
-
-void AssemblyThresholderView::apply_adaptiveThreshold()
-{
-  bool valid_bks(false);
-
-  const int bks = imgbin_adathr_linee_->text().toInt(&valid_bks);
-
-  if(valid_bks == false)
-  {
-    NQLog("AssemblyThresholderView", NQLog::Warning) << "apply_adaptiveThreshold"
-       << ": invalid (non-integer) format for block-size value (" << imgbin_adathr_linee_->text() << "), no action taken";
-
-    return;
-  }
-
-  NQLog("AssemblyThresholderView", NQLog::Debug) << "apply_adaptiveThreshold"
-     << ": emitting signal \"adaptiveThreshold_request(" << bks << ")\"";
-
-  emit adaptiveThreshold_request(bks);
 }
 
 void AssemblyThresholderView::connectImageProducer_raw(const QObject* sender, const char* signal)

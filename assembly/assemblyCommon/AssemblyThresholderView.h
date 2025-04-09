@@ -66,10 +66,6 @@ class AssemblyThresholderView : public QWidget
   QLabel*      imgbin_thresh_label_;
   QLineEdit*   imgbin_thresh_linee_;
   QSlider* threshold_slider_;
-
-  QPushButton* imgbin_adathr_button_;
-  QLabel*      imgbin_adathr_label_;
-  QLineEdit*   imgbin_adathr_linee_;
   // ---------
 
  public slots:
@@ -82,7 +78,6 @@ class AssemblyThresholderView : public QWidget
   void update_image_binary(const cv::Mat&);
 
   void apply_threshold();
-  void apply_adaptiveThreshold();
 
   void display_infoTab();
 
@@ -101,7 +96,6 @@ class AssemblyThresholderView : public QWidget
   void loaded_image_raw(const cv::Mat&);
 
   void threshold_request(const int);
-  void adaptiveThreshold_request(const int);
 };
 
 #endif // ASSEMBLYTHRESHOLDERVIEW_H

@@ -58,9 +58,6 @@ class AssemblyThresholder : public QObject
   void update_image_binary_threshold(const int);
   cv::Mat get_image_binary_threshold(const cv::Mat&, const int) const;
 
-  void update_image_binary_adaptiveThreshold(const int);
-  cv::Mat get_image_binary_adaptiveThreshold(const cv::Mat&, const int) const;
-
   void send_image_raw();
   void send_image_binary();
 
