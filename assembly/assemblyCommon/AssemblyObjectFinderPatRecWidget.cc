@@ -51,8 +51,8 @@ AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(const bool su
 
   connect(this, SIGNAL(updated_image_template_path(QString)), templa_file_linee_, SLOT(setText(QString)));
 
-  templa_lay->addWidget(templa_load_button_, 0, 0, 1, 2);
-  templa_lay->addWidget(templa_file_linee_ , 0, 2, 1, 3);
+  templa_lay->addWidget(templa_load_button_, 0, 0, 1, 1);
+  templa_lay->addWidget(templa_file_linee_ , 0, 1, 1, 4);
 
   if(suggest_templates)
   {
@@ -77,8 +77,12 @@ AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(const bool su
   auto thresh_thresh_label = new QLabel(tr("Threshold (pos int)"));
   thresh_thresh_linee_ = new QLineEdit(tr(""));
 
-  templa_lay->addWidget(thresh_thresh_label, 2, 0);
-  templa_lay->addWidget(thresh_thresh_linee_, 2, 1);
+  templa_lay->addWidget(thresh_thresh_label, 2, 0, 1, 1);
+  templa_lay->addWidget(thresh_thresh_linee_, 2, 1, 1, 4);
+
+  template_preview_ = new QLabel();
+
+  templa_lay->addWidget(template_preview_, 0, 5, 2 + static_cast<int>(suggest_templates), 3);
 
   templa_box->setLayout(templa_lay);
 
@@ -110,6 +114,9 @@ void AssemblyObjectFinderPatRecWidget::load_image_template_from_path(const QStri
 
     return;
   }
+
+  auto tempimg = new QPixmap(filename);
+  template_preview_->setPixmap(tempimg->scaled(50,50,Qt::KeepAspectRatio));
 
   NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Spam) << "load_image_template"
      << ": emitting signal \"updated_image_template_path(" << filename << ")\"";
