@@ -39,7 +39,7 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
 
   imgbin_thresh_button_(nullptr),
   imgbin_thresh_label_ (nullptr),
-  imgbin_thresh_linee_ (nullptr),
+  imgbin_thresh_linee_ (nullptr)
 {
   ApplicationConfig* config = ApplicationConfig::instance();
 
