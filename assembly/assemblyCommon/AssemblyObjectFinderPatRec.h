@@ -50,11 +50,7 @@ class AssemblyObjectFinderPatRec : public QObject
 
     QString template_filepath_;
 
-    bool thresholding_useThreshold_;
     int  thresholding_threshold_;
-
-    bool thresholding_useAdaptiveThreshold_;
-    int  thresholding_blocksize_;
 
     std::vector<double> angles_prescan_vec_;
     double              angles_finemax_;

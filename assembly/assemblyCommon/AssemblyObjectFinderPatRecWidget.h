@@ -68,6 +68,8 @@ class AssemblyObjectFinderPatRecWidget : public QWidget
 
   QLineEdit*    thresh_thresh_linee_;
 
+  ApplicationConfig* config_;
+
  public slots:
 
   void load_image_template();

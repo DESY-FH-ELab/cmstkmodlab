@@ -84,6 +84,8 @@ AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(const bool su
 
   layout_->addWidget(templa_box);
   /// ------------------------------
+
+  config_ = ApplicationConfig::instance();
 }
 
 void AssemblyObjectFinderPatRecWidget::load_image_template()
@@ -125,20 +127,18 @@ void AssemblyObjectFinderPatRecWidget::load_image_template_from_config()
   QPushButton* ptr_qedit = qobject_cast<QPushButton*>(sender());
   std::string filepath = Config::CMSTkModLabBasePath + "/";
 
-  auto config = ApplicationConfig::instance();
-
   if(ptr_qedit == suggest_psp1_button_)
   {
-    filepath += config->getValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSP1_template_fpath");
+    filepath += config_->getValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSP1_template_fpath");
   } else if(ptr_qedit == suggest_psp2_button_)
   {
-    filepath += config->getValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSP2_template_fpath");
+    filepath += config_->getValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSP2_template_fpath");
   } else if(ptr_qedit == suggest_pss1_button_)
   {
-    filepath += config->getValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSS1_template_fpath");
+    filepath += config_->getValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSS1_template_fpath");
   } else if(ptr_qedit == suggest_pss2_button_)
   {
-    filepath += config->getValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSS2_template_fpath");
+    filepath += config_->getValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSS2_template_fpath");
   } else
   {
     NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Fatal) << "load_image_template_from_config"
@@ -178,11 +178,6 @@ AssemblyObjectFinderPatRec::Configuration AssemblyObjectFinderPatRecWidget::get_
   conf.template_filepath_ = templa_file_linee_->text();
   /// ------------------------------
 
-  conf.thresholding_useAdaptiveThreshold_ = false;
-  conf.thresholding_blocksize_ = -1;
-
-  conf.thresholding_useThreshold_ = true;
-
   const QString thresh_str = thresh_thresh_linee_->text().remove(" ");
 
   bool valid_thr(false);
@@ -203,6 +198,10 @@ AssemblyObjectFinderPatRec::Configuration AssemblyObjectFinderPatRecWidget::get_
   }
 
   valid_conf = true;
+
+  conf.angles_prescan_vec_ = config_->getValueVector<double>("main", "AssemblyObjectAlignerView_PatRec_angles_prescan");
+  conf.angles_finemax_ = config_->getDefaultValue<double>("main", "AssemblyObjectAlignerView_PatRec_angles_finemax" , 2);
+  conf.angles_finestep_ = config_->getDefaultValue<double>("main", "AssemblyObjectAlignerView_PatRec_angles_finestep", 0.2);
 
   return conf;
 }
