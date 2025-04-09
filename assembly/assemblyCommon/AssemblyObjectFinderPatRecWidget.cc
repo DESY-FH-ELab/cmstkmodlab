@@ -82,7 +82,7 @@ AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(const bool su
 
   template_preview_ = new QLabel();
 
-  templa_lay->addWidget(template_preview_, 0, 5, 2 + static_cast<int>(suggest_templates), 3);
+  templa_lay->addWidget(template_preview_, 0, 5, 3, 2 + static_cast<int>(suggest_templates));
 
   templa_box->setLayout(templa_lay);
 
