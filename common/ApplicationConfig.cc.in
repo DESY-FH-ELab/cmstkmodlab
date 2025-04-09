@@ -395,6 +395,63 @@ std::vector<int> ApplicationConfig::getValueVector(const std::string& alias,
 }
 
 template <>
+std::vector<double> ApplicationConfig::getValueVector(const ApplicationConfig::ShortKey& sk) const
+{
+  double returnValue = 0;
+  std::vector<double> returnVector;
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+  	for (auto & v : it->second) {
+  	  std::istringstream iss(v.c_str(), std::istringstream::in);
+      iss >> returnValue;
+      returnVector.push_back(returnValue);
+  	}
+  } else {
+    issueKeyError(sk);
+  }
+  return returnVector;
+}
+
+template <>
+std::vector<double> ApplicationConfig::getValueVector(const std::string& key) const
+{
+  double returnValue = 0;
+  std::vector<double> returnVector;
+  ShortKey sk = { "*", key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+  	for (auto & v : it->second) {
+  	  std::istringstream iss(v.c_str(), std::istringstream::in);
+      iss >> returnValue;
+      returnVector.push_back(returnValue);
+  	}
+  } else {
+    issueKeyError(sk);
+  }
+  return returnVector;
+}
+
+template <>
+std::vector<double> ApplicationConfig::getValueVector(const std::string& alias,
+    const std::string& key) const
+{
+  double returnValue = 0;
+  std::vector<double> returnVector;
+  ShortKey sk = { alias, key };
+  storage_t::const_iterator it = keyvalueMap_.find(sk);
+  if (it!=keyvalueMap_.end()) {
+  	for (auto & v : it->second) {
+  	  std::istringstream iss(v.c_str(), std::istringstream::in);
+      iss >> returnValue;
+      returnVector.push_back(returnValue);
+  	}
+  } else {
+    issueKeyError(sk);
+  }
+  return returnVector;
+}
+
+template <>
 int ApplicationConfig::getDefaultValue(const ApplicationConfig::ShortKey& sk,
     int defaultValue) const
 {
