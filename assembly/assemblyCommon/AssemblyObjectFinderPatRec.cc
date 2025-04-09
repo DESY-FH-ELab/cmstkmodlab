@@ -409,6 +409,8 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
 
     this->PatRec(i_FOM, i_matchLoc, img_master_PatRec, img_templa_PatRec_gs, i_angle, match_method);
 
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Spam) << "template_matching" << ": pre-scan for angle " << i_angle << " yields FOM=" << i_FOM;
+
     const bool update = (i==0) || (use_minFOM ? (i_FOM < best_FOM) : (i_FOM > best_FOM));
 
     if(update){ best_FOM = i_FOM; angle_prescan = i_angle; }
