@@ -58,6 +58,8 @@ class AssemblyObjectFinderPatRecWidget : public QWidget
 
   QVBoxLayout* layout_;
 
+  QGroupBox* templa_box_;
+
   QPushButton* templa_load_button_;
   QLineEdit*   templa_file_linee_;
 

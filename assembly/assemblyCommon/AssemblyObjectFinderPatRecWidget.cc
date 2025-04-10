@@ -37,8 +37,8 @@ AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(const bool su
   this->setLayout(layout_);
 
   /// Template Image ---------------
-  QGroupBox* templa_box = new QGroupBox(tr("Template Image"));
-  templa_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
+  templa_box_ = new QGroupBox(tr("Template Image"));
+  templa_box_->setStyleSheet("QGroupBox { font-weight: bold; } ");
 
   QGridLayout* templa_lay = new QGridLayout;
 
@@ -74,19 +74,24 @@ AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(const bool su
     connect(suggest_pss2_button_, SIGNAL(clicked()), this, SLOT(load_image_template_from_config()));
   }
 
+  int row_offset = static_cast<int>(suggest_templates);
+
   auto thresh_thresh_label = new QLabel(tr("Threshold (pos int)"));
   thresh_thresh_linee_ = new QLineEdit(tr(""));
 
-  templa_lay->addWidget(thresh_thresh_label, 2, 0, 1, 1);
-  templa_lay->addWidget(thresh_thresh_linee_, 2, 1, 1, 4);
+  templa_lay->addWidget(thresh_thresh_label, 1+row_offset, 0, 1, 1);
+  templa_lay->addWidget(thresh_thresh_linee_, 1+row_offset, 1, 1, 4);
 
   template_preview_ = new QLabel();
 
-  templa_lay->addWidget(template_preview_, 0, 5, 3, 2 + static_cast<int>(suggest_templates));
+  templa_lay->addWidget(template_preview_, 0, 5, 2 + row_offset, 1);
 
-  templa_box->setLayout(templa_lay);
+  templa_box_->setLayout(templa_lay);
 
-  layout_->addWidget(templa_box);
+  templa_box_->setMinimumHeight(50 * (2 + row_offset));
+  templa_box_->setMaximumHeight(50 * (2 + row_offset));
+
+  layout_->addWidget(templa_box_);
   /// ------------------------------
 
   config_ = ApplicationConfig::instance();
@@ -116,7 +121,7 @@ void AssemblyObjectFinderPatRecWidget::load_image_template_from_path(const QStri
   }
 
   auto tempimg = new QPixmap(filename);
-  template_preview_->setPixmap(tempimg->scaled(50,50,Qt::KeepAspectRatio));
+  template_preview_->setPixmap(tempimg->scaledToHeight(templa_box_->height()*0.6));
 
   NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Spam) << "load_image_template"
      << ": emitting signal \"updated_image_template_path(" << filename << ")\"";
