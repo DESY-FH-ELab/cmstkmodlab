@@ -29,7 +29,7 @@
 
 #include <opencv2/opencv.hpp>
 
-AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, const QString& DBlogfile_path, QWidget* parent) :
+AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QString& logfile_path, QWidget* parent) :
   QMainWindow(parent),
 
   // Low-Level Controllers (Motion, Camera, Vacuum)
@@ -88,10 +88,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   toolbox_view_(nullptr),
   params_view_(nullptr),
   hwctr_view_(nullptr),
-
-  DBLog_model_(nullptr),
-  DBLog_ctrl_(nullptr),
-  DBLog_view_(nullptr),
 
   stopwatch_wid_(nullptr),
 
@@ -482,36 +478,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Terminal;
     // ---------------------------------------------------------
 
-    // DATABASE LOG VIEW ---------------------------------------
-    //Logfile stored in TkUpgrade database, containing relevant info related to each assembly
-
-    const QString tabname_DBLog("Database Log");
-    DBLog_view_ = new AssemblyDBLoggerView(outputdir_path); //View
-
-    DBLog_model_ = new AssemblyDBLoggerModel(DBlogfile_path); //Model
-
-    DBLog_ctrl_ = new AssemblyDBLoggerController(DBLog_model_, DBLog_view_); //Controller
-
-    connect_DBLogger();
-
-    //Dump all assembly parameter values to DBlogfile (components thicknesses, predefined movements, etc.) to DBLog file, for archiving
-    emit DBLogMessage("== ASSEMBLY PARAMETER VALUES...\n-------------------------");
-    params_view_->Dump_UserValues_toDBlogfile(DBlogfile_path);
-    emit DBLogMessage("-------------------------\n\n\n");
-
-    if(assembly_sequence == 1) {
-        emit DBLogMessage("== Using default assembly sequence == (MaPSA glued to baseplate last)");
-    }
-    else if(assembly_sequence == 2) {
-        emit DBLogMessage("== Using modified assembly sequence == (MaPSA glued to baseplate first)");
-    }
-
-    controls_tab->addTab(DBLog_view_, tabname_DBLog);
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_DBLog;
-    // ---------------------------------------------------------
-
-    /// --------------------------------------------------------
-
     /// Upper Toolbar ------------------------------------------
     toolBar_ = addToolBar("Tools");
     toolBar_ ->addAction("Camera ON"     , this, SLOT( enable_images()));
@@ -536,7 +502,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), metrology_view_, SLOT(metrology_abort()));
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), this, SLOT(disconnect_metrology()));
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), this, SLOT(disconnect_multiPickupTest()));
-    connect(button_mainEmergencyStop_, SIGNAL(clicked()), this , SLOT(writeDBLog_emergencyStop()));
 
     QWidget *spacer = new QWidget();
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -680,12 +645,12 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     if(startup_motion_stage && motion_model_->getDeviceState()==State::OFF) {
       NQLog("AssemblyMainWindow", NQLog::Fatal) << "Motion Stage Controller could not be started!";
-	
+
       QMessageBox* msgBox = new QMessageBox;
       msgBox->setInformativeText("Motion Stage Controller is not available!");
-      
+
       msgBox->setStandardButtons(QMessageBox::Ok);
-	
+
       int ret = msgBox->exec();
     }
     // ------------------------
@@ -1237,24 +1202,6 @@ void AssemblyMainWindow::testTimer()
 
     testTimerCount_ += 0.1;
 
-    return;
-}
-
-void AssemblyMainWindow::connect_DBLogger()
-{
-    connect(this, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
-    connect(aligner_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
-    connect(finder_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
-    connect(relayCardManager_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));
-    if(assembly_ != nullptr) {connect(assembly_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));}
-    else if(assemblyV2_ != nullptr) {connect(assemblyV2_, SIGNAL(DBLogMessage(const QString)), this->DBLog_ctrl_, SLOT(writeMessageToLog(const QString)));}
-
-    return;
-}
-
-void AssemblyMainWindow::writeDBLog_emergencyStop()
-{
-    emit DBLogMessage("!! MAIN EMERGENCY BUTTON CLICKED !!");
     return;
 }
 
