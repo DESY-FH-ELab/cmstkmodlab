@@ -241,21 +241,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Image;
     // ---------------------------------------------------------
 
-    // IMAGE-THRESHOLDING VIEW ---------------------------------
-    const QString tabname_ImageThresholding("Convert Image to B/W");
-
-    thresholder_view_ = new AssemblyThresholderView(assembly_tab);
-    assembly_tab->addTab(thresholder_view_, tabname_ImageThresholding);
-
-    connect(thresholder_view_, SIGNAL(threshold_request        (int)), thresholder_, SLOT(update_image_binary_threshold        (int)));
-    connect(thresholder_view_, SIGNAL(loaded_image_raw(cv::Mat))     , thresholder_, SLOT(update_image_raw(cv::Mat)));
-
-    connect(thresholder_, SIGNAL(updated_image_raw   (cv::Mat)), thresholder_view_, SLOT(update_image_raw   (cv::Mat)));
-    connect(thresholder_, SIGNAL(updated_image_binary(cv::Mat)), thresholder_view_, SLOT(update_image_binary(cv::Mat)));
-
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_ImageThresholding;
-    // ---------------------------------------------------------
-
     // PATTERN-RECOGNITION VIEW --------------------------------
     const QString tabname_PatRec("Pattern Recognition");
 
