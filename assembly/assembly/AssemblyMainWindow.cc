@@ -427,17 +427,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(params_view_, SIGNAL(request_moveByRelRefDistance(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
     // ---------------------------------------------------------
 
-    // MOTION-SETTINGS VIEW ------------------------------------
-    const QString tabname_MotionSettings("Motion Settings");
-
-    motionSettings_ = new LStepExpressSettings(motion_model_, controls_tab);
-
-    motionSettingsWidget_ = new LStepExpressSettingsWidget(motionSettings_, controls_tab);
-    controls_tab->addTab(motionSettingsWidget_, tabname_MotionSettings);
-
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_MotionSettings;
-    // ---------------------------------------------------------
-
     // TOOLBOX VIEW --------------------------------------------
     const QString tabname_Toolbox("Toolbox");
 
@@ -476,6 +465,17 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(logctrl, SIGNAL(new_lines(QStringList)), logview, SLOT(append_text(QStringList)));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Terminal;
+    // ---------------------------------------------------------
+
+    // MOTION-SETTINGS VIEW ------------------------------------
+    const QString tabname_MotionSettings("Motion Settings");
+    
+    motionSettings_ = new LStepExpressSettings(motion_model_, controls_tab);
+
+    motionSettingsWidget_ = new LStepExpressSettingsWidget(motionSettings_, controls_tab);
+    controls_tab->addTab(motionSettingsWidget_, tabname_MotionSettings);
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_MotionSettings;
     // ---------------------------------------------------------
 
     /// Upper Toolbar ------------------------------------------
