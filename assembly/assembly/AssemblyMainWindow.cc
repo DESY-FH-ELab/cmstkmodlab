@@ -216,8 +216,17 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     image_view_ = new AssemblyImageView(assembly_tab);
     assembly_tab->addTab(image_view_, tabname_Image);
 
+    // Thresholder
+    thresholder_ = new AssemblyThresholder();
+
     // Z-focus finder
     zfocus_finder_ = new AssemblyZFocusFinder(outputdir_path+"/AssemblyZFocusFinder", camera_, motion_manager_);
+
+    connect(image_view_, SIGNAL(threshold_request(int)), thresholder_, SLOT(update_image_binary_threshold(int)));
+    connect(image_view_, SIGNAL(loaded_image_raw(cv::Mat)), thresholder_, SLOT(update_image_raw(cv::Mat)));
+
+    connect(thresholder_, SIGNAL(updated_image_raw   (cv::Mat)), image_view_, SLOT(update_image_raw (cv::Mat)));
+    connect(thresholder_, SIGNAL(updated_image_binary(cv::Mat)), image_view_, SLOT(update_image_binary(cv::Mat)));
 
     connect(zfocus_finder_, SIGNAL(show_zscan(QLineSeries&))     , image_view_   , SLOT(update_image_zscan(QLineSeries&)));
     connect(zfocus_finder_, SIGNAL(text_update_request(double))  , image_view_   , SLOT(update_text(double)));
@@ -234,8 +243,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     // IMAGE-THRESHOLDING VIEW ---------------------------------
     const QString tabname_ImageThresholding("Convert Image to B/W");
-
-    thresholder_ = new AssemblyThresholder();
 
     thresholder_view_ = new AssemblyThresholderView(assembly_tab);
     assembly_tab->addTab(thresholder_view_, tabname_ImageThresholding);
