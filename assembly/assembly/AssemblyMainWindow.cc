@@ -953,7 +953,7 @@ void AssemblyMainWindow::start_objectAligner(const AssemblyObjectAligner::Config
   // kick-start alignment
   connect(aligner_, SIGNAL(configuration_updated()), aligner_, SLOT(execute()));
 
-  aligner_view_->Configuration_Widget()->setEnabled(false);
+  aligner_view_->Results_Widget()->setEnabled(true);
 
   aligner_connected_ = true;
 
@@ -1067,7 +1067,7 @@ void AssemblyMainWindow::start_metrology(const Metrology::Configuration& conf)
   // kick-start alignment
   connect(metrology_, SIGNAL(configuration_updated()), metrology_, SLOT(execute()));
 
-  metrology_view_->Configuration_Widget()->setEnabled(false);
+  metrology_view_->Results_Widget()->setEnabled(true);
 
   metrology_connected_ = true;
 
