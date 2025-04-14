@@ -95,6 +95,7 @@ class AssemblyObjectAlignerView : public QWidget
   AssemblyUEyeView* patrecTwo_image_;
   QScrollArea*      patrecTwo_scroll_;
 
+  QPushButton* button_alignerClearResults_;
   QPushButton* button_alignerEmergencyStop_;
 
   bool finder_connected_;
@@ -128,6 +129,8 @@ class AssemblyObjectAlignerView : public QWidget
   void set_alignmentMode_PSS();
 
   void update_templates(const bool);
+
+  void clearResults();
 
  signals:
 

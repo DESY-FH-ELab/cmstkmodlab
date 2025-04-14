@@ -70,6 +70,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
  , patrecTwo_image_ (nullptr)
  , patrecTwo_scroll_(nullptr)
 
+ , button_alignerClearResults_(nullptr)
  , button_alignerEmergencyStop_(nullptr)
 
  , finder_connected_(false)
@@ -461,13 +462,17 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
 
   QHBoxLayout* buttons_lay = new QHBoxLayout;
 
+  button_alignerClearResults_ = new QPushButton(tr("Clear Results"));
   button_alignerEmergencyStop_ = new QPushButton(tr("Emergency Stop"));
 
-  buttons_lay->addWidget(new QLabel, 33);
+  buttons_lay->addWidget(button_alignerClearResults_, 33);
   buttons_lay->addWidget(new QLabel, 33);
   buttons_lay->addWidget(button_alignerEmergencyStop_, 33);
 
   layout->addLayout(buttons_lay);
+
+  button_alignerClearResults_->setEnabled(false);
+  connect(button_alignerClearResults_, SIGNAL(clicked()), this, SLOT(clearResults()));
 }
 
 void AssemblyObjectAlignerView::keyReleaseEvent(QKeyEvent* event)
@@ -514,6 +519,7 @@ void AssemblyObjectAlignerView::show_measured_angle(const double val)
 
   alignm_mesang_linee_->setText(QString::fromStdString(posi_strs.str()));
 
+  button_alignerClearResults_->setEnabled(true);
   return;
 }
 
@@ -969,4 +975,18 @@ void AssemblyObjectAlignerView::switch_to_config()
 
     toolbox_->setCurrentIndex(idx_cfg_wid_);
     return;
+}
+
+void AssemblyObjectAlignerView::clearResults()
+{
+  NQLog("AssemblyObjectAlignerView", NQLog::Spam) << "clearResults()";
+
+  patrecOne_image_->resetImage();
+  patrecTwo_image_->resetImage();
+
+  alignm_mesang_linee_->setText("");
+
+  button_alignerClearResults_->setEnabled(false);
+
+  switch_to_config();
 }
