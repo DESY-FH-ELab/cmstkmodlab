@@ -172,12 +172,12 @@ MetrologyView::MetrologyView(QWidget* parent)
   metro_cfg_lay->addLayout(alignm_PR_PSS_cfg_lay);
 
   // PatRecWidget #1
-  QGroupBox* patrecOne_cfg_box = new QGroupBox(tr("PatRec Marker PSp #1 [Bottom-Left Marker]"));
+  QGroupBox* patrecOne_cfg_box = new QGroupBox(tr("PatRec Marker PSp #1 [Top-Left Marker]"));
   patrecOne_cfg_box->setObjectName("patrecOne_cfg_box");
   patrecOne_cfg_box->setStyleSheet("QWidget#patrecOne_cfg_box { font-weight : bold; color : blue; }");
 
   patrecOne_wid_ = new AssemblyObjectFinderPatRecWidget;
-  patrecOne_wid_->setToolTip("Pattern Recognition Configuration PSp #1 [Bottom-Left Marker]");
+  patrecOne_wid_->setToolTip("Pattern Recognition Configuration PSp #1 [Top-Left Marker]");
 
   if(config_ != nullptr)
   {
@@ -219,12 +219,12 @@ MetrologyView::MetrologyView(QWidget* parent)
   patrecTwo_cfg_box->setLayout(patrecTwo_wid_->layout());
   // -----
   // PatRecWidget #3
-  QGroupBox* patrecThree_cfg_box = new QGroupBox(tr("PatRec Marker PSs #1 [Bottom-Left Marker]"));
+  QGroupBox* patrecThree_cfg_box = new QGroupBox(tr("PatRec Marker PSs #1 [Top-Left Marker]"));
   patrecThree_cfg_box->setObjectName("patrecThree_cfg_box");
   patrecThree_cfg_box->setStyleSheet("QWidget#patrecThree_cfg_box { font-weight : bold; color : blue; }");
 
   patrecThree_wid_ = new AssemblyObjectFinderPatRecWidget;
-  patrecThree_wid_->setToolTip("Pattern Recognition Configuration PSs #1 [Bottom-Left Marker]");
+  patrecThree_wid_->setToolTip("Pattern Recognition Configuration PSs #1 [Top-Left Marker]");
 
   if(config_ != nullptr)
   {
