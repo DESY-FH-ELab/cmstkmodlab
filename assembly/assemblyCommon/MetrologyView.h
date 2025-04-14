@@ -69,6 +69,8 @@ class MetrologyView : public QWidget
   QPushButton* metro_exemetro_pusbu_;
   QPushButton* metro_goToPSPMarker_pusbu_;
   QPushButton* metro_goToPSSMarker_pusbu_;
+  QPushButton* metro_goToPSP_BL_Marker_pusbu_;
+  QPushButton* metro_goToPSS_BL_Marker_pusbu_;
   QPushButton* metro_enableVacuum_pusbu_;
 
   QLineEdit* alignm_angmax_dontIter_linee_;
@@ -134,6 +136,10 @@ class MetrologyView : public QWidget
 
   void go_to_PSS_marker();
 
+  void go_to_PSP_BL_marker();
+
+  void go_to_PSS_BL_marker();
+
   void clearResults();
 
   void metrology_abort();
@@ -147,6 +153,8 @@ class MetrologyView : public QWidget
   void enable_vacuum_baseplate(int);
   void go_to_PSP_marker_signal();
   void go_to_PSS_marker_signal();
+  void go_to_PSP_BL_marker_signal();
+  void go_to_PSS_BL_marker_signal();
 
  };
 

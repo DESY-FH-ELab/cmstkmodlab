@@ -526,6 +526,27 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   button_moveRelRefDist13_  = new QPushButton(tr("Apply Relative Movement"));
   dist_lay->addWidget(button_moveRelRefDist13_, row_index, 9, Qt::AlignLeft);
 
+  ++row_index;
+  tmp_tag = "Sensor_PSP_deltaY";
+  tmp_des = "From PSP marker Top -> Bottom (dY<0) :";
+  map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
+  dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 3, Qt::AlignRight);
+  button_moveRelRefDist18_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist18_, row_index, 9, Qt::AlignLeft);
+
+  ++row_index;
+  tmp_tag = "Sensor_PSS_deltaY";
+  tmp_des = "From PSS marker Top -> Bottom (dY<0) :";
+  map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
+  dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 3, Qt::AlignRight);
+  button_moveRelRefDist19_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist19_, row_index, 9, Qt::AlignLeft);
+
+
   // Add separator line
 
   ++row_index;
@@ -625,6 +646,8 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   connect(button_moveRelRefDist15_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist15()));
   connect(button_moveRelRefDist16_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist16()));
   connect(button_moveRelRefDist17_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist17()));
+  connect(button_moveRelRefDist18_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist18()));
+  connect(button_moveRelRefDist19_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist19()));
   connect(this , SIGNAL(click_moveByRelRefDist(int)), this, SLOT(askConfirmMoveByRelRefDist(int)));
 
   connect(config_, SIGNAL(valueChanged()), this, SLOT(copy_values()));
@@ -670,6 +693,8 @@ AssemblyParametersView::~AssemblyParametersView()
     disconnect(button_moveRelRefDist15_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist15()));
     disconnect(button_moveRelRefDist16_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist16()));
     disconnect(button_moveRelRefDist17_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist17()));
+    disconnect(button_moveRelRefDist18_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist18()));
+    disconnect(button_moveRelRefDist19_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist19()));
     disconnect(this , SIGNAL(click_moveByRelRefDist(int)), this, SLOT(askConfirmMoveByRelRefDist(int)));
 }
 
@@ -987,6 +1012,10 @@ void AssemblyParametersView::askConfirmMoveByRelRefDist(int refPoint)
         case 16: tmp_tag = "RefPointPlatform_Distance_Y";
             break;
         case 17: tmp_tag = "RefPointPlatform_Distance_Y_neg";
+            break;
+        case 18: tmp_tag = "Sensor_PSP_deltaY";
+            break;
+        case 19: tmp_tag = "Sensor_PSS_deltaY";
             break;
         default: return;
     }

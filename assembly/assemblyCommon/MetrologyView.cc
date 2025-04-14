@@ -43,6 +43,8 @@ MetrologyView::MetrologyView(QWidget* parent)
  , metro_exemetro_pusbu_(nullptr)
  , metro_goToPSPMarker_pusbu_(nullptr)
  , metro_goToPSSMarker_pusbu_(nullptr)
+ , metro_goToPSP_BL_Marker_pusbu_(nullptr)
+ , metro_goToPSS_BL_Marker_pusbu_(nullptr)
  , metro_enableVacuum_pusbu_(nullptr)
 
  , alignm_angmax_dontIter_linee_(nullptr)
@@ -141,16 +143,22 @@ MetrologyView::MetrologyView(QWidget* parent)
   QLabel* metro_prep_label = new QLabel("Preparations: ");
   metro_goToPSPMarker_pusbu_ = new QPushButton(tr("Go to PSp TL marker"));
   metro_goToPSSMarker_pusbu_ = new QPushButton(tr("Go to PSs TL marker"));
+  metro_goToPSP_BL_Marker_pusbu_ = new QPushButton(tr("Go to PSp BL marker"));
+  metro_goToPSS_BL_Marker_pusbu_ = new QPushButton(tr("Go to PSs BL marker"));
   metro_enableVacuum_pusbu_ = new QPushButton(tr("Enable baseplate vacuum"));
 
   metro_prep_lay->addWidget(metro_prep_label);
   metro_prep_lay->addWidget(metro_goToPSPMarker_pusbu_);
   metro_prep_lay->addWidget(metro_goToPSSMarker_pusbu_);
+  metro_prep_lay->addWidget(metro_goToPSP_BL_Marker_pusbu_);
+  metro_prep_lay->addWidget(metro_goToPSS_BL_Marker_pusbu_);
   metro_prep_lay->addWidget(metro_enableVacuum_pusbu_);
 
   connect(metro_enableVacuum_pusbu_, SIGNAL(clicked()), this, SLOT(enable_vacuum_on_baseplate()));
   connect(metro_goToPSPMarker_pusbu_, SIGNAL(clicked()), this, SLOT(go_to_PSP_marker()));
   connect(metro_goToPSSMarker_pusbu_, SIGNAL(clicked()), this, SLOT(go_to_PSS_marker()));
+  connect(metro_goToPSP_BL_Marker_pusbu_, SIGNAL(clicked()), this, SLOT(go_to_PSP_BL_marker()));
+  connect(metro_goToPSS_BL_Marker_pusbu_, SIGNAL(clicked()), this, SLOT(go_to_PSS_BL_marker()));
 
   // mode: align object
   QHBoxLayout* metro_exemetro_lay = new QHBoxLayout;
@@ -588,6 +596,22 @@ void MetrologyView::go_to_PSS_marker()
        << ": emitting signal \"go_to_PSS_marker_signal()\"";
 
     emit go_to_PSS_marker_signal();
+}
+
+void MetrologyView::go_to_PSP_BL_marker()
+{
+    NQLog("MetrologyView", NQLog::Spam) << "go_to_PSP_BL_marker"
+       << ": emitting signal \"go_to_PSP_BL_marker_signal()\"";
+
+    emit go_to_PSP_BL_marker_signal();
+}
+
+void MetrologyView::go_to_PSS_BL_marker()
+{
+    NQLog("MetrologyView", NQLog::Spam) << "go_to_PSS_BL_marker"
+       << ": emitting signal \"go_to_PSS_BL_marker_signal()\"";
+
+    emit go_to_PSS_BL_marker_signal();
 }
 
 void MetrologyView::transmit_configuration()

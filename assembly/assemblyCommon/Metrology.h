@@ -99,6 +99,10 @@ class Metrology : public QObject
 
     void move_to_PSS_marker();
 
+    void move_to_PSP_BL_marker();
+
+    void move_to_PSS_BL_marker();
+
     void clear_results();
 
     void patrec_complete(const int);
