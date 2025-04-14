@@ -189,7 +189,7 @@ MetrologyView::MetrologyView(QWidget* parent)
 
   if(config_ != nullptr)
   {
-    const std::string fpath = config_->getDefaultValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSP1_template_fpath", "");
+    const std::string fpath = config_->getDefaultValue<std::string>("main", "Metrology_PSP1_template_fpath", "");
     if(fpath != ""){ patrecOne_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+fpath)); }
 
     assembly::QLineEdit_setText(patrecOne_wid_->threshold_lineEdit()        , config_->getDefaultValue<int>("main", "AssemblyObjectAlignerView_PatRec_threshold"        , 100));
@@ -213,7 +213,7 @@ MetrologyView::MetrologyView(QWidget* parent)
 
   if(config_ != nullptr)
   {
-    const std::string fpath = config_->getDefaultValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSP2_template_fpath", "");
+    const std::string fpath = config_->getDefaultValue<std::string>("main", "Metrology_PSP2_template_fpath", "");
     if(fpath != ""){ patrecTwo_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+fpath)); }
 
     assembly::QLineEdit_setText(patrecTwo_wid_->threshold_lineEdit()        , config_->getDefaultValue<int>("main", "AssemblyObjectAlignerView_PatRec_threshold"        , 100));
@@ -236,7 +236,7 @@ MetrologyView::MetrologyView(QWidget* parent)
 
   if(config_ != nullptr)
   {
-    const std::string fpath = config_->getDefaultValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSS1_template_fpath", "");
+    const std::string fpath = config_->getDefaultValue<std::string>("main", "Metrology_PSS1_template_fpath", "");
     if(fpath != ""){ patrecThree_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+fpath)); }
 
     assembly::QLineEdit_setText(patrecThree_wid_->threshold_lineEdit()        , config_->getDefaultValue<int>("main", "AssemblyObjectAlignerView_PatRec_threshold"        , 100));
@@ -260,7 +260,7 @@ MetrologyView::MetrologyView(QWidget* parent)
 
   if(config_ != nullptr)
   {
-    const std::string fpath = config_->getDefaultValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSS2_template_fpath", "");
+    const std::string fpath = config_->getDefaultValue<std::string>("main", "Metrology_PSS2_template_fpath", "");
     if(fpath != ""){ patrecFour_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+fpath)); }
 
     assembly::QLineEdit_setText(patrecFour_wid_->threshold_lineEdit()        , config_->getDefaultValue<int>("main", "AssemblyObjectAlignerView_PatRec_threshold"        , 100));
