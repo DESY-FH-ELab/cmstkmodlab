@@ -37,7 +37,7 @@ AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(const bool su
   this->setLayout(layout_);
 
   /// Template Image ---------------
-  templa_box_ = new QGroupBox(tr("Template Image"));
+  templa_box_ = new QGroupBox(tr("Pattern Recognition Configuration"));
   templa_box_->setStyleSheet("QGroupBox { font-weight: bold; } ");
 
   QGridLayout* templa_lay = new QGridLayout;
