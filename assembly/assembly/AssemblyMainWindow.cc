@@ -321,38 +321,41 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     }
     // ---------------------------------------------------------
 
-    // Metrology VIEW ------------------------------------------
-    const QString tabname_Metrology("Metrology");
+    // HARDWARE CONTROLLERs VIEW (motion/vacuum) ---------------
+    const QString tabname_HWCtrl("HW Controllers (Motion/Vacuum)");
 
-    metrology_view_ = new MetrologyView(assembly_tab);
-    assembly_tab->addTab(metrology_view_, tabname_Metrology);
+    hwctr_view_ = new AssemblyHardwareControlView(motion_manager_, assembly_tab);
+    assembly_tab->addTab(hwctr_view_, tabname_HWCtrl);
 
-    // metrology
-    metrology_ = new Metrology(motion_manager_);
+    // enable motion stage controllers at startup
+    const bool startup_motion_stage = config->getDefaultValue<bool>("main", "startup_motion_stage", false);
 
-    connect(metrology_view_, SIGNAL(configuration(Metrology::Configuration)), this, SLOT(start_metrology(Metrology::Configuration)));
+    if(startup_motion_stage)
+    {
+      hwctr_view_->LStepExpress_Widget()->enableMotionControllers();
 
-    connect(metrology_view_, SIGNAL(go_to_PSP_marker_signal()), metrology_, SLOT(move_to_PSP_marker()));
-    connect(metrology_view_, SIGNAL(go_to_PSS_marker_signal()), metrology_, SLOT(move_to_PSS_marker()));
-    connect(metrology_view_, SIGNAL(go_to_PSP_BL_marker_signal()), metrology_, SLOT(move_to_PSP_BL_marker()));
-    connect(metrology_view_, SIGNAL(go_to_PSS_BL_marker_signal()), metrology_, SLOT(move_to_PSS_BL_marker()));
-    connect(metrology_view_, SIGNAL(enable_vacuum_baseplate(int)), relayCardManager_, SLOT(enableVacuum(int)));
-    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, SwitchState)), metrology_view_, SLOT(updateVacuumChannelState(int, SwitchState)));
+      // single-shot signal to switch ON motion stage axes automatically
+      const int time_to_axes_startup(1.5 * motion_manager_->model()->updateInterval());
+      QTimer::singleShot(time_to_axes_startup, hwctr_view_->LStepExpress_Widget(), SLOT(restart()));
 
-    metrology_view_->PatRecOne_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecOne(cv::Mat)));
-    metrology_view_->PatRecTwo_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecTwo(cv::Mat)));
-    metrology_view_->PatRecThree_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecThree(cv::Mat)));
-    metrology_view_->PatRecFour_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecFour(cv::Mat)));
+      NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_HWCtrl;
+    }
 
-    connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), metrology_view_, SLOT(metrology_abort()));
-    connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_metrology()));
-    connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
-    connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
-    connect(metrology_view_->button_metrologyClearResults(), SIGNAL(clicked()), metrology_, SLOT(clear_results()));
-
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Metrology;
+    //-- Automatically restart the Motion Stage when the 'positions vector has invalid size' error appears
+    connect(motion_manager_, SIGNAL(restartMotionStage_request()), hwctr_view_->LStepExpress_Widget(), SLOT(restart()));
     // ---------------------------------------------------------
 
+    // PARAMETERS VIEW -----------------------------------------
+    const QString tabname_Parameters("Parameters");
+
+    params_view_ = new AssemblyParametersView(assembly_tab);
+    assembly_tab->addTab(params_view_, tabname_Parameters);
+
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Parameters;
+
+    connect(params_view_, SIGNAL(request_moveToAbsRefPosition(double,double,double,double)), motion_manager_, SLOT(moveAbsolute(double,double,double,double)));
+    connect(params_view_, SIGNAL(request_moveByRelRefDistance(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
+    // ---------------------------------------------------------
 
     connect(image_view_, SIGNAL(sigRequestMoveRelative(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
     connect(motion_manager_, SIGNAL(motion_finished()), image_view_, SLOT(InfoMotionFinished()));
@@ -383,40 +386,37 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 //    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_uEye;
 //    // ---------------------------------------------------------
 
-    // HARDWARE CONTROLLERs VIEW (motion/vacuum) ---------------
-    const QString tabname_HWCtrl("HW Controllers (Motion/Vacuum)");
+    // Metrology VIEW ------------------------------------------
+    const QString tabname_Metrology("Metrology");
 
-    hwctr_view_ = new AssemblyHardwareControlView(motion_manager_, controls_tab);
-    controls_tab->addTab(hwctr_view_, tabname_HWCtrl);
+    metrology_view_ = new MetrologyView(controls_tab);
+    controls_tab->addTab(metrology_view_, tabname_Metrology);
 
-    // enable motion stage controllers at startup
-    const bool startup_motion_stage = config->getDefaultValue<bool>("main", "startup_motion_stage", false);
+    // metrology
+    metrology_ = new Metrology(motion_manager_);
 
-    if(startup_motion_stage)
-    {
-      hwctr_view_->LStepExpress_Widget()->enableMotionControllers();
+    connect(metrology_view_, SIGNAL(configuration(Metrology::Configuration)), this, SLOT(start_metrology(Metrology::Configuration)));
 
-      // single-shot signal to switch ON motion stage axes automatically
-      const int time_to_axes_startup(1.5 * motion_manager_->model()->updateInterval());
-      QTimer::singleShot(time_to_axes_startup, hwctr_view_->LStepExpress_Widget(), SLOT(restart()));
+    connect(metrology_view_, SIGNAL(go_to_PSP_marker_signal()), metrology_, SLOT(move_to_PSP_marker()));
+    connect(metrology_view_, SIGNAL(go_to_PSS_marker_signal()), metrology_, SLOT(move_to_PSS_marker()));
+    connect(metrology_view_, SIGNAL(go_to_PSP_BL_marker_signal()), metrology_, SLOT(move_to_PSP_BL_marker()));
+    connect(metrology_view_, SIGNAL(go_to_PSS_BL_marker_signal()), metrology_, SLOT(move_to_PSS_BL_marker()));
+    connect(metrology_view_, SIGNAL(go_to_marker_signal()), metrology_, SLOT(move_to_start()));
+    connect(metrology_view_, SIGNAL(enable_vacuum_baseplate(int)), relayCardManager_, SLOT(enableVacuum(int)));
+    connect(relayCardManager_, SIGNAL(vacuumChannelState(int, SwitchState)), metrology_view_, SLOT(updateVacuumChannelState(int, SwitchState)));
 
-      NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_HWCtrl;
-    }
+    metrology_view_->PatRecOne_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecOne(cv::Mat)));
+    metrology_view_->PatRecTwo_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecTwo(cv::Mat)));
+    metrology_view_->PatRecThree_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecThree(cv::Mat)));
+    metrology_view_->PatRecFour_Image()->connectImageProducer(metrology_, SIGNAL(image_PatRecFour(cv::Mat)));
 
-    //-- Automatically restart the Motion Stage when the 'positions vector has invalid size' error appears
-    connect(motion_manager_, SIGNAL(restartMotionStage_request()), hwctr_view_->LStepExpress_Widget(), SLOT(restart()));
-    // ---------------------------------------------------------
+    connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), metrology_view_, SLOT(metrology_abort()));
+    connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_metrology()));
+    connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
+    connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
+    connect(metrology_view_->button_metrologyClearResults(), SIGNAL(clicked()), metrology_, SLOT(clear_results()));
 
-    // PARAMETERS VIEW -----------------------------------------
-    const QString tabname_Parameters("Parameters");
-
-    params_view_ = new AssemblyParametersView(controls_tab);
-    controls_tab->addTab(params_view_, tabname_Parameters);
-
-    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Parameters;
-
-    connect(params_view_, SIGNAL(request_moveToAbsRefPosition(double,double,double,double)), motion_manager_, SLOT(moveAbsolute(double,double,double,double)));
-    connect(params_view_, SIGNAL(request_moveByRelRefDistance(double,double,double,double)), motion_manager_, SLOT(moveRelative(double,double,double,double)));
+    NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Metrology;
     // ---------------------------------------------------------
 
     // TOOLBOX VIEW --------------------------------------------
@@ -461,7 +461,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     // MOTION-SETTINGS VIEW ------------------------------------
     const QString tabname_MotionSettings("Motion Settings");
-    
+
     motionSettings_ = new LStepExpressSettings(motion_model_, controls_tab);
 
     motionSettingsWidget_ = new LStepExpressSettingsWidget(motionSettings_, controls_tab);
@@ -600,7 +600,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     main_tab->setTabPosition(QTabWidget::North);
 
     idx_module_tab = main_tab->addTab(assembly_tab, tr("Module Assembly"));
-    idx_manual_tab = main_tab->addTab(controls_tab, tr("Manual Controls and Parameters"));
+    idx_manual_tab = main_tab->addTab(controls_tab, tr("Additional Tools"));
 
     assembly_tab->setStyleSheet(assembly_tab->styleSheet()+" QTabBar::tab {width: 300px; }");
     controls_tab->setStyleSheet(controls_tab->styleSheet()+" QTabBar::tab {width: 375px; }");
