@@ -143,17 +143,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
       1000
     );
 
-    if(motion_model_->getDeviceState()==State::OFF) {
-      NQLog("AssemblyMainWindow", NQLog::Fatal) << "Motion Stage Controller is not available - cannot continue.";
-
-      QMessageBox* msgBox = new QMessageBox;
-      msgBox->setInformativeText("Motion Stage Controller is not available!");
-
-      msgBox->setStandardButtons(QMessageBox::Ok);
-
-      int ret = msgBox->exec();
-    }
-
     connect(motion_model_, SIGNAL(motionInformationChanged()), this, SLOT(update_stage_position()));
     connect(motion_model_, SIGNAL(informationChanged()), this, SLOT(update_stage_position()));
 
@@ -690,6 +679,16 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
       this->enable_images();
     }
 
+    if(startup_motion_stage && motion_model_->getDeviceState()==State::OFF) {
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "Motion Stage Controller could not be started!";
+	
+      QMessageBox* msgBox = new QMessageBox;
+      msgBox->setInformativeText("Motion Stage Controller is not available!");
+      
+      msgBox->setStandardButtons(QMessageBox::Ok);
+	
+      int ret = msgBox->exec();
+    }
     // ------------------------
 }
 
