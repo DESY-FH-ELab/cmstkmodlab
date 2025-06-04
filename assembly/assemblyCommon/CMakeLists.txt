@@ -65,6 +65,7 @@ add_library(AssemblyCommon SHARED
         AssemblyDBLoggerController.cc
         AssemblyDBLoggerModel.cc
         AssemblyDBLoggerView.cc
+        AssemblyStopwatchWidget.cc
 )
 
 if(CMSTKMODLAB_FAKEUEYE)

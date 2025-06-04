@@ -93,6 +93,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   DBLog_ctrl_(nullptr),
   DBLog_view_(nullptr),
 
+  stopwatch_wid_(nullptr),
+
   button_mainEmergencyStop_(nullptr),
   button_info_(nullptr),
   autofocus_checkbox_(nullptr),
@@ -537,6 +539,13 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     QWidget *spacer = new QWidget();
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     toolBar_->addWidget(spacer);
+
+    stopwatch_wid_ = new AssemblyStopwatchWidget();
+    toolBar_->addWidget(stopwatch_wid_);
+
+    QWidget *spacer2 = new QWidget();
+    spacer2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    toolBar_->addWidget(spacer2);
 
     QWidget *vac_wid = new QWidget();
 
