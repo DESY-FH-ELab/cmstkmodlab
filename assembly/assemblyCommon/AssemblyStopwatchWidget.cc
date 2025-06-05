@@ -13,38 +13,47 @@
 #include <nqlogger.h>
 #include <ApplicationConfig.h>
 
+#include <unistd.h>
+
 #include <AssemblyStopwatchWidget.h>
 #include <AssemblyUtilities.h>
 
-#include <QTime>
+#include <QFont>
+#include <QIcon>
 
 AssemblyStopwatchWidget::AssemblyStopwatchWidget(QWidget* parent) : QWidget(parent)
 {
   layout_ = new QHBoxLayout(this);
   this->setLayout(layout_);
 
-  elapsed_timer_ = new QElapsedTimer();
-
   update_timer_ = new QTimer();
 
-  button_layout_ = new QVBoxLayout();
+  start_ = new QPushButton(QIcon(QString(Config::CMSTkModLabBasePath.c_str())+"/share/common/play.png"), "", this);
+  stop_ = new QPushButton(QIcon(QString(Config::CMSTkModLabBasePath.c_str())+"/share/common/stop.png"), "", this);
+  reset_ = new QPushButton(QIcon(QString(Config::CMSTkModLabBasePath.c_str())+"/share/common/trash.png"), "", this);
 
-  start_ = new QPushButton("Start", this);
-  stop_ = new QPushButton("Stop", this);
-  reset_ = new QPushButton("Reset", this);
+  start_->setFixedSize(32,32);
+  stop_->setFixedSize(32,32);
+  reset_->setFixedSize(32,32);
 
-  button_layout_->addWidget(start_);
-  button_layout_->addWidget(stop_);
-  button_layout_->addWidget(reset_);
+  layout_->addWidget(start_);
+  layout_->addWidget(stop_);
+  layout_->addWidget(reset_);
 
-  layout_->addLayout(button_layout_);
+  start_->setVisible(true);
+  stop_->setVisible(false);
+  reset_->setVisible(false);
 
   connect(start_, SIGNAL(clicked()), this, SLOT(startStopwatch()));
   connect(stop_, SIGNAL(clicked()), this, SLOT(stopStopwatch()));
   connect(reset_, SIGNAL(clicked()), this, SLOT(resetStopwatch()));
 
-  QTime time_elapsed = QTime(0, 0, 0, elapsed_timer_->elapsed());
-  elapsedTimeLabel_ = new QLabel(time_elapsed.toString("mm:ss"));
+  elapsedTimeLabel_ = new QLabel("00:00");
+  auto font = elapsedTimeLabel_->font();
+  font.setPointSize(26);
+  font.setBold(true);
+  elapsedTimeLabel_->setFont(font);
+
   layout_->addWidget(elapsedTimeLabel_);
 
   connect(update_timer_, &QTimer::timeout, this, &AssemblyStopwatchWidget::updateStopwatch);
@@ -54,25 +63,42 @@ AssemblyStopwatchWidget::AssemblyStopwatchWidget(QWidget* parent) : QWidget(pare
 
 void AssemblyStopwatchWidget::startStopwatch(){
   NQLog("AssemblyStopwatchWidget", NQLog::Message) << ": Starting stopwatch";
-  elapsed_timer_->start();
-  update_timer_->start(500);
+  reference_time_ = QTime::currentTime();
+  update_timer_->start(1000);
+  updateStopwatch();
+
+  start_->setVisible(false);
+  stop_->setVisible(true);
+  reset_->setVisible(false);
 }
 
 void AssemblyStopwatchWidget::stopStopwatch(){
   NQLog("AssemblyStopwatchWidget", NQLog::Message) << ": Stopping stopwatch";
-
-  elapsed_timer_->invalidate();
   update_timer_->stop();
+
+  start_->setVisible(false);
+  stop_->setVisible(false);
+  reset_->setVisible(true);
 }
 
 void AssemblyStopwatchWidget::resetStopwatch(){
   NQLog("AssemblyStopwatchWidget", NQLog::Message) << ": Resetting stopwatch";
+  elapsedTimeLabel_->setText("<font color='black'>00:00</font>");
+
+  start_->setVisible(true);
+  stop_->setVisible(false);
+  reset_->setVisible(false);
 }
 
 void AssemblyStopwatchWidget::updateStopwatch(){
-  NQLog("AssemblyStopwatchWidget", NQLog::Message) << ": Updating stopwatch";
+  NQLog("AssemblyStopwatchWidget", NQLog::Spam) << ": Updating stopwatch";
 
-  QTime time_elapsed = QTime(0, 0, 0, elapsed_timer_->elapsed());
-  elapsedTimeLabel_ = new QLabel(time_elapsed.toString("mm:ss"));
-  NQLog("AssemblyStopwatchWidget", NQLog::Message) << ": Time: " << time_elapsed.toString("mm:ss");
+  QTime time_elapsed = QTime(0, 0, 0).addSecs(reference_time_.secsTo(QTime::currentTime()));
+
+  QString color_str = time_elapsed < QTime(0, 1, 0) ? "red" : (time_elapsed < QTime(0, 20, 0) ? "orange" : "darkgreen");
+
+  auto time_str = QString("<font color='") + color_str + "'>" + time_elapsed.toString("mm:ss") + "</font>";
+  elapsedTimeLabel_->setText(time_str);
+
+  NQLog("AssemblyStopwatchWidget", NQLog::Spam) << ": Time: " << time_elapsed.toString("mm:ss");
 }

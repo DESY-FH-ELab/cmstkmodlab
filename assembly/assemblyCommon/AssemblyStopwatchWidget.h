@@ -20,7 +20,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QTimer>
-#include <QElapsedTimer>
+#include <QTime>
 
 #include <RelayCardManager.h>
 
@@ -46,7 +46,7 @@ class AssemblyStopwatchWidget : public QWidget
   double seconds_;
 
   QTimer* update_timer_;
-  QElapsedTimer* elapsed_timer_;
+  QTime reference_time_;
 
   QLabel* elapsedTimeLabel_;
 
