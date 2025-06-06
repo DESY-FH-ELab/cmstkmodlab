@@ -39,7 +39,6 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   img_celi_button_(nullptr),
   img_axes_button_(nullptr),
 
-  imgbin_save_button_(nullptr),
   imgbin_thresh_button_(nullptr),
   imgbin_thresh_label_(nullptr),
   imgbin_thresh_linee_(nullptr),
@@ -165,17 +164,23 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   QVBoxLayout* lImg = new QVBoxLayout;
   g0->addLayout(lImg, 0, 1);
 
+  QGroupBox* image_operation_box = new QGroupBox(tr("Raw Image Operations"));
+  image_operation_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
+
+  QGridLayout* image_operation_box_lay = new QGridLayout;
+  image_operation_box->setLayout(image_operation_box_lay);
+
   img_load_button_ = new QPushButton("Load Image", this);
-  lImg->addWidget(img_load_button_);
+  image_operation_box_lay->addWidget(img_load_button_, 0, 1);
 
   img_save_button_ = new QPushButton("Save Image", this);
-  lImg->addWidget(img_save_button_);
+  image_operation_box_lay->addWidget(img_save_button_, 1, 1);
 
   img_celi_button_ = new QPushButton("Show/hide Center Lines", this);
-  lImg->addWidget(img_celi_button_);
+  image_operation_box_lay->addWidget(img_celi_button_, 0, 0);
 
   img_axes_button_ = new QPushButton("Show XY Axis Conventions", this);
-  lImg->addWidget(img_axes_button_);
+  image_operation_box_lay->addWidget(img_axes_button_, 1, 0);
 
   connect(img_load_button_, SIGNAL(clicked()), this, SLOT(load_image()));
   connect(img_save_button_, SIGNAL(clicked()), this, SLOT(save_image()));
@@ -184,22 +189,21 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
 
   this->connectImageProducer_image(this, SIGNAL(image_updated(cv::Mat)));
 
+  lImg->addWidget(image_operation_box);
+
   lImg->addStretch();
   // ----------
 
-  imgbin_save_button_ = new QPushButton("Save Image (after thresholding)", this);
-  lImg->addWidget(imgbin_save_button_);
-
-  connect(imgbin_save_button_, SIGNAL(clicked()), this, SLOT(save_image_binary()));
   this->connectImageProducer_binary(this, SIGNAL(image_binary_updated(cv::Mat)));
 
-  QVBoxLayout* imgbin_thresh_layout = new QVBoxLayout;
-  lImg->addLayout(imgbin_thresh_layout);
+  QGroupBox* static_threshold_box = new QGroupBox(tr("Static Threshold"));
+  static_threshold_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
 
-  imgbin_thresh_button_ = new QPushButton("openCV::threshold", this); //Click this button to read/apply the value in the QLineEdit field
+  QVBoxLayout* imgbin_thresh_layout = new QVBoxLayout;
+  static_threshold_box->setLayout(imgbin_thresh_layout);
+
+  imgbin_thresh_button_ = new QPushButton("openCV::threshold", this);
   imgbin_thresh_layout->addWidget(imgbin_thresh_button_);
-  const QSize BUTTON_SIZE = QSize(530, 35); //Set fixed button size
-  imgbin_thresh_button_->setFixedSize(BUTTON_SIZE);
 
   connect(imgbin_thresh_button_, SIGNAL(clicked()), this, SLOT(apply_threshold()));
 
@@ -237,6 +241,7 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   imgbin_thresh_inputcfg->addWidget(threshold_slider_, 80);
   connect(threshold_slider_, SIGNAL(valueChanged(int)), this, SLOT(set_bw_threshold_slider(int)));
 
+  lImg->addWidget(static_threshold_box);
 
   // method-2: adaptiveThreshold
   //imgbin_thresh_layout->addSpacing(40);
@@ -270,33 +275,33 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   lImg->addWidget(adaptive_threshold_box);
   // -----
 
+  lImg->addStretch();
+
+  QGroupBox* autofocus_box = new QGroupBox(tr("Auto-Focus"));
+  autofocus_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
+
+  QVBoxLayout* autofocus_lay = new QVBoxLayout;
+  autofocus_box->setLayout(autofocus_lay);
+
+  QHBoxLayout* autofocus_buttons_lay = new QHBoxLayout;
+  autofocus_lay->addLayout(autofocus_buttons_lay);
 
   autofocus_exe_button_ = new QPushButton("Auto-Focus Image", this);
-  lImg->addWidget(autofocus_exe_button_);
+  autofocus_buttons_lay->addWidget(autofocus_exe_button_);
 
   autofocus_stop_button_ = new QPushButton("Stop Auto-Focus", this);
-  lImg->addWidget(autofocus_stop_button_);
+  autofocus_buttons_lay->addWidget(autofocus_stop_button_);
 
   progBar_ = new QProgressBar(this);
-  lImg->addWidget(progBar_, Qt::AlignCenter);
+  autofocus_lay->addWidget(progBar_, Qt::AlignCenter);
   progBar_->setValue(0); //Set initial value
   progBar_->setVisible(false); //Invisible by default
   connect(autofocus_exe_button_, SIGNAL(clicked()), this, SLOT(makeProgBarVisible()));
   connect(autofocus_stop_button_, SIGNAL(clicked()), this, SLOT(makeProgBarInvisible()));
   // -----
 
-  lImg->addSpacing(20);
-
-  QGroupBox* autofocus_param_box = new QGroupBox(tr("Auto-Focus Configuration"));
-  autofocus_param_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
-
-  lImg->addWidget(autofocus_param_box);
-
-  QVBoxLayout* autofocus_param_lay = new QVBoxLayout;
-  autofocus_param_box->setLayout(autofocus_param_lay);
-
   QHBoxLayout* autofocus_param_maxDZ_lay = new QHBoxLayout;
-  autofocus_param_lay->addLayout(autofocus_param_maxDZ_lay);
+  autofocus_lay->addLayout(autofocus_param_maxDZ_lay);
 
   QLabel* autofocus_param_maxDZ_label = new QLabel("Max delta-Z [mm]", this);
   autofocus_param_maxDZ_lineed_ = new QLineEdit("", this);
@@ -305,7 +310,7 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   autofocus_param_maxDZ_lay->addWidget(autofocus_param_maxDZ_lineed_, 60);
 
   QHBoxLayout* autofocus_param_Nstep_lay = new QHBoxLayout;
-  autofocus_param_lay->addLayout(autofocus_param_Nstep_lay);
+  autofocus_lay->addLayout(autofocus_param_Nstep_lay);
 
   QLabel* autofocus_param_Nstep_label = new QLabel("# Steps (int)", this);
   autofocus_param_Nstep_lineed_ = new QLineEdit("", this);
@@ -314,17 +319,16 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   autofocus_param_Nstep_lay->addWidget(autofocus_param_Nstep_lineed_, 60);
   // -----
 
-  lImg->addSpacing(20);
-
   autofocus_save_zscan_button_ = new QPushButton("Save Z-Scan Image", this);
-  lImg->addWidget(autofocus_save_zscan_button_);
+  autofocus_lay->addWidget(autofocus_save_zscan_button_);
 
   connect(autofocus_save_zscan_button_, SIGNAL(clicked()), this, SLOT(save_image_zscan()));
 
   this->connectImageProducer_autofocus(this, SIGNAL(image_zscan_updated(const cv::Mat&)));
   // -----
 
-  //lImg->addStretch();
+  lImg->addWidget(autofocus_box);
+
   // ----------
 }
 

@@ -224,9 +224,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     connect(image_view_, SIGNAL(threshold_request(int)), thresholder_, SLOT(update_image_binary_threshold(int)));
     connect(image_view_, SIGNAL(adaptiveThreshold_request(int)), thresholder_, SLOT(update_image_binary_adaptiveThreshold(int)));
-    connect(image_view_, SIGNAL(loaded_image_raw(cv::Mat)), thresholder_, SLOT(update_image_raw(cv::Mat)));
 
-    connect(thresholder_, SIGNAL(updated_image_raw   (cv::Mat)), image_view_, SLOT(update_image_raw (cv::Mat)));
     connect(thresholder_, SIGNAL(updated_image_binary(cv::Mat)), image_view_, SLOT(update_image_binary(cv::Mat)));
 
     connect(zfocus_finder_, SIGNAL(show_zscan(QLineSeries&))     , image_view_   , SLOT(update_image_zscan(QLineSeries&)));

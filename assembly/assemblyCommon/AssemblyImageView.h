@@ -66,7 +66,6 @@ class AssemblyImageView : public QWidget
   QPushButton* img_axes_button_;
   QPushButton* info_button;
 
-  QPushButton* imgbin_save_button_;
   QPushButton* imgbin_thresh_button_;
   QLabel*      imgbin_thresh_label_;
   QLineEdit*   imgbin_thresh_linee_;
