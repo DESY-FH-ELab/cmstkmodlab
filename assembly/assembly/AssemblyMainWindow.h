@@ -44,6 +44,7 @@ typedef AssemblyUEyeModel AssemblyUEyeModel_t;
 #include <AssemblySmartMotionManager.h>
 #include <AssemblyParametersView.h>
 #include <AssemblyHardwareControlView.h>
+#include <AssemblyStopwatchWidget.h>
 #include <LStepExpressModel.h>
 #include <LStepExpressMotionManager.h>
 #include <LStepExpressMotionView.h>
@@ -233,6 +234,8 @@ class AssemblyMainWindow : public QMainWindow
   AssemblyDBLoggerModel* DBLog_model_;
   AssemblyDBLoggerController* DBLog_ctrl_;
   AssemblyDBLoggerView* DBLog_view_;
+
+  AssemblyStopwatchWidget* stopwatch_wid_;
 
   QPushButton* button_mainEmergencyStop_;
   QPushButton* button_info_;
