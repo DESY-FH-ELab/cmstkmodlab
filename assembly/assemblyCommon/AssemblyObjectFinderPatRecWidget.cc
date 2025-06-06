@@ -37,6 +37,8 @@ AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(const bool su
   thresh_adathr_radbu_(nullptr),
   thresh_adathr_linee_(nullptr)
 {
+  config_ = ApplicationConfig::instance();
+
   layout_ = new QVBoxLayout;
   this->setLayout(layout_);
 
@@ -89,11 +91,18 @@ AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(const bool su
   connect(thresh_thresh_radbu_, SIGNAL(toggled(bool)), thresh_thresh_linee_, SLOT(setEnabled(bool)));
   connect(thresh_adathr_radbu_, SIGNAL(toggled(bool)), thresh_adathr_linee_, SLOT(setEnabled(bool)));
 
-  thresh_thresh_radbu_->setChecked(true);
-  thresh_thresh_linee_->setEnabled(true);
-
-  thresh_adathr_radbu_->setChecked(false);
-  thresh_adathr_linee_->setEnabled(false);
+  if(config_->getValue<bool>("main", "AssemblyObjectAlignerView_PatRec_defaultAdaptive"))
+  {
+    thresh_thresh_radbu_->setChecked(false);
+    thresh_thresh_linee_->setEnabled(false);
+    thresh_adathr_radbu_->setChecked(true);
+    thresh_adathr_linee_->setEnabled(true);
+  }else{
+    thresh_thresh_radbu_->setChecked(true);
+    thresh_thresh_linee_->setEnabled(true);
+    thresh_adathr_radbu_->setChecked(false);
+    thresh_adathr_linee_->setEnabled(false);
+  }
 
   templa_lay->addWidget(thresh_thresh_radbu_, 1+row_offset, 0, 1, 1);
   templa_lay->addWidget(thresh_thresh_linee_, 1+row_offset, 1, 1, 4);
@@ -111,8 +120,6 @@ AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(const bool su
 
   layout_->addWidget(templa_box_);
   /// ------------------------------
-
-  config_ = ApplicationConfig::instance();
 }
 
 void AssemblyObjectFinderPatRecWidget::load_image_template()
