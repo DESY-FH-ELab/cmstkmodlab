@@ -31,7 +31,11 @@ AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(const bool su
   templa_load_button_(nullptr),
   templa_file_linee_ (nullptr),
 
-  thresh_thresh_linee_(nullptr)
+  thresh_thresh_radbu_(nullptr),
+  thresh_thresh_linee_(nullptr),
+
+  thresh_adathr_radbu_(nullptr),
+  thresh_adathr_linee_(nullptr)
 {
   layout_ = new QVBoxLayout;
   this->setLayout(layout_);
@@ -76,20 +80,34 @@ AssemblyObjectFinderPatRecWidget::AssemblyObjectFinderPatRecWidget(const bool su
 
   int row_offset = static_cast<int>(suggest_templates);
 
-  auto thresh_thresh_label = new QLabel(tr("Threshold (pos int)"));
+  thresh_thresh_radbu_ = new QRadioButton(tr("Threshold (pos int)"));
   thresh_thresh_linee_ = new QLineEdit(tr(""));
 
-  templa_lay->addWidget(thresh_thresh_label, 1+row_offset, 0, 1, 1);
+  thresh_adathr_radbu_ = new QRadioButton(tr("Adaptive Threshold (pos odd int)"));
+  thresh_adathr_linee_ = new QLineEdit(tr(""));
+
+  connect(thresh_thresh_radbu_, SIGNAL(toggled(bool)), thresh_thresh_linee_, SLOT(setEnabled(bool)));
+  connect(thresh_adathr_radbu_, SIGNAL(toggled(bool)), thresh_adathr_linee_, SLOT(setEnabled(bool)));
+
+  thresh_thresh_radbu_->setChecked(true);
+  thresh_thresh_linee_->setEnabled(true);
+
+  thresh_adathr_radbu_->setChecked(false);
+  thresh_adathr_linee_->setEnabled(false);
+
+  templa_lay->addWidget(thresh_thresh_radbu_, 1+row_offset, 0, 1, 1);
   templa_lay->addWidget(thresh_thresh_linee_, 1+row_offset, 1, 1, 4);
+  templa_lay->addWidget(thresh_adathr_radbu_, 2+row_offset, 0, 1, 1);
+  templa_lay->addWidget(thresh_adathr_linee_, 2+row_offset, 1, 1, 4);
 
   template_preview_ = new QLabel();
 
-  templa_lay->addWidget(template_preview_, 0, 5, 2 + row_offset, 1);
+  templa_lay->addWidget(template_preview_, 0, 5, 3 + row_offset, 1);
 
   templa_box_->setLayout(templa_lay);
 
-  templa_box_->setMinimumHeight(50 * (2 + row_offset));
-  templa_box_->setMaximumHeight(50 * (2 + row_offset));
+  templa_box_->setMinimumHeight(50 * (3 + row_offset));
+  templa_box_->setMaximumHeight(50 * (3 + row_offset));
 
   layout_->addWidget(templa_box_);
   /// ------------------------------
@@ -188,6 +206,69 @@ AssemblyObjectFinderPatRec::Configuration AssemblyObjectFinderPatRecWidget::get_
 
   /// Template Image ---------------
   conf.template_filepath_ = templa_file_linee_->text();
+  /// ------------------------------
+
+  if(thresh_thresh_radbu_->isChecked() == thresh_adathr_radbu_->isChecked())
+  {
+    NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "get_configuration"
+       << ": invalid configuration for master-image thresholding (selected zero or multiple options), no action taken";
+       conf.reset();
+       emit invalid_configuration();
+       return conf;
+  }else if(thresh_thresh_radbu_->isChecked())
+  {
+    conf.thresholding_useAdaptiveThreshold_ = false;
+    conf.thresholding_blocksize_ = -1;
+
+    conf.thresholding_useThreshold_ = true;
+
+    const QString thresh_str = thresh_thresh_linee_->text().remove(" ");
+
+    bool valid_thr(false);
+    conf.thresholding_threshold_ = thresh_str.toInt(&valid_thr);
+
+    if(valid_thr == false)
+    {
+      NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "get_configuration"
+        << ": invalid format for threshold value (" << thresh_str << ", not a integer), no action taken";
+
+      valid_conf = false;
+      conf.reset();
+      emit invalid_configuration();
+      return conf;
+    }
+  }
+  else if(thresh_adathr_radbu_->isChecked())
+  {
+    conf.thresholding_useThreshold_ = false;
+    conf.thresholding_threshold_ = -1;
+
+    conf.thresholding_useAdaptiveThreshold_ = true;
+
+    const QString adathr_str = thresh_adathr_linee_->text().remove(" ");
+
+    bool valid_bks(false);
+    conf.thresholding_blocksize_ = adathr_str.toInt(&valid_bks);
+
+    if(!conf.thresholding_blocksize_%2)
+    {
+      valid_bks = false;
+    }
+
+    if(valid_bks == false)
+    {
+      NQLog("AssemblyObjectFinderPatRecWidget", NQLog::Critical) << "get_configuration"
+         << ": invalid format for block-size value (" << adathr_str << ", not an odd integer), no action taken";
+
+      valid_conf = false;
+
+      conf.reset();
+
+      emit invalid_configuration();
+
+      return conf;
+    }
+  }
   /// ------------------------------
 
   const QString thresh_str = thresh_thresh_linee_->text().remove(" ");

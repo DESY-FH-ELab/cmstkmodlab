@@ -77,7 +77,11 @@ void AssemblyObjectFinderPatRec::Configuration::reset()
 {
   template_filepath_ = "";
 
+  thresholding_useThreshold_ = false;
   thresholding_threshold_ = -1;
+
+  thresholding_useAdaptiveThreshold_ = false;
+  thresholding_blocksize_ = -1;
 
   angles_prescan_vec_.clear();
   angles_finemax_  = -1.0;
@@ -88,7 +92,20 @@ bool AssemblyObjectFinderPatRec::Configuration::is_valid() const
 {
   if(assembly::IsFile(template_filepath_) == false){ return false; }
 
-  if(thresholding_threshold_ < 0 || thresholding_threshold_ > 255){ return false; }
+  if((thresholding_useThreshold_ == true) && (thresholding_useAdaptiveThreshold_ == true))
+  {
+    return false;
+  }
+  else if(thresholding_useThreshold_ == true)
+  {
+    if(thresholding_threshold_ < 0){ return false; }
+  }
+  else if(thresholding_useAdaptiveThreshold_ == true)
+  {
+    if(thresholding_blocksize_ < 3){ return false; }
+
+    if((thresholding_blocksize_ % 2) == 0){ return false; }
+  }
 
   if(angles_prescan_vec_.size() == 0){ return false; }
 
@@ -147,12 +164,26 @@ void AssemblyObjectFinderPatRec::launch_PatRec(const AssemblyObjectFinderPatRec:
   // ----------
 
   // update binary image for PatRec
-  mutex_.lock();
+  if(conf.thresholding_useThreshold_)
+  {
+    mutex_.lock();
 
-  thresholder_->update_image_raw(img_master_);
-  thresholder_->update_image_binary_threshold(conf.thresholding_threshold_);
+    thresholder_->update_image_raw(img_master_);
+    thresholder_->update_image_binary_threshold(conf.thresholding_threshold_);
 
-  mutex_.unlock();
+    mutex_.unlock();
+
+    this->update_image_master_PatRec(thresholder_->image_binary());
+  }
+  else if(conf.thresholding_useAdaptiveThreshold_)
+  {
+    mutex_.lock();
+
+    thresholder_->update_image_raw(img_master_);
+    thresholder_->update_image_binary_adaptiveThreshold(conf.thresholding_blocksize_);
+
+    mutex_.unlock();
+  }
 
   this->update_image_master_PatRec(thresholder_->image_binary());
   // ----------

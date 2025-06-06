@@ -177,6 +177,7 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
     if(fpath != ""){ patrec_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+fpath)); }
 
     assembly::QLineEdit_setText(patrec_wid_->threshold_lineEdit()        , config->getDefaultValue<int>("main", "AssemblyObjectAlignerView_PatRec_threshold"        , 100));
+    assembly::QLineEdit_setText(patrec_wid_->adaptiveThreshold_lineEdit(), config->getDefaultValue<int>("main", "AssemblyObjectAlignerView_PatRec_adaptiveThreshold", 587));
   }
 
   patrec_lay->addWidget(patrec_wid_);
