@@ -137,6 +137,78 @@ cv::Mat AssemblyThresholder::get_image_binary_threshold(const cv::Mat& img, cons
   return img_bin;
 }
 
+void AssemblyThresholder::update_image_binary_adaptiveThreshold(const int blocksize_value)
+{
+  if(img_raw_.empty())
+  {
+    NQLog("AssemblyThresholder", NQLog::Critical) << "update_image_binary_adaptiveThreshold"
+       << ": empty input image, thresholding not applied to input image";
+
+    return;
+  }
+
+//  mutex_.lock();
+
+  img_bin_ = this->get_image_binary_adaptiveThreshold(img_raw_, blocksize_value);
+
+  if(updated_img_bin_ == false){ updated_img_bin_ = true; }
+
+//  mutex_.unlock();
+
+  NQLog("AssemblyThresholder", NQLog::Spam) << "update_image_binary_adaptiveThreshold(" << blocksize_value << ")"
+     << ": emitting signal \"updated_image_binary\"";
+
+  emit updated_image_binary(img_bin_);
+  emit updated_image_binary();
+}
+
+cv::Mat AssemblyThresholder::get_image_binary_adaptiveThreshold(const cv::Mat& img, const int blocksize) const
+{
+  // greyscale image
+  cv::Mat img_gs(img.size(), img.type());
+
+  if(img.channels() > 1)
+  {
+    // convert color to GS
+    cv::cvtColor(img, img_gs, cv::COLOR_BGR2GRAY);
+  }
+  else
+  {
+    img_gs = img.clone();
+  }
+
+  // binary image
+  cv::Mat img_bin(img_gs.size(), img_gs.type());
+
+  if(blocksize < 3)
+  {
+    NQLog("AssemblyThresholder", NQLog::Warning) << "get_image_binary_adaptiveThreshold"
+       << ": invalid block-size value (" << blocksize << ", lower than allowed minimum of 3), thresholding not applied to input image (empty binary image)";
+
+    img_bin = cv::Mat();
+  }
+  else if(blocksize > 1499)
+  {
+    NQLog("AssemblyThresholder", NQLog::Warning) << "get_image_binary_adaptiveThreshold"
+       << ": invalid block-size value (" << blocksize << ", higher than allowed maximum of 1499), thresholding not applied to input image (empty binary image)";
+
+    img_bin = cv::Mat();
+  }
+  else if((blocksize % 2) == 0)
+  {
+    NQLog("AssemblyThresholder", NQLog::Warning) << "get_image_binary_adaptiveThreshold"
+       << ": invalid block-size value (" << blocksize << ", is even), thresholding not applied to input image (empty binary image)";
+
+    img_bin = cv::Mat();
+  }
+  else
+  {
+    cv::adaptiveThreshold(img_gs, img_bin, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY, blocksize, 0.);
+  }
+
+  return img_bin;
+}
+
 void AssemblyThresholder::delete_image_binary()
 {
 //  mutex_.lock();
