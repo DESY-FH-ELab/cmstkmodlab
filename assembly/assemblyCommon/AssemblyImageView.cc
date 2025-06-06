@@ -45,6 +45,10 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   imgbin_thresh_linee_(nullptr),
   threshold_slider_(nullptr),
 
+  imgbin_adathr_button_(nullptr),
+  imgbin_adathr_label_ (nullptr),
+  imgbin_adathr_linee_ (nullptr),
+
   // auto-focusing
   autofocus_ueye_(nullptr),
   autofocus_scroll_(nullptr),
@@ -233,7 +237,39 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   imgbin_thresh_inputcfg->addWidget(threshold_slider_, 80);
   connect(threshold_slider_, SIGNAL(valueChanged(int)), this, SLOT(set_bw_threshold_slider(int)));
 
-  // ----------
+
+  // method-2: adaptiveThreshold
+  //imgbin_thresh_layout->addSpacing(40);
+
+  QGroupBox* adaptive_threshold_box = new QGroupBox(tr("Adaptive Threshold"));
+  adaptive_threshold_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
+
+  QVBoxLayout* adaptive_thresh_layout = new QVBoxLayout;
+  adaptive_threshold_box->setLayout(adaptive_thresh_layout);
+
+  QVBoxLayout* imgbin_adathr_layout = new QVBoxLayout;
+  adaptive_thresh_layout->addLayout(imgbin_adathr_layout);
+
+  imgbin_adathr_button_ = new QPushButton("openCV::adaptiveThreshold", this);
+  imgbin_adathr_layout->addWidget(imgbin_adathr_button_, 0, Qt::Alignment());
+
+  connect(imgbin_adathr_button_, SIGNAL(clicked()), this, SLOT(apply_adaptiveThreshold()));
+
+  QHBoxLayout* imgbin_adathr_inputcfg = new QHBoxLayout;
+  imgbin_adathr_layout->addLayout(imgbin_adathr_inputcfg);
+
+  imgbin_adathr_label_ = new QLabel(this);
+  imgbin_adathr_label_->setText("Block Size (pos odd int)");
+
+  imgbin_adathr_linee_ = new QLineEdit(this);
+  assembly::QLineEdit_setText(imgbin_adathr_linee_, config->getDefaultValue<int>("main", "AssemblyThresholderView_adaptiveThreshold", 587));
+
+  imgbin_adathr_inputcfg->addWidget(imgbin_adathr_label_, 40);
+  imgbin_adathr_inputcfg->addWidget(imgbin_adathr_linee_, 60);
+
+  lImg->addWidget(adaptive_threshold_box);
+  // -----
+
 
   autofocus_exe_button_ = new QPushButton("Auto-Focus Image", this);
   lImg->addWidget(autofocus_exe_button_);
@@ -494,6 +530,26 @@ void AssemblyImageView::apply_threshold()
      << ": emitting signal \"threshold_request(" << thr << ")\"";
 
   emit threshold_request(thr);
+}
+
+void AssemblyImageView::apply_adaptiveThreshold()
+{
+  bool valid_bks(false);
+
+  const int bks = imgbin_adathr_linee_->text().toInt(&valid_bks);
+
+  if(valid_bks == false)
+  {
+    NQLog("AssemblyThresholderView", NQLog::Warning) << "apply_adaptiveThreshold"
+       << ": invalid (non-integer) format for block-size value (" << imgbin_adathr_linee_->text() << "), no action taken";
+
+    return;
+  }
+
+  NQLog("AssemblyThresholderView", NQLog::Debug) << "apply_adaptiveThreshold"
+     << ": emitting signal \"adaptiveThreshold_request(" << bks << ")\"";
+
+  emit adaptiveThreshold_request(bks);
 }
 
 //-- Update the B/W threshold when slider value gets changed

@@ -72,6 +72,10 @@ class AssemblyImageView : public QWidget
   QLineEdit*   imgbin_thresh_linee_;
   QSlider* threshold_slider_;
 
+  QPushButton* imgbin_adathr_button_;
+  QLabel*      imgbin_adathr_label_;
+  QLineEdit*   imgbin_adathr_linee_;
+
   cv::Mat image_;
   cv::Mat imgbin_;
   cv::Mat image_raw_;
@@ -112,6 +116,7 @@ class AssemblyImageView : public QWidget
   void update_image_binary(const cv::Mat&);
 
   void apply_threshold();
+  void apply_adaptiveThreshold();
 
   void set_bw_threshold_slider(int);
 
@@ -143,6 +148,7 @@ class AssemblyImageView : public QWidget
   void image_binary_updated();
 
   void threshold_request(const int);
+  void adaptiveThreshold_request(const int);
 
   void image_zscan_updated(const cv::Mat&);
   void image_zscan_updated();
