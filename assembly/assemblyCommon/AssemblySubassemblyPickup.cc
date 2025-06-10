@@ -49,7 +49,7 @@ AssemblySubassemblyPickup::AssemblySubassemblyPickup(const LStepExpressMotionMan
     vacuum_pickup_ = config_->getValue<int>("main", "Vacuum_PickupTool");
     vacuum_spacer_ = config_->getValue<int>("main", "Vacuum_Spacers");
     vacuum_basepl_ = config_->getValue<int>("main", "Vacuum_Baseplate");
-    vacuum_sub_ = config_->getValue<int>("main", "Vacuum_Subassembly");
+    vacuum_sub_ = config_->getDefaultValue<int>("main", "Vacuum_Subassembly", 99);
 
     alreadyClicked_LowerPickupToolOntoSubassembly = false;
 
