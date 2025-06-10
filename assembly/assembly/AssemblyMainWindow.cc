@@ -522,14 +522,16 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     vac_lay->addWidget(PU_label, 0, 1, Qt::AlignCenter);
     vac_lay->addWidget(SP_label, 0, 2, Qt::AlignCenter);
     vac_lay->addWidget(BP_label, 0, 3, Qt::AlignCenter);
-    vac_lay->addWidget(SUB_label, 0, 4, Qt::AlignCenter);
+    if(config->hasKey("main", "Vacuum_Subassembly")){
+      vac_lay->addWidget(SUB_label, 0, 4, Qt::AlignCenter);
+    }
 
     QString filename(Config::CMSTkModLabBasePath.c_str());
 
     vacuum_pickup_ = config->getValue<int>("main", "Vacuum_PickupTool");
     vacuum_spacer_ = config->getValue<int>("main", "Vacuum_Spacers");
     vacuum_basepl_ = config->getValue<int>("main", "Vacuum_Baseplate");
-    vacuum_sub_ = config->getValue<int>("main", "Vacuum_Subassembly");
+    vacuum_sub_ = config->getDefaultValue<int>("main", "Vacuum_Subassembly", 99);
 
     PU_status_ = new QLabel();
     SP_status_ = new QLabel();
