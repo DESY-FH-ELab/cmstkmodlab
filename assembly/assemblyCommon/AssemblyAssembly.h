@@ -48,7 +48,6 @@ class AssemblyAssembly : public QObject
   int vacuum_pickup_;
   int vacuum_spacer_;
   int vacuum_basepl_;
-  int vacuum_sub_;
 
   double pickup1_Z_;
   double pickup2_Z_;
@@ -135,11 +134,6 @@ class AssemblyAssembly : public QObject
   void DisableVacuumBaseplate_start();
   void DisableVacuumBaseplate_finish();
 
-  void EnableVacuumSubassembly_start();
-  void EnableVacuumSubassembly_finish();
-
-  void DisableVacuumSubassembly_start();
-  void DisableVacuumSubassembly_finish();
 // ---------
 
   // others
@@ -202,9 +196,6 @@ class AssemblyAssembly : public QObject
 
   void EnableVacuumBaseplate_finished();
   void DisableVacuumBaseplate_finished();
-
-  void EnableVacuumSubassembly_finished();
-  void DisableVacuumSubassembly_finished();
 
   void DBLogMessage(const QString);
   // ------
