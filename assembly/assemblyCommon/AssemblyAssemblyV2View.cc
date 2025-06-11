@@ -33,7 +33,9 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
  , baseplate_id_lineed_(nullptr)
  , mapsa_id_lineed_(nullptr)
  , pss_id_lineed_(nullptr)
- , glue_id_lineed_(nullptr)
+ , glue1_id_lineed_(nullptr)
+ , glue2_id_lineed_(nullptr)
+ , glue3_id_lineed_(nullptr)
  , module_id_lineed_(nullptr)
  , push_to_db_button_(nullptr)
 {
@@ -77,7 +79,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   QLabel* mapsa_id_label = new QLabel("MaPSA ID: ");
   mapsa_id_lineed_ = new QLineEdit("");
   mapsa_id_lineed_->setPlaceholderText("MaPSA ID");
-  mapsa_id_lineed_->setMaximumWidth(200);
+  mapsa_id_lineed_->setMaximumWidth(150);
 
   opts_lay->addWidget(mapsa_id_label);
   opts_lay->addWidget(mapsa_id_lineed_);
@@ -88,7 +90,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   QLabel* pss_id_label = new QLabel("PS-s Sensor ID: ");
   pss_id_lineed_ = new QLineEdit("");
   pss_id_lineed_->setPlaceholderText("PS-s Sensor ID");
-  pss_id_lineed_->setMaximumWidth(200);
+  pss_id_lineed_->setMaximumWidth(150);
 
   opts_lay->addWidget(pss_id_label);
   opts_lay->addWidget(pss_id_lineed_);
@@ -96,16 +98,30 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   connect(assembly, SIGNAL(PSS_ID_updated(QString)), pss_id_lineed_, SLOT(setText(QString)));
   connect(pss_id_lineed_, SIGNAL(textEdited(QString)), assembly, SLOT(Update_PSS_ID(QString)));
 
-  QLabel* glue_id_label = new QLabel("Slow Glue ID: ");
-  glue_id_lineed_ = new QLineEdit("");
-  glue_id_lineed_->setPlaceholderText("Slow Glue ID");
-  glue_id_lineed_->setMaximumWidth(200);
+  QLabel* glue_id_label = new QLabel("Slow Glue IDs (steps 1/2/3): ");
+  glue1_id_lineed_ = new QLineEdit("");
+  glue1_id_lineed_->setPlaceholderText("Glue ID (step 1)");
+  glue1_id_lineed_->setMaximumWidth(80);
+
+  glue2_id_lineed_ = new QLineEdit("");
+  glue2_id_lineed_->setPlaceholderText("Glue ID (step 2)");
+  glue2_id_lineed_->setMaximumWidth(80);
+
+  glue3_id_lineed_ = new QLineEdit("");
+  glue3_id_lineed_->setPlaceholderText("Glue ID (step 3)");
+  glue3_id_lineed_->setMaximumWidth(80);
 
   opts_lay->addWidget(glue_id_label);
-  opts_lay->addWidget(glue_id_lineed_);
+  opts_lay->addWidget(glue1_id_lineed_);
+  opts_lay->addWidget(glue2_id_lineed_);
+  opts_lay->addWidget(glue3_id_lineed_);
 
-  connect(assembly, SIGNAL(Glue_ID_updated(QString)), glue_id_lineed_, SLOT(setText(QString)));
-  connect(glue_id_lineed_, SIGNAL(textEdited(QString)), assembly, SLOT(Update_Glue_ID(QString)));
+  connect(assembly, SIGNAL(Glue1_ID_updated(QString)), glue1_id_lineed_, SLOT(setText(QString)));
+  connect(glue1_id_lineed_, SIGNAL(textEdited(QString)), assembly, SLOT(Update_Glue1_ID(QString)));
+  connect(assembly, SIGNAL(Glue2_ID_updated(QString)), glue2_id_lineed_, SLOT(setText(QString)));
+  connect(glue2_id_lineed_, SIGNAL(textEdited(QString)), assembly, SLOT(Update_Glue2_ID(QString)));
+  connect(assembly, SIGNAL(Glue3_ID_updated(QString)), glue3_id_lineed_, SLOT(setText(QString)));
+  connect(glue3_id_lineed_, SIGNAL(textEdited(QString)), assembly, SLOT(Update_Glue3_ID(QString)));
 
   QLabel* module_id_label = new QLabel("Module ID: ");
   module_id_lineed_ = new QLineEdit("");
@@ -283,7 +299,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   }
   // ----------
 
-  // step: Scan Glue ID
+  // step: Scan Glue ID (step 1)
   {
     ++assembly_step_N;
 
@@ -292,7 +308,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Scan Slow Glue ID");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(ScanGlueID_start()), SIGNAL(ScanGlueID_finished()), SIGNAL(ScanGlueID_aborted()));
+    tmp_wid->connect_action(assembly, SLOT(ScanGlue1ID_start()), SIGNAL(ScanGlue1ID_finished()), SIGNAL(ScanGlue1ID_aborted()));
   }
   // ----------
 
@@ -639,6 +655,19 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   }
   // ----------
 
+  // step: Scan Glue ID (step 2)
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->button()->setText("Scan Slow Glue ID");
+    PSSToSpacers_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(ScanGlue2ID_start()), SIGNAL(ScanGlue2ID_finished()), SIGNAL(ScanGlue2ID_aborted()));
+  }
+  // ----------
+
   if(assembly->GetAssemblyCenter() == assembly::Center::DESY){
     // step: Enable Vacuum on Spacers
     {
@@ -845,6 +874,20 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
 
   QVBoxLayout* PSSToMaPSA_lay = new QVBoxLayout;
   wid_PSSToMaPSA_->setLayout(PSSToMaPSA_lay);
+
+
+  // step: Scan Glue ID (step 3)
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->button()->setText("Scan Slow Glue ID");
+    PSSToMaPSA_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(ScanGlue3ID_start()), SIGNAL(ScanGlue3ID_finished()), SIGNAL(ScanGlue3ID_aborted()));
+  }
+  // ----------
 
   // step: Place "MaPSA + Baseplate" on Assembly Platform with Baseplate Pins
   {
@@ -1185,7 +1228,9 @@ void AssemblyAssemblyV2View::disable_DB()
     mapsa_id_lineed_->setReadOnly(true);
     baseplate_id_lineed_->setReadOnly(true);
     pss_id_lineed_->setReadOnly(true);
-    glue_id_lineed_->setReadOnly(true);
+    glue1_id_lineed_->setReadOnly(true);
+    glue2_id_lineed_->setReadOnly(true);
+    glue3_id_lineed_->setReadOnly(true);
     module_id_lineed_->setReadOnly(true);
 }
 

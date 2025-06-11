@@ -59,7 +59,9 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
  , Baseplate_ID_()
  , MaPSA_ID_()
  , PSS_ID_()
- , Glue_ID_()
+ , Glue1_ID_()
+ , Glue2_ID_()
+ , Glue3_ID_()
  , Module_ID_()
 {
   // validate pointers to controllers
@@ -214,19 +216,51 @@ void AssemblyAssemblyV2::ScanBaseplateID_start()
     }
 }
 
-void AssemblyAssemblyV2::ScanGlueID_start()
+void AssemblyAssemblyV2::ScanGlue1ID_start()
 {
     bool ok = false;
-    QString Glue_ID = QInputDialog::getText(nullptr, tr("Scan Slow Glue ID"),
-                                         tr("Scan Slow Glue ID:"), QLineEdit::Normal,
+    QString Glue1_ID = QInputDialog::getText(nullptr, tr("Scan Slow Glue ID (step 1)"),
+                                         tr("Scan Slow Glue ID (step 1):"), QLineEdit::Normal,
                                          tr(""), &ok);
-    if (!ok || Glue_ID.isEmpty()){
-        emit ScanGlueID_aborted();
+    if (!ok || Glue1_ID.isEmpty()){
+        emit ScanGlue1ID_aborted();
         return;
     } else {
-        Glue_ID_ = Glue_ID;
-        emit Glue_ID_updated(Glue_ID);
-        emit ScanGlueID_finished();
+        Glue1_ID_ = Glue1_ID;
+        emit Glue1_ID_updated(Glue1_ID);
+        emit ScanGlue1ID_finished();
+    }
+}
+
+void AssemblyAssemblyV2::ScanGlue2ID_start()
+{
+    bool ok = false;
+    QString Glue2_ID = QInputDialog::getText(nullptr, tr("Scan Slow Glue ID (step 2)"),
+                                         tr("Scan Slow Glue ID (step 2):"), QLineEdit::Normal,
+                                         Glue1_ID_, &ok);
+    if (!ok || Glue2_ID.isEmpty()){
+        emit ScanGlue2ID_aborted();
+        return;
+    } else {
+        Glue2_ID_ = Glue2_ID;
+        emit Glue2_ID_updated(Glue2_ID);
+        emit ScanGlue2ID_finished();
+    }
+}
+
+void AssemblyAssemblyV2::ScanGlue3ID_start()
+{
+    bool ok = false;
+    QString Glue3_ID = QInputDialog::getText(nullptr, tr("Scan Slow Glue ID (step 3)"),
+                                         tr("Scan Slow Glue ID (step 3):"), QLineEdit::Normal,
+                                         Glue2_ID_, &ok);
+    if (!ok || Glue3_ID.isEmpty()){
+        emit ScanGlue3ID_aborted();
+        return;
+    } else {
+        Glue3_ID_ = Glue3_ID;
+        emit Glue3_ID_updated(Glue3_ID);
+        emit ScanGlue3ID_finished();
     }
 }
 
@@ -248,11 +282,11 @@ void AssemblyAssemblyV2::ScanModuleID_start()
 
 void AssemblyAssemblyV2::PushToDB_start()
 {
-    if(Baseplate_ID_.isEmpty() || MaPSA_ID_.isEmpty() || PSS_ID_.isEmpty() || Module_ID_.isEmpty() || Glue_ID_.isEmpty())
+    if(Baseplate_ID_.isEmpty() || MaPSA_ID_.isEmpty() || PSS_ID_.isEmpty() || Module_ID_.isEmpty() || Glue1_ID_.isEmpty() || Glue2_ID_.isEmpty() || Glue3_ID_.isEmpty())
     {
         QMessageBox msgBox;
         msgBox.setWindowTitle(tr("Information for Database Upload missing"));
-        QString msg = QString("The following IDs are missing:") + (Baseplate_ID_.isEmpty() ? "\n\tBaseplate ID" : "") + (MaPSA_ID_.isEmpty() ? "\n\tMaPSA ID" : "") + (PSS_ID_.isEmpty() ? "\n\tPSS ID" : "") + (Glue_ID_.isEmpty() ? "\n\tGlue ID" : "") + (Module_ID_.isEmpty() ? "\n\tModule ID" : "");
+        QString msg = QString("The following IDs are missing:") + (Baseplate_ID_.isEmpty() ? "\n\tBaseplate ID" : "") + (MaPSA_ID_.isEmpty() ? "\n\tMaPSA ID" : "") + (PSS_ID_.isEmpty() ? "\n\tPSS ID" : "") + (Glue1_ID_.isEmpty() ? "\n\tGlue 1 ID" : "") + (Glue2_ID_.isEmpty() ? "\n\tGlue 2 ID" : "") + (Glue3_ID_.isEmpty() ? "\n\tGlue 3 ID" : "") + (Module_ID_.isEmpty() ? "\n\tModule ID" : "");
         msgBox.setText(msg);
         msgBox.setInformativeText("Please add this information via the toolbar.");
         msgBox.setStandardButtons(QMessageBox::Ok);
@@ -268,7 +302,7 @@ void AssemblyAssemblyV2::PushToDB_start()
     QVBoxLayout* vlay = new QVBoxLayout();
     msgBox->setLayout(vlay);
 
-    QLabel* main_txt = new QLabel(QString("Push the following information to database:\n\tBP:\t%1\n\tMaPSA:\t%2\n\tPS-s:\t%3\n\tGlue:\t%4\n\tModule:\t%5").arg(Baseplate_ID_).arg(MaPSA_ID_).arg(PSS_ID_).arg(Glue_ID_).arg(Module_ID_));
+    QLabel* main_txt = new QLabel(QString("Push the following information to database:\n\tBP:\t%1\n\tMaPSA:\t%2\n\tPS-s:\t%3\n\tGlues:\t%4 %5 %6\n\tModule:\t%7").arg(Baseplate_ID_).arg(MaPSA_ID_).arg(PSS_ID_).arg(Glue1_ID_).arg(Glue2_ID_).arg(Glue3_ID_).arg(Module_ID_));
     vlay->addWidget(main_txt);
 
     QHBoxLayout* comment_lay = new QHBoxLayout();
@@ -306,7 +340,7 @@ void AssemblyAssemblyV2::PushToDB_start()
       case QDialog::Accepted:
         // <--- Insert function to push to database here. --->
         NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushToDB_start: "
-           << QString("Push the following information to database:\n\tBaseplate:\t%1\n\tMaPSA:\t\t%2\n\tPS-s:\t\t%3\n\tPS-s:\t\t%4\n\tModule:\t\t%5\n\tComment:\t\t%6").arg(Baseplate_ID_).arg(MaPSA_ID_).arg(PSS_ID_).arg(Glue_ID_).arg(Module_ID_).arg(comment_lin->toPlainText()).toStdString();
+           << QString("Push the following information to database:\n\tBaseplate:\t%1\n\tMaPSA:\t\t%2\n\tPS-s:\t\t%3\n\tPS-s:\t\t%4\n\tModule:\t\t%5 %6 %7\n\tComment:\t\t%8").arg(Baseplate_ID_).arg(MaPSA_ID_).arg(PSS_ID_).arg(Glue1_ID_).arg(Glue2_ID_).arg(Glue3_ID_).arg(Module_ID_).arg(comment_lin->toPlainText()).toStdString();
         emit PushToDB_finished();
         break;
       default:

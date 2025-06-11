@@ -46,7 +46,9 @@ class AssemblyAssemblyV2View : public QWidget
   QLineEdit* baseplate_id_lineed_;
   QLineEdit* mapsa_id_lineed_;
   QLineEdit* pss_id_lineed_;
-  QLineEdit* glue_id_lineed_;
+  QLineEdit* glue1_id_lineed_;
+  QLineEdit* glue2_id_lineed_;
+  QLineEdit* glue3_id_lineed_;
   QLineEdit* module_id_lineed_;
   QPushButton* push_to_db_button_;
 

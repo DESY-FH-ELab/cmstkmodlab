@@ -67,7 +67,7 @@ class AssemblyAssemblyV2 : public QObject
 
   double original_Z_velocity_;
 
-  QString Baseplate_ID_, MaPSA_ID_, PSS_ID_, Glue_ID_, Module_ID_;
+  QString Baseplate_ID_, MaPSA_ID_, PSS_ID_, Glue1_ID_, Glue2_ID_, Glue3_ID_, Module_ID_;
 
   bool alreadyClicked_LowerPickupToolOntoMaPSA, alreadyClicked_LowerPickupToolOntoPSS, alreadyClicked_LowerMaPSAOntoBaseplate, alreadyClicked_LowerPSSOntoSpacers, alreadyClicked_LowerPSSPlusSpacersOntoGluingStage, alreadyClicked_LowerPSSPlusSpacersOntoMaPSA;
 
@@ -175,14 +175,18 @@ class AssemblyAssemblyV2 : public QObject
   void ScanMaPSAID_start();
   void ScanPSSID_start();
   void ScanBaseplateID_start();
-  void ScanGlueID_start();
+  void ScanGlue1ID_start();
+  void ScanGlue2ID_start();
+  void ScanGlue3ID_start();
   void ScanModuleID_start();
   void PushToDB_start();
 
   void Update_Baseplate_ID(QString ID) {Baseplate_ID_ = ID;};
   void Update_MaPSA_ID(QString ID) {MaPSA_ID_ = ID;};
   void Update_PSS_ID(QString ID) {PSS_ID_ = ID;};
-  void Update_Glue_ID(QString ID) {Glue_ID_ = ID;};
+  void Update_Glue1_ID(QString ID) {Glue1_ID_ = ID;};
+  void Update_Glue2_ID(QString ID) {Glue2_ID_ = ID;};
+  void Update_Glue3_ID(QString ID) {Glue3_ID_ = ID;};
   void Update_Module_ID(QString ID) {Module_ID_ = ID;};
 
   void RegisterPSSPlusSpacersToMaPSAPosition_start();
@@ -201,14 +205,18 @@ class AssemblyAssemblyV2 : public QObject
   void ScanMaPSAID_finished();
   void ScanPSSID_finished();
   void ScanBaseplateID_finished();
-  void ScanGlueID_finished();
+  void ScanGlue1ID_finished();
+  void ScanGlue2ID_finished();
+  void ScanGlue3ID_finished();
   void ScanModuleID_finished();
   void PushToDB_finished();
 
   void ScanMaPSAID_aborted();
   void ScanBaseplateID_aborted();
   void ScanPSSID_aborted();
-  void ScanGlueID_aborted();
+  void ScanGlue1ID_aborted();
+  void ScanGlue2ID_aborted();
+  void ScanGlue3ID_aborted();
   void ScanModuleID_aborted();
   void PushToDB_aborted();
 
@@ -269,7 +277,9 @@ class AssemblyAssemblyV2 : public QObject
   void MaPSA_ID_updated(const QString);
   void PSS_ID_updated(const QString);
   void Baseplate_ID_updated(const QString);
-  void Glue_ID_updated(const QString);
+  void Glue1_ID_updated(const QString);
+  void Glue2_ID_updated(const QString);
+  void Glue3_ID_updated(const QString);
   void Module_ID_updated(const QString);
   // ------
 
