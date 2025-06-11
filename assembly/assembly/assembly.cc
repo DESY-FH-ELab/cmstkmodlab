@@ -54,16 +54,14 @@ int main(int argc, char** argv)
 
     app.setStyle("cleanlooks");
     app.setWindowIcon(QIcon(QString::fromStdString(std::string(Config::CMSTkModLabBasePath)+"/assembly/assembly/images/icon2.png")));
-    
+
     QCommandLineParser parser;
     parser.setApplicationDescription("Automated Assembly Software");
     parser.addHelpOption();
     parser.addVersionOption();
 
-    parser.addOptions({
-        {{"g", "glass"},
-	 QCoreApplication::translate("main", "Use configuration for glass assembly instead of silicon")},
-    });
+    parser.addOption({{"g", "glass"}, QCoreApplication::translate("main", "Use configuration for glass assembly instead of silicon")});
+    parser.addOption({{"t", "thickness"}, QCoreApplication::translate("main", "Specify spacer thickness - overwrites parameter read from file"), "thickness"});
 
     parser.process(app);
 
@@ -142,6 +140,10 @@ int main(int argc, char** argv)
       }
     }
     // ----------------------
+
+    if(parser.isSet("thickness")){
+      config->addValue("overwrite", "spacer_thickness", parser.value("thickness"));
+    }
 
     try{
         AssemblyMainWindow mainWindow(outputdir_path, logfile_path);

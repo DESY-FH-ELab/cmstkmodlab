@@ -156,6 +156,13 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   dime_lay->addWidget(new QLabel(tr("dZ")), row_index, 5, Qt::AlignRight);
   dime_lay->addWidget(this->get(tmp_tag)  , row_index, 6, Qt::AlignRight);
 
+  if(config_->hasKey("overwrite","spacer_thickness")){
+      auto font = map_lineEdit_["Thickness_Spacer"]->font();
+      font.setWeight(QFont::Bold);
+      map_lineEdit_["Thickness_Spacer"]->setFont(font);
+      config_->setValue("parameters", "Thickness_Spacer", config_->getValue("overwrite","spacer_thickness"));
+  }
+
   // dimension: height of spacer slots
   ++row_index;
 
