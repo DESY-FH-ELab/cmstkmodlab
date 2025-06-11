@@ -558,6 +558,7 @@ protected:
   static ApplicationConfig* instance_;
 
   void issueKeyError(const ShortKey& sk) const;
+  void keyExistsError(const ShortKey& sk) const;
 
   storage_t keyvalueMap_;
 };

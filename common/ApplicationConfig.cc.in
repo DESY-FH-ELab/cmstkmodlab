@@ -136,6 +136,17 @@ void ApplicationConfig::issueKeyError(const ShortKey& sk) const
                         QMessageBox::Ok);
 }
 
+void ApplicationConfig::keyExistsError(const ShortKey& sk) const
+{
+  std::cerr << " [keyOverwriteError] ** ERROR: Attempting to add value that already exists: "
+      << sk.alias << "." << sk.key << "." << std::endl;
+
+  QMessageBox::critical(0,
+                        QString("[ApplicationConfigReader::keyExistsError]"),
+                        QString("Failed to add key, because it already exists: \"%1.%2\"\n.").arg(QString(sk.alias.c_str())).arg(QString(sk.key.c_str())),
+                        QMessageBox::Ok);
+}
+
 template <>
 std::string ApplicationConfig::getValue(const ApplicationConfig::ShortKey& sk) const
 {
