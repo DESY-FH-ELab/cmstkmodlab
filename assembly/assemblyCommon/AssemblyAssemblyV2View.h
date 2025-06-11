@@ -41,7 +41,9 @@ class AssemblyAssemblyV2View : public QWidget
   QWidget* wid_PSSToSpacers_;
   QWidget* wid_PSSToMaPSA_;
 
-  AssemblyAssemblyActionWidget* push_to_db_wid_;
+  AssemblyAssemblyActionWidget* push_step1_to_db_wid_;
+  AssemblyAssemblyActionWidget* push_step2_to_db_wid_;
+  AssemblyAssemblyActionWidget* push_step3_to_db_wid_;
 
   QLineEdit* baseplate_id_lineed_;
   QLineEdit* mapsa_id_lineed_;

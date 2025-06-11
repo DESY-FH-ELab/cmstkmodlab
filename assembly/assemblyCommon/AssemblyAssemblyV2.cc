@@ -280,7 +280,7 @@ void AssemblyAssemblyV2::ScanModuleID_start()
     }
 }
 
-void AssemblyAssemblyV2::PushToDB_start()
+void AssemblyAssemblyV2::PushAllToDB_start()
 {
     if(Baseplate_ID_.isEmpty() || MaPSA_ID_.isEmpty() || PSS_ID_.isEmpty() || Module_ID_.isEmpty() || Glue1_ID_.isEmpty() || Glue2_ID_.isEmpty() || Glue3_ID_.isEmpty())
     {
@@ -292,12 +292,12 @@ void AssemblyAssemblyV2::PushToDB_start()
         msgBox.setStandardButtons(QMessageBox::Ok);
         int ret = msgBox.exec();
 
-        emit PushToDB_aborted();
+        emit PushAllToDB_aborted();
         return;
     }
 
     QDialog* msgBox = new QDialog();
-    msgBox->setWindowTitle(tr("Push Module Information to Database"));
+    msgBox->setWindowTitle(tr("Push Full Module Information to Database"));
 
     QVBoxLayout* vlay = new QVBoxLayout();
     msgBox->setLayout(vlay);
@@ -335,16 +335,223 @@ void AssemblyAssemblyV2::PushToDB_start()
     switch(msgBox->result())
     {
       case QDialog::Rejected:
-        emit PushToDB_aborted();
+        emit PushAllToDB_aborted();
         return;
       case QDialog::Accepted:
         // <--- Insert function to push to database here. --->
-        NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushToDB_start: "
+        NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushAllToDB_start: "
            << QString("Push the following information to database:\n\tBaseplate:\t%1\n\tMaPSA:\t\t%2\n\tPS-s:\t\t%3\n\tPS-s:\t\t%4\n\tModule:\t\t%5 %6 %7\n\tComment:\t\t%8").arg(Baseplate_ID_).arg(MaPSA_ID_).arg(PSS_ID_).arg(Glue1_ID_).arg(Glue2_ID_).arg(Glue3_ID_).arg(Module_ID_).arg(comment_lin->toPlainText()).toStdString();
-        emit PushToDB_finished();
+        emit PushAllToDB_finished();
         break;
       default:
-        emit PushToDB_aborted();
+        emit PushAllToDB_aborted();
+        return;
+    }
+}
+
+void AssemblyAssemblyV2::PushStep1ToDB_start()
+{
+    if(Module_ID_.isEmpty() || Baseplate_ID_.isEmpty() || MaPSA_ID_.isEmpty() || Glue1_ID_.isEmpty())
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Information for Database Upload missing"));
+        QString msg = QString("The following IDs are missing:") + (Module_ID_.isEmpty() ? "\n\tModule ID" : "") + (Baseplate_ID_.isEmpty() ? "\n\tBaseplate ID" : "") + (MaPSA_ID_.isEmpty() ? "\n\tMaPSA ID" : "") + (Glue1_ID_.isEmpty() ? "\n\tGlue 1 ID" : "");
+        msgBox.setText(msg);
+        msgBox.setInformativeText("Please add this information via the toolbar or assembly actions.");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        int ret = msgBox.exec();
+
+        emit PushStep1ToDB_aborted();
+        return;
+    }
+
+    QDialog* msgBox = new QDialog();
+    msgBox->setWindowTitle(tr("Push Module Information for MaPSA to BP assembly to Database"));
+
+    QVBoxLayout* vlay = new QVBoxLayout();
+    msgBox->setLayout(vlay);
+
+    QLabel* main_txt = new QLabel(QString("Push the following information to database:\n\n\tModule:\t%1\n\tBP:\t%2\n\tMaPSA:\t%3\n\tGlue:\t%4").arg(Module_ID_).arg(Baseplate_ID_).arg(MaPSA_ID_).arg(Glue1_ID_));
+    vlay->addWidget(main_txt);
+
+    QHBoxLayout* comment_lay = new QHBoxLayout();
+
+    QLabel* comment_lab = new QLabel("Comments:");
+    QTextEdit* comment_lin = new QTextEdit("");
+    comment_lin->setTabChangesFocus(true);
+    comment_lin->setFixedHeight(60);
+
+    comment_lay->addWidget(comment_lab);
+    comment_lay->addWidget(comment_lin);
+
+    vlay->addLayout(comment_lay);
+
+    QLabel* info_txt = new QLabel("Do you want to push this information to the Database?");
+    vlay->addWidget(info_txt);
+
+    QDialogButtonBox* button_box = new QDialogButtonBox(Qt::Horizontal);
+    button_box->addButton(QDialogButtonBox::Yes);
+    button_box->addButton(QDialogButtonBox::No);
+    button_box->setCenterButtons(true);
+
+    vlay->addWidget(button_box);
+
+    connect(button_box, SIGNAL(accepted()), msgBox, SLOT(accept()));
+    connect(button_box, SIGNAL(rejected()), msgBox, SLOT(reject()));
+
+    int ret = msgBox->exec();
+
+    switch(msgBox->result())
+    {
+      case QDialog::Rejected:
+        emit PushStep1ToDB_aborted();
+        return;
+      case QDialog::Accepted:
+        // <--- Insert function to push to database here. --->
+        NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep1ToDB_start: "
+           << QString("Push the following information to database:\n\tModule:\t\t%1\n\tBaseplate:\t%2\n\tMaPSA:\t\t%3\n\tGlue:\t\t%4\n\tComment:\t%5").arg(Module_ID_).arg(Baseplate_ID_).arg(MaPSA_ID_).arg(Glue1_ID_).arg(comment_lin->toPlainText()).toStdString();
+        emit PushStep1ToDB_finished();
+        break;
+      default:
+        emit PushStep1ToDB_aborted();
+        return;
+    }
+}
+
+void AssemblyAssemblyV2::PushStep2ToDB_start()
+{
+    if(Module_ID_.isEmpty() || PSS_ID_.isEmpty() || Glue2_ID_.isEmpty())
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Information for Database Upload missing"));
+        QString msg = QString("The following IDs are missing:") + (Module_ID_.isEmpty() ? "\n\tModule ID" : "") + (PSS_ID_.isEmpty() ? "\n\tPSS ID" : "") + (Glue2_ID_.isEmpty() ? "\n\tGlue 2 ID" : "");
+        msgBox.setText(msg);
+        msgBox.setInformativeText("Please add this information via the toolbar or assembly actions.");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        int ret = msgBox.exec();
+
+        emit PushStep2ToDB_aborted();
+        return;
+    }
+
+    QDialog* msgBox = new QDialog();
+    msgBox->setWindowTitle(tr("Push Module Information for PSS to Spacers assembly to Database"));
+
+    QVBoxLayout* vlay = new QVBoxLayout();
+    msgBox->setLayout(vlay);
+
+    QLabel* main_txt = new QLabel(QString("Push the following information to database:\n\n\tModule:\t%1\n\tPSS:\t%2\n\tGlue:\t%3").arg(Module_ID_).arg(PSS_ID_).arg(Glue2_ID_));
+    vlay->addWidget(main_txt);
+
+    QHBoxLayout* comment_lay = new QHBoxLayout();
+
+    QLabel* comment_lab = new QLabel("Comments:");
+    QTextEdit* comment_lin = new QTextEdit("");
+    comment_lin->setTabChangesFocus(true);
+    comment_lin->setFixedHeight(60);
+
+    comment_lay->addWidget(comment_lab);
+    comment_lay->addWidget(comment_lin);
+
+    vlay->addLayout(comment_lay);
+
+    QLabel* info_txt = new QLabel("Do you want to push this information to the Database?");
+    vlay->addWidget(info_txt);
+
+    QDialogButtonBox* button_box = new QDialogButtonBox(Qt::Horizontal);
+    button_box->addButton(QDialogButtonBox::Yes);
+    button_box->addButton(QDialogButtonBox::No);
+    button_box->setCenterButtons(true);
+
+    vlay->addWidget(button_box);
+
+    connect(button_box, SIGNAL(accepted()), msgBox, SLOT(accept()));
+    connect(button_box, SIGNAL(rejected()), msgBox, SLOT(reject()));
+
+    int ret = msgBox->exec();
+
+    switch(msgBox->result())
+    {
+      case QDialog::Rejected:
+        emit PushStep2ToDB_aborted();
+        return;
+      case QDialog::Accepted:
+        // <--- Insert function to push to database here. --->
+        NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep2ToDB_start: "
+           << QString("Push the following information to database:\n\tModule:\t\t%1\n\tPSS:\t\t%2\n\tGlue:\t\t%3\n\tComment:\t%4").arg(Module_ID_).arg(PSS_ID_).arg(Glue2_ID_).arg(comment_lin->toPlainText()).toStdString();
+        emit PushStep2ToDB_finished();
+        break;
+      default:
+        emit PushStep2ToDB_aborted();
+        return;
+    }
+}
+
+void AssemblyAssemblyV2::PushStep3ToDB_start()
+{
+    if(Module_ID_.isEmpty() || Glue3_ID_.isEmpty())
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Information for Database Upload missing"));
+        QString msg = QString("The following IDs are missing:") + (Module_ID_.isEmpty() ? "\n\tModule ID" : "") + (Glue3_ID_.isEmpty() ? "\n\tGlue 3 ID" : "");
+        msgBox.setText(msg);
+        msgBox.setInformativeText("Please add this information via the toolbar or assembly actions.");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        int ret = msgBox.exec();
+
+        emit PushStep3ToDB_aborted();
+        return;
+    }
+
+    QDialog* msgBox = new QDialog();
+    msgBox->setWindowTitle(tr("Push Module Information for PSS to MaPSA assembly to Database"));
+
+    QVBoxLayout* vlay = new QVBoxLayout();
+    msgBox->setLayout(vlay);
+
+    QLabel* main_txt = new QLabel(QString("Push the following information to database:\n\n\tModule:\t%1\n\tGlue:\t%2").arg(Module_ID_).arg(Glue3_ID_));
+    vlay->addWidget(main_txt);
+
+    QHBoxLayout* comment_lay = new QHBoxLayout();
+
+    QLabel* comment_lab = new QLabel("Comments:");
+    QTextEdit* comment_lin = new QTextEdit("");
+    comment_lin->setTabChangesFocus(true);
+    comment_lin->setFixedHeight(60);
+
+    comment_lay->addWidget(comment_lab);
+    comment_lay->addWidget(comment_lin);
+
+    vlay->addLayout(comment_lay);
+
+    QLabel* info_txt = new QLabel("Do you want to push this information to the Database?");
+    vlay->addWidget(info_txt);
+
+    QDialogButtonBox* button_box = new QDialogButtonBox(Qt::Horizontal);
+    button_box->addButton(QDialogButtonBox::Yes);
+    button_box->addButton(QDialogButtonBox::No);
+    button_box->setCenterButtons(true);
+
+    vlay->addWidget(button_box);
+
+    connect(button_box, SIGNAL(accepted()), msgBox, SLOT(accept()));
+    connect(button_box, SIGNAL(rejected()), msgBox, SLOT(reject()));
+
+    int ret = msgBox->exec();
+
+    switch(msgBox->result())
+    {
+      case QDialog::Rejected:
+        emit PushStep3ToDB_aborted();
+        return;
+      case QDialog::Accepted:
+        // <--- Insert function to push to database here. --->
+        NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep3ToDB_start: "
+           << QString("Push the following information to database:\n\tModule:\t\t%1\n\tGlue:\t\t%2\n\tComment:\t%3").arg(Module_ID_).arg(Glue3_ID_).arg(comment_lin->toPlainText()).toStdString();
+        emit PushStep3ToDB_finished();
+        break;
+      default:
+        emit PushStep3ToDB_aborted();
         return;
     }
 }
