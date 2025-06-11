@@ -20,6 +20,7 @@
 #include <QFileDialog>
 #include <QToolBox>
 #include <QLabel>
+#include <QFont>
 #include <sstream>
 
 AssemblyParametersView::AssemblyParametersView(QWidget* parent)
@@ -814,6 +815,10 @@ void AssemblyParametersView::overwriteParameter(const QString& value)
         ptr_qedit->setStyleSheet("");
         config_->setValue("parameters", key.first, value);
         ptr_qedit->setText(value);
+        auto font = ptr_qedit->font();
+        font.setWeight(QFont::Bold);
+        ptr_qedit->setFont(font);
+
       } else
       {
         NQLog("AssemblyParametersView", NQLog::Fatal) << "overwriteParameter"
@@ -1072,6 +1077,7 @@ void AssemblyParametersView::display_infoTab()
 
     messageBox.setText(tr("<p>This tab stores reference values (dimensions, distances, etc.) necessary to the assembly procedure.<br>"
     "The values are read from a config file (whose path is hardcoded as option <i>AssemblyParameters_file_path</i> in the file <i>assembly/assembly.cfg)</i>, and may be edited interactively by the user in this interface (non-permanent changes).</p>"
+    "<p>Values indicated in <b>bold</b> are values that have been changed w.r.t. to the parameter file.</p>"
     "<p style=color:orange>NB: make sure to read the proper config file, which differs for glass/silicon and different spacer thicknesses !</p>"
     "<p>[<b>Dimensions of Assembly Components</b>] -- Reference thickness values of assembly components, used to compute distances along the Z-axis and apply the corresponding movements during assembly.</p>"
     "<p>[<b>Reference Positions</b>] -- Absolute positions of several reference points <i>(related to assembly platform, spacer slots, gluing stage, ec.)</i> expressed in the reference frame of the motion stage (MS). These values must be determined manually as part of a periodic calibration procedure."
