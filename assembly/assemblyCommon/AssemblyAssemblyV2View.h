@@ -50,7 +50,7 @@ class AssemblyAssemblyV2View : public QWidget
   QLineEdit* glue2_id_lineed_;
   QLineEdit* glue3_id_lineed_;
   QLineEdit* module_id_lineed_;
-  QPushButton* push_to_db_button_;
+  //QPushButton* push_to_db_button_;
 
 };
 

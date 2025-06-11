@@ -37,7 +37,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
  , glue2_id_lineed_(nullptr)
  , glue3_id_lineed_(nullptr)
  , module_id_lineed_(nullptr)
- , push_to_db_button_(nullptr)
+ //, push_to_db_button_(nullptr)
 {
   if(assembly == nullptr)
   {
@@ -64,6 +64,17 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   //// -----------------------------------------------
 
   opts_lay->addStretch();
+
+  QLabel* module_id_label = new QLabel("Module ID: ");
+  module_id_lineed_ = new QLineEdit("");
+  module_id_lineed_->setPlaceholderText("Module ID");
+  module_id_lineed_->setMaximumWidth(200);
+
+  opts_lay->addWidget(module_id_label);
+  opts_lay->addWidget(module_id_lineed_);
+
+  connect(assembly, SIGNAL(Module_ID_updated(QString)), module_id_lineed_, SLOT(setText(QString)));
+  connect(module_id_lineed_, SIGNAL(textEdited(QString)), assembly, SLOT(Update_Module_ID(QString)));
 
   QLabel* baseplate_id_label = new QLabel("Baseplate ID: ");
   baseplate_id_lineed_ = new QLineEdit("");
@@ -123,22 +134,11 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   connect(assembly, SIGNAL(Glue3_ID_updated(QString)), glue3_id_lineed_, SLOT(setText(QString)));
   connect(glue3_id_lineed_, SIGNAL(textEdited(QString)), assembly, SLOT(Update_Glue3_ID(QString)));
 
-  QLabel* module_id_label = new QLabel("Module ID: ");
-  module_id_lineed_ = new QLineEdit("");
-  module_id_lineed_->setPlaceholderText("Module ID");
-  module_id_lineed_->setMaximumWidth(200);
+  //push_to_db_button_ = new QPushButton("Push to database");
+  //opts_lay->addWidget(push_to_db_button_);
 
-  opts_lay->addWidget(module_id_label);
-  opts_lay->addWidget(module_id_lineed_);
-
-  connect(assembly, SIGNAL(Module_ID_updated(QString)), module_id_lineed_, SLOT(setText(QString)));
-  connect(module_id_lineed_, SIGNAL(textEdited(QString)), assembly, SLOT(Update_Module_ID(QString)));
-
-  push_to_db_button_ = new QPushButton("Push to database");
-  opts_lay->addWidget(push_to_db_button_);
-
-  connect(push_to_db_button_, SIGNAL(clicked()), assembly, SLOT(PushToDB_start()));
-  connect(assembly, SIGNAL(PushToDB_finished()), this, SLOT(disable_DB()));
+  //connect(push_to_db_button_, SIGNAL(clicked()), assembly, SLOT(PushToDB_start()));
+  //connect(assembly, SIGNAL(PushToDB_finished()), this, SLOT(disable_DB()));
 
   //// -----------------------------------------------
 
@@ -1222,7 +1222,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
 
 void AssemblyAssemblyV2View::disable_DB()
 {
-    push_to_db_button_->setEnabled(false);
+    //push_to_db_button_->setEnabled(false);
     push_to_db_wid_->disable_action();
 
     mapsa_id_lineed_->setReadOnly(true);
