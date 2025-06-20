@@ -19,6 +19,9 @@
 #include <RelayCardManager.h>
 #include <AssemblyUtilities.h>
 
+#include <DatabaseDESY.h>
+#include <DatabaseDummy.h>
+
 #include <AssemblySmartMotionManager.h>
 #include <ApplicationConfig.h>
 
@@ -68,6 +71,8 @@ class AssemblyAssemblyV2 : public QObject
   double original_Z_velocity_;
 
   QString Baseplate_ID_, MaPSA_ID_, PSS_ID_, Glue1_ID_, Glue2_ID_, Glue3_ID_, Module_ID_;
+
+  VDatabase* database_;
 
   bool alreadyClicked_LowerPickupToolOntoMaPSA, alreadyClicked_LowerPickupToolOntoPSS, alreadyClicked_LowerMaPSAOntoBaseplate, alreadyClicked_LowerPSSOntoSpacers, alreadyClicked_LowerPSSPlusSpacersOntoGluingStage, alreadyClicked_LowerPSSPlusSpacersOntoMaPSA;
 
