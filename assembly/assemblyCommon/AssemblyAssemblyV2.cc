@@ -283,6 +283,23 @@ void AssemblyAssemblyV2::ScanModuleID_start()
     }
 }
 
+void AssemblyAssemblyV2::RegisterModuleID_start()
+{
+    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "RegisterModuleID_start: "
+    << "Attempting to register module ID in DB";
+
+    if(database_->register_module_name(Module_ID_, "OperatorName"))
+    {
+        NQLog("AssemblyAssemblyV2", NQLog::Spam) << "RegisterModuleID_start: "
+        << "Successfully registered module in DB";
+        emit RegisterModuleID_finished();
+    } else {
+        NQLog("AssemblyAssemblyV2", NQLog::Fatal) << "RegisterModuleID_start: "
+        << "Could not register module in DB";
+        emit RegisterModuleID_aborted();
+    }
+}
+
 void AssemblyAssemblyV2::PushAllToDB_start()
 {
     if(Baseplate_ID_.isEmpty() || MaPSA_ID_.isEmpty() || PSS_ID_.isEmpty() || Module_ID_.isEmpty() || Glue1_ID_.isEmpty() || Glue2_ID_.isEmpty() || Glue3_ID_.isEmpty())

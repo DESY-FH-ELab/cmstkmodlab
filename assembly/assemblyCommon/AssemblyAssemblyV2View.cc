@@ -170,6 +170,19 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   }
   // ----------
 
+  // step: Register Module ID in DB
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->button()->setText("Register Module ID in DB");
+    PSPToBasep_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(RegisterModuleID_start()), SIGNAL(RegisterModuleID_finished()), SIGNAL(RegisterModuleID_aborted()));
+  }
+  // ----------
+
   // step: Scan MaPSA ID
   {
     ++assembly_step_N;
