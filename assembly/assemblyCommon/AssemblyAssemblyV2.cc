@@ -103,7 +103,9 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
       assembly_center_ = assembly::Center::BROWN;
   } else if(assembly_center_str == "DESY") {
       assembly_center_ = assembly::Center::DESY;
-      database_ = new DatabaseDESY(this);
+      auto base_url = QString::fromStdString(config_->getValue<std::string>("main", "Database_URL"));
+      auto token = QString::fromStdString(config_->getValue<std::string>("main", "Database_Token"));
+      database_ = new DatabaseDESY(this, base_url, token);
   } else {
       NQLog("AssemblyAssemblyV2", NQLog::Warning) << "Invalid assembly center provided: \"" << assembly_center_str << "\". Provide one of the following options: \"FNAL\", \"BROWN\", \"DESY\"";
   }
