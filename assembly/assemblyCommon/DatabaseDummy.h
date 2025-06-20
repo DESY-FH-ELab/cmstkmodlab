@@ -23,12 +23,10 @@ class DatabaseDummy : public VDatabase
       explicit DatabaseDummy(QObject* parent);
       ~DatabaseDummy();
 
-      bool check_module_name_exists(std::string);
-      bool register_module_name(std::string);
-
-      bool MaPSA_to_BP_(std::string, std::string, std::string);
-      bool PSs_to_spacers_(std::string, std::string);
-      bool PSs_to_MaPSA_(std::string);
+      bool register_module_name(QString, QString);
+      bool MaPSA_to_BP(QString, QString, QString);
+      bool PSs_to_spacers(QString, QString);
+      bool PSs_to_MaPSA(QString);
 
   protected:
 

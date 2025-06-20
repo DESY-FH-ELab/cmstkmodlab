@@ -23,27 +23,22 @@ DatabaseDummy::~DatabaseDummy()
 }
 
 
-bool DatabaseDummy::check_module_name_exists(std::string module_name)
+bool DatabaseDummy::register_module_name(QString module_name, QString operator_name)
 {
     return false;
 }
 
-bool DatabaseDummy::register_module_name(std::string module_name)
+bool DatabaseDummy::MaPSA_to_BP(QString, QString, QString)
 {
     return false;
 }
 
-bool DatabaseDummy::MaPSA_to_BP_(std::string, std::string, std::string)
+bool DatabaseDummy::PSs_to_spacers(QString, QString)
 {
     return false;
 }
 
-bool DatabaseDummy::PSs_to_spacers_(std::string, std::string)
-{
-    return false;
-}
-
-bool DatabaseDummy::PSs_to_MaPSA_(std::string)
+bool DatabaseDummy::PSs_to_MaPSA(QString)
 {
     return false;
 }

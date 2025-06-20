@@ -24,27 +24,28 @@ class VDatabase : public QObject
       VDatabase(QObject* parent);
       ~VDatabase();
 
-      virtual bool check_module_name_exists(std::string) = 0;
-      virtual bool register_module_name(std::string) = 0;
-
-      virtual bool MaPSA_to_BP_(std::string, std::string, std::string) = 0;
-      virtual bool PSs_to_spacers_(std::string, std::string) = 0;
-      virtual bool PSs_to_MaPSA_(std::string) = 0;
+      virtual bool register_module_name(QString, QString) = 0;
+      virtual bool MaPSA_to_BP(QString, QString, QString, QString) = 0;
+      virtual bool PSs_to_spacers(QString, QString, QString) = 0;
+      virtual bool PSs_to_MaPSA(QString, QString) = 0;
 
   protected:
 
-      std::string MaPSA_name_;
-      unsigned int MaPSA_dbid_;
+      QString module_name_;
+      int module_dbid_;
 
-      std::string PSs_name_;
-      unsigned int PSs_dbid_;
+      QString MaPSA_name_;
+      int MaPSA_dbid_;
 
-      std::string BP_name_;
-      unsigned int BP_dbid_;
+      QString PSs_name_;
+      int PSs_dbid_;
 
-      unsigned int Glue1_dbid_;
-      unsigned int Glue2_dbid_;
-      unsigned int Glue3_dbid_;
+      QString BP_name_;
+      int BP_dbid_;
+
+      int Glue1_dbid_;
+      int Glue2_dbid_;
+      int Glue3_dbid_;
 
 };
 
