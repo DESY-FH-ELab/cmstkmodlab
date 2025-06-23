@@ -37,7 +37,7 @@ class DatabaseDESY : public VDatabase
       QJsonObject post(QNetworkRequest request, QJsonObject json_object);
       QJsonObject get(QNetworkRequest request);
 
-      int get_next_task();
+      int get_next_task(QString task_name);
       void assign_task(int task_id);
       void perform_task(int task_id, QJsonObject data);
       int get_ID_from_name(QString part_name, QString structure_name="");

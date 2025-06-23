@@ -128,7 +128,7 @@ bool DatabaseDESY::MaPSA_to_BP(QString MaPSA_name, QString BP_name, QString glue
 
         // // Take MaPSA
         // Get Task ID
-        int task_id = get_next_task();
+        int task_id = get_next_task("take_mapsa");
         NQLog("DatabaseDESY", NQLog::Message) << "Obtained next task (\"Take MaPSA\") with ID " << task_id;
 
         // Assign Task
@@ -165,7 +165,7 @@ bool DatabaseDESY::MaPSA_to_BP(QString MaPSA_name, QString BP_name, QString glue
         Glue1_dbid_ = return_glue_dbid;
 
         // Get Task ID
-        int task_id = get_next_task();
+        int task_id = get_next_task("glue_mapsa_to_baseplate");
         NQLog("DatabaseDESY", NQLog::Message) << "Obtained next task (\"Glue MaPSA to Baseplate\") with ID " << task_id;
 
         // Assign Task
@@ -203,7 +203,7 @@ bool DatabaseDESY::PSs_to_spacers(QString PSs_name, QString glue_name, QString c
 
         // // Take PSs
         // Get Task ID
-        int task_id = get_next_task();
+        int task_id = get_next_task("take_pss");
         NQLog("DatabaseDESY", NQLog::Message) << "Obtained next task (\"Take PSs\") with ID " << task_id;
 
         // Assign Task
@@ -234,7 +234,7 @@ bool DatabaseDESY::PSs_to_spacers(QString PSs_name, QString glue_name, QString c
         Glue2_dbid_ = return_glue_dbid;
 
         // Get Task ID
-        int task_id = get_next_task();
+        int task_id = get_next_task("glue_pss_to_spacers");
         NQLog("DatabaseDESY", NQLog::Message) << "Obtained next task (\"Glue PSs to Spacers\") with ID " << task_id;
 
         // Assign Task
@@ -270,7 +270,7 @@ bool DatabaseDESY::PSs_to_MaPSA(QString glue_name, QString comment)
         Glue3_dbid_ = return_glue_dbid;
 
         // Get Task ID
-        int task_id = get_next_task();
+        int task_id = get_next_task("glue_pss_to_mapsa");
         NQLog("DatabaseDESY", NQLog::Message) << "Obtained next task (\"Glue PSs to MaPSA\") with ID " << task_id;
 
         // Assign Task
@@ -357,7 +357,7 @@ QJsonObject DatabaseDESY::get(QNetworkRequest request)
     return QJsonObject();
 }
 
-int DatabaseDESY::get_next_task()
+int DatabaseDESY::get_next_task(QString task_name)
 {
     QUrl url_gettask = base_url_;
     url_gettask.setPath("/ph2production/api/task/");
@@ -368,14 +368,25 @@ int DatabaseDESY::get_next_task()
 
     try{
         auto reply_data_gettask = this->get(request_gettask);
-        if(reply_data_gettask.isEmpty()){
-            NQLog("DatabaseDESY", NQLog::Warning) << "Did not receive expected data structure (get next task).";
-            throw BadResultException("\"get_next_task\" failed to obtain task ID - DB returned empty object.");
+
+        auto n_tasks = reply_data_gettask.value("count").toInt();
+        if(n_tasks == 0)
+        {
+            throw BadResultException("\"get_next_task\" failed to obtain task ID - no such task in DB.");
+        } else if(n_tasks > 1){
+            throw BadResultException("\"get_next_task\" failed to obtain task ID - more than one task found in DB.");
         }
 
         auto results_object = reply_data_gettask.value("results").toArray().at(0).toObject();
+
+        if(results_object.value("flow_task") != task_name)
+        {
+            throw BadResultException(QString("\"get_next_task\" failed to obtain task ID - only task in status \"NEW\" is task %1").arg(results_object.value("flow_task").toString()));
+        }
+
         int task_id = results_object.value("id").toInt();
         NQLog("DatabaseDESY", NQLog::Message) << "Obtained task with ID " << task_id;
+
         return task_id;
     } catch(BadReplyException bre){
         NQLog("DatabaseDESY", NQLog::Fatal) << "\"get_next_task\": " << bre.what();
