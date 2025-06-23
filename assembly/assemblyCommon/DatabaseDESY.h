@@ -40,7 +40,7 @@ class DatabaseDESY : public VDatabase
       int get_next_task();
       void assign_task(int task_id);
       void perform_task(int task_id, QJsonObject data);
-      int get_ID_from_name(QString part_name);
+      int get_ID_from_name(QString part_name, QString structure_name="");
       int validate_glue_mixture(QString glue_name);
 
       QNetworkAccessManager* network_access_mgr_;
@@ -79,13 +79,14 @@ class BadResultException : public std::exception {
 
 class PartDoesNotExistException : public std::exception {
   private:
-      QString message;
-      std::string return_message;
+      QString part_;
+      QString structure_;
+      std::string return_message_;
   public:
-      PartDoesNotExistException(QString msg) : message(std::move(msg)) {}
+      PartDoesNotExistException(QString part, QString structure="") : part_(std::move(part)), structure_(std::move(structure)) {}
       const char* what () {
-          return_message = "Required part does not exist: " + message.toStdString();
-          return return_message.c_str();
+          return_message_ = "Required part does not exist: " + part_.toStdString() + (structure_.isEmpty() ? "" : (" (structure: " + structure_.toStdString() + ")"));
+          return return_message_.c_str();
       }
 };
 

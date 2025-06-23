@@ -48,7 +48,7 @@ bool DatabaseDESY::register_module_name(QString module_name, QString operator_na
 {
     // Check whether module exists in DB - it should not!
     try{
-        int return_dbid = get_ID_from_name(module_name);
+        int return_dbid = get_ID_from_name(module_name, "PS_module");
         NQLog("DatabaseDESY", NQLog::Fatal) << "Module " << module_name << " exists in the database. ID: " << return_dbid << ". Cannot continue.";
         return false;
     } catch(BadResultException bre){
@@ -121,7 +121,7 @@ bool DatabaseDESY::MaPSA_to_BP(QString MaPSA_name, QString BP_name, QString glue
 {
     try{
         // Get MaPSA_dbib_ from MaPSA_name_
-        int return_dbid = get_ID_from_name(MaPSA_name);
+        int return_dbid = get_ID_from_name(MaPSA_name, "MaPSA");
         NQLog("DatabaseDESY", NQLog::Message) << "Obtained MaPSA ID (\"Take MaPSA\"): " << return_dbid;
         MaPSA_dbid_ = return_dbid;
         MaPSA_name_ = MaPSA_name;
@@ -154,7 +154,7 @@ bool DatabaseDESY::MaPSA_to_BP(QString MaPSA_name, QString BP_name, QString glue
     try{
         // // Glue MaPSA to BP
         // Get BP_dbib_ from BP_name_
-        int return_MaPSA_dbid = get_ID_from_name(BP_name);
+        int return_MaPSA_dbid = get_ID_from_name(BP_name, "PS%20Baseplate");
         NQLog("DatabaseDESY", NQLog::Message) << "Obtained Baseplate ID (\"Glue MaPSA to Baseplate\"): " << return_MaPSA_dbid;
         BP_dbid_ = return_MaPSA_dbid;
         BP_name_ = BP_name;
@@ -196,7 +196,7 @@ bool DatabaseDESY::PSs_to_spacers(QString PSs_name, QString glue_name, QString c
 {
     try{
         // Get PSs_dbib_ from PSs_name_
-        int return_dbid = get_ID_from_name(PSs_name);
+        int return_dbid = get_ID_from_name(PSs_name, "PSs%20Sensor");
         NQLog("DatabaseDESY", NQLog::Message) << "Obtained PSs ID (\"Take PSs\"): " << return_dbid;
         PSs_dbid_ = return_dbid;
         PSs_name_ = PSs_name;
@@ -425,11 +425,17 @@ void DatabaseDESY::perform_task(int task_id, QJsonObject data_performtask)
     }
 }
 
-int DatabaseDESY::get_ID_from_name(QString part_name)
+int DatabaseDESY::get_ID_from_name(QString part_name, QString structure_name)
 {
     QUrl url_getid = base_url_;
     url_getid.setPath("/api/part/");
-    url_getid.setQuery(QString("name=%1").arg(part_name));
+
+    if(structure_name.isEmpty())
+    {
+        url_getid.setQuery(QString("name=%1").arg(part_name));
+    } else {
+        url_getid.setQuery(QString("name=%1&structure__name=%2").arg(part_name).arg(structure_name));
+    }
 
     auto request_getid = base_request_;
     request_getid.setUrl(url_getid);
@@ -440,7 +446,7 @@ int DatabaseDESY::get_ID_from_name(QString part_name)
         auto n_parts = reply_data_getid.value("count").toInt();
         if(n_parts == 0)
         {
-            throw PartDoesNotExistException(part_name);
+            throw PartDoesNotExistException(part_name, structure_name);
         } else if(n_parts > 1){
             throw BadResultException(QString("\"get_ID_from_name\" received unexpected result for part %1. Number of matching parts in DB: %2").arg(part_name).arg(n_parts));
         }
@@ -460,7 +466,7 @@ int DatabaseDESY::validate_glue_mixture(QString glue_name)
 {
     auto glue_name_split = glue_name.split('_');
     if(glue_name_split.size()!=2 || glue_name_split.at(0) != "Glue"){
-        throw PartDoesNotExistException(glue_name);
+        throw PartDoesNotExistException(glue_name, "Glue");
     } else {
         int glue_id = glue_name_split.at(1).toInt();
 
@@ -477,7 +483,7 @@ int DatabaseDESY::validate_glue_mixture(QString glue_name)
             auto n_glues = reply_data_validate_glue.value("count").toInt();
             if(n_glues == 0)
             {
-                throw PartDoesNotExistException(glue_name);
+                throw PartDoesNotExistException(glue_name, "Glue");
             } else if(n_glues > 1){
                 throw BadResultException(QString("\"validate_glue_mixture\" received unexpected result for glue %1. Number of matching glue mixtures in DB: %2").arg(glue_name).arg(n_glues));
             }
