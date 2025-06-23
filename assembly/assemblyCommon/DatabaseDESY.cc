@@ -128,6 +128,18 @@ bool DatabaseDESY::MaPSA_to_BP(QString MaPSA_name, QString BP_name, QString glue
         MaPSA_dbid_ = return_dbid;
         MaPSA_name_ = MaPSA_name;
 
+        // Get BP_dbib_ from BP_name_
+        int return_MaPSA_dbid = get_ID_from_name(BP_name, "PS%20Baseplate");
+        NQLog("DatabaseDESY", NQLog::Message) << "Obtained Baseplate ID (\"Glue MaPSA to Baseplate\"): " << return_MaPSA_dbid;
+        BP_dbid_ = return_MaPSA_dbid;
+        BP_name_ = BP_name;
+
+        // Get Glue1_dbib_ from glue_name
+        auto return_glue_dbid = validate_glue_mixture(glue_name);
+        NQLog("DatabaseDESY", NQLog::Message) << "Obtained Glue ID (\"Glue MaPSA to Baseplate\"): " << return_glue_dbid;
+        Glue1_dbid_ = return_glue_dbid;
+
+
         // // Take MaPSA
         // Get Task ID
         int task_id = get_next_task("take_mapsa");
@@ -146,26 +158,15 @@ bool DatabaseDESY::MaPSA_to_BP(QString MaPSA_name, QString BP_name, QString glue
         NQLog("DatabaseDESY", NQLog::Message) << "Performed task (\"Take MaPSA\") with ID " << task_id;
 
     } catch(BadResultException bre){
-        NQLog("DatabaseDESY", NQLog::Warning) << "Could not perform step \"Take MaPSA\": " << bre.what();
+        error_message("Could not perform step \"Take MaPSA\": " + QString::fromUtf8(bre.what()));
         return false;
     } catch(PartDoesNotExistException pdnee){
-        NQLog("DatabaseDESY", NQLog::Warning) << "Could not perform step \"Take MaPSA\": " << pdnee.what();
+        error_message("Could not perform step \"Take MaPSA\": " + QString::fromUtf8(pdnee.what()));
         return false;
     }
 
     try{
         // // Glue MaPSA to BP
-        // Get BP_dbib_ from BP_name_
-        int return_MaPSA_dbid = get_ID_from_name(BP_name, "PS%20Baseplate");
-        NQLog("DatabaseDESY", NQLog::Message) << "Obtained Baseplate ID (\"Glue MaPSA to Baseplate\"): " << return_MaPSA_dbid;
-        BP_dbid_ = return_MaPSA_dbid;
-        BP_name_ = BP_name;
-
-        // Get Glue1_dbib_ from glue_name
-        auto return_glue_dbid = validate_glue_mixture(glue_name);
-        NQLog("DatabaseDESY", NQLog::Message) << "Obtained Glue ID (\"Glue MaPSA to Baseplate\"): " << return_glue_dbid;
-        Glue1_dbid_ = return_glue_dbid;
-
         // Get Task ID
         int task_id = get_next_task("glue_mapsa_to_baseplate");
         NQLog("DatabaseDESY", NQLog::Message) << "Obtained next task (\"Glue MaPSA to Baseplate\") with ID " << task_id;
@@ -203,6 +204,11 @@ bool DatabaseDESY::PSs_to_spacers(QString PSs_name, QString glue_name, QString c
         PSs_dbid_ = return_dbid;
         PSs_name_ = PSs_name;
 
+        // Get Glue2_dbib_ from glue_name
+        auto return_glue_dbid = validate_glue_mixture(glue_name);
+        NQLog("DatabaseDESY", NQLog::Message) << "Obtained Glue ID (\"Glue PSs to Spacers\"): " << return_glue_dbid;
+        Glue2_dbid_ = return_glue_dbid;
+
         // // Take PSs
         // Get Task ID
         int task_id = get_next_task("take_pss");
@@ -221,20 +227,15 @@ bool DatabaseDESY::PSs_to_spacers(QString PSs_name, QString glue_name, QString c
         NQLog("DatabaseDESY", NQLog::Message) << "Performed task (\"Take PSs\") with ID " << task_id;
 
     } catch(BadResultException bre){
-        NQLog("DatabaseDESY", NQLog::Warning) << "Could not perform step \"Take PSs\": " << bre.what();
+        error_message("Could not perform step \"Take PSs\": " + QString::fromUtf8(bre.what()));
         return false;
     } catch(PartDoesNotExistException pdnee){
-        NQLog("DatabaseDESY", NQLog::Warning) << "Could not perform step \"Take PSs\": " << pdnee.what();
+        error_message("Could not perform step \"Take PSs\": " + QString::fromUtf8(pdnee.what()));
         return false;
     }
 
     try{
         // // Glue PSs to Spacers
-        // Get Glue2_dbib_ from glue_name
-        auto return_glue_dbid = validate_glue_mixture(glue_name);
-        NQLog("DatabaseDESY", NQLog::Message) << "Obtained Glue ID (\"Glue PSs to Spacers\"): " << return_glue_dbid;
-        Glue2_dbid_ = return_glue_dbid;
-
         // Get Task ID
         int task_id = get_next_task("glue_pss_to_spacers");
         NQLog("DatabaseDESY", NQLog::Message) << "Obtained next task (\"Glue PSs to Spacers\") with ID " << task_id;
