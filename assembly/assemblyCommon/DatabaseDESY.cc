@@ -160,7 +160,7 @@ bool DatabaseDESY::MaPSA_to_BP(QString MaPSA_name, QString BP_name, QString glue
         BP_name_ = BP_name;
 
         // Get Glue1_dbib_ from glue_name
-        int return_glue_dbid = get_ID_from_name(glue_name);
+        auto return_glue_dbid = validate_glue_mixture(glue_name);
         NQLog("DatabaseDESY", NQLog::Message) << "Obtained Glue ID (\"Glue MaPSA to Baseplate\"): " << return_glue_dbid;
         Glue1_dbid_ = return_glue_dbid;
 
@@ -229,9 +229,9 @@ bool DatabaseDESY::PSs_to_spacers(QString PSs_name, QString glue_name, QString c
     try{
         // // Glue PSs to Spacers
         // Get Glue2_dbib_ from glue_name
-        int return_dbid = get_ID_from_name(glue_name);
-        NQLog("DatabaseDESY", NQLog::Message) << "Obtained Glue ID (\"Glue PSs to Spacers\"): " << return_dbid;
-        Glue2_dbid_ = return_dbid;
+        auto return_glue_dbid = validate_glue_mixture(glue_name);
+        NQLog("DatabaseDESY", NQLog::Message) << "Obtained Glue ID (\"Glue PSs to Spacers\"): " << return_glue_dbid;
+        Glue2_dbid_ = return_glue_dbid;
 
         // Get Task ID
         int task_id = get_next_task();
@@ -265,9 +265,9 @@ bool DatabaseDESY::PSs_to_MaPSA(QString glue_name, QString comment)
     try{
         // // Glue PSs to MaPSA
         // Get Glue3_dbib_ from glue_name
-        int return_dbid = get_ID_from_name(glue_name);
-        NQLog("DatabaseDESY", NQLog::Message) << "Obtained Glue ID (\"Glue PSs to MaPSA\"): " << return_dbid;
-        Glue3_dbid_ = return_dbid;
+        auto return_glue_dbid = validate_glue_mixture(glue_name);
+        NQLog("DatabaseDESY", NQLog::Message) << "Obtained Glue ID (\"Glue PSs to MaPSA\"): " << return_glue_dbid;
+        Glue3_dbid_ = return_glue_dbid;
 
         // Get Task ID
         int task_id = get_next_task();
@@ -456,5 +456,38 @@ int DatabaseDESY::get_ID_from_name(QString part_name)
     }
 }
 
+int DatabaseDESY::validate_glue_mixture(QString glue_name)
+{
+    auto glue_name_split = glue_name.split('_');
+    if(glue_name_split.size()!=2 || glue_name_split.at(0) != "Glue"){
+        throw PartDoesNotExistException(glue_name);
+    } else {
+        int glue_id = glue_name_split.at(1).toInt();
+
+        QUrl url_validate_glue = base_url_;
+        url_validate_glue.setPath("/ph2production/api/glue/");
+        url_validate_glue.setQuery(QString("id=%1").arg(glue_id));
+
+        auto request_validate_glue = base_request_;
+        request_validate_glue.setUrl(url_validate_glue);
+
+        try{
+            auto reply_data_validate_glue = this->get(request_validate_glue);
+
+            auto n_glues = reply_data_validate_glue.value("count").toInt();
+            if(n_glues == 0)
+            {
+                throw PartDoesNotExistException(glue_name);
+            } else if(n_glues > 1){
+                throw BadResultException(QString("\"validate_glue_mixture\" received unexpected result for glue %1. Number of matching glue mixtures in DB: %2").arg(glue_name).arg(n_glues));
+            }
+
+            NQLog("DatabaseDESY", NQLog::Message) << "Glue " << glue_name << " found. ID: " << glue_id;
+
+            return glue_id;
+        } catch(BadReplyException bre){
+            NQLog("DatabaseDESY", NQLog::Fatal) << "\"validate_glue_mixture\": " << bre.what();
+            throw BadResultException(QString("\"validate_glue_mixture\" failed validate glue for glue with name %1 - received bad reply from DB.").arg(glue_name));
+        }
     }
 }

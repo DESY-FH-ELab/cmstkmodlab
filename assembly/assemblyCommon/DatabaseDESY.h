@@ -41,6 +41,7 @@ class DatabaseDESY : public VDatabase
       void assign_task(int task_id);
       void perform_task(int task_id, QJsonObject data);
       int get_ID_from_name(QString part_name);
+      int validate_glue_mixture(QString glue_name);
 
       QNetworkAccessManager* network_access_mgr_;
 
