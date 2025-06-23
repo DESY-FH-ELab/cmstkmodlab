@@ -99,8 +99,10 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
   std::string assembly_center_str = QString::fromStdString(config_->getValue<std::string>("main", "assembly_center")).toUpper().toStdString();
   if(assembly_center_str == "FNAL") {
       assembly_center_ = assembly::Center::FNAL;
+      database_ = new DatabaseDummy(this);
   } else if(assembly_center_str == "BROWN") {
       assembly_center_ = assembly::Center::BROWN;
+      database_ = new DatabaseDummy(this);
   } else if(assembly_center_str == "DESY") {
       assembly_center_ = assembly::Center::DESY;
       auto base_url = QString::fromStdString(config_->getValue<std::string>("main", "Database_URL"));
