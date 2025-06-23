@@ -32,6 +32,8 @@ class DatabaseDESY : public VDatabase
       bool PSs_to_spacers(QString, QString, QString="");
       bool PSs_to_MaPSA(QString, QString);
 
+      bool is_component_available(QString, QString="");
+
   protected:
 
       QJsonObject post(QNetworkRequest request, QJsonObject json_object);

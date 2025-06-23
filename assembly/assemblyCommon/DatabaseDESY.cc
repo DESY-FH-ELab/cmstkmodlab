@@ -441,6 +441,57 @@ void DatabaseDESY::perform_task(int task_id, QJsonObject data_performtask)
     }
 }
 
+bool DatabaseDESY::is_component_available(QString part_name, QString structure_name)
+{
+    QUrl url_check_component = base_url_;
+
+    if(structure_name == "Glue")
+    {
+        auto glue_name_split = part_name.split('_');
+        if(glue_name_split.size()!=2 || glue_name_split.at(0) != "Glue"){
+            error_message(QString("Component of structure %1 could not be found in DB: %2. Details: invalid glue naming scheme.").arg(structure_name).arg(part_name));
+            return false;
+        } else {
+            int glue_id = glue_name_split.at(1).toInt();
+
+            url_check_component.setPath("/ph2production/api/glue/");
+            url_check_component.setQuery(QString("id=%1").arg(glue_id));
+        }
+    } else {
+        url_check_component.setPath("/api/part/");
+
+        if(structure_name.isEmpty())
+        {
+            url_check_component.setQuery(QString("name=%1").arg(part_name));
+        } else {
+            url_check_component.setQuery(QString("name=%1&structure__name=%2").arg(part_name).arg(structure_name));
+        }
+    }
+
+    auto request_check_component = base_request_;
+    request_check_component.setUrl(url_check_component);
+
+    try{
+        auto reply_data_check_component = this->get(request_check_component);
+
+        auto n_parts = reply_data_check_component.value("count").toInt();
+        if(n_parts != 1)
+        {
+            error_message(QString("Component of structure %1 could not be found in DB: %2. Details: Number of parts with this name registered in DB: %3.").arg(structure_name).arg(part_name).arg(n_parts));
+            return false;
+        }
+
+        auto results_object = reply_data_check_component.value("results").toArray().at(0).toObject();
+        int part_id = results_object.value("id").toInt();
+        NQLog("DatabaseDESY", NQLog::Message) << "Part " << part_name << " found. ID: " << part_id;
+
+        return true;
+    } catch(BadReplyException bre){
+        error_message(QString("Component of structure %1 could not be found in DB: %2. Details: bad response from DB: " + QString::fromUtf8(bre.what())));
+        return false;
+    }
+}
+
 int DatabaseDESY::get_ID_from_name(QString part_name, QString structure_name)
 {
     QUrl url_getid = base_url_;

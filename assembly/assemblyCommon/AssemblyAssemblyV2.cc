@@ -183,6 +183,11 @@ void AssemblyAssemblyV2::ScanMaPSAID_start()
         emit ScanMaPSAID_aborted();
         return;
     } else {
+        if(!database_->is_component_available(MaPSA_ID, "MaPSA"))
+        {
+            emit ScanMaPSAID_aborted();
+            return;
+        }
         MaPSA_ID_ = MaPSA_ID;
         emit MaPSA_ID_updated(MaPSA_ID);
         emit ScanMaPSAID_finished();
@@ -199,6 +204,11 @@ void AssemblyAssemblyV2::ScanPSSID_start()
         emit ScanPSSID_aborted();
         return;
     } else {
+        if(!database_->is_component_available(PSS_ID, "PSs%20Sensor"))
+        {
+            emit ScanPSSID_aborted();
+            return;
+        }
         PSS_ID_ = PSS_ID;
         emit PSS_ID_updated(PSS_ID);
         emit ScanPSSID_finished();
@@ -215,6 +225,11 @@ void AssemblyAssemblyV2::ScanBaseplateID_start()
         emit ScanBaseplateID_aborted();
         return;
     } else {
+        if(!database_->is_component_available(Baseplate_ID, "PS%20Baseplate"))
+        {
+            emit ScanBaseplateID_aborted();
+            return;
+        }
         Baseplate_ID_ = Baseplate_ID;
         emit Baseplate_ID_updated(Baseplate_ID);
         emit ScanBaseplateID_finished();
@@ -231,6 +246,11 @@ void AssemblyAssemblyV2::ScanGlue1ID_start()
         emit ScanGlue1ID_aborted();
         return;
     } else {
+        if(!database_->is_component_available(Glue1_ID, "Glue"))
+        {
+            emit ScanGlue1ID_aborted();
+            return;
+        }
         Glue1_ID_ = Glue1_ID;
         emit Glue1_ID_updated(Glue1_ID);
         emit ScanGlue1ID_finished();
@@ -247,6 +267,11 @@ void AssemblyAssemblyV2::ScanGlue2ID_start()
         emit ScanGlue2ID_aborted();
         return;
     } else {
+        if(!database_->is_component_available(Glue2_ID, "Glue"))
+        {
+            emit ScanGlue2ID_aborted();
+            return;
+        }
         Glue2_ID_ = Glue2_ID;
         emit Glue2_ID_updated(Glue2_ID);
         emit ScanGlue2ID_finished();
@@ -263,6 +288,11 @@ void AssemblyAssemblyV2::ScanGlue3ID_start()
         emit ScanGlue3ID_aborted();
         return;
     } else {
+        if(!database_->is_component_available(Glue3_ID, "Glue"))
+        {
+            emit ScanGlue3ID_aborted();
+            return;
+        }
         Glue3_ID_ = Glue3_ID;
         emit Glue3_ID_updated(Glue3_ID);
         emit ScanGlue3ID_finished();

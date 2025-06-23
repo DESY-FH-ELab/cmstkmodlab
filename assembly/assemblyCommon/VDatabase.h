@@ -28,6 +28,8 @@ class VDatabase : public QObject
       virtual bool MaPSA_to_BP(QString, QString, QString, QString) = 0;
       virtual bool PSs_to_spacers(QString, QString, QString) = 0;
       virtual bool PSs_to_MaPSA(QString, QString) = 0;
+      
+      virtual bool is_component_available(QString, QString) = 0;
 
   protected:
 
