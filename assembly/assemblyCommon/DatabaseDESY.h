@@ -43,6 +43,8 @@ class DatabaseDESY : public VDatabase
       int get_ID_from_name(QString part_name, QString structure_name="");
       int validate_glue_mixture(QString glue_name);
 
+      void error_message(QString message);
+
       QNetworkAccessManager* network_access_mgr_;
 
       QUrl base_url_;

@@ -19,6 +19,8 @@
 #include <QByteArray>
 #include <QNetworkReply>
 #include <QEventLoop>
+#include <QMessageBox>
+#include <QTextDocumentFragment>
 
 #include <iostream>
 #include <nqlogger.h>
@@ -49,10 +51,10 @@ bool DatabaseDESY::register_module_name(QString module_name, QString operator_na
     // Check whether module exists in DB - it should not!
     try{
         int return_dbid = get_ID_from_name(module_name, "PS_module");
-        NQLog("DatabaseDESY", NQLog::Fatal) << "Module " << module_name << " exists in the database. ID: " << return_dbid << ". Cannot continue.";
+        error_message(QString("Module %1 already exists in the database. ID: %2. Cannot register module with this name.").arg(module_name).arg(return_dbid));
         return false;
     } catch(BadResultException bre){
-        NQLog("DatabaseDESY", NQLog::Fatal) << "\"register_module_name\" (registering): " << bre.what();
+        error_message("\"register_module_name\" (registering): " + QString::fromUtf8(bre.what()));
         return false;
     } catch(PartDoesNotExistException pdnee){
         NQLog("DatabaseDESY", NQLog::Message) << "\"register_module_name\": " << pdnee.what();
@@ -77,7 +79,7 @@ bool DatabaseDESY::register_module_name(QString module_name, QString operator_na
         auto reply_data_register = this->post(request_register, data_register);
 
         if(reply_data_register.isEmpty()){
-            NQLog("DatabaseDESY", NQLog::Warning) << "Did not receive expected data structure (register module).";
+            error_message("Did not receive expected data structure (register module).");
             return false;
         }
 
@@ -86,7 +88,7 @@ bool DatabaseDESY::register_module_name(QString module_name, QString operator_na
         NQLog("DatabaseDESY", NQLog::Message) << "Registered Module with name " << module_name_ << " and ID " << module_dbid_;
 
     } catch(BadReplyException bre){
-        NQLog("DatabaseDESY", NQLog::Fatal) << "\"register_module_name\" (registering): " << bre.what();
+        error_message("\"register_module_name\" (registering): " + QString::fromUtf8(bre.what()));
         return false;
     }
 
@@ -103,14 +105,14 @@ bool DatabaseDESY::register_module_name(QString module_name, QString operator_na
     try{
         auto reply_data_start = this->post(request_start, data_start);
         if(reply_data_start.isEmpty()){
-            NQLog("DatabaseDESY", NQLog::Warning) << "Did not receive expected data structure (start process).";
+            error_message("Did not receive expected data structure (start process).");
             return false;
         }
 
         process_dbid_ = reply_data_start.value("process_id").toInt();
         NQLog("DatabaseDESY", NQLog::Message) << "Started assembly process with ID " << process_dbid_;
     } catch(BadReplyException bre){
-        NQLog("DatabaseDESY", NQLog::Fatal) << "\"register_module_name\": (start assembly process) " << bre.what();
+        error_message("\"register_module_name\": (start assembly process) " + QString::fromUtf8(bre.what()));
         return false;
     }
 
@@ -182,10 +184,10 @@ bool DatabaseDESY::MaPSA_to_BP(QString MaPSA_name, QString BP_name, QString glue
         NQLog("DatabaseDESY", NQLog::Message) << "Performed task (\"Glue MaPSA to Baseplate\") with ID " << task_id;
 
     } catch(BadResultException bre){
-        NQLog("DatabaseDESY", NQLog::Warning) << "Could not perform step \"Glue MaPSA to Baseplate\": " << bre.what();
+        error_message("Could not perform step \"Glue MaPSA to Baseplate\": " + QString::fromUtf8(bre.what()));
         return false;
     } catch(PartDoesNotExistException pdnee){
-        NQLog("DatabaseDESY", NQLog::Warning) << "Could not perform step \"Glue MaPSA to Baseplate\": " << pdnee.what();
+        error_message("Could not perform step \"Glue MaPSA to Baseplate\": " + QString::fromUtf8(pdnee.what()));
         return false;
     }
 
@@ -250,10 +252,10 @@ bool DatabaseDESY::PSs_to_spacers(QString PSs_name, QString glue_name, QString c
         NQLog("DatabaseDESY", NQLog::Message) << "Performed task (\"Glue PSs to Spacers\") with ID " << task_id;
 
     } catch(BadResultException bre){
-        NQLog("DatabaseDESY", NQLog::Warning) << "Could not perform step \"Glue PSs to Spacers\": " << bre.what();
+        error_message("Could not perform step \"Glue PSs to Spacers\": " + QString::fromUtf8(bre.what()));
         return false;
     } catch(PartDoesNotExistException pdnee){
-        NQLog("DatabaseDESY", NQLog::Warning) << "Could not perform step \"Glue PSs to Spacers\": " << pdnee.what();
+        error_message("Could not perform step \"Glue PSs to Spacers\": " + QString::fromUtf8(pdnee.what()));
         return false;
     }
 
@@ -286,10 +288,10 @@ bool DatabaseDESY::PSs_to_MaPSA(QString glue_name, QString comment)
         NQLog("DatabaseDESY", NQLog::Message) << "Performed task (\"Glue PSs to MaPSA\") with ID " << task_id;
 
     } catch(BadResultException bre){
-        NQLog("DatabaseDESY", NQLog::Warning) << "Could not perform step \"Glue PSs to MaPSA\": " << bre.what();
+        error_message("Could not perform step \"Glue PSs to MaPSA\": " + QString::fromUtf8(bre.what()));
         return false;
     } catch(PartDoesNotExistException pdnee){
-        NQLog("DatabaseDESY", NQLog::Warning) << "Could not perform step \"Glue PSs to MaPSA\": " << pdnee.what();
+        error_message("Could not perform step \"Glue PSs to MaPSA\": " + QString::fromUtf8(pdnee.what()));
         return false;
     }
 
@@ -509,4 +511,15 @@ int DatabaseDESY::validate_glue_mixture(QString glue_name)
             throw BadResultException(QString("\"validate_glue_mixture\" failed validate glue for glue with name %1 - received bad reply from DB.").arg(glue_name));
         }
     }
+}
+
+void DatabaseDESY::error_message(QString message)
+{
+    NQLog("DatabaseDESY", NQLog::Fatal) << QTextDocumentFragment::fromHtml( message ).toPlainText();
+
+    QMessageBox msgBox;
+    msgBox.setWindowTitle(tr("Warning - Database"));
+    msgBox.setText(message);
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    int ret = msgBox.exec();
 }
