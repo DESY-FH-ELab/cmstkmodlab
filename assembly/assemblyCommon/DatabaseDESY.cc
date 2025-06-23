@@ -51,7 +51,7 @@ bool DatabaseDESY::register_module_name(QString module_name, QString operator_na
     // Check whether module exists in DB - it should not!
     try{
         int return_dbid = get_ID_from_name(module_name, "PS_module");
-        error_message(QString("Module %1 already exists in the database. ID: %2. Cannot register module with this name.").arg(module_name).arg(return_dbid));
+        error_message(QString("Module %1 already exists in the database (ID: %2). Cannot register module with this name.").arg(module_name).arg(return_dbid));
         return false;
     } catch(BadResultException bre){
         error_message("\"register_module_name\" (registering): " + QString::fromUtf8(bre.what()));
