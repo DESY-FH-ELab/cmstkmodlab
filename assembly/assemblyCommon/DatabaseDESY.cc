@@ -404,10 +404,11 @@ void DatabaseDESY::assign_task(int task_id)
 
     try{
         auto reply_data_assigntask = this->get(request_assigntask);
-        if(reply_data_assigntask.isEmpty()){
-            NQLog("DatabaseDESY", NQLog::Warning) << "Did not receive expected data structure (assign next task).";
+
+        if(!reply_data_assigntask.value("result").toBool()){
             throw BadResultException(QString("\"assign_task\" failed to assign task with ID %1").arg(task_id));
         }
+
         NQLog("DatabaseDESY", NQLog::Message) << "Assigned task with ID " << task_id;
     } catch(BadReplyException bre){
         NQLog("DatabaseDESY", NQLog::Fatal) << "\"assign_task\": " << bre.what();
@@ -425,10 +426,11 @@ void DatabaseDESY::perform_task(int task_id, QJsonObject data_performtask)
 
     try{
         auto reply_data_performtask = this->post(request_performtask, data_performtask);
-        if(reply_data_performtask.isEmpty()){
-            NQLog("DatabaseDESY", NQLog::Warning) << "Did not receive expected data structure (perform task).";
+
+        if(!reply_data_performtask.value("result").toBool()){
             throw BadResultException(QString("\"perform_task\" failed to perform task with ID %1").arg(task_id));
         }
+
         NQLog("DatabaseDESY", NQLog::Message) << "Performed task with ID " << task_id;
     } catch(BadReplyException bre){
         NQLog("DatabaseDESY", NQLog::Fatal) << "\"perform_task\": " << bre.what();
