@@ -49,10 +49,13 @@ bool DatabaseDESY::register_module_name(QString module_name, QString operator_na
     // Check whether module exists in DB - it should not!
     try{
         int return_dbid = get_ID_from_name(module_name);
-        NQLog("DatabaseDESY", NQLog::Message) << "Module " << module_name << " exists in the database. ID: " << return_dbid;
+        NQLog("DatabaseDESY", NQLog::Fatal) << "Module " << module_name << " exists in the database. ID: " << return_dbid << ". Cannot continue.";
         return false;
     } catch(BadResultException bre){
-        NQLog("DatabaseDESY", NQLog::Message) << "Module " << module_name << " does not exist in the database (usually good!).";
+        NQLog("DatabaseDESY", NQLog::Fatal) << "\"register_module_name\" (registering): " << bre.what();
+        return false;
+    } catch(PartDoesNotExistException pdnee){
+        NQLog("DatabaseDESY", NQLog::Message) << "\"register_module_name\": " << pdnee.what();
     }
 
     // Register Module
@@ -143,6 +146,9 @@ bool DatabaseDESY::MaPSA_to_BP(QString MaPSA_name, QString BP_name, QString glue
     } catch(BadResultException bre){
         NQLog("DatabaseDESY", NQLog::Warning) << "Could not perform step \"Take MaPSA\": " << bre.what();
         return false;
+    } catch(PartDoesNotExistException pdnee){
+        NQLog("DatabaseDESY", NQLog::Warning) << "Could not perform step \"Take MaPSA\": " << pdnee.what();
+        return false;
     }
 
     try{
@@ -178,6 +184,9 @@ bool DatabaseDESY::MaPSA_to_BP(QString MaPSA_name, QString BP_name, QString glue
     } catch(BadResultException bre){
         NQLog("DatabaseDESY", NQLog::Warning) << "Could not perform step \"Glue MaPSA to Baseplate\": " << bre.what();
         return false;
+    } catch(PartDoesNotExistException pdnee){
+        NQLog("DatabaseDESY", NQLog::Warning) << "Could not perform step \"Glue MaPSA to Baseplate\": " << pdnee.what();
+        return false;
     }
 
     return true;
@@ -212,6 +221,9 @@ bool DatabaseDESY::PSs_to_spacers(QString PSs_name, QString glue_name, QString c
     } catch(BadResultException bre){
         NQLog("DatabaseDESY", NQLog::Warning) << "Could not perform step \"Take PSs\": " << bre.what();
         return false;
+    } catch(PartDoesNotExistException pdnee){
+        NQLog("DatabaseDESY", NQLog::Warning) << "Could not perform step \"Take PSs\": " << pdnee.what();
+        return false;
     }
 
     try{
@@ -239,6 +251,9 @@ bool DatabaseDESY::PSs_to_spacers(QString PSs_name, QString glue_name, QString c
 
     } catch(BadResultException bre){
         NQLog("DatabaseDESY", NQLog::Warning) << "Could not perform step \"Glue PSs to Spacers\": " << bre.what();
+        return false;
+    } catch(PartDoesNotExistException pdnee){
+        NQLog("DatabaseDESY", NQLog::Warning) << "Could not perform step \"Glue PSs to Spacers\": " << pdnee.what();
         return false;
     }
 
@@ -272,6 +287,9 @@ bool DatabaseDESY::PSs_to_MaPSA(QString glue_name, QString comment)
 
     } catch(BadResultException bre){
         NQLog("DatabaseDESY", NQLog::Warning) << "Could not perform step \"Glue PSs to MaPSA\": " << bre.what();
+        return false;
+    } catch(PartDoesNotExistException pdnee){
+        NQLog("DatabaseDESY", NQLog::Warning) << "Could not perform step \"Glue PSs to MaPSA\": " << pdnee.what();
         return false;
     }
 
@@ -377,7 +395,7 @@ void DatabaseDESY::assign_task(int task_id)
         auto reply_data_assigntask = this->get(request_assigntask);
         if(reply_data_assigntask.isEmpty()){
             NQLog("DatabaseDESY", NQLog::Warning) << "Did not receive expected data structure (assign next task).";
-            throw BadResultException("\"assign_task\" failed to assign task with ID " + std::to_string(task_id));
+            throw BadResultException(QString("\"assign_task\" failed to assign task with ID %1").arg(task_id));
         }
         NQLog("DatabaseDESY", NQLog::Message) << "Assigned task with ID " << task_id;
     } catch(BadReplyException bre){
@@ -398,7 +416,7 @@ void DatabaseDESY::perform_task(int task_id, QJsonObject data_performtask)
         auto reply_data_performtask = this->post(request_performtask, data_performtask);
         if(reply_data_performtask.isEmpty()){
             NQLog("DatabaseDESY", NQLog::Warning) << "Did not receive expected data structure (perform task).";
-            throw BadResultException("\"perform_task\" failed to perform task with ID " + std::to_string(task_id));
+            throw BadResultException(QString("\"perform_task\" failed to perform task with ID %1").arg(task_id));
         }
         NQLog("DatabaseDESY", NQLog::Message) << "Performed task with ID " << task_id;
     } catch(BadReplyException bre){
@@ -418,9 +436,13 @@ int DatabaseDESY::get_ID_from_name(QString part_name)
 
     try{
         auto reply_data_getid = this->get(request_getid);
-        if(reply_data_getid.isEmpty()){
-            NQLog("DatabaseDESY", NQLog::Warning) << "Could not find part with name " << part_name;
-            throw BadResultException("\"get_ID_from_name\" failed to get ID from part " + part_name.toStdString());
+
+        auto n_parts = reply_data_getid.value("count").toInt();
+        if(n_parts == 0)
+        {
+            throw PartDoesNotExistException(part_name);
+        } else if(n_parts > 1){
+            throw BadResultException(QString("\"get_ID_from_name\" received unexpected result for part %1. Number of matching parts in DB: %2").arg(part_name).arg(n_parts));
         }
 
         auto results_object = reply_data_getid.value("results").toArray().at(0).toObject();
@@ -430,6 +452,9 @@ int DatabaseDESY::get_ID_from_name(QString part_name)
         return part_id;
     } catch(BadReplyException bre){
         NQLog("DatabaseDESY", NQLog::Fatal) << "\"get_ID_from_name\": " << bre.what();
-        throw BadResultException("\"get_ID_from_name\" failed get ID from part " + part_name.toStdString() + " - received bad reply from DB.");
+        throw BadResultException(QString("\"get_ID_from_name\" failed get ID from part %1 - received bad reply from DB.").arg(part_name));
+    }
+}
+
     }
 }

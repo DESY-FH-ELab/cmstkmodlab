@@ -66,11 +66,23 @@ class BadReplyException : public std::exception {
 
 class BadResultException : public std::exception {
   private:
-      std::string message;
+      QString message;
   public:
-      BadResultException(std::string msg) : message(msg) {}
+      BadResultException(QString msg) : message(msg) {}
       const char* what () {
-          return ("Failed to perform DB task: " + message).c_str();
+          auto return_message = "Failed to perform DB task: " + message.toStdString();
+          return return_message.c_str();
+      }
+};
+
+class PartDoesNotExistException : public std::exception {
+  private:
+      QString message;
+  public:
+      PartDoesNotExistException(QString msg) : message(msg) {}
+      const char* what () {
+          auto return_message = "Required part does not exist: " + message.toStdString();
+          return return_message.c_str();
       }
 };
 
