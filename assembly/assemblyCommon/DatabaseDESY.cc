@@ -361,7 +361,7 @@ int DatabaseDESY::get_next_task()
 {
     QUrl url_gettask = base_url_;
     url_gettask.setPath("/ph2production/api/task/");
-    url_gettask.setQuery(QString("?status=NEW&process=%1").arg(process_dbid_));
+    url_gettask.setQuery(QString("status=NEW&process=%1").arg(process_dbid_));
 
     auto request_gettask = base_request_;
     request_gettask.setUrl(url_gettask);
@@ -429,7 +429,7 @@ int DatabaseDESY::get_ID_from_name(QString part_name)
 {
     QUrl url_getid = base_url_;
     url_getid.setPath("/api/part/");
-    url_getid.setQuery(QString("?name=%1").arg(part_name));
+    url_getid.setQuery(QString("name=%1").arg(part_name));
 
     auto request_getid = base_request_;
     request_getid.setUrl(url_getid);
