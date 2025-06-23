@@ -24,11 +24,15 @@ class DatabaseDummy : public VDatabase
       ~DatabaseDummy();
 
       bool register_module_name(QString, QString);
-      bool MaPSA_to_BP(QString, QString, QString);
-      bool PSs_to_spacers(QString, QString);
-      bool PSs_to_MaPSA(QString);
+      bool MaPSA_to_BP(QString, QString, QString, QString);
+      bool PSs_to_spacers(QString, QString, QString);
+      bool PSs_to_MaPSA(QString, QString);
+
+      bool is_component_available(QString, QString);
 
   protected:
+
+      void error_message(QString message);
 
 
 };
