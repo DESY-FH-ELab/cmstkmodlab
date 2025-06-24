@@ -70,7 +70,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   QLabel* module_id_label = new QLabel("Module ID: ");
   module_id_lineed_ = new QLineEdit("");
   module_id_lineed_->setPlaceholderText("Module ID");
-  module_id_lineed_->setMaximumWidth(200);
+  module_id_lineed_->setMaximumWidth(150);
 
   opts_lay->addWidget(module_id_label);
   opts_lay->addWidget(module_id_lineed_);
@@ -81,7 +81,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   QLabel* baseplate_id_label = new QLabel("Baseplate ID: ");
   baseplate_id_lineed_ = new QLineEdit("");
   baseplate_id_lineed_->setPlaceholderText("Baseplate ID");
-  baseplate_id_lineed_->setMaximumWidth(200);
+  baseplate_id_lineed_->setMaximumWidth(220);
 
   opts_lay->addWidget(baseplate_id_label);
   opts_lay->addWidget(baseplate_id_lineed_);
@@ -92,7 +92,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   QLabel* mapsa_id_label = new QLabel("MaPSA ID: ");
   mapsa_id_lineed_ = new QLineEdit("");
   mapsa_id_lineed_->setPlaceholderText("MaPSA ID");
-  mapsa_id_lineed_->setMaximumWidth(150);
+  mapsa_id_lineed_->setMaximumWidth(160);
 
   opts_lay->addWidget(mapsa_id_label);
   opts_lay->addWidget(mapsa_id_lineed_);
@@ -103,7 +103,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   QLabel* pss_id_label = new QLabel("PS-s Sensor ID: ");
   pss_id_lineed_ = new QLineEdit("");
   pss_id_lineed_->setPlaceholderText("PS-s Sensor ID");
-  pss_id_lineed_->setMaximumWidth(150);
+  pss_id_lineed_->setMaximumWidth(180);
 
   opts_lay->addWidget(pss_id_label);
   opts_lay->addWidget(pss_id_lineed_);
@@ -114,15 +114,15 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   QLabel* glue_id_label = new QLabel("Slow Glue IDs (steps 1/2/3): ");
   glue1_id_lineed_ = new QLineEdit("");
   glue1_id_lineed_->setPlaceholderText("Glue ID (step 1)");
-  glue1_id_lineed_->setMaximumWidth(80);
+  glue1_id_lineed_->setMaximumWidth(100);
 
   glue2_id_lineed_ = new QLineEdit("");
   glue2_id_lineed_->setPlaceholderText("Glue ID (step 2)");
-  glue2_id_lineed_->setMaximumWidth(80);
+  glue2_id_lineed_->setMaximumWidth(100);
 
   glue3_id_lineed_ = new QLineEdit("");
   glue3_id_lineed_->setPlaceholderText("Glue ID (step 3)");
-  glue3_id_lineed_->setMaximumWidth(80);
+  glue3_id_lineed_->setMaximumWidth(100);
 
   opts_lay->addWidget(glue_id_label);
   opts_lay->addWidget(glue1_id_lineed_);
