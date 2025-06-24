@@ -210,6 +210,19 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   }
   // ----------
 
+  if(assembly->GetAssemblyCenter() == assembly::Center::FNAL){
+      // step: Dispense Fast Glue on Baseplate
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->text()->setText("Dispense Fast Glue on Baseplate");
+        PSPToBasep_lay->addWidget(tmp_wid);
+      }
+      // ----------
+  }
+
   // step: Go To XYA Position To Glue MaPSA To Baseplate
   {
     ++assembly_step_N;
@@ -236,42 +249,44 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     // ----------
   }
 
-  // step: Make space on the platform by moving the pickup tool
-  {
-    ++assembly_step_N;
+  if(assembly->GetAssemblyCenter() == assembly::Center::BROWN || assembly->GetAssemblyCenter() == assembly::Center::DESY){
+      // step: Make space on the platform by moving the pickup tool
+      {
+        ++assembly_step_N;
 
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->button()->setText("Move away pickup tool to make space for dispensing of fast glue");
-    PSPToBasep_lay->addWidget(tmp_wid);
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Move away pickup tool to make space for dispensing of fast glue");
+        PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(MakeSpaceOnPlatform_start()), SIGNAL(MakeSpaceOnPlatform_finished()));
+        tmp_wid->connect_action(assembly, SLOT(MakeSpaceOnPlatform_start()), SIGNAL(MakeSpaceOnPlatform_finished()));
+      }
+      // ----------
+
+      // step: Dispense Fast Glue on Baseplate
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->text()->setText("Dispense Fast Glue on Baseplate");
+        PSPToBasep_lay->addWidget(tmp_wid);
+      }
+      // ----------
+
+      // step: Return to the platform by returning the pickup tool to the previous position
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Return to previous position");
+        PSPToBasep_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(ReturnToPlatform_start()), SIGNAL(ReturnToPlatform_finished()));
+      }
+      // ----------
   }
-  // ----------
-
-  // step: Dispense Fast Glue on Baseplate
-  {
-    ++assembly_step_N;
-
-    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->text()->setText("Dispense Fast Glue on Baseplate");
-    PSPToBasep_lay->addWidget(tmp_wid);
-  }
-  // ----------
-
-  // step: Return to the platform by returning the pickup tool to the previous position
-  {
-    ++assembly_step_N;
-
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->button()->setText("Return to previous position");
-    PSPToBasep_lay->addWidget(tmp_wid);
-
-    tmp_wid->connect_action(assembly, SLOT(ReturnToPlatform_start()), SIGNAL(ReturnToPlatform_finished()));
-  }
-  // ----------
 
   // step: Lower MaPSA onto Baseplate
   {
@@ -836,10 +851,19 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
       }
       // ----------
 
-      if(assembly->GetAssemblyCenter() == assembly::Center::FNAL || assembly->GetAssemblyCenter() == assembly::Center::BROWN)
+      // step: Dispense Fast Glue on "MaPSA + Baseplate"
       {
-        // step: Slowly lift from gluing stage
-        {
+        ++assembly_step_N;
+
+        AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->text()->setText("Dispense Fast Glue on Spacers");
+        PSSToMaPSA_lay->addWidget(tmp_wid);
+      }
+      // ----------
+
+      // step: Slowly lift from gluing stage
+      {
           ++assembly_step_N;
 
           AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
@@ -848,7 +872,6 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
           PSSToMaPSA_lay->addWidget(tmp_wid);
 
           tmp_wid->connect_action(assembly, SLOT(SlowlyLiftFromGluingStage_start()), SIGNAL(SlowlyLiftFromGluingStage_finished()));
-        }
       }
       // ----------
 
