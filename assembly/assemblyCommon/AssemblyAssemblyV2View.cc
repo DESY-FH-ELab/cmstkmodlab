@@ -578,18 +578,18 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     }
     // ----------
   } else {
-    // step: Dispense Glue on Spacers and Place them on Assembly Platform
+    // step: Place Spacers on Spacer Clamp
     {
-      ++assembly_step_N;
+        ++assembly_step_N;
 
-      AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-      tmp_wid->label()->setText(QString::number(assembly_step_N));
-      tmp_wid->text()->setText("Dispense Glue on Spacers and Place them on Assembly Platform");
-      PSSToSpacers_lay->addWidget(tmp_wid);
-    }
-    // ----------
+        AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->text()->setText("Place Spacers on Spacer Clamp");
+        PSSToSpacers_lay->addWidget(tmp_wid);
+      }
+      // ----------
 
-    // step: Enable Vacuum on Spacers
+      // step: Enable Vacuum on Spacers
     {
       ++assembly_step_N;
 
@@ -599,6 +599,65 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
       PSSToSpacers_lay->addWidget(tmp_wid);
 
       tmp_wid->connect_action(assembly, SLOT(EnableVacuumSpacers_start()), SIGNAL(EnableVacuumSpacers_finished()));
+    }
+    // ----------
+
+    // step: Dispense Glue on Spacers and Place them on Assembly Platform
+    {
+        ++assembly_step_N;
+
+        AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->text()->setText("Dispense Slow Glue on Spacers");
+        PSSToSpacers_lay->addWidget(tmp_wid);
+    }
+    // ----------
+
+    // step: Make space on the platform by moving the pickup tool
+    {
+      ++assembly_step_N;
+
+      AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+      tmp_wid->label()->setText(QString::number(assembly_step_N));
+      tmp_wid->button()->setText("Move away pickup tool to make space for the Placement of the Spacer Clamp");
+      PSSToSpacers_lay->addWidget(tmp_wid);
+
+      tmp_wid->connect_action(assembly, SLOT(MakeSpaceOnPlatform_start()), SIGNAL(MakeSpaceOnPlatform_finished()));
+    }
+    // ----------
+
+    // step: Place Spacer Clamp with Spacers on Assembly Platform
+    {
+        ++assembly_step_N;
+
+        AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->text()->setText("Place Spacer Clamp with Spacers on Assembly Platform");
+        PSSToSpacers_lay->addWidget(tmp_wid);
+    }
+    // ----------
+
+    // step: Dispense Fast Glue on Spacers
+    {
+        ++assembly_step_N;
+
+        AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->text()->setText("Dispense Fast Glue on Spacers");
+        PSSToSpacers_lay->addWidget(tmp_wid);
+    }
+    // ----------
+
+    // step: Return to the platform by returning the pickup tool to the previous position
+    {
+        ++assembly_step_N;
+
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Return to previous position");
+        PSSToSpacers_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(ReturnToPlatform_start()), SIGNAL(ReturnToPlatform_finished()));
     }
     // ----------
   }
