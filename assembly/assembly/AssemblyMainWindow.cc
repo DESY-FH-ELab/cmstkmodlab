@@ -556,7 +556,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     vac_lay->addWidget(PU_status_, 1, 1, Qt::AlignCenter);
     vac_lay->addWidget(SP_status_, 1, 2, Qt::AlignCenter);
     vac_lay->addWidget(BP_status_, 1, 3, Qt::AlignCenter);
-    vac_lay->addWidget(SUB_status_, 1, 4, Qt::AlignCenter);
+    if(config->hasKey("main", "Vacuum_Subassembly")){
+      vac_lay->addWidget(SUB_status_, 1, 4, Qt::AlignCenter);
+    }
 
     vac_wid->setLayout(vac_lay);
 
