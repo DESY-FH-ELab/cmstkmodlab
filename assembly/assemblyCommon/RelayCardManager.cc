@@ -45,6 +45,13 @@ VRelayCardModel* RelayCardManager::relayCardModel() const
 /// toggleVacuum slot description
 void RelayCardManager::toggleVacuum(const int chNumber)
 {
+  if(liveTimer_->isActive())
+  {
+    NQLog("RelayCardManager", NQLog::Critical) << "toggleVacuum(" << chNumber << ")"
+        << ": ERROR! Another line is still in transition.";
+    return;
+  }
+
   if(relayCardModel()->getSwitchState(chNumber) == 0)
   {
     NQLog("RelayCardManager", NQLog::Debug) << "toggleVacuum(" << chNumber << ")"
@@ -161,6 +168,13 @@ void RelayCardManager::transmit_vacuumChannelState(const int chNumber)
 
 void RelayCardManager::enableVacuum(const int chNumber)
 {
+  if(liveTimer_->isActive())
+  {
+    NQLog("RelayCardManager", NQLog::Critical) << "enableVacuum(" << chNumber << ")"
+        << ": ERROR! Another line is still in transition.";
+    return;
+  }
+
   const auto state = relayCardModel()->getSwitchState(chNumber);
 
   if(state == 0) // vacuum line is OFF
@@ -185,7 +199,7 @@ void RelayCardManager::enableVacuum(const int chNumber)
   }
   else
   {
-    NQLog("RelayCardManager", NQLog::Critical) << "toggleVacuum(" << chNumber << ")"
+    NQLog("RelayCardManager", NQLog::Critical) << "enableVacuum(" << chNumber << ")"
        << ": ERROR! Toggling vacuum error : SwithState != 0|1";
 
     NQLog("RelayCardManager", NQLog::Debug) << "enableVacuum(" << chNumber << ")"
@@ -199,6 +213,13 @@ void RelayCardManager::enableVacuum(const int chNumber)
 
 void RelayCardManager::disableVacuum(const int chNumber)
 {
+  if(liveTimer_->isActive())
+  {
+    NQLog("RelayCardManager", NQLog::Critical) << "disableVacuum(" << chNumber << ")"
+        << ": ERROR! Another line is still in transition.";
+    return;
+  }
+
   const auto state = relayCardModel()->getSwitchState(chNumber);
 
   if(state == 0) // vacuum line is OFF
