@@ -236,7 +236,7 @@ void Metrology::move_to_PSP_BL_marker()
   NQLog("Metrology", NQLog::Spam) << "move_to_PSP_BL_marker";
 
   const double dX = config_->getValue<double>("parameters", "RefPointSensor_X") - motion_manager_->get_position_X();
-  const double dY = config_->getValue<double>("parameters", "RefPointSensor_Y") + config_->getValue<double>("parameters", "Sensor_PSP_deltaY") - motion_manager_->get_position_Y();
+  const double dY = config_->getValue<double>("parameters", "RefPointSensor_Y") + config_->getValue<double>("main", "Sensor_PSP_deltaY") - motion_manager_->get_position_Y();
   const double dZ = config_->getValue<double>("parameters", "RefPointSensor_Z") + config_->getValue<double>("parameters", "Thickness_Baseplate") + config_->getValue<double>("parameters", "Thickness_GlueLayer") - motion_manager_->get_position_Z();
   const double dA = config_->getValue<double>("parameters", "RefPointSensor_A") - motion_manager_->get_position_A();
 
@@ -253,7 +253,7 @@ void Metrology::move_to_PSS_BL_marker()
   NQLog("Metrology", NQLog::Spam) << "move_to_PSS_BL_marker";
 
   const double dX = config_->getValue<double>("parameters", "RefPointSensor_X") + config_->getValue<double>("parameters", "FromPSPRefPointToPSSRefPoint_dX") - motion_manager_->get_position_X();
-  const double dY = config_->getValue<double>("parameters", "RefPointSensor_Y") + config_->getValue<double>("parameters", "FromPSPRefPointToPSSRefPoint_dY") + config_->getValue<double>("parameters", "Sensor_PSS_deltaY") - motion_manager_->get_position_Y();
+  const double dY = config_->getValue<double>("parameters", "RefPointSensor_Y") + config_->getValue<double>("parameters", "FromPSPRefPointToPSSRefPoint_dY") + config_->getValue<double>("main", "Sensor_PSS_deltaY") - motion_manager_->get_position_Y();
   const double dZ = config_->getValue<double>("parameters", "RefPointSensor_Z") + config_->getValue<double>("parameters", "Thickness_Baseplate") + config_->getValue<double>("parameters", "Thickness_Spacer") + config_->getValue<double>("parameters", "Thickness_PSS") + config_->getValue<double>("parameters", "Thickness_MPA") + 3. * config_->getValue<double>("parameters", "Thickness_GlueLayer") - motion_manager_->get_position_Z();
   const double dA = config_->getValue<double>("parameters", "RefPointSensor_A") - motion_manager_->get_position_A();
 
