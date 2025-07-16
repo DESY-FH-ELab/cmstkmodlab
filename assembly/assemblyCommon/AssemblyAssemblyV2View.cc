@@ -879,7 +879,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
 
         AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
         tmp_wid->label()->setText(QString::number(assembly_step_N));
-        tmp_wid->text()->setText("Dispense Glue on Blocks and Place them on Gluing Stage");
+        tmp_wid->text()->setText(assembly->GetAssemblyCenter() == assembly::Center::FNAL ? "Dispense Glue on Blocks and Place them on Gluing Stage" : "Place stencil on gluing station and place kapton on fork lift tool. Dispense epoxy on stage and fast glue on forklift.");
         PSSToMaPSA_lay->addWidget(tmp_wid);
       }
       // ----------
@@ -916,7 +916,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
 
         AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
         tmp_wid->label()->setText(QString::number(assembly_step_N));
-        tmp_wid->text()->setText("Dispense Fast Glue on Spacers");
+        tmp_wid->text()->setText(assembly->GetAssemblyCenter() == assembly::Center::FNAL ? "Dispense Fast Glue on Spacers" : "Apply fast glue to spacers using fork lift tool.");
         PSSToMaPSA_lay->addWidget(tmp_wid);
       }
       // ----------
