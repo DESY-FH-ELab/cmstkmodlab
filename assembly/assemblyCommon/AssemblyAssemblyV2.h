@@ -20,6 +20,7 @@
 #include <AssemblyUtilities.h>
 
 #include <DatabaseDESY.h>
+#include <DatabaseBrown.h>
 #include <DatabaseDummy.h>
 
 #include <AssemblySmartMotionManager.h>

@@ -25,6 +25,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QTextEdit>
+#include <QFileInfo>
 
 AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const motion, const RelayCardManager* const vacuum, const AssemblySmartMotionManager* const smart_motion, QObject* parent)
  : QObject(parent)
@@ -102,7 +103,8 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
       database_ = new DatabaseDummy(this);
   } else if(assembly_center_str == "BROWN") {
       assembly_center_ = assembly::Center::BROWN;
-      database_ = new DatabaseDummy(this);
+      auto db_file_path = QFileInfo(QString::fromStdString(config_->getValue<std::string>("main", "Database_filepath")));
+      database_ = new DatabaseBrown(this, db_file_path);
   } else if(assembly_center_str == "DESY") {
       assembly_center_ = assembly::Center::DESY;
       auto base_url = QString::fromStdString(config_->getValue<std::string>("main", "Database_URL"));
@@ -405,11 +407,24 @@ void AssemblyAssemblyV2::PushAllToDB_start()
 
 void AssemblyAssemblyV2::PushStep1ToDB_start()
 {
-    if(Module_ID_.isEmpty() || Baseplate_ID_.isEmpty() || MaPSA_ID_.isEmpty() || Glue1_ID_.isEmpty())
+    if(assembly_center_ == assembly::Center::DESY && (Module_ID_.isEmpty() || Baseplate_ID_.isEmpty() || MaPSA_ID_.isEmpty() || Glue1_ID_.isEmpty()))
     {
         QMessageBox msgBox;
         msgBox.setWindowTitle(tr("Information for Database Upload missing"));
         QString msg = QString("The following IDs are missing:") + (Module_ID_.isEmpty() ? "\n\tModule ID" : "") + (Baseplate_ID_.isEmpty() ? "\n\tBaseplate ID" : "") + (MaPSA_ID_.isEmpty() ? "\n\tMaPSA ID" : "") + (Glue1_ID_.isEmpty() ? "\n\tGlue 1 ID" : "");
+        msgBox.setText(msg);
+        msgBox.setInformativeText("Please add this information via the toolbar or assembly actions.");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        int ret = msgBox.exec();
+
+        emit PushStep1ToDB_aborted();
+        return;
+    }
+    if(assembly_center_ == assembly::Center::BROWN && (Baseplate_ID_.isEmpty() || MaPSA_ID_.isEmpty()))
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Information for Database Upload missing"));
+        QString msg = QString("The following IDs are missing:") + (Baseplate_ID_.isEmpty() ? "\n\tBaseplate ID" : "") + (MaPSA_ID_.isEmpty() ? "\n\tMaPSA ID" : "");
         msgBox.setText(msg);
         msgBox.setInformativeText("Please add this information via the toolbar or assembly actions.");
         msgBox.setStandardButtons(QMessageBox::Ok);
@@ -481,11 +496,24 @@ void AssemblyAssemblyV2::PushStep1ToDB_start()
 
 void AssemblyAssemblyV2::PushStep2ToDB_start()
 {
-    if(Module_ID_.isEmpty() || PSS_ID_.isEmpty() || Glue2_ID_.isEmpty())
+    if(assembly_center_ == assembly::Center::DESY && (Module_ID_.isEmpty() || PSS_ID_.isEmpty() || Glue2_ID_.isEmpty()))
     {
         QMessageBox msgBox;
         msgBox.setWindowTitle(tr("Information for Database Upload missing"));
         QString msg = QString("The following IDs are missing:") + (Module_ID_.isEmpty() ? "\n\tModule ID" : "") + (PSS_ID_.isEmpty() ? "\n\tPSS ID" : "") + (Glue2_ID_.isEmpty() ? "\n\tGlue 2 ID" : "");
+        msgBox.setText(msg);
+        msgBox.setInformativeText("Please add this information via the toolbar or assembly actions.");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        int ret = msgBox.exec();
+
+        emit PushStep2ToDB_aborted();
+        return;
+    }
+    if(assembly_center_ == assembly::Center::BROWN && PSS_ID_.isEmpty())
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Information for Database Upload missing"));
+        QString msg = QString("The following IDs are missing:") + (PSS_ID_.isEmpty() ? "\n\tPSS ID" : "");
         msgBox.setText(msg);
         msgBox.setInformativeText("Please add this information via the toolbar or assembly actions.");
         msgBox.setStandardButtons(QMessageBox::Ok);
@@ -557,11 +585,24 @@ void AssemblyAssemblyV2::PushStep2ToDB_start()
 
 void AssemblyAssemblyV2::PushStep3ToDB_start()
 {
-    if(Module_ID_.isEmpty() || Glue3_ID_.isEmpty())
+    if(assembly_center_ == assembly::Center::DESY && (Module_ID_.isEmpty() || Glue3_ID_.isEmpty()))
     {
         QMessageBox msgBox;
         msgBox.setWindowTitle(tr("Information for Database Upload missing"));
         QString msg = QString("The following IDs are missing:") + (Module_ID_.isEmpty() ? "\n\tModule ID" : "") + (Glue3_ID_.isEmpty() ? "\n\tGlue 3 ID" : "");
+        msgBox.setText(msg);
+        msgBox.setInformativeText("Please add this information via the toolbar or assembly actions.");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        int ret = msgBox.exec();
+
+        emit PushStep3ToDB_aborted();
+        return;
+    }
+    if(assembly_center_ == assembly::Center::BROWN && (Module_ID_.isEmpty() || MaPSA_ID_.isEmpty() || PSS_ID_.isEmpty()))
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Information for Database Upload missing"));
+        QString msg = QString("The following IDs are missing:") + (Module_ID_.isEmpty() ? "\n\tModule ID" : "") + (MaPSA_ID_.isEmpty() ? "\n\tMaPSA ID" : "") + (PSS_ID_.isEmpty() ? "\n\tPSs ID" : "");
         msgBox.setText(msg);
         msgBox.setInformativeText("Please add this information via the toolbar or assembly actions.");
         msgBox.setStandardButtons(QMessageBox::Ok);
@@ -577,7 +618,12 @@ void AssemblyAssemblyV2::PushStep3ToDB_start()
     QVBoxLayout* vlay = new QVBoxLayout();
     msgBox->setLayout(vlay);
 
-    QLabel* main_txt = new QLabel(QString("Push the following information to database:\n\n\tModule:\t%1\n\tGlue:\t%2").arg(Module_ID_).arg(Glue3_ID_));
+    QLabel* main_txt;
+    if(assembly_center_ == assembly::Center::BROWN) {
+        main_txt = new QLabel(QString("Push the following information to database:\n\n\tModule:\t%1\n\tPSs:\t%2\n\tMaPSA:\t%3").arg(Module_ID_).arg(PSS_ID_).arg(MaPSA_ID_));
+    } else if(assembly_center_ == assembly::Center::DESY){
+        main_txt = new QLabel(QString("Push the following information to database:\n\n\tModule:\t%1\n\tGlue:\t%2").arg(Module_ID_).arg(Glue3_ID_));
+    }
     vlay->addWidget(main_txt);
 
     QHBoxLayout* comment_lay = new QHBoxLayout();
@@ -613,14 +659,25 @@ void AssemblyAssemblyV2::PushStep3ToDB_start()
         emit PushStep3ToDB_aborted();
         return;
       case QDialog::Accepted:
-        NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep3ToDB_start: "
-           << QString("Push the following information to database:\n\tModule:\t\t%1\n\tGlue:\t\t%2\n\tComment:\t%3").arg(Module_ID_).arg(Glue3_ID_).arg(comment_lin->toPlainText()).toStdString();
 
-        if(!(database_->PSs_to_MaPSA(Glue3_ID_, comment_lin->toPlainText())))
-        {
-            NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep3ToDB_start: Something went wrong.";
-            emit PushStep3ToDB_aborted();
-            return;
+        if(assembly_center_ == assembly::Center::BROWN) {
+            NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep3ToDB_start: "
+            << QString("Push the following information to database:\n\n\tModule:\t%1\n\tPSs:\t%2\n\tMaPSA:\t%3").arg(Module_ID_).arg(PSS_ID_).arg(MaPSA_ID_);
+
+            if(!(database_->PSs_to_MaPSA(Module_ID_, MaPSA_ID_, PSS_ID_, "", ""))) {
+                NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep3ToDB_start: Something went wrong.";
+                emit PushStep3ToDB_aborted();
+                return;
+            }
+        }else if(assembly_center_ == assembly::Center::DESY) {
+            NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep3ToDB_start: "
+            << QString("Push the following information to database:\n\tModule:\t\t%1\n\tGlue:\t\t%2\n\tComment:\t%3").arg(Module_ID_).arg(Glue3_ID_).arg(comment_lin->toPlainText()).toStdString();
+
+            if(!(database_->PSs_to_MaPSA(Glue3_ID_, comment_lin->toPlainText()))) {
+                NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep3ToDB_start: Something went wrong.";
+                emit PushStep3ToDB_aborted();
+                return;
+            }
         }
 
         emit PushStep3ToDB_finished();
