@@ -31,6 +31,7 @@ class DatabaseDESY : public VDatabase
       bool MaPSA_to_BP(QString, QString, QString, QString="");
       bool PSs_to_spacers(QString, QString, QString="");
       bool PSs_to_MaPSA(QString, QString);
+      bool PSs_to_MaPSA(QString, QString, QString, QString, QString) { return false; };
 
       bool is_component_available(QString, QString="");
 

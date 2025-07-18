@@ -68,6 +68,7 @@ add_library(AssemblyCommon SHARED
         AssemblyStopwatchWidget.cc
         VDatabase.cc
         DatabaseDESY.cc
+        DatabaseBrown.cc
         DatabaseDummy.cc
 )
 

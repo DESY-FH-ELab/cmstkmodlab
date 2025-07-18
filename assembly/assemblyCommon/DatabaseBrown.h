@@ -10,46 +10,36 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef VDATABASE_H
-#define VDATABASE_H
+#ifndef DATABASEBROWN_H
+#define DATABASEBROWN_H
 
-#include <unistd.h>
-#include <QObject>
+#include <VDatabase.h>
 
-class VDatabase : public QObject
+#include <QFileInfo>
+
+class DatabaseBrown : public VDatabase
 {
  Q_OBJECT
 
   public:
-      VDatabase(QObject* parent);
-      ~VDatabase();
+      explicit DatabaseBrown(QObject* parent, QFileInfo file_path);
+      ~DatabaseBrown();
 
-      virtual bool register_module_name(QString, QString) = 0;
-      virtual bool MaPSA_to_BP(QString, QString, QString, QString) = 0;
-      virtual bool PSs_to_spacers(QString, QString, QString) = 0;
-      virtual bool PSs_to_MaPSA(QString, QString) = 0;
-      virtual bool PSs_to_MaPSA(QString, QString, QString, QString, QString) = 0;
+      bool register_module_name(QString, QString);
+      bool MaPSA_to_BP(QString, QString, QString="", QString="");
+      bool PSs_to_spacers(QString, QString="", QString="");
+      bool PSs_to_MaPSA(QString, QString, QString, QString="", QString="");
+      bool PSs_to_MaPSA(QString, QString) { return false; };
 
-      virtual bool is_component_available(QString, QString) = 0;
+      bool is_component_available(QString, QString){ return true; };
 
   protected:
 
-      QString module_name_;
-      int module_dbid_;
+      void error_message(QString message);
 
-      QString MaPSA_name_;
-      int MaPSA_dbid_;
+      QFileInfo m_file_path;
 
-      QString PSs_name_;
-      int PSs_dbid_;
-
-      QString BP_name_;
-      int BP_dbid_;
-
-      int Glue1_dbid_;
-      int Glue2_dbid_;
-      int Glue3_dbid_;
 
 };
 
-#endif // VDATABASE_H
+#endif // DATABASEBROWN_H
