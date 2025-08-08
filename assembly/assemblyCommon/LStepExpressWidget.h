@@ -42,6 +42,8 @@ class LStepExpressWidget : public QWidget
 
   LStepExpressModel* model_;
 
+  QCheckBox* expertModeCheckBox_;
+
   QGroupBox* mot_settings_box_;
   QCheckBox* lstepCheckBox_;
   QCheckBox* joystickCheckBox_;
@@ -87,6 +89,8 @@ class LStepExpressWidget : public QWidget
 
   void  enableMotionTools(const bool  enable=true);
   void disableMotionTools(const bool disable=true);
+
+  void toggleExpertMode(const bool enable);
 
   void confirmCalibrate();
 

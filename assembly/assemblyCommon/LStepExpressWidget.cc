@@ -23,6 +23,8 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
 
  , model_(model)
 
+ , expertModeCheckBox_(nullptr)
+
  , mot_settings_box_(nullptr)
  , lstepCheckBox_   (nullptr)
  , joystickCheckBox_(nullptr)
@@ -67,10 +69,12 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     mot_settings_grid->addWidget(lstepCheckBox_, 0, 0);
 
     posCtrlCheckBox_ = new QCheckBox("Enable Position Controller");
-    mot_settings_grid->addWidget(posCtrlCheckBox_, 0, 1);
-
     joystickCheckBox_ = new QCheckBox("Enable Joystick");
+    expertModeCheckBox_ = new QCheckBox("Show expert panel");
+
+    mot_settings_grid->addWidget(posCtrlCheckBox_, 0, 1);
     mot_settings_grid->addWidget(joystickCheckBox_, 0, 2);
+    mot_settings_grid->addWidget(expertModeCheckBox_, 0, 3);
 
     // Motion Stage Basic Commands (e.g. Calibrate)
     QGridLayout* mot_basicfunc_grid = new QGridLayout;
@@ -96,16 +100,18 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
 
     // AXIS
     axisControlWidget_ = new QWidget(this);
-    layout->addWidget(axisControlWidget_);
 
     QGridLayout* axisLayout = new QGridLayout(axisControlWidget_);
-    axisControlWidget_->setLayout(axisLayout);
 
     // Add all the axes displays
     axisWidget_X_ = new LStepExpressAxisWidget(model_, 0);
     axisWidget_Y_ = new LStepExpressAxisWidget(model_, 1);
     axisWidget_Z_ = new LStepExpressAxisWidget(model_, 2);
     axisWidget_A_ = new LStepExpressAxisWidget(model_, 3);
+
+    layout->addWidget(axisControlWidget_);
+
+    axisControlWidget_->setLayout(axisLayout);
 
     axisLayout->addWidget(axisWidget_X_, 0, 0);
     axisLayout->addWidget(axisWidget_Y_, 0, 1);
@@ -115,6 +121,7 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     connect(lstepCheckBox_   , SIGNAL(toggled(bool)), model_, SLOT(setDeviceEnabled(bool)));
     connect(joystickCheckBox_, SIGNAL(toggled(bool)), model_, SLOT(setJoystickEnabled(bool)));
     connect(posCtrlCheckBox_ , SIGNAL(toggled(bool)), model_, SLOT(setPositionControllerEnabled(bool)));
+    connect(expertModeCheckBox_, SIGNAL(toggled(bool)), this, SLOT(toggleExpertMode(bool)));
 
     connect(model_, SIGNAL(deviceStateChanged(State)), this, SLOT(lstepStateChanged(State)));
     connect(model_, SIGNAL(controlStateChanged(bool)), this, SLOT(controlStateChanged(bool)));
@@ -131,6 +138,8 @@ LStepExpressWidget::LStepExpressWidget(LStepExpressModel* model, QWidget* parent
     connect(buttonRestart_      , SIGNAL(clicked()), this  , SLOT(restart()));
     connect(buttonErrorQuit_    , SIGNAL(clicked()), model_, SLOT(errorQuit()));
 
+    expertModeCheckBox_->setChecked(true);
+    expertModeCheckBox_->setChecked(false);
     this->lstepStateChanged(model_->getDeviceState());
 
     NQLog("LStepExpressWidget", NQLog::Debug) << "constructed";
@@ -525,6 +534,11 @@ void LStepExpressWidget::enableMotionTools(const bool enable)
 void LStepExpressWidget::disableMotionTools(const bool disable)
 {
   this->enableMotionTools(!disable);
+}
+
+void LStepExpressWidget::toggleExpertMode(const bool enable)
+{
+    axisControlWidget_->setVisible(enable);
 }
 
 //-- Changed: clicking 'Calibrate' pops-up a GUI message, and the calibration is only performed upon confirmation from the user
