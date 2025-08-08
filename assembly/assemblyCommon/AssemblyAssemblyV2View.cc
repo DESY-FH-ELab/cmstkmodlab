@@ -243,7 +243,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
 
       AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
       tmp_wid->label()->setText(QString::number(assembly_step_N));
-      tmp_wid->text()->setText("Manually rotate the stage to -0.157 deg (correcting for pinhole misalignment of DESY assembly platform)");
+      tmp_wid->text()->setText("Manually rotate to -0.157 deg (corrects for pinhole misalignment of DESY assembly platform)");
       PSPToBasep_lay->addWidget(tmp_wid);
     }
     // ----------
