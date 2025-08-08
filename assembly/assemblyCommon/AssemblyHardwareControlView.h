@@ -50,8 +50,6 @@ class AssemblyHardwareControlView : public QWidget
   QCheckBox* cb_lockMotionSettings_;
 
   LStepExpressWidget*         w_lStep_;
-  LStepExpressJoystickWidget* w_lStepJoystick_;
-  LStepExpressPositionWidget* w_lStepPosition_;
 
  public slots:
 
