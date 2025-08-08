@@ -91,7 +91,7 @@ void AssemblyStopwatchWidget::resetStopwatch(){
 }
 
 void AssemblyStopwatchWidget::updateStopwatch(){
-  NQLog("AssemblyStopwatchWidget", NQLog::Spam) << ": Updating stopwatch";
+  NQLog("AssemblyStopwatchWidget", NQLog::Debug) << ": Updating stopwatch";
 
   QTime time_elapsed = QTime(0, 0, 0).addSecs(reference_time_.secsTo(QTime::currentTime()));
 
@@ -100,5 +100,5 @@ void AssemblyStopwatchWidget::updateStopwatch(){
   auto time_str = QString("<font color='") + color_str + "'>" + time_elapsed.toString("mm:ss") + "</font>";
   elapsedTimeLabel_->setText(time_str);
 
-  NQLog("AssemblyStopwatchWidget", NQLog::Spam) << ": Time: " << time_elapsed.toString("mm:ss");
+  NQLog("AssemblyStopwatchWidget", NQLog::Debug) << ": Time: " << time_elapsed.toString("mm:ss");
 }
