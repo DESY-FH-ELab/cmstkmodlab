@@ -177,7 +177,7 @@ bool DatabaseDESY::MaPSA_to_BP(QString MaPSA_name, QString BP_name, QString glue
 
         // Perform Task
         QJsonObject data_perform;
-        data_perform["comment"] = "";
+        data_perform["comment"] = comment;
         data_perform["part"] = QJsonValue(BP_dbid_);
         data_perform["glue"] = QJsonValue(Glue1_dbid_);
 
@@ -246,7 +246,7 @@ bool DatabaseDESY::PSs_to_spacers(QString PSs_name, QString glue_name, QString c
 
         // Perform Task
         QJsonObject data_perform;
-        data_perform["comment"] = "";
+        data_perform["comment"] = comment;
         data_perform["glue"] = QJsonValue(Glue2_dbid_);
 
         perform_task(task_id, data_perform);
