@@ -105,7 +105,6 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
   //// ------------------
 
   connect(cb_lockMotionSettings_, SIGNAL(toggled(bool)), w_lStep_, SLOT(lockMotionSettings(bool)));
-  cb_lockMotionSettings_->setChecked(true);
 
   // -------------------------------------------
 
