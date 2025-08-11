@@ -459,31 +459,6 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   }
   // ----------
 
-
-  // step: Push IDs to Database
-  if(assembly->GetAssemblyCenter() == assembly::Center::DESY)
-  {
-    ++assembly_step_N;
-
-    push_step1_to_db_wid_ = new AssemblyAssemblyActionWidget;
-    push_step1_to_db_wid_->label()->setText(QString::number(assembly_step_N));
-    push_step1_to_db_wid_->button()->setText("Push Assembly Information to Database");
-    PSPToBasep_lay->addWidget(push_step1_to_db_wid_);
-
-    push_step1_to_db_wid_->connect_action(assembly, SLOT(PushStep1ToDB_start()), SIGNAL(PushStep1ToDB_finished()), SIGNAL(PushStep1ToDB_aborted()));
-  } else if(assembly->GetAssemblyCenter() == assembly::Center::BROWN)
-  {
-      ++assembly_step_N;
-
-      push_step1_to_db_wid_ = new AssemblyAssemblyActionWidget;
-      push_step1_to_db_wid_->label()->setText(QString::number(assembly_step_N));
-      push_step1_to_db_wid_->button()->setText("Generate File for Database Input");
-      PSPToBasep_lay->addWidget(push_step1_to_db_wid_);
-
-      push_step1_to_db_wid_->connect_action(assembly, SLOT(PushStep1ToDB_start()), SIGNAL(PushStep1ToDB_finished()), SIGNAL(PushStep1ToDB_aborted()));
-  }
-  // ----------
-
   // step: Wait For Glue To Cure
   {
     ++assembly_step_N;
@@ -542,6 +517,30 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     PSPToBasep_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(DisableVacuumBaseplate_start()), SIGNAL(DisableVacuumBaseplate_finished()));
+  }
+  // ----------
+
+  // step: Push IDs to Database
+  if(assembly->GetAssemblyCenter() == assembly::Center::DESY)
+  {
+      ++assembly_step_N;
+
+      push_step1_to_db_wid_ = new AssemblyAssemblyActionWidget;
+      push_step1_to_db_wid_->label()->setText(QString::number(assembly_step_N));
+      push_step1_to_db_wid_->button()->setText("Push Assembly Information to Database");
+      PSPToBasep_lay->addWidget(push_step1_to_db_wid_);
+
+      push_step1_to_db_wid_->connect_action(assembly, SLOT(PushStep1ToDB_start()), SIGNAL(PushStep1ToDB_finished()), SIGNAL(PushStep1ToDB_aborted()));
+  } else if(assembly->GetAssemblyCenter() == assembly::Center::BROWN)
+  {
+      ++assembly_step_N;
+
+      push_step1_to_db_wid_ = new AssemblyAssemblyActionWidget;
+      push_step1_to_db_wid_->label()->setText(QString::number(assembly_step_N));
+      push_step1_to_db_wid_->button()->setText("Generate File for Database Input");
+      PSPToBasep_lay->addWidget(push_step1_to_db_wid_);
+
+      push_step1_to_db_wid_->connect_action(assembly, SLOT(PushStep1ToDB_start()), SIGNAL(PushStep1ToDB_finished()), SIGNAL(PushStep1ToDB_aborted()));
   }
   // ----------
 
