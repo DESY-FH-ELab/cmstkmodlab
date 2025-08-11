@@ -73,6 +73,7 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
   connect(manager_->model(), SIGNAL(motionStarted ()), this, SLOT(disableMotionTools()));
   connect(manager_, SIGNAL(motion_finished()), this, SLOT( enableMotionTools()));
 
+  box_move->setMaximumHeight(250);
   g1->addWidget(box_move, 60);
   /// -------------
 
@@ -85,6 +86,7 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
 
   box_vacuum->setLayout(w_vacuum_->layout());
 
+  box_vacuum->setMaximumHeight(250);
   g1->addWidget(box_vacuum, 40);
   /// -------------
 
