@@ -185,21 +185,21 @@ cv::Mat AssemblyThresholder::get_image_binary_adaptiveThreshold(const cv::Mat& i
     NQLog("AssemblyThresholder", NQLog::Warning) << "get_image_binary_adaptiveThreshold"
        << ": invalid block-size value (" << blocksize << ", lower than allowed minimum of 3), thresholding not applied to input image (empty binary image)";
 
-    img_bin = cv::Mat();
+    img_bin = 0;
   }
   else if(blocksize > 1499)
   {
     NQLog("AssemblyThresholder", NQLog::Warning) << "get_image_binary_adaptiveThreshold"
        << ": invalid block-size value (" << blocksize << ", higher than allowed maximum of 1499), thresholding not applied to input image (empty binary image)";
 
-    img_bin = cv::Mat();
+    img_bin = 0;
   }
   else if((blocksize % 2) == 0)
   {
     NQLog("AssemblyThresholder", NQLog::Warning) << "get_image_binary_adaptiveThreshold"
        << ": invalid block-size value (" << blocksize << ", is even), thresholding not applied to input image (empty binary image)";
 
-    img_bin = cv::Mat();
+    img_bin = 0;
   }
   else
   {
