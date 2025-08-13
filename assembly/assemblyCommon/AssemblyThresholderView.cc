@@ -44,6 +44,7 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
   imgbin_adathr_button_(nullptr),
   imgbin_adathr_label_ (nullptr),
   imgbin_adathr_linee_ (nullptr)
+
 {
   ApplicationConfig* config = ApplicationConfig::instance();
 

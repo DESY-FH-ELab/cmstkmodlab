@@ -38,17 +38,6 @@ AssemblyToolboxView::AssemblyToolboxView(const LStepExpressMotionManager* const 
   layout->addWidget(toolbox);
 
   //
-  // Positions' Registry
-  //  * widget to read current position of the motion stage
-  //  * used to save reference positions
-  //  * can calculate relative distances between two given (X,Y,X,A) positions
-  //
-  posreg_wid_ = new AssemblyPositionsRegistryWidget(motion_manager);
-
-  toolbox->addItem(posreg_wid_, tr("Positions Registry"));
-  // ---------------------
-
-  //
   // Subassembly Pickup
   //  * widget to pick up PSS+spacers subassembly
   //  * used to process subassembly
@@ -68,6 +57,17 @@ AssemblyToolboxView::AssemblyToolboxView(const LStepExpressMotionManager* const 
           this       , SIGNAL(multipickup_request(const AssemblyMultiPickupTester::Configuration&)));
 
   toolbox->addItem(mupite_wid_, tr("Multi-Pickup Tester (PatRec + pick-up + put-down)"));
+  // ---------------------
+
+  //
+  // Positions' Registry
+  //  * widget to read current position of the motion stage
+  //  * used to save reference positions
+  //  * can calculate relative distances between two given (X,Y,X,A) positions
+  //
+  posreg_wid_ = new AssemblyPositionsRegistryWidget(motion_manager);
+
+  toolbox->addItem(posreg_wid_, tr("Positions Registry"));
   // ---------------------
 }
 

@@ -135,12 +135,10 @@ int main(int argc, char** argv)
     }
 
     const QString logfile_path = outputdir_path+"/assembly.log";
-    const QString DBlogfile_path = outputdir_path+"/DBlog.log";
 
     NQLog("assembly", NQLog::Message) << "\e[1;37mVERSION\e[0m  : " << APPLICATIONVERSIONSTR;
     NQLog("assembly", NQLog::Message) << "\e[1;37mSESSION\e[0m  : " << timestamp;
     NQLog("assembly", NQLog::Message) << "\e[1;37mLOG FILE\e[0m : " << logfile_path;
-    NQLog("assembly", NQLog::Message) << "\e[1;37mDB LOG FILE\e[0m : " << DBlogfile_path;
 
     QFile* logfile = new QFile(logfile_path);
     if(logfile->open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
@@ -157,7 +155,7 @@ int main(int argc, char** argv)
     // ----------------------
 
     try{
-        AssemblyMainWindow mainWindow(outputdir_path, logfile_path, DBlogfile_path);
+        AssemblyMainWindow mainWindow(outputdir_path, logfile_path);
         mainWindow.setWindowTitle("Automated Pixel-Strip Module Assembly ["+QString(APPLICATIONVERSIONSTR)+"]");
         mainWindow.setWindowState(Qt::WindowMaximized);
 
