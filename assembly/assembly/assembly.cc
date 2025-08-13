@@ -66,7 +66,7 @@ int main(int argc, char** argv)
     parser.process(app);
 
     // choose configuration file
-    auto relative_config_path = "/assembly/assembly_SiDummyPS.cfg";
+    auto relative_config_path = "/assembly/assembly_Silicon.cfg";
     if(parser.isSet("glass"))
     {
       relative_config_path = "/assembly/assembly_glass.cfg";
