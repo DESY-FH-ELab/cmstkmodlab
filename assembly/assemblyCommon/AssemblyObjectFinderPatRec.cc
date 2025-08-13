@@ -486,9 +486,11 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
   double    best_angle(0.);
   cv::Point best_matchLoc;
 
+  unsigned int scan_counter;
+
   for(double angle_fine=angle_fine_min; angle_fine<=angle_fine_max; angle_fine += angle_fine_step)
   {
-    const unsigned int scan_counter = vec_angleNfom->size();
+    scan_counter = vec_angleNfom->size();
 
     const double i_angle = angle_prescan + angle_fine;
 
@@ -559,6 +561,15 @@ void AssemblyObjectFinderPatRec::template_matching(const AssemblyObjectFinderPat
     emit PatRec_res_image_angscan(*vec_angleNfom);
   }
   // ---
+
+  if(best_angle == vec_angleNfom->begin()->x() || best_angle == vec_angleNfom->end()->x()) {
+    NQLog("AssemblyObjectFinderPatRec", NQLog::Critical) << "template_matching"
+        << ": best FOM is either the first or the last tested angle. This indicates an issue.";
+
+    emit PatRec_exitcode(1);
+
+    return;
+  }
 
   const std::string filepath_img_master_copy = output_dir+"/image_master_PatRec_edited.png";
   assembly::cv_imwrite(filepath_img_master_copy, img_master_copy);
