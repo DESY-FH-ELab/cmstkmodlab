@@ -19,6 +19,10 @@
 #include <RelayCardManager.h>
 #include <AssemblyUtilities.h>
 
+#include <DatabaseDESY.h>
+#include <DatabaseBrown.h>
+#include <DatabaseDummy.h>
+
 #include <AssemblySmartMotionManager.h>
 #include <ApplicationConfig.h>
 
@@ -66,6 +70,10 @@ class AssemblyAssemblyV2 : public QObject
   double PSSPlusSpacersToMaPSAPosition_A_;
 
   double original_Z_velocity_;
+
+  QString Baseplate_ID_, MaPSA_ID_, PSS_ID_, Glue1_ID_, Glue2_ID_, Glue3_ID_, Module_ID_;
+
+  VDatabase* database_;
 
   bool alreadyClicked_LowerPickupToolOntoMaPSA, alreadyClicked_LowerPickupToolOntoPSS, alreadyClicked_LowerMaPSAOntoBaseplate, alreadyClicked_LowerPSSOntoSpacers, alreadyClicked_LowerPSSPlusSpacersOntoGluingStage, alreadyClicked_LowerPSSPlusSpacersOntoMaPSA;
 
@@ -170,6 +178,28 @@ class AssemblyAssemblyV2 : public QObject
 
   // others
 
+  void ScanMaPSAID_start();
+  void ScanPSSID_start();
+  void ScanBaseplateID_start();
+  void ScanGlue1ID_start();
+  void ScanGlue2ID_start();
+  void ScanGlue3ID_start();
+  void ScanModuleID_start();
+
+  void RegisterModuleID_start();
+  void PushAllToDB_start();
+  void PushStep1ToDB_start();
+  void PushStep2ToDB_start();
+  void PushStep3ToDB_start();
+
+  void Update_Baseplate_ID(QString ID) {Baseplate_ID_ = ID;};
+  void Update_MaPSA_ID(QString ID) {MaPSA_ID_ = ID;};
+  void Update_PSS_ID(QString ID) {PSS_ID_ = ID;};
+  void Update_Glue1_ID(QString ID) {Glue1_ID_ = ID;};
+  void Update_Glue2_ID(QString ID) {Glue2_ID_ = ID;};
+  void Update_Glue3_ID(QString ID) {Glue3_ID_ = ID;};
+  void Update_Module_ID(QString ID) {Module_ID_ = ID;};
+
   void RegisterPSSPlusSpacersToMaPSAPosition_start();
   void RegisterPSSPlusSpacersToMaPSAPosition_finish();
 
@@ -182,6 +212,34 @@ class AssemblyAssemblyV2 : public QObject
   // motion
   void move_absolute_request(const double, const double, const double, const double);
   void move_relative_request(const double, const double, const double, const double);
+
+  void ScanMaPSAID_finished();
+  void ScanPSSID_finished();
+  void ScanBaseplateID_finished();
+  void ScanGlue1ID_finished();
+  void ScanGlue2ID_finished();
+  void ScanGlue3ID_finished();
+  void ScanModuleID_finished();
+
+  void RegisterModuleID_finished();
+  void PushAllToDB_finished();
+  void PushStep1ToDB_finished();
+  void PushStep2ToDB_finished();
+  void PushStep3ToDB_finished();
+
+  void ScanMaPSAID_aborted();
+  void ScanBaseplateID_aborted();
+  void ScanPSSID_aborted();
+  void ScanGlue1ID_aborted();
+  void ScanGlue2ID_aborted();
+  void ScanGlue3ID_aborted();
+  void ScanModuleID_aborted();
+
+  void RegisterModuleID_aborted();
+  void PushAllToDB_aborted();
+  void PushStep1ToDB_aborted();
+  void PushStep2ToDB_aborted();
+  void PushStep3ToDB_aborted();
 
   void GoToSensorMarkerPreAlignment_finished();
 
@@ -236,6 +294,14 @@ class AssemblyAssemblyV2 : public QObject
   void RegisterPSSPlusSpacersToMaPSAPosition_finished();
   void switchToAlignmentTab_PSP_request();
   void switchToAlignmentTab_PSS_request();
+
+  void MaPSA_ID_updated(const QString);
+  void PSS_ID_updated(const QString);
+  void Baseplate_ID_updated(const QString);
+  void Glue1_ID_updated(const QString);
+  void Glue2_ID_updated(const QString);
+  void Glue3_ID_updated(const QString);
+  void Module_ID_updated(const QString);
   // ------
 
 

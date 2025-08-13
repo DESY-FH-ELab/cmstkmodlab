@@ -51,6 +51,7 @@ class MetrologyView : public QWidget
   AssemblyUEyeView* PatRecThree_Image() const { return patrecThree_image_; }
   AssemblyUEyeView* PatRecFour_Image() const { return patrecFour_image_; }
 
+  QPushButton* button_pushToDatabase() const { return button_pushToDatabase_; }
   QPushButton* button_metrologyClearResults() const { return button_metrologyClearResults_; }
   QPushButton* button_metrologyEmergencyStop() const { return button_metrologyEmergencyStop_; }
 
@@ -91,6 +92,8 @@ class MetrologyView : public QWidget
   QLineEdit* metro_da_deg_linee_;
   QLineEdit* metro_da_urad_linee_;
 
+  double metro_dx_corr_, metro_dy_corr_, metro_dz_, metro_da_urad_;
+
   AssemblyUEyeView* patrecOne_image_;
   QScrollArea*      patrecOne_scroll_;
 
@@ -103,7 +106,8 @@ class MetrologyView : public QWidget
   AssemblyUEyeView* patrecFour_image_;
   QScrollArea*      patrecFour_scroll_;
 
-  QPushButton*  button_metrologyClearResults_;
+  QPushButton* button_pushToDatabase_;
+  QPushButton* button_metrologyClearResults_;
   QPushButton* button_metrologyEmergencyStop_;
 
   bool finder_connected_;
@@ -139,6 +143,8 @@ class MetrologyView : public QWidget
   void go_to_PSP_BL_marker();
 
   void go_to_PSS_BL_marker();
+
+  void push_results_to_DB();
 
   void clearResults();
 

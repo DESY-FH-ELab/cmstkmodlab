@@ -33,7 +33,7 @@ class AssemblyAssemblyActionWidget : public QWidget
   QPushButton* button() const { return button_; }
   QCheckBox* checkbox() const { return checkbox_; }
 
-  void connect_action(const QObject*, const char*, const char*);
+  void connect_action(const QObject*, const char*, const char*, const char* = nullptr);
 
  protected:
   QHBoxLayout* layout_;
@@ -45,6 +45,7 @@ class AssemblyAssemblyActionWidget : public QWidget
   const QObject* qobject_;
   const char* start_slot_;
   const char* stop_signal_;
+  const char* abort_signal_;
 
   bool inhibit_dialogue_;
 
@@ -55,6 +56,7 @@ class AssemblyAssemblyActionWidget : public QWidget
   void reset_action();
   void start_action();
   void disable_action();
+  void abort_action();
 
  signals:
   void action_request();
