@@ -28,8 +28,6 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
  , cb_lockMotionSettings_(nullptr)
 
  , w_lStep_        (nullptr)
- , w_lStepJoystick_(nullptr)
- , w_lStepPosition_(nullptr)
 {
   if(manager_ == nullptr)
   {
@@ -75,6 +73,7 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
   connect(manager_->model(), SIGNAL(motionStarted ()), this, SLOT(disableMotionTools()));
   connect(manager_, SIGNAL(motion_finished()), this, SLOT( enableMotionTools()));
 
+  box_move->setMaximumHeight(250);
   g1->addWidget(box_move, 60);
   /// -------------
 
@@ -87,6 +86,7 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
 
   box_vacuum->setLayout(w_vacuum_->layout());
 
+  box_vacuum->setMaximumHeight(250);
   g1->addWidget(box_vacuum, 40);
   /// -------------
 
@@ -101,20 +101,12 @@ AssemblyHardwareControlView::AssemblyHardwareControlView(const LStepExpressMotio
   w_lStep_ = new LStepExpressWidget(manager_->model());
   layout->addWidget(w_lStep_);
 
+  layout->addStretch(1000);
+
   connect(w_lStep_, SIGNAL(clearQueue_request()), manager_, SLOT(clear_motion_queue()));
 
   connect(w_lStep_, SIGNAL(moveToOrigin_request()), manager_, SLOT(moveAbsolute())); //New signal/slot to connect the Origin button with the manager (where XYA/Z priorities are implemented) rather than directly via the model
   //// ------------------
-
-  //// LStepExpressJoystickWidget
-  w_lStepJoystick_ = new LStepExpressJoystickWidget(manager_->model());
-  layout->addWidget(w_lStepJoystick_);
-  //// ------------------
-
-//  // LStepExpressPositionWidget
-//  w_lStepPosition_ = new LStepExpressPositionWidget(manager_, manager_->model());
-//  layout->addWidget(w_lStepPosition_);
-//  //// ------------------
 
   connect(cb_lockMotionSettings_, SIGNAL(toggled(bool)), w_lStep_, SLOT(lockMotionSettings(bool)));
 
@@ -128,9 +120,6 @@ AssemblyHardwareControlView::~AssemblyHardwareControlView()
   if(w_lStep_){ delete w_lStep_; w_lStep_ = nullptr; }
 
   if(w_move_){ delete w_move_; w_move_ = nullptr; }
-
-  if(w_lStepJoystick_){ delete w_lStepJoystick_; w_lStepJoystick_ = nullptr; }
-  if(w_lStepPosition_){ delete w_lStepPosition_; w_lStepPosition_ = nullptr; }
 }
 
 void AssemblyHardwareControlView::stateChanged(const State& newState)
@@ -143,8 +132,6 @@ void AssemblyHardwareControlView::enableMotionTools(const bool enable)
   if(w_move_){ w_move_->setEnabled(enable); }
 
   if(w_lStep_        ){ w_lStep_        ->enableMotionTools(enable); }
-  if(w_lStepJoystick_){ w_lStepJoystick_->enableMotionTools(enable); }
-  if(w_lStepPosition_){ w_lStepPosition_->enableMotionTools(enable); }
 }
 
 void AssemblyHardwareControlView::disableMotionTools(const bool disable)

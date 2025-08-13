@@ -95,7 +95,13 @@ class Metrology : public QObject
 
     void complete_motion();
 
-    void move_to_start();
+    void move_to_PSP_marker();
+
+    void move_to_PSS_marker();
+
+    void move_to_PSP_BL_marker();
+
+    void move_to_PSS_BL_marker();
 
     void clear_results();
 

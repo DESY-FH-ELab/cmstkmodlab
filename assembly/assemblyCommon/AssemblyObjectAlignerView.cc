@@ -24,13 +24,14 @@
 #include <QHBoxLayout>
 #include <QGridLayout>
 #include <QGroupBox>
-#include <QToolBox>
 #include <QLabel>
 #include <QScriptEngine>
 #include <qnumeric.h>
 
 AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
  : QWidget(parent)
+
+ , toolbox_(nullptr)
 
  , alignm_cfg_wid_(nullptr)
  , alignm_res_wid_(nullptr)
@@ -69,6 +70,7 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
  , patrecTwo_image_ (nullptr)
  , patrecTwo_scroll_(nullptr)
 
+ , button_alignerClearResults_(nullptr)
  , button_alignerEmergencyStop_(nullptr)
 
  , finder_connected_(false)
@@ -78,15 +80,16 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   QVBoxLayout* layout = new QVBoxLayout;
   this->setLayout(layout);
 
-  QToolBox* toolbox = new QToolBox;
-  layout->addWidget(toolbox);
+  toolbox_ = new QToolBox;
+  layout->addWidget(toolbox_);
 
   config_ = ApplicationConfig::instance();
 
   // Configuration + Execution
 
   alignm_cfg_wid_ = new QWidget;
-  toolbox->addItem(alignm_cfg_wid_, tr("Alignment Configuration"));
+  toolbox_->addItem(alignm_cfg_wid_, tr("Alignment Configuration"));
+  idx_cfg_wid_ = toolbox_->indexOf(alignm_cfg_wid_);
 
   QVBoxLayout* alignm_cfg_lay = new QVBoxLayout;
   alignm_cfg_wid_->setLayout(alignm_cfg_lay);
@@ -301,12 +304,12 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
   alignm_cfg_lay->addLayout(alignm_PRcfg_lay);
 
   // PatRecWidget #1
-  QGroupBox* patrecOne_cfg_box = new QGroupBox(tr("PatRec Marker #1 [Bottom-Left Marker]"));
+  QGroupBox* patrecOne_cfg_box = new QGroupBox(tr("PatRec Marker #1 [Top-Left Marker]"));
   patrecOne_cfg_box->setObjectName("patrecOne_cfg_box");
   patrecOne_cfg_box->setStyleSheet("QWidget#patrecOne_cfg_box { font-weight : bold; color : blue; }");
 
   patrecOne_wid_ = new AssemblyObjectFinderPatRecWidget;
-  patrecOne_wid_->setToolTip("Pattern Recognition Configuration #1 [Bottom-Left Marker]");
+  patrecOne_wid_->setToolTip("Pattern Recognition Configuration #1 [Top-Left Marker]");
 
   if(config_ != nullptr)
   {
@@ -389,7 +392,8 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
 
   // Results -------------
   alignm_res_wid_ = new QWidget;
-  toolbox->addItem(alignm_res_wid_, "Alignment Results");
+  toolbox_->addItem(alignm_res_wid_, "Alignment Results");
+  idx_results_wid_ = toolbox_->indexOf(alignm_res_wid_);
 
   QVBoxLayout* alignm_res_lay = new QVBoxLayout;
   alignm_res_wid_->setLayout(alignm_res_lay);
@@ -458,13 +462,17 @@ AssemblyObjectAlignerView::AssemblyObjectAlignerView(QWidget* parent)
 
   QHBoxLayout* buttons_lay = new QHBoxLayout;
 
+  button_alignerClearResults_ = new QPushButton(tr("Clear Results"));
   button_alignerEmergencyStop_ = new QPushButton(tr("Emergency Stop"));
 
-  buttons_lay->addWidget(new QLabel, 33);
+  buttons_lay->addWidget(button_alignerClearResults_, 33);
   buttons_lay->addWidget(new QLabel, 33);
   buttons_lay->addWidget(button_alignerEmergencyStop_, 33);
 
   layout->addLayout(buttons_lay);
+
+  button_alignerClearResults_->setEnabled(false);
+  connect(button_alignerClearResults_, SIGNAL(clicked()), this, SLOT(clearResults()));
 }
 
 void AssemblyObjectAlignerView::keyReleaseEvent(QKeyEvent* event)
@@ -511,6 +519,7 @@ void AssemblyObjectAlignerView::show_measured_angle(const double val)
 
   alignm_mesang_linee_->setText(QString::fromStdString(posi_strs.str()));
 
+  button_alignerClearResults_->setEnabled(true);
   return;
 }
 
@@ -699,6 +708,8 @@ void AssemblyObjectAlignerView::transmit_configuration()
      << ": emitting signal \"configuration(AssemblyObjectAligner::Configuration)\"";
 
   emit configuration(conf);
+
+  switch_to_results();
 }
 
 AssemblyObjectAligner::Configuration AssemblyObjectAlignerView::get_configuration(bool& valid_conf) const
@@ -946,4 +957,36 @@ void AssemblyObjectAlignerView::update_templates(const bool checked)
   patrecTwo_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+f_path_2));
 
   return;
+}
+
+void AssemblyObjectAlignerView::switch_to_results()
+{
+    NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "switch_to_results"
+    << ": Switching to results widget";
+
+    toolbox_->setCurrentIndex(idx_results_wid_);
+    return;
+}
+
+void AssemblyObjectAlignerView::switch_to_config()
+{
+    NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "switch_to_config"
+    << ": Switching to config widget";
+
+    toolbox_->setCurrentIndex(idx_cfg_wid_);
+    return;
+}
+
+void AssemblyObjectAlignerView::clearResults()
+{
+  NQLog("AssemblyObjectAlignerView", NQLog::Spam) << "clearResults()";
+
+  patrecOne_image_->resetImage();
+  patrecTwo_image_->resetImage();
+
+  alignm_mesang_linee_->setText("");
+
+  button_alignerClearResults_->setEnabled(false);
+
+  switch_to_config();
 }

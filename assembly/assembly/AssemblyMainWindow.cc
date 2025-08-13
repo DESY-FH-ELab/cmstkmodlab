@@ -93,6 +93,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
   DBLog_ctrl_(nullptr),
   DBLog_view_(nullptr),
 
+  stopwatch_wid_(nullptr),
+
   button_mainEmergencyStop_(nullptr),
   button_info_(nullptr),
   autofocus_checkbox_(nullptr),
@@ -343,7 +345,10 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     connect(metrology_view_, SIGNAL(configuration(Metrology::Configuration)), this, SLOT(start_metrology(Metrology::Configuration)));
 
-    connect(metrology_view_, SIGNAL(go_to_marker_signal()), metrology_, SLOT(move_to_start()));
+    connect(metrology_view_, SIGNAL(go_to_PSP_marker_signal()), metrology_, SLOT(move_to_PSP_marker()));
+    connect(metrology_view_, SIGNAL(go_to_PSS_marker_signal()), metrology_, SLOT(move_to_PSS_marker()));
+    connect(metrology_view_, SIGNAL(go_to_PSP_BL_marker_signal()), metrology_, SLOT(move_to_PSP_BL_marker()));
+    connect(metrology_view_, SIGNAL(go_to_PSS_BL_marker_signal()), metrology_, SLOT(move_to_PSS_BL_marker()));
     connect(metrology_view_, SIGNAL(enable_vacuum_baseplate(int)), relayCardManager_, SLOT(enableVacuum(int)));
     connect(relayCardManager_, SIGNAL(vacuumChannelState(int, SwitchState)), metrology_view_, SLOT(updateVacuumChannelState(int, SwitchState)));
 
@@ -538,6 +543,13 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     toolBar_->addWidget(spacer);
 
+    stopwatch_wid_ = new AssemblyStopwatchWidget();
+    toolBar_->addWidget(stopwatch_wid_);
+
+    QWidget *spacer2 = new QWidget();
+    spacer2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    toolBar_->addWidget(spacer2);
+
     QWidget *vac_wid = new QWidget();
 
     QGridLayout* vac_lay = new QGridLayout;
@@ -667,6 +679,16 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
       this->enable_images();
     }
 
+    if(startup_motion_stage && motion_model_->getDeviceState()==State::OFF) {
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "Motion Stage Controller could not be started!";
+	
+      QMessageBox* msgBox = new QMessageBox;
+      msgBox->setInformativeText("Motion Stage Controller is not available!");
+      
+      msgBox->setStandardButtons(QMessageBox::Ok);
+	
+      int ret = msgBox->exec();
+    }
     // ------------------------
 }
 
@@ -939,7 +961,7 @@ void AssemblyMainWindow::start_objectAligner(const AssemblyObjectAligner::Config
   // kick-start alignment
   connect(aligner_, SIGNAL(configuration_updated()), aligner_, SLOT(execute()));
 
-  aligner_view_->Configuration_Widget()->setEnabled(false);
+  aligner_view_->Results_Widget()->setEnabled(true);
 
   aligner_connected_ = true;
 
@@ -1053,7 +1075,7 @@ void AssemblyMainWindow::start_metrology(const Metrology::Configuration& conf)
   // kick-start alignment
   connect(metrology_, SIGNAL(configuration_updated()), metrology_, SLOT(execute()));
 
-  metrology_view_->Configuration_Widget()->setEnabled(false);
+  metrology_view_->Results_Widget()->setEnabled(true);
 
   metrology_connected_ = true;
 

@@ -26,6 +26,7 @@
 #include <QRadioButton>
 #include <QPushButton>
 #include <QLineEdit>
+#include <QToolBox>
 
 #include <opencv2/opencv.hpp>
 
@@ -52,6 +53,8 @@ class AssemblyObjectAlignerView : public QWidget
   AssemblyObjectAligner::Configuration get_configuration(bool&) const;
 
  protected:
+
+  QToolBox* toolbox_;
 
   void keyReleaseEvent(QKeyEvent *event);
 
@@ -92,17 +95,23 @@ class AssemblyObjectAlignerView : public QWidget
   AssemblyUEyeView* patrecTwo_image_;
   QScrollArea*      patrecTwo_scroll_;
 
+  QPushButton* button_alignerClearResults_;
   QPushButton* button_alignerEmergencyStop_;
 
   bool finder_connected_;
 
   ApplicationConfig* config_;
 
+  int idx_cfg_wid_, idx_results_wid_;
+
  public slots:
 
   void enable();
 
   void transmit_configuration();
+
+  void switch_to_results();
+  void switch_to_config();
 
   void show_measured_angle(const double);
 
@@ -120,6 +129,8 @@ class AssemblyObjectAlignerView : public QWidget
   void set_alignmentMode_PSS();
 
   void update_templates(const bool);
+
+  void clearResults();
 
  signals:
 

@@ -41,7 +41,10 @@ MetrologyView::MetrologyView(QWidget* parent)
  , metro_useAutoFocusing_checkbox_(nullptr)
 
  , metro_exemetro_pusbu_(nullptr)
- , metro_goToMarker_pusbu_(nullptr)
+ , metro_goToPSPMarker_pusbu_(nullptr)
+ , metro_goToPSSMarker_pusbu_(nullptr)
+ , metro_goToPSP_BL_Marker_pusbu_(nullptr)
+ , metro_goToPSS_BL_Marker_pusbu_(nullptr)
  , metro_enableVacuum_pusbu_(nullptr)
 
  , alignm_angmax_dontIter_linee_(nullptr)
@@ -138,15 +141,24 @@ MetrologyView::MetrologyView(QWidget* parent)
   metro_button_lay->addLayout(metro_prep_lay);
 
   QLabel* metro_prep_label = new QLabel("Preparations: ");
-  metro_goToMarker_pusbu_ = new QPushButton(tr("Go to PSp TL marker"));
+  metro_goToPSPMarker_pusbu_ = new QPushButton(tr("Go to PSp TL marker"));
+  metro_goToPSSMarker_pusbu_ = new QPushButton(tr("Go to PSs TL marker"));
+  metro_goToPSP_BL_Marker_pusbu_ = new QPushButton(tr("Go to PSp BL marker"));
+  metro_goToPSS_BL_Marker_pusbu_ = new QPushButton(tr("Go to PSs BL marker"));
   metro_enableVacuum_pusbu_ = new QPushButton(tr("Enable baseplate vacuum"));
 
   metro_prep_lay->addWidget(metro_prep_label);
-  metro_prep_lay->addWidget(metro_goToMarker_pusbu_);
+  metro_prep_lay->addWidget(metro_goToPSPMarker_pusbu_);
+  metro_prep_lay->addWidget(metro_goToPSSMarker_pusbu_);
+  metro_prep_lay->addWidget(metro_goToPSP_BL_Marker_pusbu_);
+  metro_prep_lay->addWidget(metro_goToPSS_BL_Marker_pusbu_);
   metro_prep_lay->addWidget(metro_enableVacuum_pusbu_);
 
   connect(metro_enableVacuum_pusbu_, SIGNAL(clicked()), this, SLOT(enable_vacuum_on_baseplate()));
-  connect(metro_goToMarker_pusbu_, SIGNAL(clicked()), this, SLOT(go_to_marker()));
+  connect(metro_goToPSPMarker_pusbu_, SIGNAL(clicked()), this, SLOT(go_to_PSP_marker()));
+  connect(metro_goToPSSMarker_pusbu_, SIGNAL(clicked()), this, SLOT(go_to_PSS_marker()));
+  connect(metro_goToPSP_BL_Marker_pusbu_, SIGNAL(clicked()), this, SLOT(go_to_PSP_BL_marker()));
+  connect(metro_goToPSS_BL_Marker_pusbu_, SIGNAL(clicked()), this, SLOT(go_to_PSS_BL_marker()));
 
   // mode: align object
   QHBoxLayout* metro_exemetro_lay = new QHBoxLayout;
@@ -168,16 +180,16 @@ MetrologyView::MetrologyView(QWidget* parent)
   metro_cfg_lay->addLayout(alignm_PR_PSS_cfg_lay);
 
   // PatRecWidget #1
-  QGroupBox* patrecOne_cfg_box = new QGroupBox(tr("PatRec Marker PSp #1 [Bottom-Left Marker]"));
+  QGroupBox* patrecOne_cfg_box = new QGroupBox(tr("PatRec Marker PSp #1 [Top-Left Marker]"));
   patrecOne_cfg_box->setObjectName("patrecOne_cfg_box");
   patrecOne_cfg_box->setStyleSheet("QWidget#patrecOne_cfg_box { font-weight : bold; color : blue; }");
 
   patrecOne_wid_ = new AssemblyObjectFinderPatRecWidget;
-  patrecOne_wid_->setToolTip("Pattern Recognition Configuration PSp #1 [Bottom-Left Marker]");
+  patrecOne_wid_->setToolTip("Pattern Recognition Configuration PSp #1 [Top-Left Marker]");
 
   if(config_ != nullptr)
   {
-    const std::string fpath = config_->getDefaultValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSP1_template_fpath", "");
+    const std::string fpath = config_->getDefaultValue<std::string>("main", "Metrology_PSP1_template_fpath", "");
     if(fpath != ""){ patrecOne_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+fpath)); }
 
     assembly::QLineEdit_setText(patrecOne_wid_->threshold_lineEdit()        , config_->getDefaultValue<int>("main", "AssemblyObjectAlignerView_PatRec_threshold"        , 100));
@@ -201,7 +213,7 @@ MetrologyView::MetrologyView(QWidget* parent)
 
   if(config_ != nullptr)
   {
-    const std::string fpath = config_->getDefaultValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSP2_template_fpath", "");
+    const std::string fpath = config_->getDefaultValue<std::string>("main", "Metrology_PSP2_template_fpath", "");
     if(fpath != ""){ patrecTwo_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+fpath)); }
 
     assembly::QLineEdit_setText(patrecTwo_wid_->threshold_lineEdit()        , config_->getDefaultValue<int>("main", "AssemblyObjectAlignerView_PatRec_threshold"        , 100));
@@ -215,16 +227,16 @@ MetrologyView::MetrologyView(QWidget* parent)
   patrecTwo_cfg_box->setLayout(patrecTwo_wid_->layout());
   // -----
   // PatRecWidget #3
-  QGroupBox* patrecThree_cfg_box = new QGroupBox(tr("PatRec Marker PSs #1 [Bottom-Left Marker]"));
+  QGroupBox* patrecThree_cfg_box = new QGroupBox(tr("PatRec Marker PSs #1 [Top-Left Marker]"));
   patrecThree_cfg_box->setObjectName("patrecThree_cfg_box");
   patrecThree_cfg_box->setStyleSheet("QWidget#patrecThree_cfg_box { font-weight : bold; color : blue; }");
 
   patrecThree_wid_ = new AssemblyObjectFinderPatRecWidget;
-  patrecThree_wid_->setToolTip("Pattern Recognition Configuration PSs #1 [Bottom-Left Marker]");
+  patrecThree_wid_->setToolTip("Pattern Recognition Configuration PSs #1 [Top-Left Marker]");
 
   if(config_ != nullptr)
   {
-    const std::string fpath = config_->getDefaultValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSS1_template_fpath", "");
+    const std::string fpath = config_->getDefaultValue<std::string>("main", "Metrology_PSS1_template_fpath", "");
     if(fpath != ""){ patrecThree_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+fpath)); }
 
     assembly::QLineEdit_setText(patrecThree_wid_->threshold_lineEdit()        , config_->getDefaultValue<int>("main", "AssemblyObjectAlignerView_PatRec_threshold"        , 100));
@@ -248,7 +260,7 @@ MetrologyView::MetrologyView(QWidget* parent)
 
   if(config_ != nullptr)
   {
-    const std::string fpath = config_->getDefaultValue<std::string>("main", "AssemblyObjectAlignerView_PatRec_PSS2_template_fpath", "");
+    const std::string fpath = config_->getDefaultValue<std::string>("main", "Metrology_PSS2_template_fpath", "");
     if(fpath != ""){ patrecFour_wid_->load_image_template_from_path(QString::fromStdString(Config::CMSTkModLabBasePath+"/"+fpath)); }
 
     assembly::QLineEdit_setText(patrecFour_wid_->threshold_lineEdit()        , config_->getDefaultValue<int>("main", "AssemblyObjectAlignerView_PatRec_threshold"        , 100));
@@ -570,12 +582,36 @@ void MetrologyView::enable_vacuum_on_baseplate()
     emit enable_vacuum_baseplate(vacuum_channel_baseplate);
 }
 
-void MetrologyView::go_to_marker()
+void MetrologyView::go_to_PSP_marker()
 {
-    NQLog("MetrologyView", NQLog::Spam) << "go_to_marker"
-       << ": emitting signal \"go_to_marker_signal()\"";
+    NQLog("MetrologyView", NQLog::Spam) << "go_to_PSP_marker"
+       << ": emitting signal \"go_to_PSP_marker_signal()\"";
 
-    emit go_to_marker_signal();
+    emit go_to_PSP_marker_signal();
+}
+
+void MetrologyView::go_to_PSS_marker()
+{
+    NQLog("MetrologyView", NQLog::Spam) << "go_to_PSS_marker"
+       << ": emitting signal \"go_to_PSS_marker_signal()\"";
+
+    emit go_to_PSS_marker_signal();
+}
+
+void MetrologyView::go_to_PSP_BL_marker()
+{
+    NQLog("MetrologyView", NQLog::Spam) << "go_to_PSP_BL_marker"
+       << ": emitting signal \"go_to_PSP_BL_marker_signal()\"";
+
+    emit go_to_PSP_BL_marker_signal();
+}
+
+void MetrologyView::go_to_PSS_BL_marker()
+{
+    NQLog("MetrologyView", NQLog::Spam) << "go_to_PSS_BL_marker"
+       << ": emitting signal \"go_to_PSS_BL_marker_signal()\"";
+
+    emit go_to_PSS_BL_marker_signal();
 }
 
 void MetrologyView::transmit_configuration()
@@ -633,7 +669,7 @@ Metrology::Configuration MetrologyView::get_configuration(bool& valid_conf) cons
 
   if(valid_PatRecOne_conf == false)
   {
-    NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "transmit_configuration"
+    NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "get_configuration"
        << ": invalid AssemblyObjectFinderPatRec::Configuration object from PatRec Widget #1, no action taken";
 
     valid_conf = false;
@@ -651,7 +687,7 @@ Metrology::Configuration MetrologyView::get_configuration(bool& valid_conf) cons
 
   if(valid_PatRecTwo_conf == false)
   {
-    NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "transmit_configuration"
+    NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "get_configuration"
        << ": invalid AssemblyObjectFinderPatRec::Configuration object from PatRec Widget #2, no action taken";
 
     valid_conf = false;
@@ -670,7 +706,7 @@ Metrology::Configuration MetrologyView::get_configuration(bool& valid_conf) cons
 
   if(valid_PatRecThree_conf == false)
   {
-      NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "transmit_configuration"
+      NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "get_configuration"
       << ": invalid AssemblyObjectFinderPatRec::Configuration object from PatRec Widget #1, no action taken";
 
       valid_conf = false;
@@ -688,7 +724,7 @@ Metrology::Configuration MetrologyView::get_configuration(bool& valid_conf) cons
 
   if(valid_PatRecFour_conf == false)
   {
-      NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "transmit_configuration"
+      NQLog("AssemblyObjectAlignerView", NQLog::Critical) << "get_configuration"
          << ": invalid AssemblyObjectFinderPatRec::Configuration object from PatRec Widget #2, no action taken";
 
       valid_conf = false;
