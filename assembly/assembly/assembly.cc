@@ -54,29 +54,16 @@ int main(int argc, char** argv)
 
     app.setStyle("cleanlooks");
     app.setWindowIcon(QIcon(QString::fromStdString(std::string(Config::CMSTkModLabBasePath)+"/assembly/assembly/images/icon2.png")));
-    
+
     QCommandLineParser parser;
     parser.setApplicationDescription("Automated Assembly Software");
     parser.addHelpOption();
     parser.addVersionOption();
 
-    parser.addOptions({
-        {{"g", "glass"},
-	 QCoreApplication::translate("main", "Use configuration for glass assembly")},
-	{{"s", "silicon"},
-	 QCoreApplication::translate("main", "Use configuration for silicon assembly")}
-      }
-      );
+    parser.addOption({{"g", "glass"}, QCoreApplication::translate("main", "Use configuration for glass assembly instead of silicon")});
+    parser.addOption({{"t", "thickness"}, QCoreApplication::translate("main", "Specify spacer thickness - overwrites parameter read from file"), "thickness"});
 
     parser.process(app);
-
-    // ensure that either glass or silicon is specified
-    if(parser.isSet("glass") + parser.isSet("silicon") != 1)
-    {
-      std::cout << "Please specify the use of either glass or silicon via -g (--glass) or -s (--silicon)!" << std::endl << std::endl;
-      parser.showHelp(1);
-      exit(1);
-    }
 
     // choose configuration file
     auto relative_config_path = "/assembly/assembly_SiDummyPS.cfg";
@@ -153,6 +140,10 @@ int main(int argc, char** argv)
       }
     }
     // ----------------------
+
+    if(parser.isSet("thickness")){
+      config->addValue("overwrite", "spacer_thickness", parser.value("thickness"));
+    }
 
     try{
         AssemblyMainWindow mainWindow(outputdir_path, logfile_path);

@@ -488,7 +488,46 @@ public:
       issueKeyError(sk);
     }
   }
- 
+
+  template <class aType> void addValue(const ShortKey& sk, aType value)
+  {
+    QVariant variant(value);
+    storage_t::iterator it = keyvalueMap_.find(sk);
+    if (it!=keyvalueMap_.end()) {
+      keyExistsError(sk);
+    } else {
+      std::vector<std::string> values;
+      values.push_back(variant.toString().toStdString());
+      
+      ApplicationConfig::FullKey fk = { "", sk.alias, sk.key };
+      
+      keyvalueMap_[fk] = values;
+
+      emit structureChanged();
+      emit valueChanged();
+    }
+  }
+
+  template <class aType> void addValue(const std::string& alias, const std::string& key, aType value)
+  {
+    QVariant variant(value);
+    ShortKey sk = { alias, key };
+    storage_t::iterator it = keyvalueMap_.find(sk);
+    if (it!=keyvalueMap_.end()) {
+      keyExistsError(sk);
+    } else {
+      std::vector<std::string> values;
+      values.push_back(variant.toString().toStdString());
+
+      ApplicationConfig::FullKey fk = { "", alias, key };
+
+      keyvalueMap_[fk] = values;
+
+      emit structureChanged();
+      emit valueChanged();
+    }
+  }
+
   void setValueByIndex(const ShortKey& sk, std::size_t idx, std::string& value)
   {
     storage_t::iterator it = keyvalueMap_.find(sk);
@@ -558,6 +597,7 @@ protected:
   static ApplicationConfig* instance_;
 
   void issueKeyError(const ShortKey& sk) const;
+  void keyExistsError(const ShortKey& sk) const;
 
   storage_t keyvalueMap_;
 };
