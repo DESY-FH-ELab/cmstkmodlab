@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -43,11 +43,11 @@ template <class Controller> class AbstractDeviceModel
 {
  public:
     explicit AbstractDeviceModel() : controller_(NULL), state_(OFF) { }
-  virtual ~AbstractDeviceModel() { 
+  virtual ~AbstractDeviceModel() {
       destroyController(); }
 
   /// Returns the current (cached) state of the device.
-  const State& getDeviceState() const { 
+  const State& getDeviceState() const {
       return state_; }
 
   /// Attempts to enable/disable the (communication with) the device.
