@@ -36,34 +36,10 @@ class AssemblySubassemblyPickupWidget : public QWidget
   explicit AssemblySubassemblyPickupWidget(const QObject* const, QWidget* parent=nullptr);
   virtual ~AssemblySubassemblyPickupWidget() {}
 
-  QGridLayout* layout() const { return layout_; }
-
  protected:
 
   QCheckBox* smartMove_checkbox_;
 
-  QGridLayout* layout_;
-
-  QPushButton* exe_button_;
-
-  QLabel *     pickup_label_;
-  QLineEdit*   pickup_lineed_;
-  QPushButton* pickup_button_;
-
-  QLabel*      measur_label_;
-  QLineEdit*   measur_lineed_;
-  QPushButton* measur_button_;
-
-  QLabel*      iteraN_label_;
-  QLineEdit*   iteraN_lineed_;
-
- public slots:
-
-
-
- signals:
-
-  //void multipickup_request(const AssemblySubassemblyPickup::Configuration&);
 };
 
 #endif // ASSEMBLYSUBASSEMBLYPICKUPWIDGET_H

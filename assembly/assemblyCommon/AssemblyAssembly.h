@@ -133,7 +133,8 @@ class AssemblyAssembly : public QObject
 
   void DisableVacuumBaseplate_start();
   void DisableVacuumBaseplate_finish();
-  // ---------
+
+// ---------
 
   // others
 
