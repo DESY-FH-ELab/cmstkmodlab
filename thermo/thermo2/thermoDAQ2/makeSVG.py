@@ -4,7 +4,7 @@ ofile = open('ThroughPlaneSVG.h', 'w')
 
 ofile.write("""/////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
