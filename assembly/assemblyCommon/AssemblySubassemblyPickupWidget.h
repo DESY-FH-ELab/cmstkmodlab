@@ -33,7 +33,7 @@ class AssemblySubassemblyPickupWidget : public QWidget
 
  public:
 
-  explicit AssemblySubassemblyPickupWidget(const QObject* const, QWidget* parent=nullptr);
+  explicit AssemblySubassemblyPickupWidget(const AssemblySubassemblyPickup* const, QWidget* parent=nullptr);
   virtual ~AssemblySubassemblyPickupWidget() {}
 
  protected:

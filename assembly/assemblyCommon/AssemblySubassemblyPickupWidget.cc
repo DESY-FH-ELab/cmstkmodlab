@@ -21,7 +21,7 @@
 #include <QVBoxLayout>
 #include <QStringList>
 
-AssemblySubassemblyPickupWidget::AssemblySubassemblyPickupWidget(const QObject* const subassembly_pickup, QWidget* parent)
+AssemblySubassemblyPickupWidget::AssemblySubassemblyPickupWidget(const AssemblySubassemblyPickup* const subassembly_pickup, QWidget* parent)
   : QWidget(parent)
 
   , smartMove_checkbox_(nullptr)
@@ -61,29 +61,31 @@ AssemblySubassemblyPickupWidget::AssemblySubassemblyPickupWidget(const QObject* 
 
   uint pickup_step_N = 0;
 
-  // step: Place Subassembly Jig on Assembly Platform
-  {
-    ++pickup_step_N;
+  if(subassembly_pickup->IsSubassemblyJigAvailable()){
+    // step: Place Subassembly Jig on Assembly Platform
+    {
+      ++pickup_step_N;
 
-    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(pickup_step_N));
-    tmp_wid->text()->setText("Place Subassembly Pickup Jig on Assembly Platform aligned via pins");
-    sub_pick_lay->addWidget(tmp_wid);
+      AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+      tmp_wid->label()->setText(QString::number(pickup_step_N));
+      tmp_wid->text()->setText("Place Subassembly Pickup Jig on Assembly Platform aligned via pins");
+      sub_pick_lay->addWidget(tmp_wid);
+    }
+    // ----------
+
+    // step: Enable vacuum on spacers to secure the jig
+    {
+      ++pickup_step_N;
+
+      AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+      tmp_wid->label()->setText(QString::number(pickup_step_N));
+      tmp_wid->button()->setText("Enable vacuum on spacer pockets of Assembly Platform to secure the Subassembly Pickup Jig");
+      sub_pick_lay->addWidget(tmp_wid);
+
+      tmp_wid->connect_action(subassembly_pickup, SLOT(EnableVacuumSpacers_start()), SIGNAL(EnableVacuumSpacers_finished()));
+    }
+    // ----------
   }
-  // ----------
-
-  // step: Enable vacuum on spacers to secure the jig
-  {
-    ++pickup_step_N;
-
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(pickup_step_N));
-    tmp_wid->button()->setText("Enable vacuum on spacer pockets of Assembly Platform to secure the Subassembly Pickup Jig");
-    sub_pick_lay->addWidget(tmp_wid);
-
-    tmp_wid->connect_action(subassembly_pickup, SLOT(EnableVacuumSpacers_start()), SIGNAL(EnableVacuumSpacers_finished()));
-  }
-  // ----------
 
   // step: Place PSS+Spacers Subassembly on Assembly Platform
   {
@@ -91,23 +93,25 @@ AssemblySubassemblyPickupWidget::AssemblySubassemblyPickupWidget(const QObject* 
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(pickup_step_N));
-    tmp_wid->text()->setText("Place PSS+spacers subassembly on Subassembly Pickup Jig with the Spacers aligned to the pocket");
+    tmp_wid->text()->setText("Place PSS+spacers subassembly on Subassembly Pickup Jig or Platform with the Spacers aligned to the pocket");
     sub_pick_lay->addWidget(tmp_wid);
   }
   // ----------
 
-  // step: Enable vacuum on subassembly jig
-  {
-    ++pickup_step_N;
+  if(subassembly_pickup->IsSubassemblyJigAvailable()){
+    // step: Enable vacuum on subassembly jig
+    {
+      ++pickup_step_N;
 
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(pickup_step_N));
-    tmp_wid->button()->setText("Enable vacuum on Subassembly Pickup Jig");
-    sub_pick_lay->addWidget(tmp_wid);
+      AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+      tmp_wid->label()->setText(QString::number(pickup_step_N));
+      tmp_wid->button()->setText("Enable vacuum on Subassembly Pickup Jig");
+      sub_pick_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(subassembly_pickup, SLOT(EnableVacuumSubassembly_start()), SIGNAL(EnableVacuumSubassembly_finished()));
+      tmp_wid->connect_action(subassembly_pickup, SLOT(EnableVacuumSubassembly_start()), SIGNAL(EnableVacuumSubassembly_finished()));
+    }
+    // ----------
   }
-  // ----------
 
   // step: Go To Measurement Position on PS-s
   {
@@ -174,18 +178,20 @@ AssemblySubassemblyPickupWidget::AssemblySubassemblyPickupWidget(const QObject* 
   }
   // ----------
 
-  // step: Disable vacuum on subassembly jig
-  {
-    ++pickup_step_N;
+  if(subassembly_pickup->IsSubassemblyJigAvailable()){
+    // step: Disable vacuum on subassembly jig
+    {
+      ++pickup_step_N;
 
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(pickup_step_N));
-    tmp_wid->button()->setText("Disable Vacuum on Subassembly Pickup Jig");
-    sub_pick_lay->addWidget(tmp_wid);
+      AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+      tmp_wid->label()->setText(QString::number(pickup_step_N));
+      tmp_wid->button()->setText("Disable Vacuum on Subassembly Pickup Jig");
+      sub_pick_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(subassembly_pickup, SLOT(DisableVacuumSubassembly_start()), SIGNAL(DisableVacuumSubassembly_finished()));
+      tmp_wid->connect_action(subassembly_pickup, SLOT(DisableVacuumSubassembly_start()), SIGNAL(DisableVacuumSubassembly_finished()));
+    }
+    // ----------
   }
-  // ----------
 
   // step: Pick Up Subassembly
   {
@@ -200,29 +206,31 @@ AssemblySubassemblyPickupWidget::AssemblySubassemblyPickupWidget(const QObject* 
   }
   // ----------
 
-  // step: Disable vacuum on Spacers to release subassembly pickup jig
-  {
-    ++pickup_step_N;
+  if(subassembly_pickup->IsSubassemblyJigAvailable()){
+    // step: Disable vacuum on Spacers to release subassembly pickup jig
+    {
+      ++pickup_step_N;
 
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(pickup_step_N));
-    tmp_wid->button()->setText("Disable Vacuum on Spacers to release Subassembly Pickup Jig");
-    sub_pick_lay->addWidget(tmp_wid);
+      AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+      tmp_wid->label()->setText(QString::number(pickup_step_N));
+      tmp_wid->button()->setText("Disable Vacuum on Spacers to release Subassembly Pickup Jig");
+      sub_pick_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(subassembly_pickup, SLOT(DisableVacuumSpacers_start()), SIGNAL(DisableVacuumSpacers_finished()));
+      tmp_wid->connect_action(subassembly_pickup, SLOT(DisableVacuumSpacers_start()), SIGNAL(DisableVacuumSpacers_finished()));
+    }
+    // ----------
+
+    // step: Remove Subassembly Jig from Assembly Platform
+    {
+      ++pickup_step_N;
+
+      AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+      tmp_wid->label()->setText(QString::number(pickup_step_N));
+      tmp_wid->text()->setText("Remove Subassembly Pickup Jig from Assembly Platform");
+      sub_pick_lay->addWidget(tmp_wid);
+    }
+    // ----------
   }
-  // ----------
-
-  // step: Remove Subassembly Jig from Assembly Platform
-  {
-    ++pickup_step_N;
-
-    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(pickup_step_N));
-    tmp_wid->text()->setText("Remove Subassembly Pickup Jig from Assembly Platform");
-    sub_pick_lay->addWidget(tmp_wid);
-  }
-  // ----------
 
   sub_pick_lay->addStretch(1);
 }
