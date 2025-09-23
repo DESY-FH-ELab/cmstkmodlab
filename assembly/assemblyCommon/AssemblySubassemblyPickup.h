@@ -18,6 +18,7 @@
 
 #include <AssemblySmartMotionManager.h>
 #include <ApplicationConfig.h>
+#include <AssemblyUtilities.h>
 
 class AssemblySubassemblyPickup : public QObject
 {
@@ -55,6 +56,14 @@ class AssemblySubassemblyPickup : public QObject
 
   void reset();
 
+  assembly::Center assembly_center_;
+
+  bool subassembly_jig_available_;
+
+ public:
+
+  assembly::Center GetAssemblyCenter() const {return assembly_center_;};
+  bool IsSubassemblyJigAvailable() const {return subassembly_jig_available_;};
 
  public slots:
 

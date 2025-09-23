@@ -59,6 +59,19 @@ AssemblySubassemblyPickup::AssemblySubassemblyPickup(const LStepExpressMotionMan
 
   this->reset();
 
+  std::string assembly_center_str = QString::fromStdString(config_->getValue<std::string>("main", "assembly_center")).toUpper().toStdString();
+  if(assembly_center_str == "FNAL") {
+      assembly_center_ = assembly::Center::FNAL;
+  } else if(assembly_center_str == "BROWN") {
+      assembly_center_ = assembly::Center::BROWN;
+  } else if(assembly_center_str == "DESY") {
+      assembly_center_ = assembly::Center::DESY;
+  } else {
+      NQLog("AssemblyAssemblyV2", NQLog::Warning) << "Invalid assembly center provided: \"" << assembly_center_str << "\". Provide one of the following options: \"FNAL\", \"BROWN\", \"DESY\"";
+  }
+
+  subassembly_jig_available_ = config_->hasKey("main", "Vacuum_Subassembly");
+
   NQLog("AssemblySubassemblyPickup", NQLog::Debug) << "constructed";
 }
 
