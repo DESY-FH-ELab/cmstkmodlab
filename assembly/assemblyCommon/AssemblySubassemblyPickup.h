@@ -18,6 +18,7 @@
 
 #include <AssemblySmartMotionManager.h>
 #include <ApplicationConfig.h>
+#include <AssemblyUtilities.h>
 
 class AssemblySubassemblyPickup : public QObject
 {
@@ -44,6 +45,7 @@ class AssemblySubassemblyPickup : public QObject
   int vacuum_pickup_;
   int vacuum_spacer_;
   int vacuum_basepl_;
+  int vacuum_sub_;
 
   bool use_smartMove_;
   bool in_action_;
@@ -54,16 +56,27 @@ class AssemblySubassemblyPickup : public QObject
 
   void reset();
 
+  assembly::Center assembly_center_;
+
+  bool subassembly_jig_available_;
+
+ public:
+
+  assembly::Center GetAssemblyCenter() const {return assembly_center_;};
+  bool IsSubassemblyJigAvailable() const {return subassembly_jig_available_;};
 
  public slots:
 
   void use_smartMove(const int);
 
+  void EnableVacuumSpacers_start();
+  void EnableVacuumSpacers_finish();
+
   void GoToSensorMarkerPreAlignment_start();
   void GoToSensorMarkerPreAlignment_finish();
 
-  void EnableVacuumSpacers_start();
-  void EnableVacuumSpacers_finish();
+  void EnableVacuumSubassembly_start();
+  void EnableVacuumSubassembly_finish();
 
   void switchToAlignmentTab_PSS();
 
@@ -76,11 +89,14 @@ class AssemblySubassemblyPickup : public QObject
   void LowerPickupToolOntoSubassembly_start();
   void LowerPickupToolOntoSubassembly_finish();
 
-  void DisableVacuumSpacers_start();
-  void DisableVacuumSpacers_finish();
+  void DisableVacuumSubassembly_start();
+  void DisableVacuumSubassembly_finish();
 
   void PickupSubassembly_start();
   void PickupSubassembly_finish();
+
+  void DisableVacuumSpacers_start();
+  void DisableVacuumSpacers_finish();
 
  signals:
 
@@ -101,6 +117,9 @@ class AssemblySubassemblyPickup : public QObject
 
   void EnableVacuumSpacers_finished();
   void DisableVacuumSpacers_finished();
+
+  void EnableVacuumSubassembly_finished();
+  void DisableVacuumSubassembly_finished();
 
   void switchToAlignmentTab_PSS_request();
 
