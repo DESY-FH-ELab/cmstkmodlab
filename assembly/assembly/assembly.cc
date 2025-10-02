@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -37,6 +37,7 @@ int main(int argc, char** argv)
     // Qt application -------
     qRegisterMetaType<State>("State");
     qRegisterMetaType<cv::Mat>("cv::Mat");
+    qRegisterMetaType<QList<QPointF>>("QList<QPointF>");
 
 #ifdef SINGLETON
     SingletonApplication app(argc, argv, assemblyGUID);
@@ -52,45 +53,58 @@ int main(int argc, char** argv)
 #endif
 
     app.setStyle("cleanlooks");
+    app.setWindowIcon(QIcon(QString::fromStdString(std::string(Config::CMSTkModLabBasePath)+"/assembly/assembly/images/icon2.png")));
 
     QCommandLineParser parser;
     parser.setApplicationDescription("Automated Assembly Software");
     parser.addHelpOption();
     parser.addVersionOption();
 
-    parser.addOptions({
-        {{"g", "glass"},
-	 QCoreApplication::translate("main", "Use configuration for glass assembly")},
-	{{"s", "silicon"},
-	 QCoreApplication::translate("main", "Use configuration for silicon assembly")}
-      }
-      );
+    parser.addOption({{"g", "glass"}, QCoreApplication::translate("main", "Use configuration for glass assembly instead of silicon")});
+    parser.addOption({{"t", "thickness"}, QCoreApplication::translate("main", "Specify spacer thickness - overwrites parameter read from file"), "thickness"});
 
     parser.process(app);
 
-    // ensure that either glass or silicon is specified
-    if(parser.isSet("glass") + parser.isSet("silicon") != 1)
-    {
-      std::cout << "Please specify the use of either glass or silicon via -g (--glass) or -s (--silicon)!" << std::endl << std::endl;
-      parser.showHelp(1);
-      exit(1);
-    }
-
     // choose configuration file
-    auto relative_config_path = "/assembly/assembly_SiDummyPS.cfg";
+    auto relative_config_path = "/assembly/assembly_Silicon.cfg";
     if(parser.isSet("glass"))
     {
       relative_config_path = "/assembly/assembly_glass.cfg";
     }
 
-    // log output -----------
-    ApplicationConfig* config = ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath)+relative_config_path, "main");
+    // log output - default -----------
+    NQLog::LogLevel nqloglevel_stdout  = NQLog::Message;
 
-    const NQLog::LogLevel nqloglevel_stdout  = ((NQLog::LogLevel) config->getDefaultValue<int>("main", "LogLevel_stdout" , 2));
+    try{
+      NQLogger::instance()->addActiveModule("*");
+      NQLogger::instance()->addDestiniation(stdout, nqloglevel_stdout, "stdout");
+    } catch(NQLogger::InvalidLoggerException& exc){
+        std::cerr << "Initialization error. Message: " << exc.what() << std::endl;
+    }
+
+    ApplicationConfig* config;
+    try{
+      config = ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath)+relative_config_path, "main");
+    } catch (ApplicationConfig::InvalidConfigFileException& exc) {
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31mInitialization error: ApplicationConfig::append(\"main\") is invalid ! Abort !\e[0m";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31mMessage: " << exc.what() << "\e[0m";
+      NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+      return 1;
+    }
+
+    // log output - set correct parameters -----------
+    nqloglevel_stdout = ((NQLog::LogLevel) config->getDefaultValue<int>("main", "LogLevel_stdout" , 2));
+    try{
+      NQLogger::instance()->setLogLevel("stdout", nqloglevel_stdout);
+    } catch(NQLogger::InvalidLoggerException& exc){
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31mInitialization error: " << exc.what() << "\e[0m";
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+        return 1;
+    }
+
     const NQLog::LogLevel nqloglevel_logfile = ((NQLog::LogLevel) config->getDefaultValue<int>("main", "LogLevel_logfile", 2));
-
-    NQLogger::instance()->addActiveModule("*");
-    NQLogger::instance()->addDestiniation(stdout, nqloglevel_stdout);
 
     const QString timestamp = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss");
 
@@ -108,27 +122,42 @@ int main(int argc, char** argv)
     }
 
     const QString logfile_path = outputdir_path+"/assembly.log";
-    const QString DBlogfile_path = outputdir_path+"/DBlog.log";
 
     NQLog("assembly", NQLog::Message) << "\e[1;37mVERSION\e[0m  : " << APPLICATIONVERSIONSTR;
     NQLog("assembly", NQLog::Message) << "\e[1;37mSESSION\e[0m  : " << timestamp;
     NQLog("assembly", NQLog::Message) << "\e[1;37mLOG FILE\e[0m : " << logfile_path;
-    NQLog("assembly", NQLog::Message) << "\e[1;37mDB LOG FILE\e[0m : " << DBlogfile_path;
 
     QFile* logfile = new QFile(logfile_path);
     if(logfile->open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
     {
-      NQLogger::instance()->addDestiniation(logfile, nqloglevel_logfile);
+      try{
+        NQLogger::instance()->addDestiniation(logfile, nqloglevel_logfile, "logfile");
+      } catch(NQLogger::InvalidLoggerException& exc){
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31mInitialization error: " << exc.what() << "\e[0m";
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+        return 1;
+      }
     }
     // ----------------------
 
-    AssemblyMainWindow mainWindow(outputdir_path, logfile_path, DBlogfile_path);
+    if(parser.isSet("thickness")){
+      config->addValue("overwrite", "spacer_thickness", parser.value("thickness"));
+    }
 
-    mainWindow.setWindowTitle("Automated Pixel-Strip Module Assembly ["+QString(APPLICATIONVERSIONSTR)+"]");
-    mainWindow.setWindowState(Qt::WindowMaximized);
+    try{
+        AssemblyMainWindow mainWindow(outputdir_path, logfile_path);
+        mainWindow.setWindowTitle("Automated Pixel-Strip Module Assembly ["+QString(APPLICATIONVERSIONSTR)+"]");
+        mainWindow.setWindowState(Qt::WindowMaximized);
 
-    mainWindow.show();
+        mainWindow.show();
 
-    return app.exec();
+        return app.exec();
+    } catch (ApplicationConfig::InvalidConfigFileException) {
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31mInitialization error: ApplicationConfig::append(\"parameters\") is invalid ! Abort !\e[0m";
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "\e[1;31m-------------------------------------------------------------------------------------------------------\e[0m";
+        return 1;
+    }
     // ----------------------
 }

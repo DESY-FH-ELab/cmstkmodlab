@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -17,21 +17,34 @@
 
 #include <nqlogger.h>
 
+#include <AssemblyAssemblyV2.h>
 #include <AssemblyAssemblyV2View.h>
-#include <AssemblyAssemblyActionWidget.h>
 #include <AssemblyAssemblyTextWidget.h>
 
-AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QWidget* parent)
+#include <AssemblyUtilities.h>
+
+AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const assembly, QWidget* parent)
  : QWidget(parent)
  , smartMove_checkbox_(nullptr)
  , wid_PSPToBasep_(nullptr)
  , wid_PSSToSpacers_(nullptr)
  , wid_PSSToMaPSA_(nullptr)
+ , push_step1_to_db_wid_(nullptr)
+ , push_step2_to_db_wid_(nullptr)
+ , push_step3_to_db_wid_(nullptr)
+ , baseplate_id_lineed_(nullptr)
+ , mapsa_id_lineed_(nullptr)
+ , pss_id_lineed_(nullptr)
+ , glue1_id_lineed_(nullptr)
+ , glue2_id_lineed_(nullptr)
+ , glue3_id_lineed_(nullptr)
+ , module_id_lineed_(nullptr)
+ //, push_to_db_button_(nullptr)
 {
   if(assembly == nullptr)
   {
     NQLog("AssemblyAssemblyView", NQLog::Fatal) << "AssemblyAssemblyView(" << assembly << ", " << parent << ")"
-       << ": null pointer to QObject --> GUI layout will not be created";
+       << ": null pointer to AssemblyAssemblyV2 --> GUI layout will not be created";
 
     return;
   }
@@ -52,6 +65,85 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
   smartMove_checkbox_->setChecked(true);
   //// -----------------------------------------------
 
+  opts_lay->addStretch();
+
+  QLabel* module_id_label = new QLabel("Module ID: ");
+  module_id_lineed_ = new QLineEdit("");
+  module_id_lineed_->setPlaceholderText("Module ID");
+  module_id_lineed_->setMaximumWidth(150);
+
+  opts_lay->addWidget(module_id_label);
+  opts_lay->addWidget(module_id_lineed_);
+
+  connect(assembly, SIGNAL(Module_ID_updated(QString)), module_id_lineed_, SLOT(setText(QString)));
+  connect(module_id_lineed_, SIGNAL(textEdited(QString)), assembly, SLOT(Update_Module_ID(QString)));
+
+  QLabel* baseplate_id_label = new QLabel("Baseplate ID: ");
+  baseplate_id_lineed_ = new QLineEdit("");
+  baseplate_id_lineed_->setPlaceholderText("Baseplate ID");
+  baseplate_id_lineed_->setMaximumWidth(220);
+
+  opts_lay->addWidget(baseplate_id_label);
+  opts_lay->addWidget(baseplate_id_lineed_);
+
+  connect(assembly, SIGNAL(Baseplate_ID_updated(QString)), baseplate_id_lineed_, SLOT(setText(QString)));
+  connect(baseplate_id_lineed_, SIGNAL(textEdited(QString)), assembly, SLOT(Update_Baseplate_ID(QString)));
+
+  QLabel* mapsa_id_label = new QLabel("MaPSA ID: ");
+  mapsa_id_lineed_ = new QLineEdit("");
+  mapsa_id_lineed_->setPlaceholderText("MaPSA ID");
+  mapsa_id_lineed_->setMaximumWidth(160);
+
+  opts_lay->addWidget(mapsa_id_label);
+  opts_lay->addWidget(mapsa_id_lineed_);
+
+  connect(assembly, SIGNAL(MaPSA_ID_updated(QString)), mapsa_id_lineed_, SLOT(setText(QString)));
+  connect(mapsa_id_lineed_, SIGNAL(textEdited(QString)), assembly, SLOT(Update_MaPSA_ID(QString)));
+
+  QLabel* pss_id_label = new QLabel("PS-s Sensor ID: ");
+  pss_id_lineed_ = new QLineEdit("");
+  pss_id_lineed_->setPlaceholderText("PS-s Sensor ID");
+  pss_id_lineed_->setMaximumWidth(180);
+
+  opts_lay->addWidget(pss_id_label);
+  opts_lay->addWidget(pss_id_lineed_);
+
+  connect(assembly, SIGNAL(PSS_ID_updated(QString)), pss_id_lineed_, SLOT(setText(QString)));
+  connect(pss_id_lineed_, SIGNAL(textEdited(QString)), assembly, SLOT(Update_PSS_ID(QString)));
+
+  QLabel* glue_id_label = new QLabel("Slow Glue IDs (steps 1/2/3): ");
+  glue1_id_lineed_ = new QLineEdit("");
+  glue1_id_lineed_->setPlaceholderText("Glue ID (step 1)");
+  glue1_id_lineed_->setMaximumWidth(100);
+
+  glue2_id_lineed_ = new QLineEdit("");
+  glue2_id_lineed_->setPlaceholderText("Glue ID (step 2)");
+  glue2_id_lineed_->setMaximumWidth(100);
+
+  glue3_id_lineed_ = new QLineEdit("");
+  glue3_id_lineed_->setPlaceholderText("Glue ID (step 3)");
+  glue3_id_lineed_->setMaximumWidth(100);
+
+  opts_lay->addWidget(glue_id_label);
+  opts_lay->addWidget(glue1_id_lineed_);
+  opts_lay->addWidget(glue2_id_lineed_);
+  opts_lay->addWidget(glue3_id_lineed_);
+
+  connect(assembly, SIGNAL(Glue1_ID_updated(QString)), glue1_id_lineed_, SLOT(setText(QString)));
+  connect(glue1_id_lineed_, SIGNAL(textEdited(QString)), assembly, SLOT(Update_Glue1_ID(QString)));
+  connect(assembly, SIGNAL(Glue2_ID_updated(QString)), glue2_id_lineed_, SLOT(setText(QString)));
+  connect(glue2_id_lineed_, SIGNAL(textEdited(QString)), assembly, SLOT(Update_Glue2_ID(QString)));
+  connect(assembly, SIGNAL(Glue3_ID_updated(QString)), glue3_id_lineed_, SLOT(setText(QString)));
+  connect(glue3_id_lineed_, SIGNAL(textEdited(QString)), assembly, SLOT(Update_Glue3_ID(QString)));
+
+  //push_to_db_button_ = new QPushButton("Push to database");
+  //opts_lay->addWidget(push_to_db_button_);
+
+  //connect(push_to_db_button_, SIGNAL(clicked()), assembly, SLOT(PushToDB_start()));
+  //connect(assembly, SIGNAL(PushToDB_finished()), this, SLOT(disable_DB()));
+
+  //// -----------------------------------------------
+
   QToolBox* toolbox = new QToolBox;
   layout->addWidget(toolbox);
 
@@ -64,6 +156,47 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
 
   QVBoxLayout* PSPToBasep_lay = new QVBoxLayout;
   wid_PSPToBasep_->setLayout(PSPToBasep_lay);
+
+  if(assembly->GetAssemblyCenter() == assembly::Center::DESY){
+      // step: Define/Scan Module ID
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Define/Scan Module ID");
+        PSPToBasep_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(ScanModuleID_start()), SIGNAL(ScanModuleID_finished()), SIGNAL(ScanModuleID_aborted()));
+      }
+      // ----------
+
+      // step: Register Module ID in DB
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Register Module ID in DB");
+        PSPToBasep_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(RegisterModuleID_start()), SIGNAL(RegisterModuleID_finished()), SIGNAL(RegisterModuleID_aborted()));
+      }
+      // ----------
+  }
+
+  // step: Scan MaPSA ID
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->button()->setText("Scan MaPSA ID");
+    PSPToBasep_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(ScanMaPSAID_start()), SIGNAL(ScanMaPSAID_finished()), SIGNAL(ScanMaPSAID_aborted()));
+  }
+  // ----------
 
   // step: Place MaPSA on Assembly Platform
   {
@@ -85,7 +218,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
     tmp_wid->button()->setText("Go To Measurement Position on MaPSA");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoToSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoToPSPSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
   }
   // ----------
 
@@ -183,13 +316,41 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
   }
   // ----------
 
+  // step: Scan Baseplate ID
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->button()->setText("Scan Baseplate ID");
+    PSPToBasep_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(ScanBaseplateID_start()), SIGNAL(ScanBaseplateID_finished()), SIGNAL(ScanBaseplateID_aborted()));
+  }
+  // ----------
+
+  if(assembly->GetAssemblyCenter() == assembly::Center::DESY){
+      // step: Scan Glue ID (step 1)
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Scan Slow Glue ID");
+        PSPToBasep_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(ScanGlue1ID_start()), SIGNAL(ScanGlue1ID_finished()), SIGNAL(ScanGlue1ID_aborted()));
+      }
+      // ----------
+  }
+
   // step: Dispense Glue on Baseplate and Place it on Assembly Platform
   {
     ++assembly_step_N;
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->text()->setText("Dispense (Slow+Fast) Glue on Baseplate and Place it on Assembly Platform with Pins");
+    tmp_wid->text()->setText("Dispense Slow Glue on Baseplate and Place it on Assembly Platform with Pins");
     PSPToBasep_lay->addWidget(tmp_wid);
   }
   // ----------
@@ -207,6 +368,19 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
   }
   // ----------
 
+  if(assembly->GetAssemblyCenter() == assembly::Center::FNAL){
+      // step: Dispense Fast Glue on Baseplate
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->text()->setText("Dispense Fast Glue on Baseplate");
+        PSPToBasep_lay->addWidget(tmp_wid);
+      }
+      // ----------
+  }
+
   // step: Go To XYA Position To Glue MaPSA To Baseplate
   {
     ++assembly_step_N;
@@ -220,6 +394,58 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
   }
   // ----------
 
+  if(assembly->GetAssemblyCenter() == assembly::Center::DESY){
+    // step: Manually rotate stage to correct for misalignment of DESY assembly platform
+    {
+      ++assembly_step_N;
+
+      AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+      tmp_wid->label()->setText(QString::number(assembly_step_N));
+      tmp_wid->text()->setText("Manually rotate to -0.157 deg (corrects for pinhole misalignment of DESY assembly platform)");
+      PSPToBasep_lay->addWidget(tmp_wid);
+    }
+    // ----------
+  }
+
+  if(assembly->GetAssemblyCenter() == assembly::Center::BROWN || assembly->GetAssemblyCenter() == assembly::Center::DESY){
+      // step: Make space on the platform by moving the pickup tool
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Move away pickup tool to make space for dispensing of fast glue");
+        PSPToBasep_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(MakeSpaceOnPlatform_start()), SIGNAL(MakeSpaceOnPlatform_finished()));
+      }
+      // ----------
+
+      // step: Dispense Fast Glue on Baseplate
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->text()->setText("Dispense Fast Glue on Baseplate");
+        PSPToBasep_lay->addWidget(tmp_wid);
+      }
+      // ----------
+
+      // step: Return to the platform by returning the pickup tool to the previous position
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Return to previous position");
+        PSPToBasep_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(ReturnToPlatform_start()), SIGNAL(ReturnToPlatform_finished()));
+      }
+      // ----------
+  }
+
   // step: Lower MaPSA onto Baseplate
   {
     ++assembly_step_N;
@@ -230,6 +456,30 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
     PSPToBasep_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(LowerMaPSAOntoBaseplate_start()), SIGNAL(LowerMaPSAOntoBaseplate_finished()));
+  }
+  // ----------
+  
+  // step: Push IDs to Database
+  if(assembly->GetAssemblyCenter() == assembly::Center::DESY)
+  {
+      ++assembly_step_N;
+
+      push_step1_to_db_wid_ = new AssemblyAssemblyActionWidget;
+      push_step1_to_db_wid_->label()->setText(QString::number(assembly_step_N));
+      push_step1_to_db_wid_->button()->setText("Push Assembly Information to Database");
+      PSPToBasep_lay->addWidget(push_step1_to_db_wid_);
+
+      push_step1_to_db_wid_->connect_action(assembly, SLOT(PushStep1ToDB_start()), SIGNAL(PushStep1ToDB_finished()), SIGNAL(PushStep1ToDB_aborted()));
+  } else if(assembly->GetAssemblyCenter() == assembly::Center::BROWN)
+  {
+      ++assembly_step_N;
+
+      push_step1_to_db_wid_ = new AssemblyAssemblyActionWidget;
+      push_step1_to_db_wid_->label()->setText(QString::number(assembly_step_N));
+      push_step1_to_db_wid_->button()->setText("Generate File for Database Input");
+      PSPToBasep_lay->addWidget(push_step1_to_db_wid_);
+
+      push_step1_to_db_wid_->connect_action(assembly, SLOT(PushStep1ToDB_start()), SIGNAL(PushStep1ToDB_finished()), SIGNAL(PushStep1ToDB_aborted()));
   }
   // ----------
 
@@ -317,6 +567,19 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
   QVBoxLayout* PSSToSpacers_lay = new QVBoxLayout;
   wid_PSSToSpacers_->setLayout(PSSToSpacers_lay);
 
+  // step: Scan PSS ID
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->button()->setText("Scan PS-s ID");
+    PSSToSpacers_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(ScanPSSID_start()), SIGNAL(ScanPSSID_finished()), SIGNAL(ScanPSSID_aborted()));
+  }
+  // ----------
+
   // step: Place PS-s on Assembly Platform
   {
     ++assembly_step_N;
@@ -337,10 +600,10 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
     tmp_wid->button()->setText("Go To Measurement Position on PS-s");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoToSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoToPSSSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
   }
   // ----------
-  
+
   // step: Enable Vacuum on PS-s
   {
     ++assembly_step_N;
@@ -415,7 +678,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->button()->setText("Disable Vacuum on PS-s");
+    tmp_wid->button()->setText("Disable Vacuum on Assembly Platform");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(DisableVacuumBaseplate_start()), SIGNAL(DisableVacuumBaseplate_finished()));
@@ -447,30 +710,165 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
     tmp_wid->connect_action(assembly, SLOT(GoToXYAPositionToGluePSSToSpacers_start()), SIGNAL(GoToXYAPositionToGluePSSToSpacers_finished()));
   }
   // ----------
-  
-  // step: Dispense Glue on Spacers and Place them on Assembly Platform
-  {
-    ++assembly_step_N;
 
-    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->text()->setText("Dispense Glue on Spacers and Place them on Assembly Platform");
-    PSSToSpacers_lay->addWidget(tmp_wid);
+  if(assembly->GetAssemblyCenter() == assembly::Center::DESY){
+    // step: Scan Glue ID (step 2)
+    {
+        ++assembly_step_N;
+
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Scan Slow Glue ID");
+        PSSToSpacers_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(ScanGlue2ID_start()), SIGNAL(ScanGlue2ID_finished()), SIGNAL(ScanGlue2ID_aborted()));
+    }
+    // ----------
+
+    // step: Enable Vacuum on Spacers
+    {
+      ++assembly_step_N;
+
+      AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+      tmp_wid->label()->setText(QString::number(assembly_step_N));
+      tmp_wid->button()->setText("Enable Vacuum on Spacers");
+      PSSToSpacers_lay->addWidget(tmp_wid);
+
+      tmp_wid->connect_action(assembly, SLOT(EnableVacuumSpacers_start()), SIGNAL(EnableVacuumSpacers_finished()));
+    }
+    // ----------
+
+    // step: Make space on the platform by moving the pickup tool
+    {
+      ++assembly_step_N;
+
+      AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+      tmp_wid->label()->setText(QString::number(assembly_step_N));
+      tmp_wid->button()->setText("Move away pickup tool to make space for dispensing of fast glue");
+      PSSToSpacers_lay->addWidget(tmp_wid);
+
+      tmp_wid->connect_action(assembly, SLOT(MakeSpaceOnPlatform_start()), SIGNAL(MakeSpaceOnPlatform_finished()));
+    }
+    // ----------
+
+    // step: Dispense Slow Glue on Spacers and Place them on Assembly Platform
+    {
+      ++assembly_step_N;
+
+      AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+      tmp_wid->label()->setText(QString::number(assembly_step_N));
+      tmp_wid->text()->setText("Dispense Slow Glue on Spacers and Place them on Assembly Platform");
+      PSSToSpacers_lay->addWidget(tmp_wid);
+    }
+    // ----------
+
+    // step: Dispense Fast Glue on Spacers
+    {
+      ++assembly_step_N;
+
+      AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+      tmp_wid->label()->setText(QString::number(assembly_step_N));
+      tmp_wid->text()->setText("Dispense Fast Glue on Spacers");
+      PSSToSpacers_lay->addWidget(tmp_wid);
+    }
+    // ----------
+
+    // step: Return to the platform by returning the pickup tool to the previous position
+    {
+      ++assembly_step_N;
+
+      AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+      tmp_wid->label()->setText(QString::number(assembly_step_N));
+      tmp_wid->button()->setText("Return to previous position");
+      PSSToSpacers_lay->addWidget(tmp_wid);
+
+      tmp_wid->connect_action(assembly, SLOT(ReturnToPlatform_start()), SIGNAL(ReturnToPlatform_finished()));
+    }
+    // ----------
+  } else {
+    // step: Place Spacers on Spacer Clamp
+    {
+        ++assembly_step_N;
+
+        AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->text()->setText("Place Spacers on Spacer Clamp");
+        PSSToSpacers_lay->addWidget(tmp_wid);
+      }
+      // ----------
+
+      // step: Enable Vacuum on Spacers
+    {
+      ++assembly_step_N;
+
+      AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+      tmp_wid->label()->setText(QString::number(assembly_step_N));
+      tmp_wid->button()->setText("Enable Vacuum on Spacers");
+      PSSToSpacers_lay->addWidget(tmp_wid);
+
+      tmp_wid->connect_action(assembly, SLOT(EnableVacuumSpacers_start()), SIGNAL(EnableVacuumSpacers_finished()));
+    }
+    // ----------
+
+    // step: Dispense Glue on Spacers and Place them on Assembly Platform
+    {
+        ++assembly_step_N;
+
+        AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->text()->setText("Dispense Slow Glue on Spacers");
+        PSSToSpacers_lay->addWidget(tmp_wid);
+    }
+    // ----------
+
+    // step: Make space on the platform by moving the pickup tool
+    {
+      ++assembly_step_N;
+
+      AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+      tmp_wid->label()->setText(QString::number(assembly_step_N));
+      tmp_wid->button()->setText("Move away pickup tool to make space for the Placement of the Spacer Clamp");
+      PSSToSpacers_lay->addWidget(tmp_wid);
+
+      tmp_wid->connect_action(assembly, SLOT(MakeSpaceOnPlatform_start()), SIGNAL(MakeSpaceOnPlatform_finished()));
+    }
+    // ----------
+
+    // step: Place Spacer Clamp with Spacers on Assembly Platform
+    {
+        ++assembly_step_N;
+
+        AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->text()->setText("Place Spacer Clamp with Spacers on Assembly Platform");
+        PSSToSpacers_lay->addWidget(tmp_wid);
+    }
+    // ----------
+
+    // step: Dispense Fast Glue on Spacers
+    {
+        ++assembly_step_N;
+
+        AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->text()->setText("Dispense Fast Glue on Spacers");
+        PSSToSpacers_lay->addWidget(tmp_wid);
+    }
+    // ----------
+
+    // step: Return to the platform by returning the pickup tool to the previous position
+    {
+        ++assembly_step_N;
+
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Return to previous position");
+        PSSToSpacers_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(ReturnToPlatform_start()), SIGNAL(ReturnToPlatform_finished()));
+    }
+    // ----------
   }
-  // ----------
-
-  // step: Enable Vacuum on Spacers
-  {
-    ++assembly_step_N;
-
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->button()->setText("Enable Vacuum on Spacers");
-    PSSToSpacers_lay->addWidget(tmp_wid);
-
-    tmp_wid->connect_action(assembly, SLOT(EnableVacuumSpacers_start()), SIGNAL(EnableVacuumSpacers_finished()));
-  }
-  // ----------
 
   // step: Lower PS-s onto Spacers
   {
@@ -482,6 +880,30 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
     PSSToSpacers_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(LowerPSSOntoSpacers_start()), SIGNAL(LowerPSSOntoSpacers_finished()));
+  }
+  // ----------
+
+  // step: Push IDs to Database
+  if (assembly->GetAssemblyCenter() == assembly::Center::DESY)
+  {
+    ++assembly_step_N;
+
+    push_step2_to_db_wid_ = new AssemblyAssemblyActionWidget;
+    push_step2_to_db_wid_->label()->setText(QString::number(assembly_step_N));
+    push_step2_to_db_wid_->button()->setText("Push Assembly Information to Database");
+    PSSToSpacers_lay->addWidget(push_step2_to_db_wid_);
+
+    push_step2_to_db_wid_->connect_action(assembly, SLOT(PushStep2ToDB_start()), SIGNAL(PushStep2ToDB_finished()), SIGNAL(PushStep2ToDB_aborted()));
+  } else if (assembly->GetAssemblyCenter() == assembly::Center::BROWN)
+  {
+      ++assembly_step_N;
+
+      push_step2_to_db_wid_ = new AssemblyAssemblyActionWidget;
+      push_step2_to_db_wid_->label()->setText(QString::number(assembly_step_N));
+      push_step2_to_db_wid_->button()->setText("Generate File for Database Input");
+      PSSToSpacers_lay->addWidget(push_step2_to_db_wid_);
+
+      push_step2_to_db_wid_->connect_action(assembly, SLOT(PushStep2ToDB_start()), SIGNAL(PushStep2ToDB_finished()), SIGNAL(PushStep2ToDB_aborted()));
   }
   // ----------
 
@@ -533,13 +955,32 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
   QVBoxLayout* PSSToMaPSA_lay = new QVBoxLayout;
   wid_PSSToMaPSA_->setLayout(PSSToMaPSA_lay);
 
+  if (assembly->GetAssemblyCenter() == assembly::Center::DESY) {
+      // step: Scan Glue ID (step 3)
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Scan Slow Glue ID");
+        PSSToMaPSA_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(ScanGlue3ID_start()), SIGNAL(ScanGlue3ID_finished()), SIGNAL(ScanGlue3ID_aborted()));
+      }
+      // ----------
+  }
+
   // step: Place "MaPSA + Baseplate" on Assembly Platform with Baseplate Pins
   {
     ++assembly_step_N;
 
     AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->text()->setText("Place \"MaPSA + Baseplate\" on Assembly Platform with Baseplate Pins");
+    if(assembly->GetAssemblyCenter() == assembly::Center::DESY){
+      tmp_wid->text()->setText("Dispense Slow Glue on \"MaPSA + Baseplate\" and Place on Assembly Platform with Baseplate Pins");
+    } else {
+      tmp_wid->text()->setText("Place \"MaPSA + Baseplate\" on Assembly Platform with Baseplate Pins");
+    }
     PSSToMaPSA_lay->addWidget(tmp_wid);
   }
   // ----------
@@ -623,73 +1064,137 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
   }
   // ----------
 
-  // step: Register "PS-s to MaPSA" XYZA Position
-  // (position that will be used as starting point to lower "PS-s + Spacers" on MaPSA;
-  //  the height corresponds to the best-focus height on PS-p surface, as resulting from the PS-p alignment,
-  //  if the latter step completed successfully and was executed with auto-focusing enabled)
-  {
-    ++assembly_step_N;
+  if (assembly->GetAssemblyCenter() == assembly::Center::DESY)
+      {
+          // step: Make space on the platform by moving away the pickup tool
+          {
+            ++assembly_step_N;
 
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->button()->setText("Register \"PS-s to MaPSA\" XYZA Position");
-    PSSToMaPSA_lay->addWidget(tmp_wid);
+            AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+            tmp_wid->label()->setText(QString::number(assembly_step_N));
+            tmp_wid->button()->setText("Move away pickup tool to make space for glue dispensing");
+            PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(RegisterPSSPlusSpacersToMaPSAPosition_start()), SIGNAL(RegisterPSSPlusSpacersToMaPSAPosition_finished()));
+            tmp_wid->connect_action(assembly, SLOT(MakeSpaceOnPlatform_start()), SIGNAL(MakeSpaceOnPlatform_finished()));
+          }
+          // ----------
+
+          // step: Dispense Fast Glue on "MaPSA + Baseplate"
+          {
+            ++assembly_step_N;
+
+            AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+            tmp_wid->label()->setText(QString::number(assembly_step_N));
+            tmp_wid->text()->setText("Dispense Fast Glue on \"MaPSA + Baseplate\"");
+            PSSToMaPSA_lay->addWidget(tmp_wid);
+          }
+          // ----------
+
+          // step: Return to the platform by returning the pickup tool to the previous position
+          {
+            ++assembly_step_N;
+
+            AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+            tmp_wid->label()->setText(QString::number(assembly_step_N));
+            tmp_wid->button()->setText("Return to previous position");
+            PSSToMaPSA_lay->addWidget(tmp_wid);
+
+            tmp_wid->connect_action(assembly, SLOT(ReturnToPlatform_start()), SIGNAL(ReturnToPlatform_finished()));
+          }
+          // ----------
+
+      } else {
+      // step: Register "PS-s to MaPSA" XYZA Position
+      // (position that will be used as starting point to lower "PS-s + Spacers" on MaPSA;
+      //  the height corresponds to the best-focus height on PS-p surface, as resulting from the PS-p alignment,
+      //  if the latter step completed successfully and was executed with auto-focusing enabled)
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Register \"PS-s to MaPSA\" XYZA Position");
+        PSSToMaPSA_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(RegisterPSSPlusSpacersToMaPSAPosition_start()), SIGNAL(RegisterPSSPlusSpacersToMaPSAPosition_finished()));
+      }
+      // ----------
+
+      // step: Place spacers on gluing stage
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->text()->setText(assembly->GetAssemblyCenter() == assembly::Center::FNAL ? "Dispense Glue on Blocks and Place them on Gluing Stage" : "Place stencil on gluing station and place kapton on fork lift tool. Dispense epoxy on stage and fast glue on forklift.");
+        PSSToMaPSA_lay->addWidget(tmp_wid);
+      }
+      // ----------
+
+      // step: Go From "PS-s to MaPSA" Position to Gluing Stage (XY) Ref-Point
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Go From \"PS-s To MaPSA\" Position to Gluing Stage (XY) Ref-Point");
+        PSSToMaPSA_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start()), SIGNAL(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished()));
+      }
+      // ----------
+
+      // step: Lower "PS-s + Spacers" onto Gluing Stage
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Lower \"PS-s + Spacers\" onto Gluing Stage");
+        PSSToMaPSA_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(LowerPSSPlusSpacersOntoGluingStage_start()), SIGNAL(LowerPSSPlusSpacersOntoGluingStage_finished()));
+      }
+      // ----------
+
+      // step: Dispense Fast Glue on "MaPSA + Baseplate"
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->text()->setText(assembly->GetAssemblyCenter() == assembly::Center::FNAL ? "Dispense Fast Glue on Spacers" : "Apply fast glue to spacers using fork lift tool.");
+        PSSToMaPSA_lay->addWidget(tmp_wid);
+      }
+      // ----------
+
+      // step: Slowly lift from gluing stage
+      {
+          ++assembly_step_N;
+
+          AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+          tmp_wid->label()->setText(QString::number(assembly_step_N));
+          tmp_wid->button()->setText("Slowly lift from gluing stage by 5 mm");
+          PSSToMaPSA_lay->addWidget(tmp_wid);
+
+          tmp_wid->connect_action(assembly, SLOT(SlowlyLiftFromGluingStage_start()), SIGNAL(SlowlyLiftFromGluingStage_finished()));
+      }
+      // ----------
+
+      // step: Return To "PS-s to MaPSA" XYZA Position
+      // (step prior to lowering pickup tool; camera height must correspond to best-focus height on PS-p surface)
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Return To \"PS-s to MaPSA\" Position (XYZA)");
+        PSSToMaPSA_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(ReturnToPSSPlusSpacersToMaPSAPosition_start()), SIGNAL(ReturnToPSSPlusSpacersToMaPSAPosition_finished()));
+      }
+      // ----------
   }
-  // ----------
-
-  // step: Place spacers on gluing stage
-  {
-    ++assembly_step_N;
-
-    AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->text()->setText("Dispense Glue on Blocks and Place them on Gluing Stage");
-    PSSToMaPSA_lay->addWidget(tmp_wid);
-  }
-  // ----------
-
-  // step: Go From "PS-s to MaPSA" Position to Gluing Stage (XY) Ref-Point
-  {
-    ++assembly_step_N;
-
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->button()->setText("Go From \"PS-s To MaPSA\" Position to Gluing Stage (XY) Ref-Point");
-    PSSToMaPSA_lay->addWidget(tmp_wid);
-
-    tmp_wid->connect_action(assembly, SLOT(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start()), SIGNAL(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished()));
-  }
-  // ----------
-
-  // step: Lower "PS-s + Spacers" onto Gluing Stage
-  {
-    ++assembly_step_N;
-
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->button()->setText("Lower \"PS-s + Spacers\" onto Gluing Stage");
-    PSSToMaPSA_lay->addWidget(tmp_wid);
-
-    tmp_wid->connect_action(assembly, SLOT(LowerPSSPlusSpacersOntoGluingStage_start()), SIGNAL(LowerPSSPlusSpacersOntoGluingStage_finished()));
-  }
-  // ----------
-
-  // step: Return To "PS-s to MaPSA" XYZA Position
-  // (step prior to lowering pickup tool; camera height must correspond to best-focus height on PS-p surface)
-  {
-    ++assembly_step_N;
-
-    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
-    tmp_wid->label()->setText(QString::number(assembly_step_N));
-    tmp_wid->button()->setText("Return To \"PS-s to MaPSA\" Position (XYZA)");
-    PSSToMaPSA_lay->addWidget(tmp_wid);
-
-    tmp_wid->connect_action(assembly, SLOT(ReturnToPSSPlusSpacersToMaPSAPosition_start()), SIGNAL(ReturnToPSSPlusSpacersToMaPSAPosition_finished()));
-  }
-  // ----------
-
   // step: Lower "PS-s + Spacers" onto MaPSA
   {
     ++assembly_step_N;
@@ -753,6 +1258,43 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
   }
   // ----------
 
+  // step: Push IDs to Database
+  if (assembly->GetAssemblyCenter() == assembly::Center::DESY)
+  {
+    ++assembly_step_N;
+
+    push_step3_to_db_wid_ = new AssemblyAssemblyActionWidget;
+    push_step3_to_db_wid_->label()->setText(QString::number(assembly_step_N));
+    push_step3_to_db_wid_->button()->setText("Push Assembly Information to Database");
+    PSSToMaPSA_lay->addWidget(push_step3_to_db_wid_);
+
+    push_step3_to_db_wid_->connect_action(assembly, SLOT(PushStep3ToDB_start()), SIGNAL(PushStep3ToDB_finished()), SIGNAL(PushStep3ToDB_aborted()));
+  } else if (assembly->GetAssemblyCenter() == assembly::Center::BROWN)
+  {
+      {
+          ++assembly_step_N;
+
+          AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+          tmp_wid->label()->setText(QString::number(assembly_step_N));
+          tmp_wid->button()->setText("Define/Scan Module ID");
+          PSSToMaPSA_lay->addWidget(tmp_wid);
+
+          tmp_wid->connect_action(assembly, SLOT(ScanModuleID_start()), SIGNAL(ScanModuleID_finished()), SIGNAL(ScanModuleID_aborted()));
+        }
+        // ----------
+        {
+          ++assembly_step_N;
+
+          push_step3_to_db_wid_ = new AssemblyAssemblyActionWidget;
+          push_step3_to_db_wid_->label()->setText(QString::number(assembly_step_N));
+          push_step3_to_db_wid_->button()->setText("Generate File for Database Input");
+          PSSToMaPSA_lay->addWidget(push_step3_to_db_wid_);
+
+          push_step3_to_db_wid_->connect_action(assembly, SLOT(PushStep3ToDB_start()), SIGNAL(PushStep3ToDB_finished()), SIGNAL(PushStep3ToDB_aborted()));
+      }
+  }
+  // ----------
+
   // step: Remove PS Module from Assembly Platform
   {
     ++assembly_step_N;
@@ -768,6 +1310,20 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const QObject* const assembly, QW
 
   PSSToMaPSA_lay->addStretch(1);
   //// -----------------------------------------------
+}
+
+void AssemblyAssemblyV2View::disable_DB()
+{
+    //push_to_db_button_->setEnabled(false);
+    //push_to_db_wid_->disable_action();
+
+    mapsa_id_lineed_->setReadOnly(true);
+    baseplate_id_lineed_->setReadOnly(true);
+    pss_id_lineed_->setReadOnly(true);
+    glue1_id_lineed_->setReadOnly(true);
+    glue2_id_lineed_->setReadOnly(true);
+    glue3_id_lineed_->setReadOnly(true);
+    module_id_lineed_->setReadOnly(true);
 }
 
 //-- Information about this tab in GUI

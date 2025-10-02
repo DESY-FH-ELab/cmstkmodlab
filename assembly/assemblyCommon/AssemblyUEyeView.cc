@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -51,6 +51,14 @@ void AssemblyUEyeView::setImage(const cv::Mat& newImage)
 
     lock.unlock();
 
+    update();
+}
+
+void AssemblyUEyeView::resetImage()
+{
+    QMutexLocker lock(&mutex_);
+    image_ = QImage();
+    lock.unlock();
     update();
 }
 

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -91,7 +91,7 @@ void AssemblyDBLoggerModel::writeMessage(QString message)
 
         QTextStream stream(&file);
         stream << "[" << getTimestamp() << "] "; //Print timestamp
-        stream << message << endl; //Print message
+        stream << message << Qt::endl; //Print message
         file.close();
     }
     else if(!this->appendToEnd_) //Message will be appended at beginning of file
@@ -103,7 +103,7 @@ void AssemblyDBLoggerModel::writeMessage(QString message)
         file.open(QFile::WriteOnly | QFile::Text); //Re-open file in write mode
         QTextStream out(&file);
         out << "[" << getTimestamp() << "] "; //Print timestamp
-        out << message << endl << endl; //Print message
+        out << message << Qt::endl << Qt::endl; //Print message
         out << buffer; //Print previous file's content
         file.close();
 

@@ -56,7 +56,7 @@ int main( int argc, char** argv )
 
     app.setStyle("cleanlooks");
 
-    ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/defo/defo.cfg");
+    ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/defo/defo.cfg", "main");
 
     if (app.arguments().size()==2 &&
         app.arguments().at(1)=="--nogui") {

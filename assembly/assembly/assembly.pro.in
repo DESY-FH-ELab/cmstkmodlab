@@ -41,7 +41,7 @@ equals(NOUEYE,"X1") {
 
 QT += core gui xml network script svg
 greaterThan(QT_MAJOR_VERSION, 4) {
-  QT += widgets
+  QT += widgets charts
 } 
 
 TARGET = assembly

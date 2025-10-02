@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -45,7 +45,7 @@ LStepExpressFake::LStepExpressFake(const std::string& ioPort, const std::string&
 }
 
 //! Return name of port used to initialize LStepExpressFake
-std::string LStepExpressFake::ioPort() const
+std::string LStepExpressFake::ioPort()
 {
   return ioPort_;
 }

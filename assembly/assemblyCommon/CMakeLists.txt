@@ -29,6 +29,8 @@ add_library(AssemblyCommon SHARED
         AssemblyAssemblyTextWidget.cc
         AssemblyMultiPickupTester.cc
         AssemblyMultiPickupTesterWidget.cc
+        AssemblySubassemblyPickup.cc
+        AssemblySubassemblyPickupWidget.cc
         AssemblyPositionsRegistryWidget.cc
         AssemblyToolboxView.cc
         AssemblySmartMotionManager.cc
@@ -38,6 +40,8 @@ add_library(AssemblyCommon SHARED
         AssemblyHardwareControlView.cc
         AssemblyLogFileController.cc
         AssemblyLogFileView.cc
+        MetrologyView.cc
+        Metrology.cc
         RelayCardManager.cc
         LStepExpressModel.cc
         LStepExpressMotion.cc
@@ -61,6 +65,11 @@ add_library(AssemblyCommon SHARED
         AssemblyDBLoggerController.cc
         AssemblyDBLoggerModel.cc
         AssemblyDBLoggerView.cc
+        AssemblyStopwatchWidget.cc
+        VDatabase.cc
+        DatabaseDESY.cc
+        DatabaseBrown.cc
+        DatabaseDummy.cc
 )
 
 if(CMSTKMODLAB_FAKEUEYE)
@@ -75,25 +84,29 @@ endif()
 
 include_directories(${PROJECT_SOURCE_DIR})
 
-include_directories(${ROOT_INCLUDE_DIRS})
-
 include_directories(${OPENCV4_INCLUDE_DIRS})
 
 include_directories(${Qt5Core_INCLUDE_DIRS})
 include_directories(${Qt5Widgts_INCLUDE_DIRS})
+include_directories(${Qt5Network_INCLUDE_DIRS})
 include_directories(${Qt5Script_INCLUDE_DIRS})
+include_directories(${Qt5Charts_INCLUDE_DIRS})
 include_directories(${Qt5Svg_INCLUDE_DIRS})
 
 include_directories(${UEYE_HEADER_DIR})
 
 add_definitions(${Qt5Core_DEFINITIONS})
 add_definitions(${Qt5Widgts_DEFINITIONS})
+add_definitions(${Qt5Network_DEFINITIONS})
 add_definitions(${Qt5Script_DEFINITIONS})
+add_definitions(${Qt5Charts_DEFINITIONS})
 add_definitions(${Qt5Svg_DEFINITIONS})
 
 set(CMAKE_CXX_FLAGS "${Qt5Core_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Widgts_EXECUTABLE_COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS "${Qt5Network_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Script_EXECUTABLE_COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS "${Qt5Charts_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Svg_EXECUTABLE_COMPILE_FLAGS}")
 
 set_target_properties(AssemblyCommon PROPERTIES VERSION ${PROJECT_VERSION})
@@ -107,10 +120,11 @@ INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/common)
 target_link_libraries(AssemblyCommon
         PRIVATE Qt5::Core
         PRIVATE Qt5::Widgets
+        PRIVATE Qt5::Network
         PRIVATE Qt5::Script
+        PRIVATE Qt5::Charts
         PRIVATE Qt5::Svg
         PRIVATE Common
-        PRIVATE ROOT::Gpad
 	PUBLIC  ${UEYE_LIBRARY}
 )
 

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -18,6 +18,8 @@
 
 #include <QObject>
 #include <QString>
+#include <QLineSeries>
+#include <QtCharts>
 
 #include <vector>
 #include <string>
@@ -99,7 +101,7 @@ class AssemblyZFocusFinder : public QObject
 
     void image_acquired(const cv::Mat&);
 
-    void show_zscan(const QString&);
+    void show_zscan(QLineSeries&);
 
     void text_update_request(const double);
 

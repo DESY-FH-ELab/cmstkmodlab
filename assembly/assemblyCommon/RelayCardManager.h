@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -17,6 +17,13 @@
 
 #include <QObject>
 #include <QTimer>
+
+enum class SwitchState {
+  DEVICE_OFF = 0             // Device is off
+  , CHANNEL_OFF = 1          // Channel is off
+  , CHANNEL_ON = 2           // Channel is on
+  , CHANNEL_SWITCHING = 3    // Channel is currently switching
+};
 
 class RelayCardManager : public QObject
 {
@@ -53,7 +60,7 @@ class RelayCardManager : public QObject
 
  signals:
 
-  void vacuumChannelState(int, bool);
+  void vacuumChannelState(int, SwitchState);
 
   void  enableVacuumButton();
   void disableVacuumButton();

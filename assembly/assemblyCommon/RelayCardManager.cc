@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2021 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -45,7 +45,23 @@ VRelayCardModel* RelayCardManager::relayCardModel() const
 /// toggleVacuum slot description
 void RelayCardManager::toggleVacuum(const int chNumber)
 {
-  if(relayCardModel()->getSwitchState(chNumber) == 0)
+  if(liveTimer_->isActive())
+  {
+    NQLog("RelayCardManager", NQLog::Critical) << "toggleVacuum(" << chNumber << ")"
+        << ": ERROR! Another line is still in transition.";
+    return;
+  }
+
+  State switchState;
+  try{
+    switchState = relayCardModel()->getSwitchState(chNumber);
+  } catch (...){
+    NQLog("RelayCardManager", NQLog::Critical) << "toggleVacuum(" << chNumber << ")"
+         << ": ERROR! Toggling vacuum error : Requested channel is likely unassigned.";
+    return;
+  }
+
+  if(switchState == 0)
   {
     NQLog("RelayCardManager", NQLog::Debug) << "toggleVacuum(" << chNumber << ")"
        << ": emitting signal \"disableVacuumButton\"";
@@ -56,12 +72,14 @@ void RelayCardManager::toggleVacuum(const int chNumber)
     relayCardModel()->setSwitchEnabled(chNumber, true);
     channelNumber_ = chNumber;
 
+    emit vacuumChannelState(channelNumber_, SwitchState::CHANNEL_SWITCHING);
+
     // here will be a QtTimer for about 2 secs
     liveTimer_->start(togglingVacuumDelay);
 
     emit DBLogMessage("Turned vacuum ON");
   }
-  else if(relayCardModel()->getSwitchState(chNumber) == 1)
+  else if(switchState == 1)
   {
     NQLog("RelayCardManager", NQLog::Debug) << "toggleVacuum(" << chNumber << ")"
        << ": emitting signal \"disableVacuumButton\"";
@@ -71,6 +89,8 @@ void RelayCardManager::toggleVacuum(const int chNumber)
     //NQLog("RelayCardManager") << ": attempt to turn OFF the vacuum on channel " << chNumber;
     relayCardModel()->setSwitchEnabled(chNumber, false);
     channelNumber_ = chNumber;
+
+    emit vacuumChannelState(channelNumber_, SwitchState::CHANNEL_SWITCHING);
 
     // here will be a QtTimer for about 2 secs
     liveTimer_->start(togglingVacuumDelay);
@@ -91,7 +111,27 @@ void RelayCardManager::vacuumToggled()
   NQLog("RelayCardManager", NQLog::Debug) << "vacuumToggled"
      << ": emitting signal \"vacuumChannelState(" << channelNumber_ << ", " << relayCardModel()->getSwitchState(channelNumber_) << ")\"";
 
-  emit vacuumChannelState(channelNumber_, relayCardModel()->getSwitchState(channelNumber_));
+  SwitchState state;
+  if(relayCardModel()->getDeviceState() == State::OFF) {
+    state = SwitchState::DEVICE_OFF;
+  } else {
+    switch(relayCardModel()->getSwitchState(channelNumber_)) {
+      case OFF:
+        state = SwitchState::CHANNEL_OFF;
+        break;
+      case READY:
+        state = SwitchState::CHANNEL_ON;
+        break;
+      case INITIALIZING:
+        state = SwitchState::CHANNEL_SWITCHING;
+        break;
+      case CLOSING:
+        state = SwitchState::CHANNEL_SWITCHING;
+        break;
+    }
+  }
+
+  emit vacuumChannelState(channelNumber_, state);
 
   NQLog("RelayCardManager", NQLog::Debug) << "vacuumToggled"
      << ": emitting signal \"enableVacuumButton\"";
@@ -110,19 +150,55 @@ void RelayCardManager::transmit_vacuumChannelState(const int chNumber)
      << ": emitting signal \"vacuumChannelState("
      << chNumber << ", " << relayCardModel()->getSwitchState(chNumber) << ")\"";
 
-  emit vacuumChannelState(chNumber, relayCardModel()->getSwitchState(chNumber));
+  SwitchState state;
+  if(relayCardModel()->getDeviceState() == State::OFF) {
+    state = SwitchState::DEVICE_OFF;
+  } else {
+    switch(relayCardModel()->getSwitchState(chNumber)) {
+      case OFF:
+        state = SwitchState::CHANNEL_OFF;
+        break;
+      case READY:
+        state = SwitchState::CHANNEL_ON;
+        break;
+      case INITIALIZING:
+        state = SwitchState::CHANNEL_SWITCHING;
+        break;
+      case CLOSING:
+        state = SwitchState::CHANNEL_SWITCHING;
+        break;
+    }
+  }
+
+  emit vacuumChannelState(chNumber, state);
 }
 
 // maybe need checkStatus SLOT
 
 void RelayCardManager::enableVacuum(const int chNumber)
 {
-  const auto state = relayCardModel()->getSwitchState(chNumber);
+  if(liveTimer_->isActive())
+  {
+    NQLog("RelayCardManager", NQLog::Critical) << "enableVacuum(" << chNumber << ")"
+        << ": ERROR! Another line is still in transition.";
+    return;
+  }
+
+  State state;
+  try{
+    state = relayCardModel()->getSwitchState(chNumber);
+  } catch (...){
+    NQLog("RelayCardManager", NQLog::Critical) << "enableVacuum(" << chNumber << ")"
+         << ": ERROR! Toggling vacuum error : Requested channel is likely unassigned.";
+    return;
+  }
 
   if(state == 0) // vacuum line is OFF
   {
   	relayCardModel()->setSwitchEnabled(chNumber, true);
     channelNumber_ = chNumber;
+
+    emit vacuumChannelState(channelNumber_, SwitchState::CHANNEL_SWITCHING);
 
     liveTimer_->start(togglingVacuumDelay);
 
@@ -139,7 +215,7 @@ void RelayCardManager::enableVacuum(const int chNumber)
   }
   else
   {
-    NQLog("RelayCardManager", NQLog::Critical) << "toggleVacuum(" << chNumber << ")"
+    NQLog("RelayCardManager", NQLog::Critical) << "enableVacuum(" << chNumber << ")"
        << ": ERROR! Toggling vacuum error : SwithState != 0|1";
 
     NQLog("RelayCardManager", NQLog::Debug) << "enableVacuum(" << chNumber << ")"
@@ -153,7 +229,21 @@ void RelayCardManager::enableVacuum(const int chNumber)
 
 void RelayCardManager::disableVacuum(const int chNumber)
 {
-  const auto state = relayCardModel()->getSwitchState(chNumber);
+  if(liveTimer_->isActive())
+  {
+    NQLog("RelayCardManager", NQLog::Critical) << "disableVacuum(" << chNumber << ")"
+        << ": ERROR! Another line is still in transition.";
+    return;
+  }
+
+  State state;
+  try{
+    state = relayCardModel()->getSwitchState(chNumber);
+  } catch (...){
+    NQLog("RelayCardManager", NQLog::Critical) << "disableVacuum(" << chNumber << ")"
+         << ": ERROR! Toggling vacuum error : Requested channel is likely unassigned.";
+    return;
+  }
 
   if(state == 0) // vacuum line is OFF
   {
@@ -168,6 +258,8 @@ void RelayCardManager::disableVacuum(const int chNumber)
   {
   	relayCardModel()->setSwitchEnabled(chNumber, false);
     channelNumber_ = chNumber;
+
+    emit vacuumChannelState(channelNumber_, SwitchState::CHANNEL_SWITCHING);
 
     liveTimer_->start(togglingVacuumDelay);
 

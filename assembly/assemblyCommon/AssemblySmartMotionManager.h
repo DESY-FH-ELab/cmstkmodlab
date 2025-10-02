@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -29,7 +29,7 @@ class AssemblySmartMotionManager : public QObject
   explicit AssemblySmartMotionManager(const LStepExpressMotionManager* const, QObject* parent=nullptr);
   virtual ~AssemblySmartMotionManager() {}
 
-  static QQueue<LStepExpressMotion> smartMotions_relative(const double, const double, const double, const double, const std::vector<double>&, int&);
+  static QQueue<LStepExpressMotion> smartMotions_relative(const double, const double, const double, const double, const std::vector<double>&, int&, const double);
 
  protected:
 
@@ -42,6 +42,8 @@ class AssemblySmartMotionManager : public QObject
   int smartMotions_N_;
 
   std::vector<double> smartMove_steps_dZ_;
+
+  double smartMove_initial_step_up_dZ_;
 
   QQueue<LStepExpressMotion> motions_;
 

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -377,7 +377,7 @@ int main(int argc, char ** argv)
   /*
   {
   	SlackBot bot("TestBot", "https://hooks.slack.com/services/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",
-  			"#testbot");
+  			"#testbot", "main");
 
   	bot.postMessage("message from Qt");
   }
@@ -387,7 +387,7 @@ int main(int argc, char ** argv)
   {
     ApplicationConfig * config = ApplicationConfig::instance("mattermost.cfg");
 
-    MattermostBot bot("test", "cmstkmodlab");
+    MattermostBot bot("test", "cmstkmodlab", "main");
 
     bot.postMessage("message from cmstkmodlab");
   }

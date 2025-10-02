@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -33,7 +33,7 @@ PumpStationMainWindow::PumpStationMainWindow(PumpStationHTTPModel* model,
     locked_(true)
 {
   QPalette pal;
-  pal.setColor(QPalette::Background, Qt::white);
+  pal.setColor(QPalette::Window, Qt::white);
   setPalette(pal);
 
   QWidget * w = new QWidget(this);

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -14,11 +14,18 @@
 #include <ApplicationConfig.h>
 
 #include <AssemblyAssemblyV2.h>
-#include <AssemblyUtilities.h>
 
 #include <string>
+#include <unistd.h>
 
 #include <QMessageBox>
+#include <QInputDialog>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QTextEdit>
+#include <QFileInfo>
 
 AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const motion, const RelayCardManager* const vacuum, const AssemblySmartMotionManager* const smart_motion, QObject* parent)
  : QObject(parent)
@@ -35,6 +42,12 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
  , pickup1_Z_(0.)
  , pickup2_Z_(0.)
 
+ , makespace_Y_(0.)
+ , makespace_Z_(0.)
+ , position_y_before_makespace_(0.)
+ , position_z_before_makespace_(0.)
+ , position_before_makespace_stored_(false)
+
  , use_smartMove_(false)
  , in_action_(false)
 
@@ -43,6 +56,16 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
  , PSSPlusSpacersToMaPSAPosition_Y_(0.)
  , PSSPlusSpacersToMaPSAPosition_Z_(0.)
  , PSSPlusSpacersToMaPSAPosition_A_(0.)
+
+ , Baseplate_ID_()
+ , MaPSA_ID_()
+ , PSS_ID_()
+ , Glue1_ID_()
+ , Glue2_ID_()
+ , Glue3_ID_()
+ , Module_ID_()
+
+ , database_()
 {
   // validate pointers to controllers
   this->motion();
@@ -67,7 +90,29 @@ AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const mo
   pickup1_Z_ = config_->getValue<double>("main", "AssemblyAssembly_pickup1_Z");
   pickup2_Z_ = config_->getValue<double>("main", "AssemblyAssembly_pickup2_Z");
 
+  makespace_Y_ = config_->getValue<double>("main", "AssemblyAssembly_makespace_Y");
+  makespace_Z_ = config_->getValue<double>("main", "AssemblyAssembly_makespace_Z");
+
+  original_Z_velocity_ = motion_->get_velocity_Z();
+
   alreadyClicked_LowerPickupToolOntoMaPSA = false; alreadyClicked_LowerPickupToolOntoPSS = false; alreadyClicked_LowerMaPSAOntoBaseplate = false; alreadyClicked_LowerPSSOntoSpacers = false; alreadyClicked_LowerPSSPlusSpacersOntoGluingStage = false; alreadyClicked_LowerPSSPlusSpacersOntoMaPSA = false;
+
+  std::string assembly_center_str = QString::fromStdString(config_->getValue<std::string>("main", "assembly_center")).toUpper().toStdString();
+  if(assembly_center_str == "FNAL") {
+      assembly_center_ = assembly::Center::FNAL;
+      database_ = new DatabaseDummy(this);
+  } else if(assembly_center_str == "BROWN") {
+      assembly_center_ = assembly::Center::BROWN;
+      auto db_file_path = QFileInfo(QString::fromStdString(config_->getValue<std::string>("main", "Database_filepath")));
+      database_ = new DatabaseBrown(this, db_file_path);
+  } else if(assembly_center_str == "DESY") {
+      assembly_center_ = assembly::Center::DESY;
+      auto base_url = QString::fromStdString(config_->getValue<std::string>("main", "Database_URL"));
+      auto token = QString::fromStdString(config_->getValue<std::string>("main", "Database_Token"));
+      database_ = new DatabaseDESY(this, base_url, token);
+  } else {
+      NQLog("AssemblyAssemblyV2", NQLog::Warning) << "Invalid assembly center provided: \"" << assembly_center_str << "\". Provide one of the following options: \"FNAL\", \"BROWN\", \"DESY\"";
+  }
 }
 
 const LStepExpressMotionManager* AssemblyAssemblyV2::motion() const
@@ -132,10 +177,521 @@ void AssemblyAssemblyV2::use_smartMove(const int state)
 }
 // ----------------------------------------------------------------------------------------------------
 
+void AssemblyAssemblyV2::ScanMaPSAID_start()
+{
+    bool ok = false;
+    QString MaPSA_ID = QInputDialog::getText(nullptr, tr("Scan MaPSA ID"),
+                                         tr("Scan MaPSA ID:"), QLineEdit::Normal,
+                                         tr(""), &ok);
+    if (!ok || MaPSA_ID.isEmpty()){
+        emit ScanMaPSAID_aborted();
+        return;
+    } else {
+        if(!database_->is_component_available(MaPSA_ID, "MaPSA"))
+        {
+            emit ScanMaPSAID_aborted();
+            return;
+        }
+        MaPSA_ID_ = MaPSA_ID;
+        emit MaPSA_ID_updated(MaPSA_ID);
+        emit ScanMaPSAID_finished();
+    }
+}
+
+void AssemblyAssemblyV2::ScanPSSID_start()
+{
+    bool ok = false;
+    QString PSS_ID = QInputDialog::getText(nullptr, tr("Scan PS-s ID"),
+                                         tr("Scan PS-s ID:"), QLineEdit::Normal,
+                                         tr(""), &ok);
+    if (!ok || PSS_ID.isEmpty()){
+        emit ScanPSSID_aborted();
+        return;
+    } else {
+        if(!database_->is_component_available(PSS_ID, "PSs%20Sensor"))
+        {
+            emit ScanPSSID_aborted();
+            return;
+        }
+        PSS_ID_ = PSS_ID;
+        emit PSS_ID_updated(PSS_ID);
+        emit ScanPSSID_finished();
+    }
+}
+
+void AssemblyAssemblyV2::ScanBaseplateID_start()
+{
+    bool ok = false;
+    QString Baseplate_ID = QInputDialog::getText(nullptr, tr("Scan Baseplate ID"),
+                                         tr("Scan Baseplate ID:"), QLineEdit::Normal,
+                                         tr(""), &ok);
+    if (!ok || Baseplate_ID.isEmpty()){
+        emit ScanBaseplateID_aborted();
+        return;
+    } else {
+        if(!database_->is_component_available(Baseplate_ID, "PS%20Baseplate"))
+        {
+            emit ScanBaseplateID_aborted();
+            return;
+        }
+        Baseplate_ID_ = Baseplate_ID;
+        emit Baseplate_ID_updated(Baseplate_ID);
+        emit ScanBaseplateID_finished();
+    }
+}
+
+void AssemblyAssemblyV2::ScanGlue1ID_start()
+{
+    bool ok = false;
+    QString Glue1_ID = QInputDialog::getText(nullptr, tr("Scan Slow Glue ID (step 1)"),
+                                         tr("Scan Slow Glue ID (step 1):"), QLineEdit::Normal,
+                                         tr(""), &ok);
+    if (!ok || Glue1_ID.isEmpty()){
+        emit ScanGlue1ID_aborted();
+        return;
+    } else {
+        if(!database_->is_component_available(Glue1_ID, "Glue"))
+        {
+            emit ScanGlue1ID_aborted();
+            return;
+        }
+        Glue1_ID_ = Glue1_ID;
+        emit Glue1_ID_updated(Glue1_ID);
+        emit ScanGlue1ID_finished();
+    }
+}
+
+void AssemblyAssemblyV2::ScanGlue2ID_start()
+{
+    bool ok = false;
+    QString Glue2_ID = QInputDialog::getText(nullptr, tr("Scan Slow Glue ID (step 2)"),
+                                         tr("Scan Slow Glue ID (step 2):"), QLineEdit::Normal,
+                                         Glue1_ID_, &ok);
+    if (!ok || Glue2_ID.isEmpty()){
+        emit ScanGlue2ID_aborted();
+        return;
+    } else {
+        if(!database_->is_component_available(Glue2_ID, "Glue"))
+        {
+            emit ScanGlue2ID_aborted();
+            return;
+        }
+        Glue2_ID_ = Glue2_ID;
+        emit Glue2_ID_updated(Glue2_ID);
+        emit ScanGlue2ID_finished();
+    }
+}
+
+void AssemblyAssemblyV2::ScanGlue3ID_start()
+{
+    bool ok = false;
+    QString Glue3_ID = QInputDialog::getText(nullptr, tr("Scan Slow Glue ID (step 3)"),
+                                         tr("Scan Slow Glue ID (step 3):"), QLineEdit::Normal,
+                                         Glue2_ID_, &ok);
+    if (!ok || Glue3_ID.isEmpty()){
+        emit ScanGlue3ID_aborted();
+        return;
+    } else {
+        if(!database_->is_component_available(Glue3_ID, "Glue"))
+        {
+            emit ScanGlue3ID_aborted();
+            return;
+        }
+        Glue3_ID_ = Glue3_ID;
+        emit Glue3_ID_updated(Glue3_ID);
+        emit ScanGlue3ID_finished();
+    }
+}
+
+void AssemblyAssemblyV2::ScanModuleID_start()
+{
+    bool ok = false;
+    QString Module_ID = QInputDialog::getText(nullptr, tr("Scan Module ID"),
+                                         tr("Scan Module ID:"), QLineEdit::Normal,
+                                         tr(""), &ok);
+    if (!ok || Module_ID.isEmpty()){
+        emit ScanModuleID_aborted();
+        return;
+    } else {
+        Module_ID_ = Module_ID;
+        emit Module_ID_updated(Module_ID);
+        emit ScanModuleID_finished();
+    }
+}
+
+void AssemblyAssemblyV2::RegisterModuleID_start()
+{
+    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "RegisterModuleID_start: "
+    << "Attempting to register module ID in DB";
+
+    if(database_->register_module_name(Module_ID_, "OperatorName"))
+    {
+        NQLog("AssemblyAssemblyV2", NQLog::Spam) << "RegisterModuleID_start: "
+        << "Successfully registered module in DB";
+        emit RegisterModuleID_finished();
+    } else {
+        NQLog("AssemblyAssemblyV2", NQLog::Fatal) << "RegisterModuleID_start: "
+        << "Could not register module in DB";
+        emit RegisterModuleID_aborted();
+    }
+}
+
+void AssemblyAssemblyV2::PushAllToDB_start()
+{
+    if(Baseplate_ID_.isEmpty() || MaPSA_ID_.isEmpty() || PSS_ID_.isEmpty() || Module_ID_.isEmpty() || Glue1_ID_.isEmpty() || Glue2_ID_.isEmpty() || Glue3_ID_.isEmpty())
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Information for Database Upload missing"));
+        QString msg = QString("The following IDs are missing:") + (Baseplate_ID_.isEmpty() ? "\n\tBaseplate ID" : "") + (MaPSA_ID_.isEmpty() ? "\n\tMaPSA ID" : "") + (PSS_ID_.isEmpty() ? "\n\tPSS ID" : "") + (Glue1_ID_.isEmpty() ? "\n\tGlue 1 ID" : "") + (Glue2_ID_.isEmpty() ? "\n\tGlue 2 ID" : "") + (Glue3_ID_.isEmpty() ? "\n\tGlue 3 ID" : "") + (Module_ID_.isEmpty() ? "\n\tModule ID" : "");
+        msgBox.setText(msg);
+        msgBox.setInformativeText("Please add this information via the toolbar.");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        int ret = msgBox.exec();
+
+        emit PushAllToDB_aborted();
+        return;
+    }
+
+    QDialog* msgBox = new QDialog();
+    msgBox->setWindowTitle(tr("Push Full Module Information to Database"));
+
+    QVBoxLayout* vlay = new QVBoxLayout();
+    msgBox->setLayout(vlay);
+
+    QLabel* main_txt = new QLabel(QString("Push the following information to database:\n\tBP:\t%1\n\tMaPSA:\t%2\n\tPS-s:\t%3\n\tGlues:\t%4 %5 %6\n\tModule:\t%7").arg(Baseplate_ID_).arg(MaPSA_ID_).arg(PSS_ID_).arg(Glue1_ID_).arg(Glue2_ID_).arg(Glue3_ID_).arg(Module_ID_));
+    vlay->addWidget(main_txt);
+
+    QHBoxLayout* comment_lay = new QHBoxLayout();
+
+    QLabel* comment_lab = new QLabel("Comments:");
+    QTextEdit* comment_lin = new QTextEdit("");
+    comment_lin->setTabChangesFocus(true);
+    comment_lin->setFixedHeight(60);
+
+    comment_lay->addWidget(comment_lab);
+    comment_lay->addWidget(comment_lin);
+
+    vlay->addLayout(comment_lay);
+
+    QLabel* info_txt = new QLabel("Do you want to push this information to the Database?");
+    vlay->addWidget(info_txt);
+
+    QDialogButtonBox* button_box = new QDialogButtonBox(Qt::Horizontal);
+    button_box->addButton(QDialogButtonBox::Yes);
+    button_box->addButton(QDialogButtonBox::No);
+    button_box->setCenterButtons(true);
+
+    vlay->addWidget(button_box);
+
+    connect(button_box, SIGNAL(accepted()), msgBox, SLOT(accept()));
+    connect(button_box, SIGNAL(rejected()), msgBox, SLOT(reject()));
+
+    int ret = msgBox->exec();
+
+    switch(msgBox->result())
+    {
+      case QDialog::Rejected:
+        emit PushAllToDB_aborted();
+        return;
+      case QDialog::Accepted:
+        // <--- Insert function to push to database here. --->
+        NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushAllToDB_start: "
+           << QString("Push the following information to database:\n\tBaseplate:\t%1\n\tMaPSA:\t\t%2\n\tPS-s:\t\t%3\n\tPS-s:\t\t%4\n\tModule:\t\t%5 %6 %7\n\tComment:\t\t%8").arg(Baseplate_ID_).arg(MaPSA_ID_).arg(PSS_ID_).arg(Glue1_ID_).arg(Glue2_ID_).arg(Glue3_ID_).arg(Module_ID_).arg(comment_lin->toPlainText()).toStdString();
+        emit PushAllToDB_finished();
+        break;
+      default:
+        emit PushAllToDB_aborted();
+        return;
+    }
+}
+
+void AssemblyAssemblyV2::PushStep1ToDB_start()
+{
+    if(assembly_center_ == assembly::Center::DESY && (Module_ID_.isEmpty() || Baseplate_ID_.isEmpty() || MaPSA_ID_.isEmpty() || Glue1_ID_.isEmpty()))
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Information for Database Upload missing"));
+        QString msg = QString("The following IDs are missing:") + (Module_ID_.isEmpty() ? "\n\tModule ID" : "") + (Baseplate_ID_.isEmpty() ? "\n\tBaseplate ID" : "") + (MaPSA_ID_.isEmpty() ? "\n\tMaPSA ID" : "") + (Glue1_ID_.isEmpty() ? "\n\tGlue 1 ID" : "");
+        msgBox.setText(msg);
+        msgBox.setInformativeText("Please add this information via the toolbar or assembly actions.");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        int ret = msgBox.exec();
+
+        emit PushStep1ToDB_aborted();
+        return;
+    }
+    if(assembly_center_ == assembly::Center::BROWN && (Baseplate_ID_.isEmpty() || MaPSA_ID_.isEmpty()))
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Information for Database Upload missing"));
+        QString msg = QString("The following IDs are missing:") + (Baseplate_ID_.isEmpty() ? "\n\tBaseplate ID" : "") + (MaPSA_ID_.isEmpty() ? "\n\tMaPSA ID" : "");
+        msgBox.setText(msg);
+        msgBox.setInformativeText("Please add this information via the toolbar or assembly actions.");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        int ret = msgBox.exec();
+
+        emit PushStep1ToDB_aborted();
+        return;
+    }
+
+    QDialog* msgBox = new QDialog();
+    msgBox->setWindowTitle(tr("Push Module Information for MaPSA to BP assembly to Database"));
+
+    QVBoxLayout* vlay = new QVBoxLayout();
+    msgBox->setLayout(vlay);
+
+    QLabel* main_txt = new QLabel(QString("Push the following information to database:\n\n\tModule:\t%1\n\tBP:\t%2\n\tMaPSA:\t%3\n\tGlue:\t%4").arg(Module_ID_).arg(Baseplate_ID_).arg(MaPSA_ID_).arg(Glue1_ID_));
+    vlay->addWidget(main_txt);
+
+    QHBoxLayout* comment_lay = new QHBoxLayout();
+
+    QLabel* comment_lab = new QLabel("Comments:");
+    QTextEdit* comment_lin = new QTextEdit("");
+    comment_lin->setTabChangesFocus(true);
+    comment_lin->setFixedHeight(60);
+
+    comment_lay->addWidget(comment_lab);
+    comment_lay->addWidget(comment_lin);
+
+    vlay->addLayout(comment_lay);
+
+    QLabel* info_txt = new QLabel("Do you want to push this information to the Database?");
+    vlay->addWidget(info_txt);
+
+    QDialogButtonBox* button_box = new QDialogButtonBox(Qt::Horizontal);
+    button_box->addButton(QDialogButtonBox::Yes);
+    button_box->addButton(QDialogButtonBox::No);
+    button_box->setCenterButtons(true);
+
+    vlay->addWidget(button_box);
+
+    connect(button_box, SIGNAL(accepted()), msgBox, SLOT(accept()));
+    connect(button_box, SIGNAL(rejected()), msgBox, SLOT(reject()));
+
+    int ret = msgBox->exec();
+
+    switch(msgBox->result())
+    {
+      case QDialog::Rejected:
+        emit PushStep1ToDB_aborted();
+        return;
+      case QDialog::Accepted:
+        NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep1ToDB_start: "
+           << QString("Push the following information to database:\n\tModule:\t\t%1\n\tBaseplate:\t%2\n\tMaPSA:\t\t%3\n\tGlue:\t\t%4\n\tComment:\t%5").arg(Module_ID_).arg(Baseplate_ID_).arg(MaPSA_ID_).arg(Glue1_ID_).arg(comment_lin->toPlainText()).toStdString();
+
+        if(!(database_->MaPSA_to_BP(MaPSA_ID_, Baseplate_ID_, Glue1_ID_, comment_lin->toPlainText())))
+        {
+            NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep1ToDB_start: Something went wrong.";
+            emit PushStep1ToDB_aborted();
+            return;
+        }
+
+        emit PushStep1ToDB_finished();
+        break;
+      default:
+        emit PushStep1ToDB_aborted();
+        return;
+    }
+}
+
+void AssemblyAssemblyV2::PushStep2ToDB_start()
+{
+    if(assembly_center_ == assembly::Center::DESY && (Module_ID_.isEmpty() || PSS_ID_.isEmpty() || Glue2_ID_.isEmpty()))
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Information for Database Upload missing"));
+        QString msg = QString("The following IDs are missing:") + (Module_ID_.isEmpty() ? "\n\tModule ID" : "") + (PSS_ID_.isEmpty() ? "\n\tPSS ID" : "") + (Glue2_ID_.isEmpty() ? "\n\tGlue 2 ID" : "");
+        msgBox.setText(msg);
+        msgBox.setInformativeText("Please add this information via the toolbar or assembly actions.");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        int ret = msgBox.exec();
+
+        emit PushStep2ToDB_aborted();
+        return;
+    }
+    if(assembly_center_ == assembly::Center::BROWN && PSS_ID_.isEmpty())
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Information for Database Upload missing"));
+        QString msg = QString("The following IDs are missing:") + (PSS_ID_.isEmpty() ? "\n\tPSS ID" : "");
+        msgBox.setText(msg);
+        msgBox.setInformativeText("Please add this information via the toolbar or assembly actions.");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        int ret = msgBox.exec();
+
+        emit PushStep2ToDB_aborted();
+        return;
+    }
+
+    QDialog* msgBox = new QDialog();
+    msgBox->setWindowTitle(tr("Push Module Information for PSS to Spacers assembly to Database"));
+
+    QVBoxLayout* vlay = new QVBoxLayout();
+    msgBox->setLayout(vlay);
+
+    QLabel* main_txt = new QLabel(QString("Push the following information to database:\n\n\tModule:\t%1\n\tPSS:\t%2\n\tGlue:\t%3").arg(Module_ID_).arg(PSS_ID_).arg(Glue2_ID_));
+    vlay->addWidget(main_txt);
+
+    QHBoxLayout* comment_lay = new QHBoxLayout();
+
+    QLabel* comment_lab = new QLabel("Comments:");
+    QTextEdit* comment_lin = new QTextEdit("");
+    comment_lin->setTabChangesFocus(true);
+    comment_lin->setFixedHeight(60);
+
+    comment_lay->addWidget(comment_lab);
+    comment_lay->addWidget(comment_lin);
+
+    vlay->addLayout(comment_lay);
+
+    QLabel* info_txt = new QLabel("Do you want to push this information to the Database?");
+    vlay->addWidget(info_txt);
+
+    QDialogButtonBox* button_box = new QDialogButtonBox(Qt::Horizontal);
+    button_box->addButton(QDialogButtonBox::Yes);
+    button_box->addButton(QDialogButtonBox::No);
+    button_box->setCenterButtons(true);
+
+    vlay->addWidget(button_box);
+
+    connect(button_box, SIGNAL(accepted()), msgBox, SLOT(accept()));
+    connect(button_box, SIGNAL(rejected()), msgBox, SLOT(reject()));
+
+    int ret = msgBox->exec();
+
+    switch(msgBox->result())
+    {
+      case QDialog::Rejected:
+        emit PushStep2ToDB_aborted();
+        return;
+      case QDialog::Accepted:
+        NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep2ToDB_start: "
+           << QString("Push the following information to database:\n\tModule:\t\t%1\n\tPSS:\t\t%2\n\tGlue:\t\t%3\n\tComment:\t%4").arg(Module_ID_).arg(PSS_ID_).arg(Glue2_ID_).arg(comment_lin->toPlainText()).toStdString();
+
+        if(!(database_->PSs_to_spacers(PSS_ID_, Glue2_ID_, comment_lin->toPlainText())))
+        {
+            NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep2ToDB_start: Something went wrong.";
+            emit PushStep2ToDB_aborted();
+            return;
+        }
+
+        emit PushStep2ToDB_finished();
+        break;
+      default:
+        emit PushStep2ToDB_aborted();
+        return;
+    }
+}
+
+void AssemblyAssemblyV2::PushStep3ToDB_start()
+{
+    if(assembly_center_ == assembly::Center::DESY && (Module_ID_.isEmpty() || Glue3_ID_.isEmpty()))
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Information for Database Upload missing"));
+        QString msg = QString("The following IDs are missing:") + (Module_ID_.isEmpty() ? "\n\tModule ID" : "") + (Glue3_ID_.isEmpty() ? "\n\tGlue 3 ID" : "");
+        msgBox.setText(msg);
+        msgBox.setInformativeText("Please add this information via the toolbar or assembly actions.");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        int ret = msgBox.exec();
+
+        emit PushStep3ToDB_aborted();
+        return;
+    }
+    if(assembly_center_ == assembly::Center::BROWN && (Module_ID_.isEmpty() || MaPSA_ID_.isEmpty() || PSS_ID_.isEmpty()))
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("Information for Database Upload missing"));
+        QString msg = QString("The following IDs are missing:") + (Module_ID_.isEmpty() ? "\n\tModule ID" : "") + (MaPSA_ID_.isEmpty() ? "\n\tMaPSA ID" : "") + (PSS_ID_.isEmpty() ? "\n\tPSs ID" : "");
+        msgBox.setText(msg);
+        msgBox.setInformativeText("Please add this information via the toolbar or assembly actions.");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        int ret = msgBox.exec();
+
+        emit PushStep3ToDB_aborted();
+        return;
+    }
+
+    QDialog* msgBox = new QDialog();
+    msgBox->setWindowTitle(tr("Push Module Information for PSS to MaPSA assembly to Database"));
+
+    QVBoxLayout* vlay = new QVBoxLayout();
+    msgBox->setLayout(vlay);
+
+    QLabel* main_txt;
+    if(assembly_center_ == assembly::Center::BROWN) {
+        main_txt = new QLabel(QString("Push the following information to database:\n\n\tModule:\t%1\n\tPSs:\t%2\n\tMaPSA:\t%3").arg(Module_ID_).arg(PSS_ID_).arg(MaPSA_ID_));
+    } else if(assembly_center_ == assembly::Center::DESY){
+        main_txt = new QLabel(QString("Push the following information to database:\n\n\tModule:\t%1\n\tGlue:\t%2").arg(Module_ID_).arg(Glue3_ID_));
+    }
+    vlay->addWidget(main_txt);
+
+    QHBoxLayout* comment_lay = new QHBoxLayout();
+
+    QLabel* comment_lab = new QLabel("Comments:");
+    QTextEdit* comment_lin = new QTextEdit("");
+    comment_lin->setTabChangesFocus(true);
+    comment_lin->setFixedHeight(60);
+
+    comment_lay->addWidget(comment_lab);
+    comment_lay->addWidget(comment_lin);
+
+    vlay->addLayout(comment_lay);
+
+    QLabel* info_txt = new QLabel("Do you want to push this information to the Database?");
+    vlay->addWidget(info_txt);
+
+    QDialogButtonBox* button_box = new QDialogButtonBox(Qt::Horizontal);
+    button_box->addButton(QDialogButtonBox::Yes);
+    button_box->addButton(QDialogButtonBox::No);
+    button_box->setCenterButtons(true);
+
+    vlay->addWidget(button_box);
+
+    connect(button_box, SIGNAL(accepted()), msgBox, SLOT(accept()));
+    connect(button_box, SIGNAL(rejected()), msgBox, SLOT(reject()));
+
+    int ret = msgBox->exec();
+
+    switch(msgBox->result())
+    {
+      case QDialog::Rejected:
+        emit PushStep3ToDB_aborted();
+        return;
+      case QDialog::Accepted:
+
+        if(assembly_center_ == assembly::Center::BROWN) {
+            NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep3ToDB_start: "
+            << QString("Push the following information to database:\n\n\tModule:\t%1\n\tPSs:\t%2\n\tMaPSA:\t%3").arg(Module_ID_).arg(PSS_ID_).arg(MaPSA_ID_);
+
+            if(!(database_->PSs_to_MaPSA(Module_ID_, MaPSA_ID_, PSS_ID_, "", ""))) {
+                NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep3ToDB_start: Something went wrong.";
+                emit PushStep3ToDB_aborted();
+                return;
+            }
+        }else if(assembly_center_ == assembly::Center::DESY) {
+            NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep3ToDB_start: "
+            << QString("Push the following information to database:\n\tModule:\t\t%1\n\tGlue:\t\t%2\n\tComment:\t%3").arg(Module_ID_).arg(Glue3_ID_).arg(comment_lin->toPlainText()).toStdString();
+
+            if(!(database_->PSs_to_MaPSA(Glue3_ID_, comment_lin->toPlainText()))) {
+                NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep3ToDB_start: Something went wrong.";
+                emit PushStep3ToDB_aborted();
+                return;
+            }
+        }
+
+        emit PushStep3ToDB_finished();
+        break;
+      default:
+        emit PushStep3ToDB_aborted();
+        return;
+    }
+}
+
 // ----------------------------------------------------------------------------------------------------
 // GoToSensorMarkerPreAlignment -----------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
-void AssemblyAssemblyV2::GoToSensorMarkerPreAlignment_start()
+void AssemblyAssemblyV2::GoToSensorMarkerPreAlignment_start(bool isMapsa)
 {
   if(in_action_){
 
@@ -147,7 +703,8 @@ void AssemblyAssemblyV2::GoToSensorMarkerPreAlignment_start()
 
   const double x0 = config_->getValue<double>("parameters", "RefPointSensor_X");
   const double y0 = config_->getValue<double>("parameters", "RefPointSensor_Y");
-  const double z0 = config_->getValue<double>("parameters", "RefPointSensor_Z");
+  const double z0 = config_->getValue<double>("parameters", "CameraFocusOnAssemblyStage_Z")
+   + (isMapsa ? config_->getValue<double>("parameters", "Thickness_PSP") : config_->getValue<double>("parameters", "Thickness_PSS"));
   const double a0 = config_->getValue<double>("parameters", "RefPointSensor_A");
 
   connect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
@@ -728,8 +1285,13 @@ void AssemblyAssemblyV2::PickupMaPSA_start()
     return;
   }
 
-  connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupMaPSA_finish()));
+  if(use_smartMove_) {
+      connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+      connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(PickupMaPSA_finish()));
+  } else {
+      connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+      connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupMaPSA_finish()));
+  }
 
   in_action_ = true;
 
@@ -741,8 +1303,13 @@ void AssemblyAssemblyV2::PickupMaPSA_start()
 
 void AssemblyAssemblyV2::PickupMaPSA_finish()
 {
-  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupMaPSA_finish()));
+  if(use_smartMove_) {
+      disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+      disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(PickupMaPSA_finish()));
+  } else {
+      disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+      disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupMaPSA_finish()));
+  }
 
   if(in_action_){ in_action_ = false; }
 
@@ -787,8 +1354,13 @@ void AssemblyAssemblyV2::PickupPSS_start()
     return;
   }
 
-  connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSS_finish()));
+  if(use_smartMove_) {
+      connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+      connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(PickupPSS_finish()));
+  } else {
+      connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+      connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSS_finish()));
+  }
 
   in_action_ = true;
 
@@ -800,8 +1372,13 @@ void AssemblyAssemblyV2::PickupPSS_start()
 
 void AssemblyAssemblyV2::PickupPSS_finish()
 {
-  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSS_finish()));
+  if(use_smartMove_) {
+      disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+      disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(PickupPSS_finish()));
+  } else {
+      disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+      disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSS_finish()));
+  }
 
   if(in_action_){ in_action_ = false; }
 
@@ -1075,6 +1652,7 @@ void AssemblyAssemblyV2::LowerPSSOntoSpacers_start()
     const double dx0 = 0.0;
     const double dy0 = 0.0;
 
+    bool use_spacer_clamp = GetAssemblyCenter()==assembly::Center::FNAL || GetAssemblyCenter()==assembly::Center::BROWN;
     const double dz0 =
         config_->getValue<double>("parameters", "CameraFocusOnAssemblyStage_Z")
       - config_->getValue<double>("parameters", "Depth_SpacerSlots")
@@ -1082,6 +1660,7 @@ void AssemblyAssemblyV2::LowerPSSOntoSpacers_start()
       + config_->getValue<double>("parameters", "FromCameraBestFocusToPickupHeight_dZ")
       + config_->getValue<double>("parameters", "Thickness_PSS")
       + config_->getValue<double>("parameters", "Thickness_GlueLayer")
+      + (use_spacer_clamp ? config_->getValue<double>("parameters", "Thickness_SpacerClamp") : 0)
       - motion_->get_position_Z();
 
     const double da0 = 0.0;
@@ -1237,6 +1816,175 @@ void AssemblyAssemblyV2::ApplyPSPToPSSXYOffset_finish()
      << ": assembly-step completed";
 
   emit DBLogMessage("== Assembly step completed : [Move by PS-s/PS-p relative XY offset]");
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// Make Space in Z -----------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssemblyV2::MakeSpaceOnPlatform_start()
+{
+  if(in_action_){
+
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "MakeSpaceOnPlatform_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
+
+  const double dx0 = 0.0;
+  const double dy0 = makespace_Y_;
+  const double dz0 = makespace_Z_;
+  const double da0 = 0.0;
+
+  if(dz0 <= 0.)
+  {
+    NQLog("AssemblyAssemblyV2", NQLog::Critical) << "MakeSpaceOnPlatform_start"
+       << ": invalid (non-positive) value for vertical upward movement for makespace (dz=" << dz0 << "), no action taken";
+
+    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "MakeSpaceOnPlatform_start"
+       << ": emitting signal \"MakeSpaceOnPlatform_finished\"";
+
+    emit MakeSpaceOnPlatform_finished();
+
+    return;
+  }
+
+  position_y_before_makespace_ = motion_->get_position_Y();
+  position_z_before_makespace_ = motion_->get_position_Z();
+  position_before_makespace_stored_ = true;
+  NQLog("AssemblyAssemblyV2", NQLog::Message) << "MakeSpaceOnPlatform_start"
+     << ": Position of stage before making space on the platform is (y/z): " << position_y_before_makespace_ << " / " << position_z_before_makespace_;
+
+  connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(MakeSpaceOnPlatform_finish()));
+
+  in_action_ = true;
+
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "MakeSpaceOnPlatform_start"
+     << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative_request(dx0, dy0, dz0, da0);
+}
+
+void AssemblyAssemblyV2::MakeSpaceOnPlatform_finish()
+{
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(MakeSpaceOnPlatform_finish()));
+
+  if(in_action_){ in_action_ = false; }
+
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "MakeSpaceOnPlatform_finish"
+     << ": emitting signal \"LiftUpPickupTool_finished\"";
+
+  emit MakeSpaceOnPlatform_finished();
+
+  NQLog("AssemblyAssemblyV2", NQLog::Message) << "MakeSpaceOnPlatform_finish"
+     << ": assembly-step completed";
+
+  emit DBLogMessage("== Assembly step completed : [Make space on platform]");
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// Return to initial position -----------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssemblyV2::ReturnToPlatform_start()
+{
+  if(in_action_){
+
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "ReturnToPlatform_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
+
+  if(!position_before_makespace_stored_)
+  {
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "ReturnToPlatform_start"
+       << ": stage position before making space on platform has not been stored. Cannot continue.";
+    QMessageBox::warning(0, tr("[LStepExpressMotionManager]"),
+       QString("Stage position before making space on platform has not been stored. Cannot continue."),
+       QMessageBox::Abort
+    );
+    return;
+  }
+
+  const double dx0 = 0.0;
+  const double dy0 = position_y_before_makespace_ - motion_->get_position_Y();
+  const double dz0 = position_z_before_makespace_ - motion_->get_position_Z();
+  const double da0 = 0.0;
+
+  if(dz0 >= 0.)
+  {
+    NQLog("AssemblyAssemblyV2", NQLog::Critical) << "ReturnToPlatform_start"
+       << ": invalid (non-negative) value for vertical downward movement for makespace (dz=" << dz0 << "), no action taken";
+
+    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "ReturnToPlatform_start"
+       << ": emitting signal \"ReturnToPlatform_finished\"";
+
+    emit ReturnToPlatform_finished();
+
+    return;
+  }
+
+  QMessageBox* msgBox = new QMessageBox;
+  msgBox->setInformativeText(QString("This will move the y / z stages to the absolute position %1 / %2 (relative: %3 / %4).\nContinue?").arg(position_y_before_makespace_).arg(position_z_before_makespace_).arg(dy0).arg(dz0));
+  msgBox->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+  msgBox->setDefaultButton(QMessageBox::Yes);
+  int ret = msgBox->exec();
+  switch(ret)
+  {
+    case QMessageBox::No:
+      NQLog("AssemblyAssemblyV2", NQLog::Warning) << "ReturnToPlatform_start"
+         << ": abort motion after user decision.";
+      NQLog("AssemblyAssemblyV2", NQLog::Spam) << "ReturnToPlatform_start"
+            << ": emitting signal \"ReturnToPlatform_finished\"";
+      emit ReturnToPlatform_finished();
+      return;
+
+    case QMessageBox::Yes:
+      NQLog("AssemblyAssemblyV2", NQLog::Warning) << "ReturnToPlatform_start"
+       << ": start motion after user decision.";
+      break;
+    default:
+      NQLog("AssemblyAssemblyV2", NQLog::Warning) << "ReturnToPlatform_start"
+         << ": Invalid user selection. Finish this step.";
+      NQLog("AssemblyAssemblyV2", NQLog::Spam) << "ReturnToPlatform_start"
+         << ": emitting signal \"ReturnToPlatform_finished\"";
+      emit ReturnToPlatform_finished();
+      return;
+  }
+
+  connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(ReturnToPlatform_finish()));
+
+  in_action_ = true;
+
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "ReturnToPlatform_start"
+     << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+  emit move_relative_request(dx0, dy0, dz0, da0);
+}
+
+void AssemblyAssemblyV2::ReturnToPlatform_finish()
+{
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(ReturnToPlatform_finish()));
+
+  if(in_action_){ in_action_ = false; }
+
+  position_before_makespace_stored_ = false;
+
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "ReturnToPlatform_finish"
+     << ": emitting signal \"ReturnToPlatform_finished\"";
+
+  emit ReturnToPlatform_finished();
+
+  NQLog("AssemblyAssemblyV2", NQLog::Message) << "ReturnToPlatform_finish"
+     << ": assembly-step completed";
+
+  emit DBLogMessage("== Assembly step completed : [Return to platform]");
 }
 // ----------------------------------------------------------------------------------------------------
 
@@ -1453,6 +2201,92 @@ void AssemblyAssemblyV2::LowerPSSPlusSpacersOntoGluingStage_finish()
   emit DBLogMessage("== Assembly step completed : [Lower {PS-s + spacers} onto gluing stage]");
 }
 // ----------------------------------------------------------------------------------------------------
+
+
+// ----------------------------------------------------------------------------------------------------
+// SlowlyLiftFromGluingStage --------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssemblyV2::SlowlyLiftFromGluingStage_start()
+{
+  if(in_action_){
+
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "SlowlyLiftFromGluingStage_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
+
+  if(use_smartMove_)
+  {
+
+    original_Z_velocity_ = motion_->get_velocity_Z();
+
+    double slowVelocity = 0.5; // mm/s
+    motion_->set_velocity_Z(slowVelocity);
+
+    while(slowVelocity != motion_->get_velocity_Z())
+    {
+      sleep(1);
+    }
+
+    const double dx0 = 0.;
+    const double dy0 = 0.;
+    const double dz0 = 5.;
+    const double da0 = 0.;
+
+    connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+    connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(SlowlyLiftFromGluingStage_finish()));
+
+    in_action_ = true;
+
+    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "SlowlyLiftFromGluingStage_start"
+       << ": emitting signal \"move_relative_request(" << dx0 << ", " << dy0 << ", " << dz0 << ", " << da0 << ")\"";
+
+    emit move_relative_request(dx0, dy0, dz0, da0);
+  }
+  else
+  {
+    NQLog("AssemblyAssemblyV2", NQLog::Critical) << "SlowlyLiftFromGluingStage_start"
+       << ": please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step";
+
+    QMessageBox msgBox;
+    msgBox.setText(tr("AssemblyAssemblyV2::SlowlyLiftFromGluingStage_start -- please enable \"smartMove\" mode (tick box in top-left corner of Assembly tab), required for this step"));
+    msgBox.exec();
+
+    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "SlowlyLiftFromGluingStage_finish"
+       << ": emitting signal \"SlowlyLiftFromGluingStage_finished\"";
+
+    emit SlowlyLiftFromGluingStage_finished();
+
+    return;
+  }
+}
+
+void AssemblyAssemblyV2::SlowlyLiftFromGluingStage_finish()
+{
+  motion_->set_velocity_Z(original_Z_velocity_);
+  while(original_Z_velocity_ != motion_->get_velocity_Z())
+  {
+    sleep(1);
+  }
+
+  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+  disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(SlowlyLiftFromGluingStage_finish()));
+
+  if(in_action_){ in_action_ = false; }
+
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "SlowlyLiftFromGluingStage_finish"
+     << ": emitting signal \"SlowlyLiftFromGluingStage_finished\"";
+
+  emit SlowlyLiftFromGluingStage_finished();
+
+  NQLog("AssemblyAssemblyV2", NQLog::Message) << "SlowlyLiftFromGluingStage_finish"
+     << ": assembly-step completed";
+
+  emit DBLogMessage("== Assembly step completed : [Slowly lifted PSS + spacers from gluing station]");
+}
+// ----------------------------------------------------------------------------------------------------
+
 
 // ----------------------------------------------------------------------------------------------------
 // ReturnToPSSPlusSpacersToMaPSAPosition --------------------------------------------------------------
@@ -1676,8 +2510,13 @@ void AssemblyAssemblyV2::PickupPSSPlusSpacers_start()
     return;
   }
 
-  connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSSPlusSpacers_finish()));
+  if(use_smartMove_){
+      connect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+      connect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(PickupPSSPlusSpacers_finish()));
+  } else {
+      connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+      connect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSSPlusSpacers_finish()));
+  }
 
   in_action_ = true;
 
@@ -1689,8 +2528,13 @@ void AssemblyAssemblyV2::PickupPSSPlusSpacers_start()
 
 void AssemblyAssemblyV2::PickupPSSPlusSpacers_finish()
 {
-  disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
-  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSSPlusSpacers_finish()));
+  if(use_smartMove_){
+      disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), smart_motion_, SLOT(move_relative(double, double, double, double)));
+      disconnect(smart_motion_, SIGNAL(motion_completed()), this, SLOT(PickupPSSPlusSpacers_finish()));
+  } else {
+      disconnect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));
+      disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(PickupPSSPlusSpacers_finish()));
+  }
 
   if(in_action_){ in_action_ = false; }
 

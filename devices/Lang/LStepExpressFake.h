@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -33,7 +33,7 @@ class LStepExpressFake : public VLStepExpress
   LStepExpressFake(const std::string&, const std::string& lstep_ver="", const std::string& lstep_iver="");
   ~LStepExpressFake();
 
-  std::string ioPort() const;
+  std::string ioPort();
 
   bool DeviceAvailable() const { return true; }
 
@@ -129,7 +129,7 @@ class LStepExpressFake : public VLStepExpress
 
   // low level debugging methods
   void SendCommand(const std::string & command);
-  void ReceiveString(std::string &) { }
+  std::string ReceiveString(const std::string &) { return {};}
 
  private:
 

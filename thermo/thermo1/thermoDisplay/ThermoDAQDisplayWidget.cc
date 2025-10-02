@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -115,7 +115,7 @@ LegendListView::LegendListView(ThermoDAQLegend *legend) :
     QListView(legend)
 {
     setFrameStyle(NoFrame);
-    viewport()->setBackgroundRole(QPalette::Background);
+    viewport()->setBackgroundRole(QPalette::Window);
     viewport()->setAutoFillBackground(false);
 
     QStandardItemModel *model = new QStandardItemModel();

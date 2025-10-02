@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -24,6 +24,7 @@
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QTimer>
+#include <QLineSeries>
 
 using namespace std;
 
@@ -37,6 +38,15 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   img_save_button_(nullptr),
   img_celi_button_(nullptr),
   img_axes_button_(nullptr),
+
+  imgbin_thresh_button_(nullptr),
+  imgbin_thresh_label_(nullptr),
+  imgbin_thresh_linee_(nullptr),
+  threshold_slider_(nullptr),
+
+  imgbin_adathr_button_(nullptr),
+  imgbin_adathr_label_ (nullptr),
+  imgbin_adathr_linee_ (nullptr),
 
   // auto-focusing
   autofocus_ueye_(nullptr),
@@ -54,14 +64,14 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   //// left-hand side -----------------------------------
 
   QPalette palette;
-  palette.setColor(QPalette::Background, QColor(220, 220, 220));
+  palette.setColor(QPalette::Window, QColor(220, 220, 220));
 
   // image
   img_ueye_ = new AssemblyUEyeView(this);
   img_ueye_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   img_ueye_->setMinimumSize(500, 300);
   img_ueye_->setPalette(palette);
-  img_ueye_->setBackgroundRole(QPalette::Background);
+  img_ueye_->setBackgroundRole(QPalette::Window);
   img_ueye_->setScaledContents(true);
   img_ueye_->setAlignment(Qt::AlignCenter);
 
@@ -83,12 +93,30 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   img_scroll_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   img_scroll_->setMinimumSize(500, 300);
   img_scroll_->setPalette(palette);
-  img_scroll_->setBackgroundRole(QPalette::Background);
+  img_scroll_->setBackgroundRole(QPalette::Window);
   img_scroll_->setAlignment(Qt::AlignCenter);
   img_scroll_->setWidget(img_ueye_);
 
   g0->addWidget(img_scroll_, 0, 0);
   // ----------
+
+  imgbin_ueye_ = new AssemblyUEyeView(this);
+  imgbin_ueye_->setMinimumSize(500, 300);
+  imgbin_ueye_->setPalette(palette);
+  imgbin_ueye_->setBackgroundRole(QPalette::Window);
+  imgbin_ueye_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  imgbin_ueye_->setScaledContents(true);
+  imgbin_ueye_->setAlignment(Qt::AlignCenter);
+
+  imgbin_scroll_ = new QScrollArea(this);
+  imgbin_scroll_->setMinimumSize(500, 300);
+  imgbin_scroll_->setPalette(palette);
+  imgbin_scroll_->setBackgroundRole(QPalette::Window);
+  imgbin_scroll_->setAlignment(Qt::AlignCenter);
+  imgbin_scroll_->setWidget(imgbin_ueye_);
+  imgbin_scroll_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+  g0->addWidget(imgbin_scroll_, 1, 0);
 
   // auto-focusing
   QVBoxLayout* autofocus_result_lay = new QVBoxLayout;
@@ -97,7 +125,7 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   autofocus_ueye_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   autofocus_ueye_->setMinimumSize(500, 300);
   autofocus_ueye_->setPalette(palette);
-  autofocus_ueye_->setBackgroundRole(QPalette::Background);
+  autofocus_ueye_->setBackgroundRole(QPalette::Window);
   autofocus_ueye_->setScaledContents(true);
   autofocus_ueye_->setAlignment(Qt::AlignCenter);
   autofocus_ueye_->setZoomFactor(0.75);
@@ -106,9 +134,9 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   autofocus_scroll_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   autofocus_scroll_->setMinimumSize(500, 300);
   autofocus_scroll_->setPalette(palette);
-  autofocus_scroll_->setBackgroundRole(QPalette::Background);
+  autofocus_scroll_->setBackgroundRole(QPalette::Window);
   autofocus_scroll_->setAlignment(Qt::AlignCenter);
-  autofocus_scroll_->setWidget(autofocus_ueye_);
+  //autofocus_scroll_->setWidget(autofocus_ueye_);
 
   autofocus_result_lay->addWidget(autofocus_scroll_);
 
@@ -123,7 +151,7 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
 
   autofocus_result_lay->addLayout(autofocus_result_bestZ_lay);
 
-  g0->addLayout(autofocus_result_lay, 1, 0);
+  g0->addLayout(autofocus_result_lay, 1, 1);
   // ----------
 
   this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -136,17 +164,23 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   QVBoxLayout* lImg = new QVBoxLayout;
   g0->addLayout(lImg, 0, 1);
 
+  QGroupBox* image_operation_box = new QGroupBox(tr("Raw Image Operations"));
+  image_operation_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
+
+  QGridLayout* image_operation_box_lay = new QGridLayout;
+  image_operation_box->setLayout(image_operation_box_lay);
+
   img_load_button_ = new QPushButton("Load Image", this);
-  lImg->addWidget(img_load_button_);
+  image_operation_box_lay->addWidget(img_load_button_, 0, 1);
 
   img_save_button_ = new QPushButton("Save Image", this);
-  lImg->addWidget(img_save_button_);
+  image_operation_box_lay->addWidget(img_save_button_, 1, 1);
 
   img_celi_button_ = new QPushButton("Show/hide Center Lines", this);
-  lImg->addWidget(img_celi_button_);
+  image_operation_box_lay->addWidget(img_celi_button_, 0, 0);
 
   img_axes_button_ = new QPushButton("Show XY Axis Conventions", this);
-  lImg->addWidget(img_axes_button_);
+  image_operation_box_lay->addWidget(img_axes_button_, 1, 0);
 
   connect(img_load_button_, SIGNAL(clicked()), this, SLOT(load_image()));
   connect(img_save_button_, SIGNAL(clicked()), this, SLOT(save_image()));
@@ -155,18 +189,108 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
 
   this->connectImageProducer_image(this, SIGNAL(image_updated(cv::Mat)));
 
+  lImg->addWidget(image_operation_box);
+
   lImg->addStretch();
   // ----------
 
-  // auto-focusing
+  this->connectImageProducer_binary(this, SIGNAL(image_binary_updated(cv::Mat)));
+
+  QGroupBox* static_threshold_box = new QGroupBox(tr("Static Threshold"));
+  static_threshold_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
+
+  QVBoxLayout* imgbin_thresh_layout = new QVBoxLayout;
+  static_threshold_box->setLayout(imgbin_thresh_layout);
+
+  imgbin_thresh_button_ = new QPushButton("openCV::threshold", this);
+  imgbin_thresh_layout->addWidget(imgbin_thresh_button_);
+
+  connect(imgbin_thresh_button_, SIGNAL(clicked()), this, SLOT(apply_threshold()));
+
+  QHBoxLayout* imgbin_thresh_inputcfg = new QHBoxLayout;
+  imgbin_thresh_layout->addLayout(imgbin_thresh_inputcfg);
+
+  imgbin_thresh_label_ = new QLabel(this);
+  imgbin_thresh_label_->setText("Threshold (pos int)");
+
+  imgbin_thresh_linee_ = new QLineEdit(this);
+  assembly::QLineEdit_setText(imgbin_thresh_linee_, config->getDefaultValue<int>("main", "AssemblyThresholderView_threshold", 30));
+
+  imgbin_thresh_inputcfg->addWidget(imgbin_thresh_label_, 40);
+  imgbin_thresh_inputcfg->addWidget(imgbin_thresh_linee_, 60);
+
+  //Slider widget to chose the B/W threshold value using the mouse
+  threshold_slider_ = new QSlider(Qt::Horizontal, this);
+
+  //Fancy style
+  threshold_slider_->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: white;height: 10px;border-radius: 4px;}"
+  "QSlider::sub-page:horizontal {background: qlineargradient(x1: 0, y1: 0,    x2: 0, y2: 1,stop: 0 #66e, stop: 1 #bbf); background: qlineargradient(x1: 0, y1: 0.2, x2: 1, y2: 1, stop: 0 #bbf, stop: 1 #55f); border: 1px solid #777; height: 10px; border-radius: 4px;}"
+  "QSlider::add-page:horizontal {background: #fff;border: 1px solid #777;height: 10px;border-radius: 4px;}"
+  "QSlider::handle:horizontal {background: qlineargradient(x1:0, y1:0, x2:1, y2:1,stop:0 #eee, stop:1 #ccc);border: 1px solid #777;width: 13px;margin-top: -2px;margin-bottom: -2px;border-radius: 4px;}"
+  "QSlider::handle:horizontal:hover {background: qlineargradient(x1:0, y1:0, x2:1, y2:1,stop:0 #fff, stop:1 #ddd);border: 1px solid #444;border-radius: 4px;}"
+  "QSlider::sub-page:horizontal:disabled {background: #bbb;border-color: #999;}"
+  "QSlider::add-page:horizontal:disabled {background: #eee;border-color: #999;}"
+  "QSlider::handle:horizontal:disabled {background: #eee;border: 1px solid #aaa;border-radius: 4px;}"
+);
+
+  threshold_slider_->setValue(config->getDefaultValue<int>("main", "AssemblyImageView_threshold", 30)); //Init to default value
+  threshold_slider_->setMinimum(0); threshold_slider_->setMaximum(255); //Set range
+  threshold_slider_->setSingleStep(5); //Step values when using left/right keys
+  threshold_slider_->setTickPosition(QSlider::TicksBothSides); //Ticks above+below //Not working with this styleSheet
+  threshold_slider_->setTickInterval(50); //Step interval between ticks
+  imgbin_thresh_inputcfg->addWidget(threshold_slider_, 80);
+  connect(threshold_slider_, SIGNAL(valueChanged(int)), this, SLOT(set_bw_threshold_slider(int)));
+
+  lImg->addWidget(static_threshold_box);
+
+  // method-2: adaptiveThreshold
+  //imgbin_thresh_layout->addSpacing(40);
+
+  QGroupBox* adaptive_threshold_box = new QGroupBox(tr("Adaptive Threshold"));
+  adaptive_threshold_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
+
+  QVBoxLayout* adaptive_thresh_layout = new QVBoxLayout;
+  adaptive_threshold_box->setLayout(adaptive_thresh_layout);
+
+  QVBoxLayout* imgbin_adathr_layout = new QVBoxLayout;
+  adaptive_thresh_layout->addLayout(imgbin_adathr_layout);
+
+  imgbin_adathr_button_ = new QPushButton("openCV::adaptiveThreshold", this);
+  imgbin_adathr_layout->addWidget(imgbin_adathr_button_, 0, Qt::Alignment());
+
+  connect(imgbin_adathr_button_, SIGNAL(clicked()), this, SLOT(apply_adaptiveThreshold()));
+
+  QHBoxLayout* imgbin_adathr_inputcfg = new QHBoxLayout;
+  imgbin_adathr_layout->addLayout(imgbin_adathr_inputcfg);
+
+  imgbin_adathr_label_ = new QLabel(this);
+  imgbin_adathr_label_->setText("Block Size (pos odd int)");
+
+  imgbin_adathr_linee_ = new QLineEdit(this);
+  assembly::QLineEdit_setText(imgbin_adathr_linee_, config->getDefaultValue<int>("main", "AssemblyImageView_adaptiveThreshold", 587));
+
+  imgbin_adathr_inputcfg->addWidget(imgbin_adathr_label_, 40);
+  imgbin_adathr_inputcfg->addWidget(imgbin_adathr_linee_, 60);
+
+  lImg->addWidget(adaptive_threshold_box);
+  // -----
+
+  lImg->addStretch();
+
+  QGroupBox* autofocus_box = new QGroupBox(tr("Auto-Focus"));
+  autofocus_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
+
   QVBoxLayout* autofocus_lay = new QVBoxLayout;
-  g0->addLayout(autofocus_lay, 1, 1);
+  autofocus_box->setLayout(autofocus_lay);
+
+  QHBoxLayout* autofocus_buttons_lay = new QHBoxLayout;
+  autofocus_lay->addLayout(autofocus_buttons_lay);
 
   autofocus_exe_button_ = new QPushButton("Auto-Focus Image", this);
-  autofocus_lay->addWidget(autofocus_exe_button_);
+  autofocus_buttons_lay->addWidget(autofocus_exe_button_);
 
   autofocus_stop_button_ = new QPushButton("Stop Auto-Focus", this);
-  autofocus_lay->addWidget(autofocus_stop_button_);
+  autofocus_buttons_lay->addWidget(autofocus_stop_button_);
 
   progBar_ = new QProgressBar(this);
   autofocus_lay->addWidget(progBar_, Qt::AlignCenter);
@@ -176,18 +300,8 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   connect(autofocus_stop_button_, SIGNAL(clicked()), this, SLOT(makeProgBarInvisible()));
   // -----
 
-  autofocus_lay->addSpacing(20);
-
-  QGroupBox* autofocus_param_box = new QGroupBox(tr("Auto-Focus Configuration"));
-  autofocus_param_box->setStyleSheet("QGroupBox { font-weight: bold; } ");
-
-  autofocus_lay->addWidget(autofocus_param_box);
-
-  QVBoxLayout* autofocus_param_lay = new QVBoxLayout;
-  autofocus_param_box->setLayout(autofocus_param_lay);
-
   QHBoxLayout* autofocus_param_maxDZ_lay = new QHBoxLayout;
-  autofocus_param_lay->addLayout(autofocus_param_maxDZ_lay);
+  autofocus_lay->addLayout(autofocus_param_maxDZ_lay);
 
   QLabel* autofocus_param_maxDZ_label = new QLabel("Max delta-Z [mm]", this);
   autofocus_param_maxDZ_lineed_ = new QLineEdit("", this);
@@ -196,7 +310,7 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   autofocus_param_maxDZ_lay->addWidget(autofocus_param_maxDZ_lineed_, 60);
 
   QHBoxLayout* autofocus_param_Nstep_lay = new QHBoxLayout;
-  autofocus_param_lay->addLayout(autofocus_param_Nstep_lay);
+  autofocus_lay->addLayout(autofocus_param_Nstep_lay);
 
   QLabel* autofocus_param_Nstep_label = new QLabel("# Steps (int)", this);
   autofocus_param_Nstep_lineed_ = new QLineEdit("", this);
@@ -204,8 +318,6 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   autofocus_param_Nstep_lay->addWidget(autofocus_param_Nstep_label  , 40);
   autofocus_param_Nstep_lay->addWidget(autofocus_param_Nstep_lineed_, 60);
   // -----
-
-  autofocus_lay->addSpacing(20);
 
   autofocus_save_zscan_button_ = new QPushButton("Save Z-Scan Image", this);
   autofocus_lay->addWidget(autofocus_save_zscan_button_);
@@ -215,7 +327,8 @@ AssemblyImageView::AssemblyImageView(QWidget* parent) :
   this->connectImageProducer_autofocus(this, SIGNAL(image_zscan_updated(const cv::Mat&)));
   // -----
 
-  autofocus_lay->addStretch();
+  lImg->addWidget(autofocus_box);
+
   // ----------
 }
 
@@ -382,6 +495,80 @@ void AssemblyImageView::update_text(const double z)
   return;
 }
 
+void AssemblyImageView::update_image_binary(const cv::Mat& img)
+{
+  if(img.channels() == 1)
+  {
+    cv::Mat img_color;
+    cv::cvtColor(img, img_color, cv::COLOR_GRAY2BGR);
+
+    imgbin_ = img_color.clone();
+  }
+  else
+  {
+    imgbin_ = img.clone();
+  }
+
+  NQLog("AssemblyImageView", NQLog::Spam) << "update_image_binary"
+     << ": emitting signal \"image_binary_updated\"";
+
+  emit image_binary_updated(imgbin_);
+  emit image_binary_updated();
+}
+
+void AssemblyImageView::apply_threshold()
+{
+  bool valid_thr(false);
+
+  const int thr = imgbin_thresh_linee_->text().toInt(&valid_thr);
+
+  if(valid_thr == false)
+  {
+    NQLog("AssemblyImageView", NQLog::Warning) << "apply_threshold"
+       << ": invalid (non-integer) format for threshold value (" << imgbin_thresh_linee_->text() << "), no action taken";
+
+    return;
+  }
+
+  NQLog("AssemblyImageView", NQLog::Debug) << "apply_threshold"
+     << ": emitting signal \"threshold_request(" << thr << ")\"";
+
+  emit threshold_request(thr);
+}
+
+void AssemblyImageView::apply_adaptiveThreshold()
+{
+  bool valid_bks(false);
+
+  const int bks = imgbin_adathr_linee_->text().toInt(&valid_bks);
+
+  if(valid_bks == false)
+  {
+    NQLog("AssemblyThresholderView", NQLog::Warning) << "apply_adaptiveThreshold"
+       << ": invalid (non-integer) format for block-size value (" << imgbin_adathr_linee_->text() << "), no action taken";
+
+    return;
+  }
+
+  NQLog("AssemblyThresholderView", NQLog::Debug) << "apply_adaptiveThreshold"
+     << ": emitting signal \"adaptiveThreshold_request(" << bks << ")\"";
+
+  emit adaptiveThreshold_request(bks);
+}
+
+//-- Update the B/W threshold when slider value gets changed
+void AssemblyImageView::set_bw_threshold_slider(int thr)
+{
+    threshold_slider_->setValue(thr); //Update the slider's value
+    assembly::QLineEdit_setText(imgbin_thresh_linee_, thr); //Update the value displayed
+
+    NQLog("AssemblyImageView", NQLog::Debug) << "apply_threshold" << ": emitting signal \"threshold_value(" << thr << ")\"";
+
+    emit threshold_request(thr); //Update the B/W threshold (real-time)
+
+    return;
+}
+
 void AssemblyImageView::update_autofocus_config(const double maxDZ, const int Nstep)
 {
   std::stringstream maxDZ_strs;
@@ -438,22 +625,36 @@ void AssemblyImageView::acquire_autofocus_config()
   emit autofocus_config(maxDZ, Nstep);
 }
 
-void AssemblyImageView::update_image_zscan(const QString& img_path)
+void AssemblyImageView::update_image_zscan(QLineSeries& zscan_graph)
 {
-  if(assembly::IsFile(img_path))
+  NQLog("AssemblyImageView", NQLog::Spam) << "update_image_zscan"
+    << ": zscan graph received with " << zscan_graph.pointsVector().size() << " points";
+
+  if(!zscan_graph.pointsVector().empty())
   {
-    image_zscan_ = assembly::cv_imread(img_path.toStdString(), cv::IMREAD_COLOR);
+      auto chart = new QChart;
+      chart->legend()->hide();
+      chart->addSeries(&zscan_graph);
+      chart->createDefaultAxes();
+      chart->setTitle("Result of Z Autofocus Scan");
 
-    NQLog("AssemblyImageView", NQLog::Spam) << "update_image_zscan"
-       << ": emitting signal \"image_zscan_updated\"";
+      chart->axes(Qt::Horizontal).back()->setTitleText("z position [mm]");
+      chart->axes(Qt::Vertical).back()->setTitleText("Focus discriminant");
 
-    emit image_zscan_updated(image_zscan_);
-    emit image_zscan_updated();
+      autofocus_chart_view_ = new QChartView(chart);
+      autofocus_chart_view_->setRenderHint(QPainter::Antialiasing);
+      autofocus_chart_view_->setMinimumSize(500, 300);
+      autofocus_chart_view_->setBackgroundRole(QPalette::Window);
+      autofocus_chart_view_->setAlignment(Qt::AlignCenter);
+      autofocus_chart_view_->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+
+      autofocus_scroll_->setWidget(autofocus_chart_view_);
+
   }
   else
   {
     NQLog("AssemblyImageView", NQLog::Warning) << "update_image_zscan"
-       << ": invalid path to input file, no action taken (file=" << img_path << ")";
+       << ": Graph is empty - do not update";
 
     return;
   }
@@ -471,6 +672,20 @@ void AssemblyImageView::disconnectImageProducer_image(const QObject* sender, con
   NQLog("AssemblyImageView", NQLog::Debug) << "disconnectImageProducer_image";
 
   img_ueye_->disconnectImageProducer(sender, signal);
+}
+
+void AssemblyImageView::connectImageProducer_binary(const QObject* sender, const char* signal)
+{
+  NQLog("AssemblyImageView", NQLog::Debug) << "connectImageProducer_binary";
+
+  imgbin_ueye_->connectImageProducer(sender, signal);
+}
+
+void AssemblyImageView::disconnectImageProducer_binary(const QObject* sender, const char* signal)
+{
+  NQLog("AssemblyImageView", NQLog::Debug) << "disconnectImageProducer_binary";
+
+  imgbin_ueye_->disconnectImageProducer(sender, signal);
 }
 
 void AssemblyImageView::connectImageProducer_autofocus(const QObject* sender, const char* signal)

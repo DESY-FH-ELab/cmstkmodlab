@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -133,7 +133,8 @@ class AssemblyAssembly : public QObject
 
   void DisableVacuumBaseplate_start();
   void DisableVacuumBaseplate_finish();
-  // ---------
+
+// ---------
 
   // others
 

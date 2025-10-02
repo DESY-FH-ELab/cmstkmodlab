@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -37,7 +37,7 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   scrollArea_4_(0),
 
   imageView_1_(0),
-  imageView_2_(0),
+  patrec_chart_view_(0),
   imageView_3_(0),
   imageView_4_(0),
 
@@ -57,12 +57,12 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   this->setLayout(g0);
 
   QPalette palette;
-  palette.setColor(QPalette::Background, QColor(220, 220, 220));
+  palette.setColor(QPalette::Window, QColor(220, 220, 220));
 
   imageView_1_ = new AssemblyUEyeView(this);
   imageView_1_->setMinimumSize(500, 300);
   imageView_1_->setPalette(palette);
-  imageView_1_->setBackgroundRole(QPalette::Background);
+  imageView_1_->setBackgroundRole(QPalette::Window);
   imageView_1_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   imageView_1_->setScaledContents(true);
   imageView_1_->setAlignment(Qt::AlignCenter);
@@ -73,28 +73,18 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   scrollArea_1_ = new QScrollArea(this);
   scrollArea_1_->setMinimumSize(500, 300);
   scrollArea_1_->setPalette(palette);
-  scrollArea_1_->setBackgroundRole(QPalette::Background);
+  scrollArea_1_->setBackgroundRole(QPalette::Window);
   scrollArea_1_->setAlignment(Qt::AlignCenter);
   scrollArea_1_->setWidget(imageView_1_);
   scrollArea_1_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
   g0->addWidget(scrollArea_1_, 0, 0);
 
-  imageView_2_ = new AssemblyUEyeView(this);
-  imageView_2_->setMinimumSize(300, 300);
-  imageView_2_->setPalette(palette);
-  imageView_2_->setBackgroundRole(QPalette::Background);
-  imageView_2_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  imageView_2_->setScaledContents(true);
-  imageView_2_->setAlignment(Qt::AlignCenter);
-  imageView_2_->setZoomFactor(0.60);
-
   scrollArea_2_ = new QScrollArea(this);
   scrollArea_2_->setMinimumSize(300, 300);
   scrollArea_2_->setPalette(palette);
-  scrollArea_2_->setBackgroundRole(QPalette::Background);
+  scrollArea_2_->setBackgroundRole(QPalette::Window);
   scrollArea_2_->setAlignment(Qt::AlignCenter);
-  scrollArea_2_->setWidget(imageView_2_);
   scrollArea_2_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
   g0->addWidget(scrollArea_2_, 0, 1);
@@ -102,7 +92,7 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   imageView_3_ = new AssemblyUEyeView(this);
   imageView_3_->setMinimumSize(500, 300);
   imageView_3_->setPalette(palette);
-  imageView_3_->setBackgroundRole(QPalette::Background);
+  imageView_3_->setBackgroundRole(QPalette::Window);
   imageView_3_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   imageView_3_->setScaledContents(true);
   imageView_3_->setAlignment(Qt::AlignCenter);
@@ -111,7 +101,7 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   scrollArea_3_ = new QScrollArea(this);
   scrollArea_3_->setMinimumSize(500, 300);
   scrollArea_3_->setPalette(palette);
-  scrollArea_3_->setBackgroundRole(QPalette::Background);
+  scrollArea_3_->setBackgroundRole(QPalette::Window);
   scrollArea_3_->setAlignment(Qt::AlignCenter);
   scrollArea_3_->setWidget(imageView_3_);
   scrollArea_3_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -121,7 +111,7 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   imageView_4_ = new AssemblyUEyeView(this);
   imageView_4_->setMinimumSize(300, 300);
   imageView_4_->setPalette(palette);
-  imageView_4_->setBackgroundRole(QPalette::Background);
+  imageView_4_->setBackgroundRole(QPalette::Window);
   imageView_4_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   imageView_4_->setScaledContents(true);
   imageView_4_->setAlignment(Qt::AlignCenter);
@@ -130,7 +120,7 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   scrollArea_4_ = new QScrollArea(this);
   scrollArea_4_->setMinimumSize(300, 300);
   scrollArea_4_->setPalette(palette);
-  scrollArea_4_->setBackgroundRole(QPalette::Background);
+  scrollArea_4_->setBackgroundRole(QPalette::Window);
   scrollArea_4_->setAlignment(Qt::AlignCenter);
   scrollArea_4_->setWidget(imageView_4_);
   scrollArea_4_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -154,8 +144,8 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
 
   patrec_exe_label_ = new QLabel("", this);
   patrec_exe_label_->setPixmap(pixmap);
-  patrec_exe_label_->setText(" WAITING");
-  patrec_exe_label_->setStyleSheet("QLabel { background-color : orange; color : black; }");
+  patrec_exe_label_->setText(" IDLE");
+  patrec_exe_label_->setStyleSheet("QLabel { background-color : grey; color : black; }");
 
   patrec_exe_lay->addWidget(patrec_exe_label_, 0, 1);
 
@@ -173,7 +163,10 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
   patrec_wid_ = new AssemblyObjectFinderPatRecWidget(true);
   patrec_wid_->setToolTip("Pattern Recognition Configuration");
 
+  connect(patrec_exe_button_, SIGNAL(clicked()), this, SLOT(started()));
   connect(patrec_exe_button_, SIGNAL(clicked()), this->PatRec_Widget(), SLOT(transmit_configuration()));
+
+  connect(this->PatRec_Widget(), SIGNAL(invalid_configuration()), this, SLOT(config_error()));
 
   imageView_4_->connectImageProducer(this->PatRec_Widget(), SIGNAL(updated_image_template(cv::Mat)));
 
@@ -185,10 +178,6 @@ AssemblyObjectFinderPatRecView::AssemblyObjectFinderPatRecView(QWidget* parent) 
 
     assembly::QLineEdit_setText(patrec_wid_->threshold_lineEdit()        , config->getDefaultValue<int>("main", "AssemblyObjectAlignerView_PatRec_threshold"        , 100));
     assembly::QLineEdit_setText(patrec_wid_->adaptiveThreshold_lineEdit(), config->getDefaultValue<int>("main", "AssemblyObjectAlignerView_PatRec_adaptiveThreshold", 587));
-
-    assembly::QLineEdit_setText(patrec_wid_->angles_prescan_lineEdit()   , config->getDefaultValue<double>("main", "AssemblyObjectAlignerView_PatRec_angles_prescan" , 0));
-    assembly::QLineEdit_setText(patrec_wid_->angles_finemax_lineEdit()   , config->getDefaultValue<double>("main", "AssemblyObjectAlignerView_PatRec_angles_finemax" , 2));
-    assembly::QLineEdit_setText(patrec_wid_->angles_finestep_lineEdit()  , config->getDefaultValue<double>("main", "AssemblyObjectAlignerView_PatRec_angles_finestep", 0.2));
   }
 
   patrec_lay->addWidget(patrec_wid_);
@@ -262,8 +251,7 @@ void AssemblyObjectFinderPatRecView::connect_to_finder(const AssemblyObjectFinde
     connect(finder, SIGNAL(PatRec_res_image_master_edited(QString))  , this, SLOT(update_image_1(QString)));
     connect(finder, SIGNAL(PatRec_res_image_master_edited(cv::Mat))  , this, SLOT(update_image_1(cv::Mat)));
 
-    connect(finder, SIGNAL(PatRec_res_image_angscan(QString))        , this, SLOT(update_image_2(QString)));
-    connect(finder, SIGNAL(PatRec_res_image_angscan(cv::Mat))        , this, SLOT(update_image_2(cv::Mat)));
+    connect(finder, SIGNAL(PatRec_res_image_angscan(const QList<QPointF>&))   , this, SLOT(update_FOM_vs_Angle(const QList<QPointF>&)));
 
     connect(finder, SIGNAL(PatRec_res_image_master_PatRec(QString))  , this, SLOT(update_image_3(QString)));
     connect(finder, SIGNAL(PatRec_res_image_master_PatRec(cv::Mat))  , this, SLOT(update_image_3(cv::Mat)));
@@ -315,9 +303,6 @@ void AssemblyObjectFinderPatRecView::update_text(const double dx, const double d
 void AssemblyObjectFinderPatRecView::update_image_1(const QString& fpath){ this->update_image(1, fpath); }
 void AssemblyObjectFinderPatRecView::update_image_1(const cv::Mat& image){ this->update_image(1, image); }
 
-void AssemblyObjectFinderPatRecView::update_image_2(const QString& fpath){ this->update_image(2, fpath); }
-void AssemblyObjectFinderPatRecView::update_image_2(const cv::Mat& image){ this->update_image(2, image); }
-
 void AssemblyObjectFinderPatRecView::update_image_3(const QString& fpath){ this->update_image(3, fpath); }
 void AssemblyObjectFinderPatRecView::update_image_3(const cv::Mat& image){ this->update_image(3, image); }
 
@@ -364,11 +349,6 @@ void AssemblyObjectFinderPatRecView::update_image(const int stage, const cv::Mat
     imageView_1_->setImage(img);
 //    imageView_1_->setZoomFactor(0.3);
   }
-  else if(stage == 2)
-  {
-    imageView_2_->setImage(img);
-//    imageView_2_->setZoomFactor(0.5);
-  }
   else if(stage == 3)
   {
     imageView_3_->setImage(img);
@@ -381,6 +361,76 @@ void AssemblyObjectFinderPatRecView::update_image(const int stage, const cv::Mat
   }
 }
 
+void AssemblyObjectFinderPatRecView::update_FOM_vs_Angle(const QList<QPointF>& list_fom_vs_angle)
+{
+    NQLog("AssemblyObjectFinderPatRecView", NQLog::Spam) << "update_FOM_vs_Angle"
+      << ": FOM vs Angle data received with " << list_fom_vs_angle.size() << " points";
+
+    if(list_fom_vs_angle.size() > 0)
+    {
+        double max_y = -9999.;
+        double min_x = 9999.;
+        double min_y = 9999.;
+
+        for(auto& point : list_fom_vs_angle)
+        {
+            if(point.y() < min_y)
+            {
+                min_y = point.y();
+                min_x = point.x();
+            }
+            if(point.y() > max_y)
+            {
+                max_y = point.y();
+            }
+        }
+
+        QLineSeries* graph_FOMvsAngle = new QLineSeries();
+        graph_FOMvsAngle->append(list_fom_vs_angle);
+
+        auto chart = new QChart;
+        chart->legend()->hide();
+        chart->addSeries(graph_FOMvsAngle);
+        chart->setTitle("Pattern Recognition FOM vs Angle");
+
+        QLineSeries* vertical_line = new QLineSeries();
+        vertical_line->append(min_x, min_y);
+        vertical_line->append(min_x, max_y);
+        chart->addSeries(vertical_line);
+
+        chart->createDefaultAxes();
+        chart->axes(Qt::Horizontal).back()->setTitleText("angle [deg]");
+        chart->axes(Qt::Vertical).back()->setTitleText("PatRec FOM");
+
+        int min_axis_x = floor(list_fom_vs_angle.first().x());
+        int max_axis_x = ceil(list_fom_vs_angle.last().x());
+        chart->axes(Qt::Horizontal).back()->setMin(min_axis_x);
+        chart->axes(Qt::Horizontal).back()->setMax(max_axis_x);
+
+        patrec_chart_view_ = new QChartView(chart);
+        patrec_chart_view_->setRenderHint(QPainter::Antialiasing);
+        patrec_chart_view_->setMinimumSize(500, 300);
+        patrec_chart_view_->setBackgroundRole(QPalette::Window);
+        patrec_chart_view_->setAlignment(Qt::AlignCenter);
+        patrec_chart_view_->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+
+        scrollArea_2_->setWidget(patrec_chart_view_);
+    }
+
+}
+
+void AssemblyObjectFinderPatRecView::started()
+{
+    update_label(2);
+    patrec_exe_button_->setEnabled(false);
+}
+
+void AssemblyObjectFinderPatRecView::config_error()
+{
+    update_label(1);
+    patrec_exe_button_->setEnabled(true);
+}
+
 void AssemblyObjectFinderPatRecView::update_label(const int state)
 {
   NQLog("AssemblyObjectFinderPatRecView", NQLog::Spam) << "update_label(" << state << ")";
@@ -391,11 +441,18 @@ void AssemblyObjectFinderPatRecView::update_label(const int state)
   {
     patrec_exe_label_->setText(" FOUND MARKER");
     patrec_exe_label_->setStyleSheet("QLabel { background-color : green; color : black; }");
+    patrec_exe_button_->setEnabled(true);
   }
-  else
+  else if(state == 1)
   {
     patrec_exe_label_->setText(" ERROR");
     patrec_exe_label_->setStyleSheet("QLabel { background-color : red; color : black; }");
+    patrec_exe_button_->setEnabled(true);
+  }
+  else if(state == 2)
+  {
+    patrec_exe_label_->setText(" RUNNING");
+    patrec_exe_label_->setStyleSheet("QLabel { background-color : orange; color : black; }");
   }
 
   return;
