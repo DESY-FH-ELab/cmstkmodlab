@@ -43,6 +43,13 @@ SET(CMAKE_SKIP_INSTALL_RPATH FALSE)
 SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 SET(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_FULL_LIBDIR})
 
+# Set default build type
+IF(NOT CMAKE_BUILD_TYPE)
+    SET(CMAKE_BUILD_TYPE
+        "RelWithDebInfo"
+        CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
+ENDIF(NOT CMAKE_BUILD_TYPE)
+
 # Add the automatically determined parts of the RPATH which point to directories outside the build tree to the install RPATH
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
@@ -90,11 +97,7 @@ endif(CURL_FOUND)
 
 set(CMAKE_AUTOMOC ON)
 
-find_package(Qt5 COMPONENTS Core Gui Widgets OpenGL Script Xml Svg Network Charts REQUIRED)
-
-set(ENV{ROOT_DIR} ENV{ROOTSYS}/cmake)
-find_package(ROOT 6.16 REQUIRED)
-message(STATUS "Found ROOT (${ROOT_VERSION})")
+find_package(Qt5 5.14 COMPONENTS Core Gui Widgets OpenGL Script Xml Svg Network Charts REQUIRED)
 
 option(CMSTKMODLAB_MARTA "Build with support for MARTA CO2 chiller" OFF)
 
@@ -123,6 +126,15 @@ endif()
 
 CMAKE_DEPENDENT_OPTION(CMSTKMODLAB_THERMO_HDF5 "Build thermal test setup software with HDF5 support" OFF
                        "CMSTKMODLAB_THERMO1 OR CMSTKMODLAB_THERMO2" OFF)
+option(CMSTKMODLAB_PUMPSTATION "Build with support for pump station" OFF)
+option(CMSTKMODLAB_PLASMA "Build with support for plasma cleaner test setup" OFF)
+option(CMSTKMODLAB_DEFO "Build with support for defo setup" OFF)
+
+if(CMSTKMODLAB_THERMO1 OR CMSTKMODLAB_THERMO2 OR CMSTKMODLAB_PUMPSTATION OR CMSTKMODLAB_PLASMA OR CMSTKMODLAB_DEFO)
+        set(ENV{ROOT_DIR} ENV{ROOTSYS}/cmake)
+	find_package(ROOT 6.16 REQUIRED)
+	message(STATUS "Found ROOT (${ROOT_VERSION})")
+endif()
 
 if(CMSTKMODLAB_THERMO1 OR CMSTKMODLAB_THERMO2)
 		if(CMSTKMODLAB_THERMO_HDF5)
@@ -135,12 +147,25 @@ if(CMSTKMODLAB_THERMO1 OR CMSTKMODLAB_THERMO2)
         add_subdirectory(thermo)
 endif()
 
-option(CMSTKMODLAB_PUMPSTATION "Build with support for pump station" OFF)
 if(CMSTKMODLAB_PUMPSTATION)
         message(STATUS "Support for pump station: ON")
         add_subdirectory(pumpstation)
 else()
         message(STATUS "Support for pump station: OFF")
+endif()
+
+if(CMSTKMODLAB_ASSEMBLY OR CMSTKMODLAB_DEFO)
+        pkg_check_modules(LIBGPHOTO2 REQUIRED IMPORTED_TARGET libgphoto2)
+        if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
+                find_package(OpenCV REQUIRED)
+        else()
+                pkg_check_modules(OPENCV4 REQUIRED IMPORTED_TARGET opencv4)
+        endif()
+        pkg_check_modules(EXIV2 REQUIRED IMPORTED_TARGET exiv2)
+endif()
+
+if(CMSTKMODLAB_ASSEMBLY AND NOT CMSTKMODLAB_FAKEUEYE)
+        include(Findueyeapi)
 endif()
 
 option(CMSTKMODLAB_ASSEMBLY "Build with support for PS automated assembly" OFF)
@@ -151,7 +176,6 @@ else()
         message(STATUS "Support for PS automated assembly: OFF")
 endif()
 
-option(CMSTKMODLAB_PLASMA "Build with support for plasma cleaner test setup" OFF)
 if(CMSTKMODLAB_PLASMA)
         message(STATUS "Support for plasma cleaner test setup: ON")
         add_subdirectory(plasma)
@@ -159,7 +183,6 @@ else()
         message(STATUS "Support for plasma cleaner test setup: OFF")
 endif()
 
-option(CMSTKMODLAB_DEFO "Build with support for defo setup" OFF)
 if(CMSTKMODLAB_DEFO)
         message(STATUS "Support for defo setup: ON")
         include(FindQWT)
@@ -176,20 +199,6 @@ if(CMSTKMODLAB_PYTHON)
         add_subdirectory(python)
 else()
         message(STATUS "Python device modules: OFF")
-endif()
-
-if(CMSTKMODLAB_ASSEMBLY OR CMSTKMODLAB_DEFO)
-        pkg_check_modules(LIBGPHOTO2 REQUIRED IMPORTED_TARGET libgphoto2)
-        if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
-                find_package(OpenCV REQUIRED)
-        else()
-                pkg_check_modules(OPENCV4 REQUIRED IMPORTED_TARGET opencv4)
-        endif()
-        pkg_check_modules(EXIV2 REQUIRED IMPORTED_TARGET exiv2)
-endif()
-
-if(CMSTKMODLAB_ASSEMBLY AND NOT CMSTKMODLAB_FAKEUEYE)
-        include(Findueyeapi)
 endif()
 
 configure_file(tkmodlabenv.sh.in tkmodlabenv.sh)

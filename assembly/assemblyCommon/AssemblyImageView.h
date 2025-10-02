@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -24,6 +24,8 @@
 #include <QToolTip>
 #include <QEventLoop>
 #include <QProgressBar>
+#include <QChartView>
+#include <QtCharts>
 
 #include <opencv2/opencv.hpp>
 
@@ -39,6 +41,9 @@ class AssemblyImageView : public QWidget
   void    connectImageProducer_image    (const QObject* sender, const char* signal);
   void disconnectImageProducer_image    (const QObject* sender, const char* signal);
 
+  void    connectImageProducer_binary   (const QObject* sender, const char* signal);
+  void disconnectImageProducer_binary   (const QObject* sender, const char* signal);
+
   void    connectImageProducer_autofocus(const QObject* sender, const char* signal);
   void disconnectImageProducer_autofocus(const QObject* sender, const char* signal);
 
@@ -52,6 +57,8 @@ class AssemblyImageView : public QWidget
   // image
   AssemblyUEyeView* img_ueye_;
   QScrollArea*      img_scroll_;
+  AssemblyUEyeView* imgbin_ueye_;
+  QScrollArea*      imgbin_scroll_;
 
   QPushButton* img_load_button_;
   QPushButton* img_save_button_;
@@ -59,7 +66,17 @@ class AssemblyImageView : public QWidget
   QPushButton* img_axes_button_;
   QPushButton* info_button;
 
+  QPushButton* imgbin_thresh_button_;
+  QLabel*      imgbin_thresh_label_;
+  QLineEdit*   imgbin_thresh_linee_;
+  QSlider* threshold_slider_;
+
+  QPushButton* imgbin_adathr_button_;
+  QLabel*      imgbin_adathr_label_;
+  QLineEdit*   imgbin_adathr_linee_;
+
   cv::Mat image_;
+  cv::Mat imgbin_;
   cv::Mat image_raw_;
 
   bool image_modified_;
@@ -67,6 +84,7 @@ class AssemblyImageView : public QWidget
 
   // auto-focusing
   AssemblyUEyeView *autofocus_ueye_;
+  QChartView       *autofocus_chart_view_;
   QScrollArea      *autofocus_scroll_;
   QLineEdit        *autofocus_result_bestZ_lineed_;
   QPushButton      *autofocus_exe_button_;
@@ -94,8 +112,15 @@ class AssemblyImageView : public QWidget
 
   void update_text(const double);
 
+  void update_image_binary(const cv::Mat&);
+
+  void apply_threshold();
+  void apply_adaptiveThreshold();
+
+  void set_bw_threshold_slider(int);
+
   void   save_image_zscan();
-  void update_image_zscan(const QString&);
+  void update_image_zscan(QLineSeries& zscan_graph);
 
   void  update_autofocus_config(const double, const int);
   void acquire_autofocus_config();
@@ -116,6 +141,13 @@ class AssemblyImageView : public QWidget
   void image_loaded(const cv::Mat&);
 
   void image_updated(const cv::Mat&);
+
+  void image_binary_request();
+  void image_binary_updated(const cv::Mat&);
+  void image_binary_updated();
+
+  void threshold_request(const int);
+  void adaptiveThreshold_request(const int);
 
   void image_zscan_updated(const cv::Mat&);
   void image_zscan_updated();

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2020 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -14,6 +14,7 @@
 #define _VMARTA_H_
 
 #include <string>
+#include <stdint.h>
 
 typedef const char* ipaddress_t;
 typedef unsigned int port_t;

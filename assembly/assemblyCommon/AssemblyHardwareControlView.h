@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -50,8 +50,6 @@ class AssemblyHardwareControlView : public QWidget
   QCheckBox* cb_lockMotionSettings_;
 
   LStepExpressWidget*         w_lStep_;
-  LStepExpressJoystickWidget* w_lStepJoystick_;
-  LStepExpressPositionWidget* w_lStepPosition_;
 
  public slots:
 

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -56,15 +56,13 @@ class AssemblyObjectFinderPatRecWidget : public QWidget
   QRadioButton* adaptiveThreshold_button()   const { return thresh_adathr_radbu_; }
   QLineEdit*    adaptiveThreshold_lineEdit() const { return thresh_adathr_linee_; }
 
-  QLineEdit* angles_prescan_lineEdit()  const { return angles_prescan_linee_; }
-  QLineEdit* angles_finemax_lineEdit()  const { return angles_finemax_linee_; }
-  QLineEdit* angles_finestep_lineEdit() const { return angles_finestep_linee_; }
-
   AssemblyObjectFinderPatRec::Configuration get_configuration(bool&) const;
 
  protected:
 
   QVBoxLayout* layout_;
+
+  QGroupBox* templa_box_;
 
   QPushButton* templa_load_button_;
   QLineEdit*   templa_file_linee_;
@@ -80,14 +78,9 @@ class AssemblyObjectFinderPatRecWidget : public QWidget
   QRadioButton* thresh_adathr_radbu_;
   QLineEdit*    thresh_adathr_linee_;
 
-  QLabel*    angles_prescan_label_;
-  QLineEdit* angles_prescan_linee_;
+  QLabel*       template_preview_;
 
-  QLabel*    angles_finemax_label_;
-  QLineEdit* angles_finemax_linee_;
-
-  QLabel*    angles_finestep_label_;
-  QLineEdit* angles_finestep_linee_;
+  ApplicationConfig* config_;
 
  public slots:
 
@@ -103,6 +96,8 @@ class AssemblyObjectFinderPatRecWidget : public QWidget
   void updated_image_template(const cv::Mat&);
 
   void configuration(const AssemblyObjectFinderPatRec::Configuration&);
+
+  void invalid_configuration() const;
 };
 
 #endif // ASSEMBLYOBJECTFINDERPATRECWIDGET_H

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -53,6 +53,12 @@ namespace assembly {
 
   // geometry helpers
   void rotation2D_deg(double&, double&, const double, const double, const double);
+
+  enum Center {
+      FNAL = 1,
+      BROWN = 2,
+      DESY = 3
+  };
 
 }
 

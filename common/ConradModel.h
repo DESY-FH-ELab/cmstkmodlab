@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -60,6 +60,10 @@ public:
 
   // Methods for power control and status querying of the devices connected to the switch
   const State& getSwitchState( int device ) const;
+
+  /// Returns the current (cached) state of the device.
+  const State& getDeviceState() const {
+      return state_; }
 
 public slots:
   // Methods for control and status querying of the device itself, as specified

@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -118,8 +118,7 @@ class AssemblyObjectFinderPatRec : public QObject
   void PatRec_res_image_master_edited(const QString&);
   void PatRec_res_image_master_edited(const cv::Mat&);
 
-  void PatRec_res_image_angscan(const QString&);
-  void PatRec_res_image_angscan(const cv::Mat&);
+  void PatRec_res_image_angscan(const QList<QPointF>&);
 
   void PatRec_res_image_master_PatRec(const QString&);
   void PatRec_res_image_master_PatRec(const cv::Mat&);

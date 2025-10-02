@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -63,7 +63,7 @@ class VLStepExpress
 
   virtual ~VLStepExpress();
 
-  virtual std::string ioPort() const = 0;
+  virtual std::string ioPort() = 0;
 
   virtual bool DeviceAvailable() const = 0;
 
@@ -157,7 +157,7 @@ class VLStepExpress
 
   // low level methods
   virtual void SendCommand(const std::string &) = 0;
-  virtual void ReceiveString(std::string &) = 0;
+  virtual std::string ReceiveString(const std::string &) = 0;
 
   void SetValue(const std::string & command, const std::string & value);
   void SetValue(const std::string & command, VLStepExpress::Axis axis, const std::string & value);

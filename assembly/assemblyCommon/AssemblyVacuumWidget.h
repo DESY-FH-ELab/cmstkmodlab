@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -19,6 +19,8 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QLabel>
+
+#include <RelayCardManager.h>
 
 #include <map>
 
@@ -56,7 +58,7 @@ class AssemblyVacuumWidget : public QWidget
  public slots:
 
   void toggleVacuum();
-  void updateVacuumChannelState(const int, const bool);
+  void updateVacuumChannelState(const int, const SwitchState);
 
   void updateVacuumChannelsStatus();
 

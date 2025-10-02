@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -44,7 +44,7 @@ void ApplicationConfigReader::fill(ApplicationConfig::storage_t &keyvalueMap)
         QMessageBox::Abort
     );
 
-    throw; // must abort
+    throw ApplicationConfig::InvalidConfigFileException(" [ApplicationConfigReader::openAndCheckFile] ** ERROR: failed to open file: " + filename_ + "."); // throw exception
   }
 
   std::string Key;
