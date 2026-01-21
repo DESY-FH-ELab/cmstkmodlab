@@ -462,6 +462,21 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   button_moveRelRefDist7_  = new QPushButton(tr("Apply Relative Movement"));
   dist_lay->addWidget(button_moveRelRefDist7_, row_index, 9, Qt::AlignLeft);
 
+  // distance: from pickup z-position to glue height
+  ++row_index;
+
+  tmp_tag = "FromPickupHeightToGlueHeight";
+  tmp_des = "From Pickup Height to Glue Height:";
+
+  map_lineEdit_[tmp_tag+"_dZ"] = new QLineEdit(tr(""));
+
+  dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("dZ"))    , row_index, 5, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dZ"), row_index, 6, Qt::AlignRight);
+
+  button_moveRelRefDist20_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist20_, row_index, 9, Qt::AlignLeft);
+
   // distance: from ref-point on assembly platform (for spacers' calibration) to spacer's edge
   ++row_index;
 
@@ -671,6 +686,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   connect(button_moveRelRefDist17_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist17()));
   connect(button_moveRelRefDist18_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist18()));
   connect(button_moveRelRefDist19_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist19()));
+  connect(button_moveRelRefDist20_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist20()));
   connect(this , SIGNAL(click_moveByRelRefDist(int)), this, SLOT(askConfirmMoveByRelRefDist(int)));
 
   connect(config_, SIGNAL(valueChanged()), this, SLOT(copy_values()));
@@ -718,6 +734,7 @@ AssemblyParametersView::~AssemblyParametersView()
     disconnect(button_moveRelRefDist17_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist17()));
     disconnect(button_moveRelRefDist18_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist18()));
     disconnect(button_moveRelRefDist19_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist19()));
+    disconnect(button_moveRelRefDist20_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist20()));
     disconnect(this , SIGNAL(click_moveByRelRefDist(int)), this, SLOT(askConfirmMoveByRelRefDist(int)));
 }
 
@@ -1052,6 +1069,8 @@ void AssemblyParametersView::askConfirmMoveByRelRefDist(int refPoint)
         case 18: tmp_tag = "Sensor_PSP_deltaY";
             break;
         case 19: tmp_tag = "Sensor_PSS_deltaY";
+            break;
+        case 20: tmp_tag = "FromPickupHeightToGlueHeight";
             break;
         default: return;
     }
