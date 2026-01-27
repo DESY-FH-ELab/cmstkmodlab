@@ -936,6 +936,8 @@ void AssemblyMainWindow::start_objectAligner(const AssemblyObjectAligner::Config
   // if successful, emits signal "configuration_updated()"
   aligner_->update_configuration(conf);
 
+  this->disable_imageButtons(this);
+
   return;
 }
 
@@ -985,6 +987,8 @@ void AssemblyMainWindow::disconnect_objectAligner()
   aligner_view_->Configuration_Widget()->setEnabled(true);
 
   aligner_connected_ = false;
+
+  this->enable_imageButtons(this);
 
   return;
 }
