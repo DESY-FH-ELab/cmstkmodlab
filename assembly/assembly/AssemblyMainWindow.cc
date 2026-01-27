@@ -1381,3 +1381,39 @@ void AssemblyMainWindow::warn_on_stage_limits(const double target_pos, const cha
         QMessageBox::Ok
     );
 }
+
+void AssemblyMainWindow::disable_imageButtons(QObject* sender)
+{
+    camera_blocking_objects_.append(sender);
+
+    NQLog("AssemblyMainWindow", NQLog::Debug) << "Blocking the camera. (from " << sender->metaObject()->className() << ")";
+
+    for(auto& action : toolBar_->actions()){
+      if(action->text() == "Snapshot"){
+        action->setEnabled(false);
+      }
+    }
+    image_view_->autofocus_button()->setEnabled(false);
+}
+
+void AssemblyMainWindow::enable_imageButtons(QObject* sender)
+{
+    NQLog("AssemblyMainWindow", NQLog::Debug) << "Camera release request. (from " << sender->metaObject()->className() << ")";
+
+    camera_blocking_objects_.removeAll(sender);
+    if(camera_blocking_objects_.size())
+    {
+      NQLog("AssemblyMainWindow", NQLog::Debug) << "There are still " << camera_blocking_objects_.size() << " objects blocking the camera:";
+      for(auto& obj : camera_blocking_objects_){
+        NQLog("AssemblyMainWindow", NQLog::Debug) << "   "  << obj->metaObject()->className();
+      }
+    } else {
+      NQLog("AssemblyMainWindow", NQLog::Debug) << "Camera will be released.";
+      for(auto& action : toolBar_->actions()){
+        if(action->text() == "Snapshot"){
+          action->setEnabled(true);
+        }
+      }
+    }
+    image_view_->autofocus_button()->setEnabled(true);
+}
