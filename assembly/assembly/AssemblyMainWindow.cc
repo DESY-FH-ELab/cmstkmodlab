@@ -695,7 +695,7 @@ void AssemblyMainWindow::enable_images()
 
   if(image_ctr_ == nullptr)
   {
-    image_ctr_ = new AssemblyImageController(camera_, zfocus_finder_);
+    image_ctr_ = new AssemblyImageController(camera_, zfocus_finder_, this);
   }
 
   connect(this      , SIGNAL(images_ON())      , image_ctr_, SLOT(enable()));
