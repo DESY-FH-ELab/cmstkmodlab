@@ -49,6 +49,7 @@ class AssemblyObjectAlignerView : public QWidget
   AssemblyUEyeView* PatRecTwo_Image() const { return patrecTwo_image_; }
 
   QPushButton* button_alignerEmergencyStop() const { return button_alignerEmergencyStop_; }
+  QPushButton* button_runAlignment() { return alignm_exealig_pusbu_; }
 
   AssemblyObjectAligner::Configuration get_configuration(bool&) const;
 
