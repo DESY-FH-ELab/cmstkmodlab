@@ -55,7 +55,7 @@ class DatabaseDESY : public VDatabase
       QNetworkRequest base_request_;
 
       int process_dbid_;
-
+      QString module_name_;
 };
 
 class BadReplyException : public std::exception {

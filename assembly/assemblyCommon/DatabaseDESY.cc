@@ -28,6 +28,7 @@
 DatabaseDESY::DatabaseDESY(QObject *parent, QString base_url, QString token)
  : VDatabase(parent)
  , process_dbid_(-1)
+ , module_name_("")
 {
     // Initialise stuff!
     network_access_mgr_ = new QNetworkAccessManager(this);
@@ -123,6 +124,12 @@ bool DatabaseDESY::register_module_name(QString module_name, QString operator_na
 
 bool DatabaseDESY::MaPSA_to_BP(QString module_name, QString MaPSA_name, QString BP_name, QString glue_name, QString comment)
 {
+    if(!module_name_.isEmpty() && module_name != module_name_){
+      error_message("Could not perform step \"Take PSs\": Module ID has changed since the beginning of the assembly procesure: "
+        + module_name_ + " -> " + module_name);
+      return false;
+    }
+
     try{
         // Get MaPSA_dbib_ from MaPSA_name_
         int return_dbid = get_ID_from_name(MaPSA_name, "MaPSA");
@@ -199,6 +206,12 @@ bool DatabaseDESY::MaPSA_to_BP(QString module_name, QString MaPSA_name, QString 
 
 bool DatabaseDESY::PSs_to_spacers(QString module_name, QString PSs_name, QString glue_name, QString comment)
 {
+    if(!module_name_.isEmpty() && module_name != module_name_){
+      error_message("Could not perform step \"Take PSs\": Module ID has changed since the beginning of the assembly procesure: "
+         + module_name_ + " -> " + module_name);
+      return false;
+    }
+
     try{
         // Get PSs_dbib_ from PSs_name_
         int return_dbid = get_ID_from_name(PSs_name, "PSs%20Sensor");
@@ -267,6 +280,13 @@ bool DatabaseDESY::PSs_to_spacers(QString module_name, QString PSs_name, QString
 
 bool DatabaseDESY::PSs_to_MaPSA(QString module_name, QString glue_name, QString comment)
 {
+
+    if(!module_name_.isEmpty() && module_name != module_name_){
+      error_message("Could not perform step \"Take PSs\": Module ID has changed since the beginning of the assembly procesure: "
+        + module_name_ + " -> " + module_name);
+      return false;
+    }
+
     try{
         // // Glue PSs to MaPSA
         // Get Glue3_dbib_ from glue_name
