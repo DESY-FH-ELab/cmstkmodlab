@@ -28,9 +28,9 @@ class DatabaseDESY : public VDatabase
       ~DatabaseDESY();
 
       bool register_module_name(QString, QString);
-      bool MaPSA_to_BP(QString, QString, QString, QString="");
-      bool PSs_to_spacers(QString, QString, QString="");
-      bool PSs_to_MaPSA(QString, QString);
+      bool MaPSA_to_BP(QString, QString, QString, QString, QString="");
+      bool PSs_to_spacers(QString, QString, QString, QString="");
+      bool PSs_to_MaPSA(QString, QString, QString);
       bool PSs_to_MaPSA(QString, QString, QString, QString, QString) { return false; };
 
       bool is_component_available(QString, QString="");
@@ -40,10 +40,11 @@ class DatabaseDESY : public VDatabase
       QJsonObject post(QNetworkRequest request, QJsonObject json_object);
       QJsonObject get(QNetworkRequest request);
 
-      int get_next_task(QString task_name);
+      int get_next_task(QString module_name, QString task_name);
       void assign_task(int task_id);
       void perform_task(int task_id, QJsonObject data);
       int get_ID_from_name(QString part_name, QString structure_name="");
+      int get_processID_from_name(QString module_name);
       int validate_glue_mixture(QString glue_name);
 
       void error_message(QString message);
@@ -91,6 +92,18 @@ class PartDoesNotExistException : public std::exception {
       PartDoesNotExistException(QString part, QString structure="") : part_(std::move(part)), structure_(std::move(structure)) {}
       const char* what () {
           return_message_ = "Required part does not exist: " + part_.toStdString() + (structure_.isEmpty() ? "" : (" (structure: " + structure_.toStdString() + ")"));
+          return return_message_.c_str();
+      }
+};
+
+class ProcessDoesNotExistException : public std::exception {
+  private:
+      QString module_name_;
+      std::string return_message_;
+  public:
+      ProcessDoesNotExistException(QString module_name) : module_name_(std::move(module_name)) {}
+      const char* what () {
+          return_message_ = "Required process does not exist: " + module_name_.toStdString();
           return return_message_.c_str();
       }
 };

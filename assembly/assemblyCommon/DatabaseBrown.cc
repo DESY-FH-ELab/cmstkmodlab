@@ -41,7 +41,7 @@ bool DatabaseBrown::register_module_name(QString module_name, QString operator_n
     return false;
 }
 
-bool DatabaseBrown::MaPSA_to_BP(QString MaPSA_name, QString BP_name, QString glue_name, QString comment)
+bool DatabaseBrown::MaPSA_to_BP(QString module_name, QString MaPSA_name, QString BP_name, QString glue_name, QString comment)
 {
     QFile outfile(m_file_path.canonicalFilePath() + "/PSp.txt");
     if (!outfile.open(QIODevice::WriteOnly | QIODevice::Text)){
@@ -56,7 +56,7 @@ bool DatabaseBrown::MaPSA_to_BP(QString MaPSA_name, QString BP_name, QString glu
     return true;
 }
 
-bool DatabaseBrown::PSs_to_spacers(QString PSs_name, QString glue_name, QString comment)
+bool DatabaseBrown::PSs_to_spacers(QString module_name, QString PSs_name, QString glue_name, QString comment)
 {
     QFile outfile(m_file_path.canonicalFilePath() + "/PSs.txt");
     if (!outfile.open(QIODevice::WriteOnly | QIODevice::Text)){

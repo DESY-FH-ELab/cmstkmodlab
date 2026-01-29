@@ -479,7 +479,7 @@ void AssemblyAssemblyV2::PushStep1ToDB_start()
         NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep1ToDB_start: "
            << QString("Push the following information to database:\n\tModule:\t\t%1\n\tBaseplate:\t%2\n\tMaPSA:\t\t%3\n\tGlue:\t\t%4\n\tComment:\t%5").arg(Module_ID_).arg(Baseplate_ID_).arg(MaPSA_ID_).arg(Glue1_ID_).arg(comment_lin->toPlainText()).toStdString();
 
-        if(!(database_->MaPSA_to_BP(MaPSA_ID_, Baseplate_ID_, Glue1_ID_, comment_lin->toPlainText())))
+        if(!(database_->MaPSA_to_BP(Module_ID_, MaPSA_ID_, Baseplate_ID_, Glue1_ID_, comment_lin->toPlainText())))
         {
             NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep1ToDB_start: Something went wrong.";
             emit PushStep1ToDB_aborted();
@@ -568,7 +568,7 @@ void AssemblyAssemblyV2::PushStep2ToDB_start()
         NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep2ToDB_start: "
            << QString("Push the following information to database:\n\tModule:\t\t%1\n\tPSS:\t\t%2\n\tGlue:\t\t%3\n\tComment:\t%4").arg(Module_ID_).arg(PSS_ID_).arg(Glue2_ID_).arg(comment_lin->toPlainText()).toStdString();
 
-        if(!(database_->PSs_to_spacers(PSS_ID_, Glue2_ID_, comment_lin->toPlainText())))
+        if(!(database_->PSs_to_spacers(Module_ID_, PSS_ID_, Glue2_ID_, comment_lin->toPlainText())))
         {
             NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep2ToDB_start: Something went wrong.";
             emit PushStep2ToDB_aborted();
@@ -673,7 +673,7 @@ void AssemblyAssemblyV2::PushStep3ToDB_start()
             NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep3ToDB_start: "
             << QString("Push the following information to database:\n\tModule:\t\t%1\n\tGlue:\t\t%2\n\tComment:\t%3").arg(Module_ID_).arg(Glue3_ID_).arg(comment_lin->toPlainText()).toStdString();
 
-            if(!(database_->PSs_to_MaPSA(Glue3_ID_, comment_lin->toPlainText()))) {
+            if(!(database_->PSs_to_MaPSA(Module_ID_, Glue3_ID_, comment_lin->toPlainText()))) {
                 NQLog("AssemblyAssemblyV2", NQLog::Spam) << "PushStep3ToDB_start: Something went wrong.";
                 emit PushStep3ToDB_aborted();
                 return;
