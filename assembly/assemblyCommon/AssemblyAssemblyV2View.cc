@@ -394,19 +394,6 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   }
   // ----------
 
-  if(assembly->GetAssemblyCenter() == assembly::Center::DESY){
-    // step: Manually rotate stage to correct for misalignment of DESY assembly platform
-    {
-      ++assembly_step_N;
-
-      AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
-      tmp_wid->label()->setText(QString::number(assembly_step_N));
-      tmp_wid->text()->setText("Manually rotate to -0.157 deg (corrects for pinhole misalignment of DESY assembly platform)");
-      PSPToBasep_lay->addWidget(tmp_wid);
-    }
-    // ----------
-  }
-
   if(assembly->GetAssemblyCenter() == assembly::Center::BROWN || assembly->GetAssemblyCenter() == assembly::Center::DESY){
       // step: Make space on the platform by moving the pickup tool
       {
