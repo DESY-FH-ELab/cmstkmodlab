@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -300,7 +300,7 @@ void AssemblyUEyeCamera::updatePixelClock()
     if (nRet == IS_SUCCESS) {
       nMin = nRange[0];
       nMax = nRange[1];
-      nInc = nRange[2];
+      nInc = nRange[2]!= 0 ? nRange[2] : 1;
     }
 
     NQLog("AssemblyUEyeCamera", NQLog::Debug) << "updatePixelClock"

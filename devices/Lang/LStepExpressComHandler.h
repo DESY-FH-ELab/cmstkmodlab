@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -45,7 +45,7 @@ class LStepExpressComHandler {
   const std::string& ioPort() const { return fIoPort; }
 
   void SendCommand( const char* );
-  void ReceiveString( char* );
+  std::string ReceiveString();
 
   bool DeviceAvailable();
 

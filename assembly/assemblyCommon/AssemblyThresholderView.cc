@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -44,6 +44,7 @@ AssemblyThresholderView::AssemblyThresholderView(QWidget* parent) :
   imgbin_adathr_button_(nullptr),
   imgbin_adathr_label_ (nullptr),
   imgbin_adathr_linee_ (nullptr)
+
 {
   ApplicationConfig* config = ApplicationConfig::instance();
 

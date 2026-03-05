@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -16,6 +16,7 @@
 #include <LStepExpressMotionManager.h>
 #include <AssemblyMultiPickupTesterWidget.h>
 #include <AssemblyPositionsRegistryWidget.h>
+#include <AssemblySubassemblyPickupWidget.h>
 
 #include <QWidget>
 #include <QMessageBox>
@@ -26,15 +27,17 @@ class AssemblyToolboxView : public QWidget
 
  public:
 
-  explicit AssemblyToolboxView(const LStepExpressMotionManager* const, QWidget* parent=nullptr);
+  explicit AssemblyToolboxView(const LStepExpressMotionManager* const, const AssemblySubassemblyPickup* const, QWidget* parent=nullptr);
   virtual ~AssemblyToolboxView() {}
 
   AssemblyPositionsRegistryWidget* PositionsRegistry_Widget() { return posreg_wid_; }
+  AssemblySubassemblyPickupWidget* SubassemblyPickup_Widget() { return subassembly_pickup_wid_; }
   AssemblyMultiPickupTesterWidget* MultiPickupTester_Widget() { return mupite_wid_; }
 
  protected:
 
   AssemblyPositionsRegistryWidget* posreg_wid_;
+  AssemblySubassemblyPickupWidget* subassembly_pickup_wid_;
   AssemblyMultiPickupTesterWidget* mupite_wid_;
 
  public slots:

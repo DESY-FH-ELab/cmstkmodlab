@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2017 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -41,6 +41,8 @@ class LStepExpressWidget : public QWidget
  protected:
 
   LStepExpressModel* model_;
+
+  QCheckBox* expertModeCheckBox_;
 
   QGroupBox* mot_settings_box_;
   QCheckBox* lstepCheckBox_;
@@ -87,6 +89,8 @@ class LStepExpressWidget : public QWidget
 
   void  enableMotionTools(const bool  enable=true);
   void disableMotionTools(const bool disable=true);
+
+  void toggleExpertMode(const bool enable);
 
   void confirmCalibrate();
 

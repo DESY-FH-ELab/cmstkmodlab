@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//               Copyright (C) 2011-2022 - The DESY CMS Group                  //
+//               Copyright (C) 2011-2025 - The DESY CMS Group                  //
 //                           All rights reserved                               //
 //                                                                             //
 //      The CMStkModLab source code is licensed under the GNU GPL v3.0.        //
@@ -37,7 +37,16 @@ class ApplicationConfig : public QObject
 {
   Q_OBJECT
 public:
-  
+
+    class InvalidConfigFileException : public std::exception
+    {
+    private:
+      std::string message;
+    public:
+      InvalidConfigFileException(std::string msg) : message(std::move(msg)) {}
+      const char * what () {return message.c_str();}
+    };
+
   struct FullKey {
     std::string filename;
     std::string alias;
@@ -479,7 +488,46 @@ public:
       issueKeyError(sk);
     }
   }
- 
+
+  template <class aType> void addValue(const ShortKey& sk, aType value)
+  {
+    QVariant variant(value);
+    storage_t::iterator it = keyvalueMap_.find(sk);
+    if (it!=keyvalueMap_.end()) {
+      keyExistsError(sk);
+    } else {
+      std::vector<std::string> values;
+      values.push_back(variant.toString().toStdString());
+      
+      ApplicationConfig::FullKey fk = { "", sk.alias, sk.key };
+      
+      keyvalueMap_[fk] = values;
+
+      emit structureChanged();
+      emit valueChanged();
+    }
+  }
+
+  template <class aType> void addValue(const std::string& alias, const std::string& key, aType value)
+  {
+    QVariant variant(value);
+    ShortKey sk = { alias, key };
+    storage_t::iterator it = keyvalueMap_.find(sk);
+    if (it!=keyvalueMap_.end()) {
+      keyExistsError(sk);
+    } else {
+      std::vector<std::string> values;
+      values.push_back(variant.toString().toStdString());
+
+      ApplicationConfig::FullKey fk = { "", alias, key };
+
+      keyvalueMap_[fk] = values;
+
+      emit structureChanged();
+      emit valueChanged();
+    }
+  }
+
   void setValueByIndex(const ShortKey& sk, std::size_t idx, std::string& value)
   {
     storage_t::iterator it = keyvalueMap_.find(sk);
@@ -549,6 +597,7 @@ protected:
   static ApplicationConfig* instance_;
 
   void issueKeyError(const ShortKey& sk) const;
+  void keyExistsError(const ShortKey& sk) const;
 
   storage_t keyvalueMap_;
 };

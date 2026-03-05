@@ -24,6 +24,7 @@
 #include <vector>
 #include <set>
 #include <string>
+#include <tuple>
 
 #include <QObject>
 #include <QIODevice>
@@ -47,7 +48,7 @@ public:
         Fatal       = 5
     };
 
-    NQLog(const QString& module, LogLevel level = Message);
+    NQLog(const QString& module, LogLevel level = Message, int precision = 6);
     ~NQLog();
 
     inline NQLog &operator<<(QChar t) { stream_ << '\'' << t << '\''; return *this;}
@@ -140,14 +141,27 @@ class NQLogger : public QObject
     Q_OBJECT
 public:
 
+    class InvalidLoggerException : public std::exception
+    {
+    private:
+      std::string message;
+    public:
+      InvalidLoggerException(std::string msg) : message(std::move(msg)) {}
+      const char * what () {return message.c_str();}
+    };
+
     static NQLogger* instance(QObject *parent = 0);
 
     void write(const QString& module, NQLog::LogLevel level, const QString&buffer);
 
     void addActiveModule(const QString& module);
 
-    void addDestiniation(QIODevice * device, NQLog::LogLevel level = NQLog::Message);
-    void addDestiniation(FILE * fileHandle, NQLog::LogLevel level = NQLog::Message);
+    void addDestiniation(QIODevice * device, NQLog::LogLevel level = NQLog::Message, std::string dest_name = "");
+    void addDestiniation(FILE * fileHandle, NQLog::LogLevel level = NQLog::Message, std::string dest_name = "");
+
+    void setLogLevel(std::string dest_name, NQLog::LogLevel level);
+
+    bool hasDestination(std::string dest_name);
 
 protected:
 
@@ -157,7 +171,7 @@ protected:
     QMutex mutex_;
 
     std::set<std::pair<QString,bool> > activeModules_;
-    std::vector<std::pair<NQLog::LogLevel,QTextStream*> > destinations_;
+    std::vector<std::tuple<NQLog::LogLevel,QTextStream*,std::string> > destinations_;
 };
 
 /** @} */
