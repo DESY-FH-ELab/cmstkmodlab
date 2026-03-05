@@ -50,7 +50,7 @@ bool HuberPilotOne::SetTemperatureSetPoint(const float temperatureSetPoint)
   theCommand << "{M00"
       << std::setfill('0') << std::setw(4)
       << std::hex << std::uppercase
-      << (int)(temperatureSetPoint * 100);
+      << (int16_t)(temperatureSetPoint * 100);
 
   comHandler_->SendCommand(theCommand.str().c_str());
   usleep(uDelay_);
@@ -1067,7 +1067,9 @@ int HuberPilotOne::ToInteger(const char* buffer) const
 #endif
   
   try {
-    return std::stoi(temp, 0, 16);
+    uint16_t hextemp = static_cast<uint16_t>(std::stoul(temp, 0, 16));
+    int16_t dectemp = static_cast<int16_t>(hextemp);
+    return dectemp;
   }
   catch (const std::invalid_argument& ia) {
     std::cerr << "[HuberPilotOne::ToInteger] -- Invalid argument: " << ia.what() << std::endl;
