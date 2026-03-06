@@ -25,7 +25,7 @@
 
 HuberPilotOne::HuberPilotOne(const ioport_t ioPort)
  : VHuberPilotOne(ioPort),
-   uDelay_(100000)
+   uDelay_(10000)
 {
   comHandler_ = new PilotOneComHandler( ioPort );
   isCommunication_ = false;
@@ -34,9 +34,9 @@ HuberPilotOne::HuberPilotOne(const ioport_t ioPort)
 
 bool HuberPilotOne::SetTemperatureSetPoint(const float temperatureSetPoint)
 {
-  #ifdef __HUBERPILOTONE_DEBUG
+#ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::SetTemperatureSetPoint] -- DEBUG: Called." << std::endl;
-  #endif
+#endif
 
   if (temperatureSetPoint > PilotOneUpperTempLimit ||
       temperatureSetPoint < PilotOneLowerTempLimit ) {
@@ -50,7 +50,7 @@ bool HuberPilotOne::SetTemperatureSetPoint(const float temperatureSetPoint)
   theCommand << "{M00"
       << std::setfill('0') << std::setw(4)
       << std::hex << std::uppercase
-      << (int)(temperatureSetPoint * 100);
+      << (int16_t)(temperatureSetPoint * 100);
 
   comHandler_->SendCommand(theCommand.str().c_str());
   usleep(uDelay_);
@@ -1067,7 +1067,9 @@ int HuberPilotOne::ToInteger(const char* buffer) const
 #endif
   
   try {
-    return std::stoi(temp, 0, 16);
+    uint16_t hextemp = static_cast<uint16_t>(std::stoul(temp, 0, 16));
+    int16_t dectemp = static_cast<int16_t>(hextemp);
+    return dectemp;
   }
   catch (const std::invalid_argument& ia) {
     std::cerr << "[HuberPilotOne::ToInteger] -- Invalid argument: " << ia.what() << std::endl;
@@ -1089,23 +1091,31 @@ float HuberPilotOne::ToFloat(const char* buffer) const
 
 void HuberPilotOne::Device_Init()
 {
-  #ifdef __HUBERPILOTONE_DEBUG
+#ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::Device_Init] -- DEBUG: Called." << std::endl;
-  #endif
+#endif
 
   char buffer[1000];
   
   comHandler_->SendCommand( "{M1B****" );
   usleep( uDelay_ );
+  comHandler_->ReceiveString( buffer ); 
 
-  comHandler_->ReceiveString( buffer );
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::Device_Init] -- DEBUG: Buffer is:-- | " << buffer << "|" << std::endl;
+#endif
+
   usleep( uDelay_ );
   StripBuffer( buffer );
   std::string temp(buffer);
   
   if (temp.compare(0, 8, "{S1BD98B")!=0) {
-    std::cerr << " [HuberPilotOne::Device_Init] ** ERROR: Device communication problem."
-        << std::endl;
+
+#ifdef __HUBERPILOTONE_DEBUG
+    std::cout << "[HuberPilotOne::Device_Init] -- DEBUG: Temp is:-- | " << temp << "|" << std::endl;
+#endif
+
+    std::cerr << " [HuberPilotOne::Device_Init] ** ERROR: Device communication problem." << std::endl;
     isCommunication_ = false;
     return;
   }
