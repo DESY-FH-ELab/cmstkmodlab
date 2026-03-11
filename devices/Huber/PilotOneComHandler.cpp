@@ -81,7 +81,7 @@ void PilotOneComHandler::ReceiveString( char *receiveString )
 
   int timeout = 0, readResult = 0;
 
-  while ( timeout < 100000 )  {
+  while ( timeout < 100000 ) {
 
     readResult = read( fIoPortFileDescriptor, receiveString, 1024 );
 
