@@ -86,7 +86,8 @@ void Thermo2ThroughPlaneWidget::updateInfo()
   QString s, p;
 
   if (model_->getHuberState()) {
-    value = model_->getProcessTemperature();
+    // value = model_->getProcessTemperature();
+    value = model_->getKeithleySinkTemperature();
     s = QString::number(value, 'f', 2);
     svg.replace("§TSink§", s);
   } else {
