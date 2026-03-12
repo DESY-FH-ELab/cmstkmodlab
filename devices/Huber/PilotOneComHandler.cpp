@@ -77,7 +77,7 @@ void PilotOneComHandler::ReceiveString( char *receiveString )
     receiveString[0] = 0;
     return;
   }
-  usleep( 10000 );
+  usleep( 50000 );
 
   int timeout = 0, readResult = 0;
 
