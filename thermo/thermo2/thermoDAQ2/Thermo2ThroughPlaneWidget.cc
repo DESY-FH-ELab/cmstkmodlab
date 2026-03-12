@@ -85,15 +85,6 @@ void Thermo2ThroughPlaneWidget::updateInfo()
   double value;
   QString s, p;
 
-  if (model_->getHuberState()) {
-    // value = model_->getProcessTemperature();
-    value = model_->getKeithleySinkTemperature();
-    s = QString::number(value, 'f', 2);
-    svg.replace("§TSink§", s);
-  } else {
-    svg.replace("§TSink§", "--.--");
-  }
-
   if (model_->getNGE103BState() && model_->getNGE103BChannelState()) {
     value = model_->getSourcePower();
     s = QString::number(value, 'f', 2);
@@ -111,6 +102,13 @@ void Thermo2ThroughPlaneWidget::updateInfo()
     p = "§CBot" + QString::number(c+1) + "§";
     svg.replace(p, s);
   }
+  /*
+  p = "§CAmb§";
+  s = QString::number(model_->getKeithleyAmbientSensor());
+  p = "§CSink§";
+  s = QString::number(model_->getKeithleySinkSensor());
+  */
+  
   if (model_->getKeithleyState()) {
     for (unsigned int c=0;c<6;++c) {
       p = "§TTop" + QString::number(c+1) + "§";
@@ -132,11 +130,20 @@ void Thermo2ThroughPlaneWidget::updateInfo()
 
     p = "§TAmb§";
     if (model_->getKeithleyAmbientSensorState()) {
-      s = QString::number(model_->getKeithleyAmbientTemperature(),'f', 4);
+      s = QString::number(model_->getKeithleyAmbientTemperature(),'f', 2);
       svg.replace(p, s);
     } else {
       svg.replace(p, "--.--");
     }
+
+    p = "§TSink§";
+    if (model_->getKeithleySinkSensorState()) {
+    s = QString::number(model_->getKeithleySinkTemperature(), 'f', 2);
+    svg.replace("§TSink§", s);
+  } else {
+    svg.replace("§TSink§", "--.--");
+  }
+
   } else {
     for (unsigned int c=0;c<6;++c) {
       p = "§TTop" + QString::number(c+1) + "§";
@@ -147,6 +154,9 @@ void Thermo2ThroughPlaneWidget::updateInfo()
     }
 
     p = "§TAmb§";
+    svg.replace(p, "--.--");
+
+    p = "§TSink§";
     svg.replace(p, "--.--");
   }
 
