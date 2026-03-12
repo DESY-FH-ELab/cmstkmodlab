@@ -57,10 +57,12 @@ public:
   unsigned int getKeithleyTopSensor(unsigned int position) const { return keithleyTopSensors_[position]; }
   unsigned int getKeithleyBottomSensor(unsigned int position) const { return keithleyBottomSensors_[position]; }
   unsigned int getKeithleyAmbientSensor() const { return keithleyAmbientSensor_; }
+  unsigned int getKeithleySinkSensor() const { return keithleySinkSensor_; }
   bool getKeithleyState() const { return keithleyState_; }
   bool getKeithleyTopSensorState(unsigned int position) const { return keithleyTopSensorStates_[position]; }
   bool getKeithleyBottomSensorState(unsigned int position) const { return keithleyBottomSensorStates_[position]; }
   bool getKeithleyAmbientSensorState() const { return keithleyAmbientSensorState_; }
+  bool getKeithleySinkSensorState() const { return keithleySinkSensorState_; }
   double getKeithleyTopTemperature(unsigned int position) const { return keithleyTopTemperatures_[position]; }
   const HistoryFifo<double>& getKeithleyTopTemperatureHistory(unsigned int position) const { return keithleyTopTemperatureHistory_[position]; }
   double getKeithleyBottomTemperature(unsigned int position) const { return keithleyBottomTemperatures_[position]; }

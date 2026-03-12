@@ -94,6 +94,7 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
     } else {
       keithleyAmbientSensorType_ = VKeithleyDAQ6510::FourWireRTD_PT100;
     }
+  }
 
   if (keithleySinkSensor_!=0) {
     sensorType = config->getValue("main", "KeithleySinkSensorType");
@@ -119,6 +120,11 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
     if (keithleyAmbientSensor_!=0) {
       keithleyModel_->setSensorMode(keithleyAmbientSensor_, keithleyAmbientSensorType_);
       keithleyModel_->setSensorEnabled(keithleyAmbientSensor_, true);
+    }
+
+    if (keithleySinkSensor_!=0) {
+      keithleyModel_->setSensorMode(keithleySinkSensor_, keithleySinkSensorType_);
+      keithleyModel_->setSensorEnabled(keithleySinkSensor_, true);
     }
   }
 
