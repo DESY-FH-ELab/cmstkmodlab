@@ -53,11 +53,12 @@ void PilotOneComHandler::SendCommand(const char *commandString)
   if (!fDeviceAvailable) return;
 
   std::string theCommand = commandString;
-  theCommand += "\r\n";
-  write( fIoPortFileDescriptor, theCommand.c_str(), theCommand.length());
+  theCommand += "\n\r";
+  ssize_t bytesWritten = write( fIoPortFileDescriptor, theCommand.c_str(), theCommand.length());
 
 #ifdef __HUBERPILOTONE_DEBUG
-  std::cout << "[PilotOneComHandler::SendCommand] -- DEBUG:" << " Command sent: " << theCommand.c_str() << std::endl;
+  std::cout << "[PilotOneComHandler::SendCommand] -- DEBUG:" << " Command sent: " << theCommand.c_str()
+            << " (" << bytesWritten << ")" << std::endl;
 #endif
 }
 
