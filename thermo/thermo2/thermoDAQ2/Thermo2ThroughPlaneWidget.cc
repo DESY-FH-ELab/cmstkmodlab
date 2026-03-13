@@ -102,12 +102,10 @@ void Thermo2ThroughPlaneWidget::updateInfo()
     p = "§CBot" + QString::number(c+1) + "§";
     svg.replace(p, s);
   }
-  /*
   p = "§CAmb§";
   s = QString::number(model_->getKeithleyAmbientSensor());
   p = "§CSink§";
   s = QString::number(model_->getKeithleySinkSensor());
-  */
   
   if (model_->getKeithleyState()) {
     for (unsigned int c=0;c<6;++c) {
