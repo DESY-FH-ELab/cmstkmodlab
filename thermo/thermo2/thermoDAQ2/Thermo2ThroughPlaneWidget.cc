@@ -136,11 +136,11 @@ void Thermo2ThroughPlaneWidget::updateInfo()
 
     p = "§TSink§";
     if (model_->getKeithleySinkSensorState()) {
-    s = QString::number(model_->getKeithleySinkTemperature(), 'f', 2);
-    svg.replace("§TSink§", s);
-  } else {
-    svg.replace("§TSink§", "--.--");
-  }
+      s = QString::number(model_->getKeithleySinkTemperature(), 'f', 2);
+      svg.replace("§TSink§", s);
+    } else {
+      svg.replace("§TSink§", "--.--");
+    }
 
     p = "§TPro§";
     if (model_->getProcessTemperature()) {

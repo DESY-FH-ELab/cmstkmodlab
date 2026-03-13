@@ -64,6 +64,10 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
   keithleyBottomCor3_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor3");
   keithleyAmbientSensor_ = config->getValue<double>("main", "KeithleyAmbientSensor");
   keithleySinkSensor_ = config->getValue<double>("main", "KeithleySinkSensor");
+  keithleySinkCor0_ = config->getValueArray<double>("main", "ThroughPlaneKeithleySinkCor0");
+  keithleySinkCor1_ = config->getValueArray<double>("main", "ThroughPlaneKeithleySinkCor1");
+  keithleySinkCor2_ = config->getValueArray<double>("main", "ThroughPlaneKeithleySinkCor2");
+  keithleySinkCor3_ = config->getValueArray<double>("main", "ThroughPlaneKeithleySinkCor3");
 
   std::string sensorType;
 
@@ -198,6 +202,10 @@ void Thermo2ThroughPlaneModel::configurationChanged()
   keithleyBottomCor1_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor1");
   keithleyBottomCor2_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor2");
   keithleyBottomCor3_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor3");
+  keithleySinkCor0_ = config->getValueArray<double>("main", "ThroughPlaneKeithleySinkCor0");
+  keithleySinkCor1_ = config->getValueArray<double>("main", "ThroughPlaneKeithleySinkCor1");
+  keithleySinkCor2_ = config->getValueArray<double>("main", "ThroughPlaneKeithleySinkCor2");
+  keithleySinkCor3_ = config->getValueArray<double>("main", "ThroughPlaneKeithleySinkCor3");
 }
 
 void Thermo2ThroughPlaneModel::setTemperatureSetPoint(double temperature)
@@ -297,8 +305,12 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
   if (keithleySinkSensor_!=0) {
     changed |= updateIfChanged<bool>(keithleySinkSensorState_,
         keithleyModel_->getSensorState(keithleySinkSensor_)==READY ? true : false);
-    changed |= updateIfChanged<double>(keithleySinkTemperature_,
-        keithleyModel_->getTemperature(keithleySinkSensor_));
+    temp = keithleyModel_->getTemperature(keithleySinkSensor_);
+    tcor =  keithleySinkCor0_[i];
+    tcor += keithleySinkCor1_[i] * temp;
+    tcor += keithleySinkCor2_[i] * temp * temp;
+    tcor += keithleySinkCor3_[i] * temp * temp * temp;
+    changed |= updateIfChanged<double>(keithleySinkTemperature_, tcor);
   }
 
   const QDateTime dt(QDateTime::currentDateTime());
