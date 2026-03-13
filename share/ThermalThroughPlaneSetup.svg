@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg width="100%" height="100%" viewBox="0 0 460 520" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-miterlimit:1.5;">
-    <g transform="matrix(1,0,0,1,-83.7025,9.5)">
+    <g transform="matrix(1,0,0,1,-81.1051,9.5)">
         <g transform="matrix(1,0,0,1,110,92.7206)">
             <g id="Bottom" transform="matrix(1,0,0,1,0,177.279)">
                 <g transform="matrix(1.83872,0,0,1.38084,-593.647,-77.3579)">
@@ -146,16 +146,21 @@
                     </g>
                 </g>
             </g>
-            <g transform="matrix(0.365575,0.00260012,0.00248096,0.99999,209.136,285.148)">
+            <g transform="matrix(0.365575,0.00260012,0.00248096,0.99999,198.24,285.148)">
                 <path d="M167.523,82.6L238.644,82.318" style="fill:none;stroke:rgb(8,19,185);stroke-width:2.65px;stroke-linejoin:round;"/>
             </g>
-            <g transform="matrix(2.94194,0,0,0.424874,-1063.25,312.169)">
-                <rect x="399" y="84.99" width="54.386" height="94.145" style="fill:rgb(8,19,185);stroke:black;stroke-width:0.63px;stroke-linejoin:round;"/>
+            <g transform="matrix(2.61926,0,0,0.424874,-927.849,312.169)">
+                <rect x="399" y="84.99" width="54.386" height="94.145" style="fill:rgb(8,19,185);stroke:black;stroke-width:0.71px;stroke-linejoin:round;"/>
             </g>
-            <g transform="matrix(1.05343,0,0,1.05343,188.581,63.8882)">
+            <g transform="matrix(1.05343,0,0,1.05343,177.686,63.8882)">
                 <g transform="matrix(10.1256,0,0,10.1256,203.175,291.573)">
                 </g>
                 <text x="106.723px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.126px;"><tspan x="106.723px 111.849px 117.527px 123.775px 125.518px 130.643px 135.2px 140.325px 142.632px 146.175px 152.981px 155.288px 157.595px 159.902px 162.209px 165.074px 170.2px 177.006px 183.253px 184.996px 190.122px 194.678px 199.803px " y="291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px ">§TSink§ °C    (§CSink§)</tspan></text>
+            </g>
+            <g transform="matrix(1.05343,0,0,1.05343,177.686,78.883)">
+                <g transform="matrix(10.1256,0,0,10.1256,196.928,291.573)">
+                </g>
+                <text x="106.723px" y="291.573px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:10.126px;"><tspan x="106.723px 112.971px 115.837px 120.962px 125.518px 130.643px 135.2px 139.756px 142.063px 144.37px 149.495px 155.174px 161.422px 164.287px 169.412px 174.538px 176.844px 180.387px " y="291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px 291.573px ">Process: §TPro§ °C</tspan></text>
             </g>
         </g>
         <g transform="matrix(1,0,0,1,110,0)">

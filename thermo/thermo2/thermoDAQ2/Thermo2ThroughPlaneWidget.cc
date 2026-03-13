@@ -142,6 +142,13 @@ void Thermo2ThroughPlaneWidget::updateInfo()
     svg.replace("§TSink§", "--.--");
   }
 
+    p = "§TPro§";
+    if (model_->getProcessTemperature()) {
+      s = QString::number(model_->getProcessTemperature(),'f', 2);
+      svg.replace(p, s);
+    } else {
+      svg.replace(p, "--.--");
+    }
   } else {
     for (unsigned int c=0;c<6;++c) {
       p = "§TTop" + QString::number(c+1) + "§";
