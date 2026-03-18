@@ -49,12 +49,6 @@ KeithleyAmbientSensor                         210
 KeithleyAmbientSensorType                     4WirePT100
 
 #
-# Sink temperature sensor
-#
-KeithleySinkSensor                     209
-KeithleySinkSensorType                 Therm10k
-
-#
 # Through-Plane Thermal Measurement Setup
 #
 ThroughPlaneAutoConfig                        1 # Automatically configure Keithley channels on startup
@@ -65,17 +59,26 @@ ThroughPlaneCableResistance                   1.1 # Resistance of cable (incl. f
 ThroughPlaneKBlock                            113.0 # Thermal conductivity of blocks in W/m/K
 ThroughPlaneABlock                            900.0 # Area of blocks in mm^2 (30 mm x 30 mm)
 ThroughPlaneNGE103BChannel                    2
+
 ThroughPlaneKeithleyTopSensors                102 103 104 106 107 108 # From top to interface to sample
 ThroughPlaneKeithleyTopSensorTypes            Therm10k # Type of temperature probe (4WirePT100 or Therm10k)
 ThroughPlaneKeithleyTopPositions              60.0 50.0 40.0 30.0 20.0 10.0 # Position of sensor from interface to sample in mm
-ThroughPlaneKeithleyTopCor0                   +1.513857e+00 +1.739686e+00 +1.724100e+00 +1.707495e+00 +1.697139e+00 +1.703003e+00
-ThroughPlaneKeithleyTopCor1                   +9.046944e-01 +8.896197e-01 +8.939778e-01 +8.944260e-01 +8.989684e-01 +9.013910e-01
-ThroughPlaneKeithleyTopCor2                   +1.035016e-03 +2.628742e-03 +2.382060e-03 +2.423149e-03 +2.165255e-03 +1.992309e-03
-ThroughPlaneKeithleyTopCor3                   -1.197585e-05 -3.841235e-05 -3.421091e-05 -3.518027e-05 -3.140389e-05 -2.872692e-05
+ThroughPlaneKeithleyTopCor0                   +1.867047e+00 +1.974071e+00 +1.972656e+00 +2.001257e+00 +2.004000e+00 +2.019869e+00
+ThroughPlaneKeithleyTopCor1                   +9.071821e-01 +9.144013e-01 +9.152761e-01 +9.141911e-01 +9.137625e-01 +9.130001e-01
+ThroughPlaneKeithleyTopCor2                   -1.679512e-04 -8.874945e-05 -1.038256e-04 -8.841044e-05 -7.531900e-05 -7.125249e-05
+ThroughPlaneKeithleyTopCor3                   -2.607405e-06 -4.995105e-07 -7.879806e-07 -6.862114e-07 -1.172647e-06 -1.082051e-06
+
 ThroughPlaneKeithleyBottomSensors             201 203 204 205 206 207 # From interface to sample to heat sink
 ThroughPlaneKeithleyBottomSensorTypes         Therm10k # Type of temperature probe (4WirePT100 or Therm10k)
 ThroughPlaneKeithleyBottomPositions           10.0 20.0 30.0 40.0 50.0 60.0 # Position of sensor from interface to sample in mm
-ThroughPlaneKeithleyBottomCor0                +1.743852e+00 +1.743222e+00 +1.734057e+00 +1.722686e+00 +1.754049e+00 +1.651275e+00
-ThroughPlaneKeithleyBottomCor1                +8.887207e-01 +8.896139e-01 +8.895436e-01 +8.885152e-01 +8.931211e-01 +8.983848e-01
-ThroughPlaneKeithleyBottomCor2                +2.696222e-03 +2.631553e-03 +2.679338e-03 +2.756642e-03 +2.440184e-03 +2.270547e-03
-ThroughPlaneKeithleyBottomCor3                -3.953152e-05 -3.838740e-05 -3.919080e-05 -4.047004e-05 -3.561254e-05 -3.285777e-05
+ThroughPlaneKeithleyBottomCor0                +1.978935e+00 +1.993556e+00 +1.981271e+00 +1.977465e+00 +2.026816e+00 +1.953163e+00
+ThroughPlaneKeithleyBottomCor1                +9.139348e-01 +9.133687e-01 +9.141465e-01 +9.140204e-01 +9.124715e-01 +9.144178e-01
+ThroughPlaneKeithleyBottomCor2                -5.821807e-05 -5.985741e-05 -6.516693e-05 -6.135384e-05 -6.533754e-05 -5.718805e-05
+ThroughPlaneKeithleyBottomCor3                -1.422835e-06 -1.209345e-06 -1.256240e-06 -1.277035e-06 -1.164347e-06 -1.146297e-06
+
+ThroughPlaneKeithleySinkSensor                209
+ThroughPlaneKeithleySinkSensorType            Therm10k
+ThroughPlaneKeithleySinkCor0                  +2.464396e+00
+ThroughPlaneKeithleySinkCor1                  +9.181617e-01
+ThroughPlaneKeithleySinkCor2                  -7.189571e-05
+ThroughPlaneKeithleySinkCor3                  -1.162508e-06
