@@ -1302,7 +1302,7 @@ void AssemblyMainWindow::update_stage_position()
   const auto z_status  = motion_model_->getAxisStatusText(2);
   const auto a_status  = motion_model_->getAxisStatusText(3);
 
-  for(unsigned int i=0; i<4; ++i)
+  for(unsigned int i=0; i<stage_values_.size(); ++i)
   {
     if(!motion_model_->getAxisEnabled(i)) {
       QString tpl = tr("<font color='%1'>%2</font>");
