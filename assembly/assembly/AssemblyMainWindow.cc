@@ -1393,7 +1393,8 @@ void AssemblyMainWindow::closeEvent (QCloseEvent *event)
      || std::fabs(motion_manager_->get_position_Z())>0.001
      || std::fabs(motion_manager_->get_position_A())>0.001 )) {
 
-        QMessageBox* msgBox = new QMessageBox;
+        QMessageBox* msgBox = new QMessageBox();
+        msgBox->setWindowTitle("Stage not at origin.");
         msgBox->setInformativeText("You are attempting to close the software. Would you like to move the stage back to the origin?");
         msgBox->setStandardButtons(QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes);
         msgBox->setDefaultButton(QMessageBox::Cancel);
