@@ -1381,3 +1381,39 @@ void AssemblyMainWindow::warn_on_stage_limits(const double target_pos, const cha
         QMessageBox::Ok
     );
 }
+
+void AssemblyMainWindow::closeEvent (QCloseEvent *event)
+{
+    bool motion_status;
+    motion_model_->getStatus(motion_status);
+
+    if(motion_status && (
+        std::fabs(motion_manager_->get_position_X())>0.001
+     || std::fabs(motion_manager_->get_position_Y())>0.001
+     || std::fabs(motion_manager_->get_position_Z())>0.001
+     || std::fabs(motion_manager_->get_position_A())>0.001 )) {
+
+        QMessageBox* msgBox = new QMessageBox;
+        msgBox->setInformativeText("You are attempting to close the software. Would you like to move the stage back to the origin?");
+        msgBox->setStandardButtons(QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes);
+        msgBox->setDefaultButton(QMessageBox::Cancel);
+        int ret = msgBox->exec();
+
+        if(ret == QMessageBox::Cancel) {
+            NQLog("AssemblyMainWindow", NQLog::Message) << "User decision: not closing the software.";
+            event->ignore();
+        } else if(ret == QMessageBox::No) {
+            NQLog("AssemblyMainWindow", NQLog::Message) << "User decision: leave stage at current position.";
+            event->accept();
+        } else {
+            NQLog("AssemblyMainWindow", NQLog::Message) << "User decision: move stage back to origin.";
+            motion_manager_->moveAbsolute();
+
+            QEventLoop loop;
+            connect(motion_manager_, &LStepExpressMotionManager::motion_finished, &loop, &QEventLoop::quit);
+            loop.exec();
+
+            event->accept();
+        }
+    }
+}
