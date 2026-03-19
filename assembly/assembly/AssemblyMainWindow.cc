@@ -95,7 +95,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
   button_mainEmergencyStop_(nullptr),
   button_info_(nullptr),
-  autofocus_checkbox_(nullptr),
 
   // flags
   images_enabled_(false),
@@ -472,16 +471,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     /// Upper Toolbar ------------------------------------------
     toolBar_ = addToolBar("Tools");
-    toolBar_ ->addAction("Camera ON"     , this, SLOT( enable_images()));
-    toolBar_ ->addAction("Camera OFF"    , this, SLOT(disable_images()));
-    toolBar_ ->addAction("Snapshot"      , this, SLOT(    get_image ()));
-
-    autofocus_checkbox_ = new QCheckBox("Auto-Focusing", this);
-    toolBar_->addWidget(autofocus_checkbox_);
-    connect(autofocus_checkbox_, SIGNAL(stateChanged(int)), this, SLOT(changeState_autofocus(int)));
-    connect(autofocus_checkbox_, SIGNAL(stateChanged(int)), aligner_view_, SLOT(update_autofocusing_checkbox(int)));
-
-    connect(zfocus_finder_, SIGNAL(emergencyStopped()), this, SLOT(restore_autofocus_settings()));
 
     // toolBar_ ->addAction("Emergency Stop", motion_manager_->model(), SLOT(emergencyStop()));
     button_mainEmergencyStop_ = new QPushButton(tr("Emergency STOP"));
@@ -494,6 +483,11 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), metrology_view_, SLOT(metrology_abort()));
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), this, SLOT(disconnect_metrology()));
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), this, SLOT(disconnect_multiPickupTest()));
+
+    auto button_snapshot = new QPushButton(tr("Snapshot"));
+    button_snapshot->setStyleSheet("QPushButton { background-color: rgb(0, 170, 0); font: 18px; border-radius: 8px; padding: 7px; } QPushButton:hover { background-color: green; font: bold 18px; border-radius: 8px; padding: 2px; }");
+    toolBar_->addWidget(button_snapshot);
+    connect(button_snapshot, SIGNAL(clicked()), this, SLOT( get_image ()));
 
     QWidget *spacer = new QWidget();
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -769,7 +763,7 @@ void AssemblyMainWindow::changeState_autofocus(const int state)
     if(image_ctr_ == nullptr)
     {
       NQLog("AssemblyMainWindow", NQLog::Warning) << "changeState_autofocus"
-         << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+         << ": ImageController not initialized, no action taken (hint: is the camera available?)";
 
       return;
     }
@@ -800,26 +794,12 @@ void AssemblyMainWindow::changeState_autofocus(const int state)
     return;
 }
 
-void AssemblyMainWindow::restore_autofocus_settings(){
-    if(autofocus_checkbox_->checkState()==Qt::Checked){
-        NQLog("AssemblyMainWindow", NQLog::Spam) << "restore_autofocus_settings"
-           << ": emitting signal \"autofocus_ON\"";
-
-        emit autofocus_ON();
-    }else if(autofocus_checkbox_->checkState()==Qt::Unchecked){
-        NQLog("AssemblyMainWindow", NQLog::Spam) << "restore_autofocus_settings"
-           << ": emitting signal \"autofocus_OFF\"";
-
-        emit autofocus_OFF();
-    }
-}
-
 void AssemblyMainWindow::get_image()
 {
     if(image_ctr_ == nullptr)
     {
       NQLog("AssemblyMainWindow", NQLog::Warning) << "get_image"
-         << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+         << ": ImageController not initialized, no action taken (hint: is the camera available?)";
 
       return;
     }
@@ -827,7 +807,7 @@ void AssemblyMainWindow::get_image()
     if(image_ctr_->is_enabled() == false)
     {
       NQLog("AssemblyMainWindow", NQLog::Warning) << "get_image"
-         << ": ImageController not enabled, no action taken (hint: click \"Camera ON\")";
+         << ": ImageController not enabled, no action taken (hint: is the camera available?)";
 
       return;
     }
@@ -891,7 +871,7 @@ void AssemblyMainWindow::start_objectAligner(const AssemblyObjectAligner::Config
   if(image_ctr_ == nullptr)
   {
     NQLog("AssemblyMainWindow", NQLog::Warning) << "start_objectAligner"
-       << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+       << ": ImageController not initialized, no action taken (hint: is the camera available?)";
 
     return;
   }
@@ -944,7 +924,7 @@ void AssemblyMainWindow::disconnect_objectAligner()
   if(image_ctr_ == nullptr)
   {
     NQLog("AssemblyMainWindow", NQLog::Warning) << "disconnect_objectAligner"
-       << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+       << ": ImageController not initialized, no action taken (hint: is the camera available?)";
 
     return;
   }
@@ -995,7 +975,7 @@ void AssemblyMainWindow::start_metrology(const Metrology::Configuration& conf)
   if(image_ctr_ == nullptr)
   {
     NQLog("AssemblyMainWindow", NQLog::Warning) << "start_metrology"
-       << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+       << ": ImageController not initialized, no action taken (hint: is the camera available?)";
 
     return;
   }
@@ -1061,7 +1041,7 @@ void AssemblyMainWindow::disconnect_metrology()
   if(image_ctr_ == nullptr)
   {
     NQLog("AssemblyMainWindow", NQLog::Warning) << "disconnect_metrology"
-       << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+       << ": ImageController not initialized, no action taken (hint: is the camera available?)";
 
     return;
   }
@@ -1121,7 +1101,7 @@ void AssemblyMainWindow::start_multiPickupTest(const AssemblyMultiPickupTester::
   if(image_ctr_ == nullptr)
   {
     NQLog("AssemblyMainWindow", NQLog::Warning) << "start_multiPickupTest"
-       << ": ImageController not initialized, no action taken (hint: click \"Camera ON\")";
+       << ": ImageController not initialized, no action taken (hint: is the camera available?)";
 
     return;
   }
