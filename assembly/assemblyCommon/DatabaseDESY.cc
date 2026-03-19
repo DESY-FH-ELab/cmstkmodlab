@@ -25,7 +25,10 @@
 #include <iostream>
 #include <nqlogger.h>
 
-DatabaseDESY::DatabaseDESY(QObject *parent, QString base_url, QString token) : VDatabase(parent)
+DatabaseDESY::DatabaseDESY(QObject *parent, QString base_url, QString token)
+ : VDatabase(parent)
+ , process_dbid_(-1)
+ , module_name_("")
 {
     // Initialise stuff!
     network_access_mgr_ = new QNetworkAccessManager(this);
@@ -119,8 +122,14 @@ bool DatabaseDESY::register_module_name(QString module_name, QString operator_na
     return true;
 }
 
-bool DatabaseDESY::MaPSA_to_BP(QString MaPSA_name, QString BP_name, QString glue_name, QString comment)
+bool DatabaseDESY::MaPSA_to_BP(QString module_name, QString MaPSA_name, QString BP_name, QString glue_name, QString comment)
 {
+    if(!module_name_.isEmpty() && module_name != module_name_){
+      error_message("Could not perform step \"Take PSs\": Module ID has changed since the beginning of the assembly procesure: "
+        + module_name_ + " -> " + module_name);
+      return false;
+    }
+
     try{
         // Get MaPSA_dbib_ from MaPSA_name_
         int return_dbid = get_ID_from_name(MaPSA_name, "MaPSA");
@@ -142,7 +151,7 @@ bool DatabaseDESY::MaPSA_to_BP(QString MaPSA_name, QString BP_name, QString glue
 
         // // Take MaPSA
         // Get Task ID
-        int task_id = get_next_task("take_mapsa");
+        int task_id = get_next_task(module_name, "take_mapsa");
         NQLog("DatabaseDESY", NQLog::Message) << "Obtained next task (\"Take MaPSA\") with ID " << task_id;
 
         // Assign Task
@@ -168,7 +177,7 @@ bool DatabaseDESY::MaPSA_to_BP(QString MaPSA_name, QString BP_name, QString glue
     try{
         // // Glue MaPSA to BP
         // Get Task ID
-        int task_id = get_next_task("glue_mapsa_to_baseplate");
+        int task_id = get_next_task(module_name, "glue_mapsa_to_baseplate");
         NQLog("DatabaseDESY", NQLog::Message) << "Obtained next task (\"Glue MaPSA to Baseplate\") with ID " << task_id;
 
         // Assign Task
@@ -195,8 +204,14 @@ bool DatabaseDESY::MaPSA_to_BP(QString MaPSA_name, QString BP_name, QString glue
     return true;
 }
 
-bool DatabaseDESY::PSs_to_spacers(QString PSs_name, QString glue_name, QString comment)
+bool DatabaseDESY::PSs_to_spacers(QString module_name, QString PSs_name, QString glue_name, QString comment)
 {
+    if(!module_name_.isEmpty() && module_name != module_name_){
+      error_message("Could not perform step \"Take PSs\": Module ID has changed since the beginning of the assembly procesure: "
+         + module_name_ + " -> " + module_name);
+      return false;
+    }
+
     try{
         // Get PSs_dbib_ from PSs_name_
         int return_dbid = get_ID_from_name(PSs_name, "PSs%20Sensor");
@@ -211,7 +226,7 @@ bool DatabaseDESY::PSs_to_spacers(QString PSs_name, QString glue_name, QString c
 
         // // Take PSs
         // Get Task ID
-        int task_id = get_next_task("take_pss");
+        int task_id = get_next_task(module_name, "take_pss");
         NQLog("DatabaseDESY", NQLog::Message) << "Obtained next task (\"Take PSs\") with ID " << task_id;
 
         // Assign Task
@@ -237,7 +252,7 @@ bool DatabaseDESY::PSs_to_spacers(QString PSs_name, QString glue_name, QString c
     try{
         // // Glue PSs to Spacers
         // Get Task ID
-        int task_id = get_next_task("glue_pss_to_spacers");
+        int task_id = get_next_task(module_name, "glue_pss_to_spacers");
         NQLog("DatabaseDESY", NQLog::Message) << "Obtained next task (\"Glue PSs to Spacers\") with ID " << task_id;
 
         // Assign Task
@@ -263,8 +278,15 @@ bool DatabaseDESY::PSs_to_spacers(QString PSs_name, QString glue_name, QString c
     return true;
 }
 
-bool DatabaseDESY::PSs_to_MaPSA(QString glue_name, QString comment)
+bool DatabaseDESY::PSs_to_MaPSA(QString module_name, QString glue_name, QString comment)
 {
+
+    if(!module_name_.isEmpty() && module_name != module_name_){
+      error_message("Could not perform step \"Take PSs\": Module ID has changed since the beginning of the assembly procesure: "
+        + module_name_ + " -> " + module_name);
+      return false;
+    }
+
     try{
         // // Glue PSs to MaPSA
         // Get Glue3_dbib_ from glue_name
@@ -273,7 +295,7 @@ bool DatabaseDESY::PSs_to_MaPSA(QString glue_name, QString comment)
         Glue3_dbid_ = return_glue_dbid;
 
         // Get Task ID
-        int task_id = get_next_task("glue_pss_to_mapsa");
+        int task_id = get_next_task(module_name, "glue_pss_to_mapsa");
         NQLog("DatabaseDESY", NQLog::Message) << "Obtained next task (\"Glue PSs to MaPSA\") with ID " << task_id;
 
         // Assign Task
@@ -360,8 +382,14 @@ QJsonObject DatabaseDESY::get(QNetworkRequest request)
     return QJsonObject();
 }
 
-int DatabaseDESY::get_next_task(QString task_name)
+int DatabaseDESY::get_next_task(QString module_name, QString task_name)
 {
+    if(process_dbid_==-1){
+      NQLog("DatabaseDESY", NQLog::Message) << "No Process ID known yet. Obtaining process ID from DB ...";
+
+      process_dbid_ = get_processID_from_name(module_name);
+    }
+
     QUrl url_gettask = base_url_;
     url_gettask.setPath("/ph2production/api/task/");
     url_gettask.setQuery(QString("status=NEW&process=%1").arg(process_dbid_));
@@ -526,6 +554,38 @@ int DatabaseDESY::get_ID_from_name(QString part_name, QString structure_name)
     } catch(BadReplyException bre){
         NQLog("DatabaseDESY", NQLog::Fatal) << "\"get_ID_from_name\": " << bre.what();
         throw BadResultException(QString("\"get_ID_from_name\" failed get ID from part %1 - received bad reply from DB.").arg(part_name));
+    }
+}
+
+int DatabaseDESY::get_processID_from_name(QString module_name)
+{
+    QUrl url_getprocess = base_url_;
+    url_getprocess.setPath("/ph2production/api/psmoduleprocess/");
+
+    url_getprocess.setQuery(QString("parent_part__name=%1").arg(module_name));
+
+    auto request_getprocess = base_request_;
+    request_getprocess.setUrl(url_getprocess);
+
+    try{
+        auto reply_data_getprocess = this->get(request_getprocess);
+
+        auto n_parts = reply_data_getprocess.value("count").toInt();
+        if(n_parts == 0)
+        {
+            throw ProcessDoesNotExistException(module_name);
+        } else if(n_parts > 1){
+            throw BadResultException(QString("\"get_processID_from_name\" received unexpected result for module %1. Number of matching processes in DB: %2").arg(module_name).arg(n_parts));
+        }
+
+        auto results_object = reply_data_getprocess.value("results").toArray().at(0).toObject();
+        int process_id = results_object.value("id").toInt();
+        NQLog("DatabaseDESY", NQLog::Message) << "Process for" << module_name << " found. Process ID: " << process_id;
+
+        return process_id;
+    } catch(BadReplyException bre){
+        NQLog("DatabaseDESY", NQLog::Fatal) << "\"get_processID_from_name\": " << bre.what();
+        throw BadResultException(QString("\"get_processID_from_name\" failed get Process ID for module %1 - received bad reply from DB.").arg(module_name));
     }
 }
 
