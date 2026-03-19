@@ -484,21 +484,26 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), this, SLOT(disconnect_metrology()));
     connect(button_mainEmergencyStop_, SIGNAL(clicked()), this, SLOT(disconnect_multiPickupTest()));
 
+    QWidget *spacer1 = new QWidget();
+    spacer1->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    spacer1->setMinimumSize(QSize(50,1));
+    toolBar_->addWidget(spacer1);
+
     auto button_snapshot = new QPushButton(tr("Snapshot"));
     button_snapshot->setStyleSheet("QPushButton { background-color: rgb(0, 170, 0); font: 18px; border-radius: 8px; padding: 7px; } QPushButton:hover { background-color: green; font: bold 18px; border-radius: 8px; padding: 2px; }");
     toolBar_->addWidget(button_snapshot);
     connect(button_snapshot, SIGNAL(clicked()), this, SLOT( get_image ()));
 
-    QWidget *spacer = new QWidget();
-    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    toolBar_->addWidget(spacer);
+    QWidget *spacer2 = new QWidget();
+    spacer2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    toolBar_->addWidget(spacer2);
 
     stopwatch_wid_ = new AssemblyStopwatchWidget();
     toolBar_->addWidget(stopwatch_wid_);
 
-    QWidget *spacer2 = new QWidget();
-    spacer2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    toolBar_->addWidget(spacer2);
+    QWidget *spacer3 = new QWidget();
+    spacer3->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    toolBar_->addWidget(spacer3);
 
     QWidget *vac_wid = new QWidget();
 
