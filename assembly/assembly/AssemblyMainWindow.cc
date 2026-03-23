@@ -995,6 +995,7 @@ void AssemblyMainWindow::disconnect_objectAligner()
   aligner_connected_ = false;
 
   this->enable_imageButtons(this);
+  assemblyV2_->set_in_action(false);
 
   return;
 }

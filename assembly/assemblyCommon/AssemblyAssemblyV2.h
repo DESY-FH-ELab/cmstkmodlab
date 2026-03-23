@@ -39,6 +39,8 @@ class AssemblyAssemblyV2 : public QObject
 
   const AssemblySmartMotionManager* smart_motion() const;
 
+  void set_in_action(bool in_action);
+
  protected:
   const LStepExpressMotionManager* const motion_;
   const RelayCardManager* const vacuum_;
@@ -62,6 +64,7 @@ class AssemblyAssemblyV2 : public QObject
 
   bool use_smartMove_;
   bool in_action_;
+  std::mutex in_action_mutex_;
 
   bool PSSPlusSpacersToMaPSAPosition_isRegistered_;
   double PSSPlusSpacersToMaPSAPosition_X_;
@@ -81,6 +84,9 @@ class AssemblyAssemblyV2 : public QObject
 
  public:
   assembly::Center GetAssemblyCenter() const {return assembly_center_;};
+
+protected slots:
+  void reportInAction(std::string target_step);
 
  public slots:
 
