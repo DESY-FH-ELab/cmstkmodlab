@@ -83,6 +83,9 @@ class AssemblyImageController : public QObject
 
     void autofocused_image_request();
     void autofocused_image_acquired();
+
+    void block_camera(QObject*);
+    void release_camera(QObject*);
 };
 
 #endif // ASSEMBLYIMAGECONTROLLER_H

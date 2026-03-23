@@ -695,7 +695,7 @@ void AssemblyMainWindow::enable_images()
 
   if(image_ctr_ == nullptr)
   {
-    image_ctr_ = new AssemblyImageController(camera_, zfocus_finder_);
+    image_ctr_ = new AssemblyImageController(camera_, zfocus_finder_, this);
   }
 
   connect(this      , SIGNAL(images_ON())      , image_ctr_, SLOT(enable()));
@@ -936,6 +936,8 @@ void AssemblyMainWindow::start_objectAligner(const AssemblyObjectAligner::Config
   // if successful, emits signal "configuration_updated()"
   aligner_->update_configuration(conf);
 
+  this->disable_imageButtons(this);
+
   return;
 }
 
@@ -985,6 +987,8 @@ void AssemblyMainWindow::disconnect_objectAligner()
   aligner_view_->Configuration_Widget()->setEnabled(true);
 
   aligner_connected_ = false;
+
+  this->enable_imageButtons(this);
 
   return;
 }
@@ -1380,4 +1384,42 @@ void AssemblyMainWindow::warn_on_stage_limits(const double target_pos, const cha
     QString("Attempting to move %1-axis to %2 . This is beyond the limit of this stage: [ %3 , %4 ]").arg(axis).arg(target_pos).arg(limit_pos_lower).arg(limit_pos_upper),
         QMessageBox::Ok
     );
+}
+
+void AssemblyMainWindow::disable_imageButtons(QObject* sender)
+{
+    camera_blocking_objects_.append(sender);
+
+    NQLog("AssemblyMainWindow", NQLog::Debug) << "Blocking the camera. (from " << sender->metaObject()->className() << ")";
+
+    for(auto& action : toolBar_->actions()){
+      if(action->text() == "Snapshot"){
+        action->setEnabled(false);
+      }
+    }
+    image_view_->autofocus_button()->setEnabled(false);
+    aligner_view_->button_runAlignment()->setEnabled(false);
+}
+
+void AssemblyMainWindow::enable_imageButtons(QObject* sender)
+{
+    NQLog("AssemblyMainWindow", NQLog::Debug) << "Camera release request. (from " << sender->metaObject()->className() << ")";
+
+    camera_blocking_objects_.removeAll(sender);
+    if(camera_blocking_objects_.size())
+    {
+      NQLog("AssemblyMainWindow", NQLog::Debug) << "There are still " << camera_blocking_objects_.size() << " objects blocking the camera:";
+      for(auto& obj : camera_blocking_objects_){
+        NQLog("AssemblyMainWindow", NQLog::Debug) << "   "  << obj->metaObject()->className();
+      }
+    } else {
+      NQLog("AssemblyMainWindow", NQLog::Debug) << "Camera will be released.";
+      for(auto& action : toolBar_->actions()){
+        if(action->text() == "Snapshot"){
+          action->setEnabled(true);
+        }
+      }
+    }
+    image_view_->autofocus_button()->setEnabled(true);
+    aligner_view_->button_runAlignment()->setEnabled(true);
 }
