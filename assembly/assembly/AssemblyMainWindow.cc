@@ -1302,7 +1302,7 @@ void AssemblyMainWindow::update_stage_position()
   const auto z_status  = motion_model_->getAxisStatusText(2);
   const auto a_status  = motion_model_->getAxisStatusText(3);
 
-  for(unsigned int i=0; i<4; ++i)
+  for(unsigned int i=0; i<stage_values_.size(); ++i)
   {
     if(!motion_model_->getAxisEnabled(i)) {
       QString tpl = tr("<font color='%1'>%2</font>");
@@ -1380,4 +1380,41 @@ void AssemblyMainWindow::warn_on_stage_limits(const double target_pos, const cha
     QString("Attempting to move %1-axis to %2 . This is beyond the limit of this stage: [ %3 , %4 ]").arg(axis).arg(target_pos).arg(limit_pos_lower).arg(limit_pos_upper),
         QMessageBox::Ok
     );
+}
+
+void AssemblyMainWindow::closeEvent (QCloseEvent *event)
+{
+    bool motion_status;
+    motion_model_->getStatus(motion_status);
+
+    if(motion_status && (
+        std::fabs(motion_manager_->get_position_X())>0.001
+     || std::fabs(motion_manager_->get_position_Y())>0.001
+     || std::fabs(motion_manager_->get_position_Z())>0.001
+     || std::fabs(motion_manager_->get_position_A())>0.001 )) {
+
+        QMessageBox* msgBox = new QMessageBox();
+        msgBox->setWindowTitle("Stage not at origin.");
+        msgBox->setInformativeText("You are attempting to close the software. Would you like to move the stage back to the origin?");
+        msgBox->setStandardButtons(QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes);
+        msgBox->setDefaultButton(QMessageBox::Cancel);
+        int ret = msgBox->exec();
+
+        if(ret == QMessageBox::Cancel) {
+            NQLog("AssemblyMainWindow", NQLog::Message) << "User decision: not closing the software.";
+            event->ignore();
+        } else if(ret == QMessageBox::No) {
+            NQLog("AssemblyMainWindow", NQLog::Message) << "User decision: leave stage at current position.";
+            event->accept();
+        } else {
+            NQLog("AssemblyMainWindow", NQLog::Message) << "User decision: move stage back to origin.";
+            motion_manager_->moveAbsolute();
+
+            QEventLoop loop;
+            connect(motion_manager_, &LStepExpressMotionManager::motion_finished, &loop, &QEventLoop::quit);
+            loop.exec();
+
+            event->accept();
+        }
+    }
 }

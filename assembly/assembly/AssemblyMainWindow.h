@@ -86,6 +86,9 @@ class AssemblyMainWindow : public QMainWindow
   }
   void switchAndUpdate_alignment_tab(bool);
 
+ private:
+    void closeEvent (QCloseEvent *event);
+
  public slots:
 
   void  enable_images();
