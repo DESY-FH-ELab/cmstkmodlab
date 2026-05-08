@@ -62,8 +62,8 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
   keithleyBottomCor1_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor1");
   keithleyBottomCor2_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor2");
   keithleyBottomCor3_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor3");
-  keithleyAmbientSensor_ = config->getValue<double>("main", "ThroughPlaneKeithleySinkSensor");
-  keithleySinkSensor_ = config->getValue<double>("main", "ThroughPlaneKeithleySinkSensorType");
+  keithleyAmbientSensor_ = config->getValue<double>("main", "KeithleyAmbientSensor");
+  keithleySinkSensor_ = config->getValue<double>("main", "ThroughPlaneKeithleySinkSensor");
   keithleySinkCor0_ = config->getValue<double>("main", "ThroughPlaneKeithleySinkCor0");
   keithleySinkCor1_ = config->getValue<double>("main", "ThroughPlaneKeithleySinkCor1");
   keithleySinkCor2_ = config->getValue<double>("main", "ThroughPlaneKeithleySinkCor2");
@@ -101,7 +101,7 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
   }
 
   if (keithleySinkSensor_!=0) {
-    sensorType = config->getValue("main", "KeithleySinkSensorType");
+    sensorType = config->getValue("main", "ThroughPlaneKeithleySinkSensorType");
     if (sensorType=="4WirePT100") {
       keithleySinkSensorType_ = VKeithleyDAQ6510::FourWireRTD_PT100;
     }else if (sensorType=="Therm10k") {
