@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.10)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -7,6 +7,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 if(CMAKE_VERSION VERSION_LESS "3.7.0")
         set(CMAKE_INCLUDE_CURRENT_DIR ON)
 endif()
+
+include(CMakeDependentOption)
 
 project(cmstkmodlab VERSION 2.3.0)
 
@@ -122,6 +124,8 @@ else()
         message(STATUS "Support for version 2 of thermal test setup: OFF")
 endif()
 
+CMAKE_DEPENDENT_OPTION(CMSTKMODLAB_THERMO_HDF5 "Build thermal test setup software with HDF5 support" OFF
+                       "CMSTKMODLAB_THERMO1 OR CMSTKMODLAB_THERMO2" OFF)
 option(CMSTKMODLAB_PUMPSTATION "Build with support for pump station" OFF)
 option(CMSTKMODLAB_PLASMA "Build with support for plasma cleaner test setup" OFF)
 option(CMSTKMODLAB_DEFO "Build with support for defo setup" OFF)
@@ -132,8 +136,13 @@ if(CMSTKMODLAB_THERMO1 OR CMSTKMODLAB_THERMO2 OR CMSTKMODLAB_PUMPSTATION OR CMST
 	message(STATUS "Found ROOT (${ROOT_VERSION})")
 endif()
 
-
 if(CMSTKMODLAB_THERMO1 OR CMSTKMODLAB_THERMO2)
+		if(CMSTKMODLAB_THERMO_HDF5)
+				message(STATUS "Support for HDF5 in thermal test setup: ON")
+				find_package(HDF5 COMPONENTS C HL)
+		else()
+				message(STATUS "Support for HDF5 in thermal test setup: OFF")
+		endif()
         pkg_check_modules(GSL REQUIRED IMPORTED_TARGET gsl)
         add_subdirectory(thermo)
 endif()

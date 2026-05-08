@@ -34,9 +34,9 @@ HuberPilotOne::HuberPilotOne(const ioport_t ioPort)
 
 bool HuberPilotOne::SetTemperatureSetPoint(const float temperatureSetPoint)
 {
-  #ifdef __HUBERPILOTONE_DEBUG
+#ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::SetTemperatureSetPoint] -- DEBUG: Called." << std::endl;
-  #endif
+#endif
 
   if (temperatureSetPoint > PilotOneUpperTempLimit ||
       temperatureSetPoint < PilotOneLowerTempLimit ) {
@@ -50,23 +50,32 @@ bool HuberPilotOne::SetTemperatureSetPoint(const float temperatureSetPoint)
   theCommand << "{M00"
       << std::setfill('0') << std::setw(4)
       << std::hex << std::uppercase
-      << (int)(temperatureSetPoint * 100);
+      << (int16_t)(temperatureSetPoint * 100);
 
   comHandler_->SendCommand(theCommand.str().c_str());
   usleep(uDelay_);
 
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-  StripBuffer(buffer);
+  comHandler_->ReceiveString(buffer1);
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
+
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetTemperatureSetPoint] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::SetTemperatureSetPoint] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
+
+  StripBuffer(buffer1);
   
-  float ret = ToFloat(buffer)/100.;
+  float ret = ToFloat(buffer1)/100.;
 
   if (temperatureSetPoint != ret) {
     std::cerr << " [HuberPilotOne::SetTemperatureSetPoint] ** ERROR: check failed."
               << std::endl;
-    if (strlen(buffer)== 0)
+    if (strlen(buffer1)== 0)
       std::cerr << "  > Got no reply. (timeout?)" << std::endl;
     else
       std::cerr << "  > Expected: T=" << temperatureSetPoint
@@ -85,16 +94,23 @@ float HuberPilotOne::GetTemperatureSetPoint()
 #endif
 
   comHandler_->SendCommand("{M00****");
+
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  comHandler_->ReceiveString(buffer1);
   usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  StripBuffer(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetTemperatureSetPoint] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::GetTemperatureSetPoint] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
 
-  return ToFloat(buffer)/100.;
+  StripBuffer(buffer1);
+
+  return ToFloat(buffer1)/100.;
 }
 
 float HuberPilotOne::GetInternalTemperature()
@@ -104,16 +120,23 @@ float HuberPilotOne::GetInternalTemperature()
 #endif
 
   comHandler_->SendCommand("{M01****");
+
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  comHandler_->ReceiveString(buffer1);
   usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  StripBuffer(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetInternalTemperature] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::GetInternalTemperature] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
 
-  return ToFloat(buffer)/100.;
+  StripBuffer(buffer1);
+
+  return ToFloat(buffer1)/100.;
 }
 
 float HuberPilotOne::GetProcessTemperature()
@@ -123,35 +146,49 @@ float HuberPilotOne::GetProcessTemperature()
 #endif
 
   comHandler_->SendCommand("{M07****");
+
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  comHandler_->ReceiveString(buffer1);
   usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  StripBuffer(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetProcessTemperature] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::GetProcessTemperature] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
 
-  return ToFloat(buffer)/100.;
+  StripBuffer(buffer1);
+
+  return ToFloat(buffer1)/100.;
 }
 
 float HuberPilotOne::GetReturnTemperature()
 {
 #ifdef __HUBERPILOTONE_DEBUG
-  std::cout << "[HuberPilotOne::GetBathTemperature] -- DEBUG: Called." << std::endl;
+  std::cout << "[HuberPilotOne::GetReturnTemperature] -- DEBUG: Called." << std::endl;
 #endif
 
   comHandler_->SendCommand("{M02****");
+
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  comHandler_->ReceiveString(buffer1);
   usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  StripBuffer(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetReturnTemperature] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::GetReturnTemperature] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
 
-  return ToFloat(buffer)/100.;
+  StripBuffer(buffer1);
+
+  return ToFloat(buffer1)/100.;
 }
 
 float HuberPilotOne::GetPumpPressure()
@@ -161,16 +198,23 @@ float HuberPilotOne::GetPumpPressure()
 #endif
 
   comHandler_->SendCommand("{M03****");
+
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  comHandler_->ReceiveString(buffer1);
   usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  StripBuffer(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetPumpPressure] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::GetPumpPressure] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
 
-  return (ToFloat(buffer)-1000.)/1000.;
+  StripBuffer(buffer1);
+
+  return (ToFloat(buffer1)-1000.)/1000.;
 }
 
 int HuberPilotOne::GetPower()
@@ -180,16 +224,23 @@ int HuberPilotOne::GetPower()
 #endif
 
   comHandler_->SendCommand("{M04****");
+
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  comHandler_->ReceiveString(buffer1);
   usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  StripBuffer(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetPower] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::GetPower] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
 
-  return ToInteger(buffer);
+  StripBuffer(buffer1);
+
+  return ToInteger(buffer1);
 }
 
 bool HuberPilotOne::SetTemperatureControlMode(bool process)
@@ -206,18 +257,27 @@ bool HuberPilotOne::SetTemperatureControlMode(bool process)
   comHandler_->SendCommand(theCommand.str().c_str());
   usleep(uDelay_);
 
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
-  usleep(uDelay_);
-  StripBuffer(buffer);
+  char buffer1[1000];
+  char buffer2[1000];
 
-  bool ret = ToInteger(buffer);
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer1);
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
+
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetTemperatureControlMode] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::SetTemperatureControlMode] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
+
+  StripBuffer(buffer1);
+
+  bool ret = ToInteger(buffer1);
 
   if (process != ret) {
     std::cerr << " [HuberPilotOne::SetTemperatureControlMode] ** ERROR: check failed."
         << std::endl;
-    if (strlen(buffer)== 0)
+    if (strlen(buffer1)== 0)
       std::cerr << "  > Got no reply. (timeout?)" << std::endl;
     else
       std::cerr << "  > Expected: " << process
@@ -236,16 +296,23 @@ bool HuberPilotOne::GetTemperatureControlMode()
 #endif
 
   comHandler_->SendCommand("{M13****");
+
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  comHandler_->ReceiveString(buffer1);
   usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  StripBuffer(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetTemperatureControlMode] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::GetTemperatureControlMode] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
 
-  return ToInteger(buffer);
+  StripBuffer(buffer1);
+
+  return ToInteger(buffer1);
 }
 
 bool HuberPilotOne::SetTemperatureControlEnabled(bool enabled)
@@ -262,18 +329,25 @@ bool HuberPilotOne::SetTemperatureControlEnabled(bool enabled)
   comHandler_->SendCommand(theCommand.str().c_str());
   usleep(uDelay_);
 
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
-  usleep(uDelay_);
-  StripBuffer(buffer);
+  char buffer1[1000];
+  char buffer2[1000];
 
-  bool ret = ToInteger(buffer);
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer1);
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
+
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetTemperatureControlEnabled] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::SetTemperatureControlEnabled] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
+
+  bool ret = ToInteger(buffer1);
 
   if (enabled != ret) {
     std::cerr << " [HuberPilotOne::SetTemperatureControlEnabled] ** ERROR: check failed."
               << std::endl;
-    if (strlen(buffer)== 0)
+    if (strlen(buffer1)== 0)
       std::cerr << "  > Got no reply. (timeout?)" << std::endl;
     else
       std::cerr << "  > Expected: " << enabled
@@ -292,16 +366,23 @@ bool HuberPilotOne::GetTemperatureControlEnabled()
 #endif
 
   comHandler_->SendCommand("{M14****");
+  
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  comHandler_->ReceiveString(buffer1);
   usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  StripBuffer(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetTemperatureControlEnabled] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::GetTemperatureControlEnabled] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
 
-  return ToInteger(buffer);
+  StripBuffer(buffer1);
+
+  return ToInteger(buffer1);
 }
 
 bool HuberPilotOne::SetCirculatorEnabled(bool enabled)
@@ -318,18 +399,25 @@ bool HuberPilotOne::SetCirculatorEnabled(bool enabled)
   comHandler_->SendCommand(theCommand.str().c_str());
   usleep(uDelay_);
 
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
-  usleep(uDelay_);
-  StripBuffer(buffer);
+  char buffer1[1000];
+  char buffer2[1000];
 
-  bool ret = ToInteger(buffer);
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer1);
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
+
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetCirculatorEnabled] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::SetCirculatorEnabled] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
+
+  bool ret = ToInteger(buffer1);
 
   if (enabled != ret) {
     std::cerr << " [HuberPilotOne::SetCirculatorEnabled] ** ERROR: check failed."
               << std::endl;
-    if (strlen(buffer)== 0)
+    if (strlen(buffer1)== 0)
       std::cerr << "  > Got no reply. (timeout?)" << std::endl;
     else
       std::cerr << "  > Expected: " << enabled
@@ -338,7 +426,7 @@ bool HuberPilotOne::SetCirculatorEnabled(bool enabled)
     return false;
   }
 
-return true;
+  return true;
 }
 
 bool HuberPilotOne::GetCirculatorEnabled()
@@ -348,16 +436,23 @@ bool HuberPilotOne::GetCirculatorEnabled()
 #endif
 
   comHandler_->SendCommand("{M16****");
+    
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  comHandler_->ReceiveString(buffer1);
   usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  StripBuffer(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetCirculatorEnabled] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::GetCirculatorEnabled] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
 
-  return ToInteger(buffer);
+  StripBuffer(buffer1);
+
+  return ToInteger(buffer1);
 }
 
 float HuberPilotOne::GetCoolingWaterInletTemperature()
@@ -367,16 +462,23 @@ float HuberPilotOne::GetCoolingWaterInletTemperature()
 #endif
 
   comHandler_->SendCommand("{M2C****");
+      
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  comHandler_->ReceiveString(buffer1);
   usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  StripBuffer(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetCoolingWaterInletTemperature] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::GetCoolingWaterInletTemperature] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
 
-  return ToFloat(buffer)/100.;
+  StripBuffer(buffer1);
+
+  return ToFloat(buffer1)/100.;
 }
 
 float HuberPilotOne::GetCoolingWaterOutletTemperature()
@@ -386,22 +488,29 @@ float HuberPilotOne::GetCoolingWaterOutletTemperature()
 #endif
 
   comHandler_->SendCommand("{M4C****");
+      
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  comHandler_->ReceiveString(buffer1);
   usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  StripBuffer(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetCoolingWaterOutletTemperature] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::GetCoolingWaterOutletTemperature] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
 
-  return ToFloat(buffer)/100.;
+  StripBuffer(buffer1);
+
+  return ToFloat(buffer1)/100.;
 }
 
 bool HuberPilotOne::SetAutoPID(bool autoPID)
 {
 #ifdef __HUBERPILOTONE_DEBUG
-  std::cout << "[HuberPilotOne::SetCirculatorEnabled] -- DEBUG: Called." << std::endl;
+  std::cout << "[HuberPilotOne::SetAutoPID] -- DEBUG: Called." << std::endl;
 #endif
 
   std::stringstream theCommand;
@@ -412,18 +521,25 @@ bool HuberPilotOne::SetAutoPID(bool autoPID)
   comHandler_->SendCommand(theCommand.str().c_str());
   usleep(uDelay_);
 
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
-  usleep(uDelay_);
-  StripBuffer(buffer);
+  char buffer1[1000];
+  char buffer2[1000];
 
-  bool ret = ToInteger(buffer);
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer1);
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
+
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetAutoPID] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::SetAutoPID] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
+
+  bool ret = ToInteger(buffer1);
 
   if (autoPID != ret) {
     std::cerr << " [HuberPilotOne::SetCirculatorEnabled] ** ERROR: check failed."
               << std::endl;
-    if (strlen(buffer)== 0)
+    if (strlen(buffer1)== 0)
       std::cerr << "  > Got no reply. (timeout?)" << std::endl;
     else
       std::cerr << "  > Expected: " << autoPID
@@ -442,16 +558,23 @@ bool HuberPilotOne::GetAutoPID()
 #endif
 
   comHandler_->SendCommand("{M12****");
+        
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  comHandler_->ReceiveString(buffer1);
   usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  StripBuffer(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetAutoPID] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::GetAutoPID] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
 
-  return ToInteger(buffer);
+  StripBuffer(buffer1);
+
+  return ToInteger(buffer1);
 }
 
 bool HuberPilotOne::SetKpInternal(int Kp)
@@ -477,18 +600,25 @@ bool HuberPilotOne::SetKpInternal(int Kp)
   comHandler_->SendCommand(theCommand.str().c_str());
   usleep(uDelay_);
 
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
-  usleep(uDelay_);
-  StripBuffer(buffer);
+  char buffer1[1000];
+  char buffer2[1000];
 
-  float ret = ToInteger(buffer);
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer1);
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
+
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetKpInternal] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::SetKpInternal] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
+
+  float ret = ToInteger(buffer1);
 
   if (Kp != ret) {
     std::cerr << " [HuberPilotOne::SetKpInternal] ** ERROR: check failed."
         << std::endl;
-    if (strlen(buffer)== 0)
+    if (strlen(buffer1)== 0)
       std::cerr << "  > Got no reply. (timeout?)" << std::endl;
     else
       std::cerr << "  > Expected: Kp = " << Kp
@@ -507,16 +637,23 @@ int HuberPilotOne::GetKpInternal()
 #endif
 
   comHandler_->SendCommand("{M1D****");
+  
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  comHandler_->ReceiveString(buffer1);
   usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  StripBuffer(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetKpInternal] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::GetKpInternal] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
 
-  return ToInteger(buffer);
+  StripBuffer(buffer1);
+
+  return ToInteger(buffer1);
 }
 
 bool HuberPilotOne::SetTnInternal(float Tn)
@@ -542,18 +679,27 @@ bool HuberPilotOne::SetTnInternal(float Tn)
   comHandler_->SendCommand(theCommand.str().c_str());
   usleep(uDelay_);
 
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
-  usleep(uDelay_);
-  StripBuffer(buffer);
+  char buffer1[1000];
+  char buffer2[1000];
 
-  float ret = ToFloat(buffer)/10.;
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer1);
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
+
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetTnInternal] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::SetTnInternal] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
+
+  StripBuffer(buffer1);
+
+  float ret = ToFloat(buffer1)/10.;
 
   if (Tn != ret) {
     std::cerr << " [HuberPilotOne::SetTnInternal] ** ERROR: check failed."
         << std::endl;
-    if (strlen(buffer)== 0)
+    if (strlen(buffer1)==0)
       std::cerr << "  > Got no reply. (timeout?)" << std::endl;
     else
       std::cerr << "  > Expected: Tn = " << Tn
@@ -572,16 +718,23 @@ float HuberPilotOne::GetTnInternal()
 #endif
 
   comHandler_->SendCommand("{M1E****");
+    
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  comHandler_->ReceiveString(buffer1);
   usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  StripBuffer(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetTnInternal] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::GetTnInternal] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
 
-  return ToFloat(buffer)/10.;
+  StripBuffer(buffer1);
+
+  return ToFloat(buffer1)/10.;
 }
 
 bool HuberPilotOne::SetTvInternal(float Tv)
@@ -607,18 +760,27 @@ bool HuberPilotOne::SetTvInternal(float Tv)
   comHandler_->SendCommand(theCommand.str().c_str());
   usleep(uDelay_);
 
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
-  usleep(uDelay_);
-  StripBuffer(buffer);
+  char buffer1[1000];
+  char buffer2[1000];
 
-  float ret = ToFloat(buffer)/10.;
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer1);
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
+
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetTvInternal] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::SetTvInternal] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
+
+  StripBuffer(buffer1);
+
+  float ret = ToFloat(buffer1)/10.;
 
   if (Tv != ret) {
     std::cerr << " [HuberPilotOne::SetTvInternal] ** ERROR: check failed."
         << std::endl;
-    if (strlen(buffer)== 0)
+    if (strlen(buffer1)== 0)
       std::cerr << "  > Got no reply. (timeout?)" << std::endl;
     else
       std::cerr << "  > Expected: Tv = " << Tv
@@ -637,16 +799,23 @@ float HuberPilotOne::GetTvInternal()
 #endif
 
   comHandler_->SendCommand("{M1F****");
+      
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  comHandler_->ReceiveString(buffer1);
   usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  StripBuffer(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetTvInternal] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::GetTvInternal] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
 
-  return ToFloat(buffer)/10.;
+  StripBuffer(buffer1);
+
+  return ToFloat(buffer1)/10.;
 }
 
 bool HuberPilotOne::SetKpJacket(int Kp)
@@ -671,19 +840,28 @@ bool HuberPilotOne::SetKpJacket(int Kp)
 
   comHandler_->SendCommand(theCommand.str().c_str());
   usleep(uDelay_);
+   
+  char buffer1[1000];
+  char buffer2[1000];
 
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
   usleep(uDelay_);
-  StripBuffer(buffer);
+  comHandler_->ReceiveString(buffer1);
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  float ret = ToInteger(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetKpJacket] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::SetKpJacket] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
+
+  StripBuffer(buffer1);
+
+  float ret = ToInteger(buffer1);
 
   if (Kp != ret) {
     std::cerr << " [HuberPilotOne::SetKpJacket] ** ERROR: check failed."
         << std::endl;
-    if (strlen(buffer)== 0)
+    if (strlen(buffer1)== 0)
       std::cerr << "  > Got no reply. (timeout?)" << std::endl;
     else
       std::cerr << "  > Expected: Kp = " << Kp
@@ -702,16 +880,23 @@ int HuberPilotOne::GetKpJacket()
 #endif
 
   comHandler_->SendCommand("{M20****");
+        
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  comHandler_->ReceiveString(buffer1);
   usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  StripBuffer(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetKpJacket] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::GetKpJacket] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
 
-  return ToInteger(buffer);
+  StripBuffer(buffer1);
+
+  return ToInteger(buffer1);
 }
 
 bool HuberPilotOne::SetTnJacket(float Tn)
@@ -737,18 +922,27 @@ bool HuberPilotOne::SetTnJacket(float Tn)
   comHandler_->SendCommand(theCommand.str().c_str());
   usleep(uDelay_);
 
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
-  usleep(uDelay_);
-  StripBuffer(buffer);
+  char buffer1[1000];
+  char buffer2[1000];
 
-  float ret = ToFloat(buffer)/10.;
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer1);
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
+
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetTnJacket] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::SetTnJacket] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
+
+  StripBuffer(buffer1);
+
+  float ret = ToFloat(buffer1)/10.;
 
   if (Tn != ret) {
     std::cerr << " [HuberPilotOne::SetTnJacket] ** ERROR: check failed."
         << std::endl;
-    if (strlen(buffer)== 0)
+    if (strlen(buffer1)== 0)
       std::cerr << "  > Got no reply. (timeout?)" << std::endl;
     else
       std::cerr << "  > Expected: Tn = " << Tn
@@ -767,16 +961,23 @@ float HuberPilotOne::GetTnJacket()
 #endif
 
   comHandler_->SendCommand("{M21****");
+          
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  comHandler_->ReceiveString(buffer1);
   usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  StripBuffer(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetTnJacket] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::GetTnJacket] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
 
-  return ToFloat(buffer)/10.;
+  StripBuffer(buffer1);
+
+  return ToFloat(buffer1)/10.;
 }
 
 bool HuberPilotOne::SetTvJacket(float Tv)
@@ -802,18 +1003,27 @@ bool HuberPilotOne::SetTvJacket(float Tv)
   comHandler_->SendCommand(theCommand.str().c_str());
   usleep(uDelay_);
 
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
-  usleep(uDelay_);
-  StripBuffer(buffer);
+  char buffer1[1000];
+  char buffer2[1000];
 
-  float ret = ToFloat(buffer)/10.;
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer1);
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
+
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetTvJacket] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::SetTvJacket] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
+
+  StripBuffer(buffer1);
+
+  float ret = ToFloat(buffer1)/10.;
 
   if (Tv != ret) {
     std::cerr << " [HuberPilotOne::SetTvJacket] ** ERROR: check failed."
         << std::endl;
-    if (strlen(buffer)== 0)
+    if (strlen(buffer1)== 0)
       std::cerr << "  > Got no reply. (timeout?)" << std::endl;
     else
       std::cerr << "  > Expected: Tv = " << Tv
@@ -832,16 +1042,23 @@ float HuberPilotOne::GetTvJacket()
 #endif
 
   comHandler_->SendCommand("{M22****");
+            
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  comHandler_->ReceiveString(buffer1);
   usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  StripBuffer(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetTvJacket] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::GetTvJacket] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
 
-  return ToFloat(buffer)/10.;
+  StripBuffer(buffer1);
+
+  return ToFloat(buffer1)/10.;
 }
 
 bool HuberPilotOne::SetKpProcess(int Kp)
@@ -866,19 +1083,28 @@ bool HuberPilotOne::SetKpProcess(int Kp)
 
   comHandler_->SendCommand(theCommand.str().c_str());
   usleep(uDelay_);
+      
+  char buffer1[1000];
+  char buffer2[1000];
 
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
   usleep(uDelay_);
-  StripBuffer(buffer);
+  comHandler_->ReceiveString(buffer1);
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  float ret = ToInteger(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetKpProcess] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::SetKpProcess] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
+
+  StripBuffer(buffer1);
+
+  float ret = ToInteger(buffer1);
 
   if (Kp != ret) {
     std::cerr << " [HuberPilotOne::SetKpProcess] ** ERROR: check failed."
         << std::endl;
-    if (strlen(buffer)== 0)
+    if (strlen(buffer1)== 0)
       std::cerr << "  > Got no reply. (timeout?)" << std::endl;
     else
       std::cerr << "  > Expected: Kp = " << Kp
@@ -897,16 +1123,23 @@ int HuberPilotOne::GetKpProcess()
 #endif
 
   comHandler_->SendCommand("{M23****");
+            
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  comHandler_->ReceiveString(buffer1);
   usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  StripBuffer(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetKpProcess] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::GetKpProcess] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
 
-  return ToInteger(buffer);
+  StripBuffer(buffer1);
+
+  return ToInteger(buffer1);
 }
 
 bool HuberPilotOne::SetTnProcess(float Tn)
@@ -931,19 +1164,28 @@ bool HuberPilotOne::SetTnProcess(float Tn)
 
   comHandler_->SendCommand(theCommand.str().c_str());
   usleep(uDelay_);
+      
+  char buffer1[1000];
+  char buffer2[1000];
 
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
   usleep(uDelay_);
-  StripBuffer(buffer);
+  comHandler_->ReceiveString(buffer1);
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  float ret = ToFloat(buffer)/10.;
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetTnProcess] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::SetTnProcess] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
+
+  StripBuffer(buffer1);
+
+  float ret = ToFloat(buffer1)/10.;
 
   if (Tn != ret) {
     std::cerr << " [HuberPilotOne::SetTnProcess] ** ERROR: check failed."
         << std::endl;
-    if (strlen(buffer)== 0)
+    if (strlen(buffer1)== 0)
       std::cerr << "  > Got no reply. (timeout?)" << std::endl;
     else
       std::cerr << "  > Expected: Tn = " << Tn
@@ -962,16 +1204,23 @@ float HuberPilotOne::GetTnProcess()
 #endif
 
   comHandler_->SendCommand("{M24****");
+      
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  comHandler_->ReceiveString(buffer1);
   usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  StripBuffer(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetTnProcess] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::GetTnProcess] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
 
-  return ToFloat(buffer)/10.;
+  StripBuffer(buffer1);
+
+  return ToFloat(buffer1)/10.;
 }
 
 bool HuberPilotOne::SetTvProcess(float Tv)
@@ -997,18 +1246,27 @@ bool HuberPilotOne::SetTvProcess(float Tv)
   comHandler_->SendCommand(theCommand.str().c_str());
   usleep(uDelay_);
 
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
-  usleep(uDelay_);
-  StripBuffer(buffer);
+  char buffer1[1000];
+  char buffer2[1000];
 
-  float ret = ToFloat(buffer)/10.;
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer1);
+  usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
+
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::SetTvProcess] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::SetTvProcess] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
+
+  StripBuffer(buffer1);
+
+  float ret = ToFloat(buffer1)/10.;
 
   if (Tv != ret) {
     std::cerr << " [HuberPilotOne::SetTvProcess] ** ERROR: check failed."
         << std::endl;
-    if (strlen(buffer)== 0)
+    if (strlen(buffer1)== 0)
       std::cerr << "  > Got no reply. (timeout?)" << std::endl;
     else
       std::cerr << "  > Expected: Tv = " << Tv
@@ -1027,16 +1285,23 @@ float HuberPilotOne::GetTvProcess()
 #endif
 
   comHandler_->SendCommand("{M25****");
+  
+  char buffer1[1000];
+  char buffer2[1000];
+
   usleep(uDelay_);
-
-  char buffer[1000];
-  memset(buffer, 0, sizeof(buffer));
-  comHandler_->ReceiveString(buffer);
+  comHandler_->ReceiveString(buffer1);
   usleep(uDelay_);
+  comHandler_->ReceiveString(buffer2);
 
-  StripBuffer(buffer);
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::GetTvProcess] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::GetTvProcess] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
 
-  return ToFloat(buffer);
+  StripBuffer(buffer1);
+
+  return ToFloat(buffer1);
 }
 
 void HuberPilotOne::StripBuffer(char* buffer) const
@@ -1044,7 +1309,7 @@ void HuberPilotOne::StripBuffer(char* buffer) const
   #ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::StripBuffer] -- DEBUG: Called." << std::endl;
   std::cout << "[HuberPilotOne::StripBuffer] -- DEBUG: Buffer is:" << std::endl;
-  std::cout << " > " << buffer << std::endl;
+  std::cout << " >  |" << buffer << "|" << std::endl;
   #endif
 
   for (unsigned int c=0;c<strlen(buffer);++c) {
@@ -1067,7 +1332,9 @@ int HuberPilotOne::ToInteger(const char* buffer) const
 #endif
   
   try {
-    return std::stoi(temp, 0, 16);
+    uint16_t hextemp = static_cast<uint16_t>(std::stoul(temp, 0, 16));
+    int16_t dectemp = static_cast<int16_t>(hextemp);
+    return dectemp;
   }
   catch (const std::invalid_argument& ia) {
     std::cerr << "[HuberPilotOne::ToInteger] -- Invalid argument: " << ia.what() << std::endl;
@@ -1089,23 +1356,34 @@ float HuberPilotOne::ToFloat(const char* buffer) const
 
 void HuberPilotOne::Device_Init()
 {
-  #ifdef __HUBERPILOTONE_DEBUG
+#ifdef __HUBERPILOTONE_DEBUG
   std::cout << "[HuberPilotOne::Device_Init] -- DEBUG: Called." << std::endl;
-  #endif
+#endif
 
-  char buffer[1000];
-  
+  char buffer1[1000];
+  char buffer2[1000];
+
   comHandler_->SendCommand( "{M1B****" );
   usleep( uDelay_ );
-
-  comHandler_->ReceiveString( buffer );
+  comHandler_->ReceiveString( buffer1 ); 
   usleep( uDelay_ );
-  StripBuffer( buffer );
-  std::string temp(buffer);
+  comHandler_->ReceiveString( buffer2 ); 
+
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[HuberPilotOne::Device_Init] -- DEBUG: Buffer1 is:-- | " << buffer1 << "|" << std::endl;
+  std::cout << "[HuberPilotOne::Device_Init] -- DEBUG: Buffer2 is:-- | " << buffer2 << "|" << std::endl;
+#endif
+
+  StripBuffer( buffer1 );
+  std::string temp(buffer1);
   
   if (temp.compare(0, 8, "{S1BD98B")!=0) {
-    std::cerr << " [HuberPilotOne::Device_Init] ** ERROR: Device communication problem."
-        << std::endl;
+
+#ifdef __HUBERPILOTONE_DEBUG
+    std::cout << "[HuberPilotOne::Device_Init] -- DEBUG: Temp is:-- | " << temp << "|" << std::endl;
+#endif
+
+    std::cerr << " [HuberPilotOne::Device_Init] ** ERROR: Device communication problem." << std::endl;
     isCommunication_ = false;
     return;
   }

@@ -62,7 +62,12 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
   keithleyBottomCor1_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor1");
   keithleyBottomCor2_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor2");
   keithleyBottomCor3_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor3");
-  keithleyAmbientSensor_ = config->getValue<double>("main", "KeithleyAmbientSensor");
+  keithleyAmbientSensor_ = config->getValue<double>("main", "ThroughPlaneKeithleySinkSensor");
+  keithleySinkSensor_ = config->getValue<double>("main", "ThroughPlaneKeithleySinkSensorType");
+  keithleySinkCor0_ = config->getValue<double>("main", "ThroughPlaneKeithleySinkCor0");
+  keithleySinkCor1_ = config->getValue<double>("main", "ThroughPlaneKeithleySinkCor1");
+  keithleySinkCor2_ = config->getValue<double>("main", "ThroughPlaneKeithleySinkCor2");
+  keithleySinkCor3_ = config->getValue<double>("main", "ThroughPlaneKeithleySinkCor3");
 
   std::string sensorType;
 
@@ -95,6 +100,17 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
     }
   }
 
+  if (keithleySinkSensor_!=0) {
+    sensorType = config->getValue("main", "KeithleySinkSensorType");
+    if (sensorType=="4WirePT100") {
+      keithleySinkSensorType_ = VKeithleyDAQ6510::FourWireRTD_PT100;
+    }else if (sensorType=="Therm10k") {
+      keithleySinkSensorType_ = VKeithleyDAQ6510::Thermistor_10000;
+    } else {
+      keithleySinkSensorType_ = VKeithleyDAQ6510::FourWireRTD_PT100;
+    }
+  }
+
   bool throughPlaneAutoConfig = config->getValue<int>("main", "ThroughPlaneAutoConfig");
   if (throughPlaneAutoConfig) {
     for (unsigned int i=0;i<6;++i) {
@@ -108,6 +124,11 @@ Thermo2ThroughPlaneModel::Thermo2ThroughPlaneModel(HuberUnistat525wModel* huberM
     if (keithleyAmbientSensor_!=0) {
       keithleyModel_->setSensorMode(keithleyAmbientSensor_, keithleyAmbientSensorType_);
       keithleyModel_->setSensorEnabled(keithleyAmbientSensor_, true);
+    }
+
+    if (keithleySinkSensor_!=0) {
+      keithleyModel_->setSensorMode(keithleySinkSensor_, keithleySinkSensorType_);
+      keithleyModel_->setSensorEnabled(keithleySinkSensor_, true);
     }
   }
 
@@ -181,6 +202,10 @@ void Thermo2ThroughPlaneModel::configurationChanged()
   keithleyBottomCor1_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor1");
   keithleyBottomCor2_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor2");
   keithleyBottomCor3_ = config->getValueArray<double,6>("main", "ThroughPlaneKeithleyBottomCor3");
+  keithleySinkCor0_ = config->getValue<double>("main", "ThroughPlaneKeithleySinkCor0");
+  keithleySinkCor1_ = config->getValue<double>("main", "ThroughPlaneKeithleySinkCor1");
+  keithleySinkCor2_ = config->getValue<double>("main", "ThroughPlaneKeithleySinkCor2");
+  keithleySinkCor3_ = config->getValue<double>("main", "ThroughPlaneKeithleySinkCor3");
 }
 
 void Thermo2ThroughPlaneModel::setTemperatureSetPoint(double temperature)
@@ -275,6 +300,17 @@ void Thermo2ThroughPlaneModel::keithleyInfoChanged()
         keithleyModel_->getSensorState(keithleyAmbientSensor_)==READY ? true : false);
     changed |= updateIfChanged<double>(keithleyAmbientTemperature_,
         keithleyModel_->getTemperature(keithleyAmbientSensor_));
+  }
+
+  if (keithleySinkSensor_!=0) {
+    changed |= updateIfChanged<bool>(keithleySinkSensorState_,
+        keithleyModel_->getSensorState(keithleySinkSensor_)==READY ? true : false);
+    temp = keithleyModel_->getTemperature(keithleySinkSensor_);
+    tcor =  keithleySinkCor0_;
+    tcor += keithleySinkCor1_ * temp;
+    tcor += keithleySinkCor2_ * temp * temp;
+    tcor += keithleySinkCor3_ * temp * temp * temp;
+    changed |= updateIfChanged<double>(keithleySinkTemperature_, tcor);
   }
 
   const QDateTime dt(QDateTime::currentDateTime());
