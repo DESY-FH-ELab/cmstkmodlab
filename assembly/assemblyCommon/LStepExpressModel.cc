@@ -1037,6 +1037,11 @@ void LStepExpressModel::initialize()
 
       const QStringList ports_list = portDir.entryList();
 
+#ifdef USE_FAKEIO
+      renewController("FakePort");
+      enabled = controller_->DeviceAvailable();
+#endif
+
       for(const auto& port : ports_list)
       {
         renewController(portDir.canonicalPath()+"/"+port);
