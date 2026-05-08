@@ -35,18 +35,18 @@ bool DatabaseDummy::register_module_name(QString module_name, QString operator_n
     return false;
 }
 
-bool DatabaseDummy::MaPSA_to_BP(QString MaPSA_name, QString BP_name, QString glue_name, QString comment)
+bool DatabaseDummy::MaPSA_to_BP(QString module_name, QString MaPSA_name, QString BP_name, QString glue_name, QString comment)
 {
     NQLog("DatabaseDummy", NQLog::Message) << "Performed MaPSA to Baseplate gluing step in DB.";
     return true;
 }
 
-bool DatabaseDummy::PSs_to_spacers(QString PSs_name, QString glue_name, QString comment)
+bool DatabaseDummy::PSs_to_spacers(QString module_name, QString PSs_name, QString glue_name, QString comment)
 {
     return false;
 }
 
-bool DatabaseDummy::PSs_to_MaPSA(QString glue_name, QString comment)
+bool DatabaseDummy::PSs_to_MaPSA(QString module_name, QString glue_name, QString comment)
 {
     return false;
 }

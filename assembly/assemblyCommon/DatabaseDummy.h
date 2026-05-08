@@ -24,9 +24,9 @@ class DatabaseDummy : public VDatabase
       ~DatabaseDummy();
 
       bool register_module_name(QString, QString);
-      bool MaPSA_to_BP(QString, QString, QString, QString);
-      bool PSs_to_spacers(QString, QString, QString);
-      bool PSs_to_MaPSA(QString, QString);
+      bool MaPSA_to_BP(QString, QString, QString, QString, QString);
+      bool PSs_to_spacers(QString, QString, QString, QString);
+      bool PSs_to_MaPSA(QString, QString, QString);
       bool PSs_to_MaPSA(QString, QString, QString, QString, QString) { return false; };
 
       bool is_component_available(QString, QString);
