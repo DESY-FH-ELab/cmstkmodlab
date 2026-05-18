@@ -149,6 +149,10 @@ protected:
   VKeithleyDAQ6510::ChannelMode_t keithleyAmbientSensorType_;
   unsigned int keithleySinkSensor_;
   VKeithleyDAQ6510::ChannelMode_t keithleySinkSensorType_;
+  double keithleySinkCor0_;
+  double keithleySinkCor1_;
+  double keithleySinkCor2_;
+  double keithleySinkCor3_;
   bool keithleyState_;
   std::array<bool,6> keithleyTopSensorStates_;
   std::array<bool,6> keithleyBottomSensorStates_;
