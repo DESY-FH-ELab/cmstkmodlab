@@ -95,7 +95,7 @@ endif(CURL_FOUND)
 
 set(CMAKE_AUTOMOC ON)
 
-find_package(Qt5 5.14 COMPONENTS Core Gui Widgets OpenGL Script Xml Svg Network Charts REQUIRED)
+find_package(Qt5 5.14 COMPONENTS Core Gui Widgets OpenGL Script Xml Svg Network Charts Multimedia REQUIRED)
 
 option(CMSTKMODLAB_MARTA "Build with support for MARTA CO2 chiller" OFF)
 

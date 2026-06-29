@@ -44,6 +44,7 @@ class AssemblyStopwatchWidget : public QWidget
   QPushButton* reset_;
 
   double seconds_;
+  QTime m_previous_time;
 
   QTimer* update_timer_;
   QTime reference_time_;

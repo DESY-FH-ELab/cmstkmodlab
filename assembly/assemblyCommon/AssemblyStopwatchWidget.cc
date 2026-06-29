@@ -20,6 +20,8 @@
 
 #include <QFont>
 #include <QIcon>
+#include <QMediaPlayer>
+#include <QAudioOutput>
 
 AssemblyStopwatchWidget::AssemblyStopwatchWidget(QWidget* parent) : QWidget(parent)
 {
@@ -99,6 +101,18 @@ void AssemblyStopwatchWidget::updateStopwatch(){
 
   auto time_str = QString("<font color='") + color_str + "'>" + time_elapsed.toString("mm:ss") + "</font>";
   elapsedTimeLabel_->setText(time_str);
+
+  if(m_previous_time < QTime(0, 1, 0) && time_elapsed > QTime(0, 1, 0)) {
+    player = new QMediaPlayer;
+    audioOutput = new QAudioOutput;
+    player->setAudioOutput(audioOutput);
+
+    player->setSource(QUrl::fromLocalFile("/home/cmsdaf/Music/Rooster-morning-call.mp3"));
+    audioOutput->setVolume(0.5);
+    player->play();
+  }
+
+  m_previous_time = time_elapsed;
 
   NQLog("AssemblyStopwatchWidget", NQLog::Debug) << ": Time: " << time_elapsed.toString("mm:ss");
 }
