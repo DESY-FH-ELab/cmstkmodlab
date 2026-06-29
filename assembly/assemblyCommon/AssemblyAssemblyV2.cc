@@ -689,6 +689,55 @@ void AssemblyAssemblyV2::PushStep3ToDB_start()
 }
 
 // ----------------------------------------------------------------------------------------------------
+// GoToPlatformReferencePoint -----------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssemblyV2::GoToPlatformReferencePoint_start()
+{
+  if(in_action_){
+
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "GoToPlatformReferencePoint_start"
+       << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
+
+  const double x0 = config_->getValue<double>("parameters", "RefPointPlatform_X");
+  const double y0 = config_->getValue<double>("parameters", "RefPointPlatform_Y");
+  const double z0 = config_->getValue<double>("parameters", "RefPointPlatform_Z");
+  const double a0 = config_->getValue<double>("parameters", "RefPointPlatform_A");
+
+  connect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
+  connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToPlatformReferencePoint_finish()));
+
+  in_action_ = true;
+
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "GoToPlatformReferencePoint_start"
+     << ": emitting signal \"move_absolute_request(" << x0 << ", " << y0 << ", " << z0 << ", " << a0 << ")\"";
+
+  emit move_absolute_request(x0, y0, z0, a0);
+}
+
+void AssemblyAssemblyV2::GoToPlatformReferencePoint_finish()
+{
+  disconnect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
+  disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToPlatformReferencePoint_finish()));
+
+  if(in_action_){ in_action_ = false; }
+
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "GoToPlatformReferencePoint_finish"
+     << ": emitting signal \"GoToPlatformReferencePoint_finished\"";
+
+  emit GoToPlatformReferencePoint_finished();
+
+  NQLog("AssemblyAssemblyV2", NQLog::Message) << "GoToPlatformReferencePoint_finish"
+     << ": assembly-step completed";
+
+  emit DBLogMessage("== Assembly step completed : [Move to platform's reference point (calibration check)]");
+}
+// ----------------------------------------------------------------------------------------------------
+
+
+// ----------------------------------------------------------------------------------------------------
 // GoToSensorMarkerPreAlignment -----------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssemblyV2::GoToSensorMarkerPreAlignment_start(bool isMapsa)
