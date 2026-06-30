@@ -92,6 +92,7 @@ include_directories(${Qt5Network_INCLUDE_DIRS})
 include_directories(${Qt5Script_INCLUDE_DIRS})
 include_directories(${Qt5Charts_INCLUDE_DIRS})
 include_directories(${Qt5Svg_INCLUDE_DIRS})
+include_directories(${Qt5Multimedia_INCLUDE_DIRS})
 
 include_directories(${UEYE_HEADER_DIR})
 
@@ -101,6 +102,7 @@ add_definitions(${Qt5Network_DEFINITIONS})
 add_definitions(${Qt5Script_DEFINITIONS})
 add_definitions(${Qt5Charts_DEFINITIONS})
 add_definitions(${Qt5Svg_DEFINITIONS})
+add_definitions(${Qt5Multimedia_DEFINITIONS})
 
 set(CMAKE_CXX_FLAGS "${Qt5Core_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Widgts_EXECUTABLE_COMPILE_FLAGS}")
@@ -108,6 +110,7 @@ set(CMAKE_CXX_FLAGS "${Qt5Network_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Script_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Charts_EXECUTABLE_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${Qt5Svg_EXECUTABLE_COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS "${Qt5Multimedia_EXECUTABLE_COMPILE_FLAGS}")
 
 set_target_properties(AssemblyCommon PROPERTIES VERSION ${PROJECT_VERSION})
 
@@ -124,6 +127,7 @@ target_link_libraries(AssemblyCommon
         PRIVATE Qt5::Script
         PRIVATE Qt5::Charts
         PRIVATE Qt5::Svg
+        PRIVATE Qt5::Multimedia
         PRIVATE Common
 	PUBLIC  ${UEYE_LIBRARY}
 )
