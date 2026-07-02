@@ -339,18 +339,15 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
       const int time_to_axes_startup(1.5 * motion_manager_->model()->updateInterval());
       QThread::msleep(time_to_axes_startup);
 
-      QTimer t_timeout;
-      t_timeout.setSingleShot(true);
       QEventLoop loop;
       connect(hwctr_view_->LStepExpress_Widget(), &LStepExpressWidget::restart_completed, &loop, &QEventLoop::quit);
-      connect(&t_timeout, &QTimer::timeout, &loop, &QEventLoop::quit);
-      t_timeout.start(10000);
+      connect(hwctr_view_->LStepExpress_Widget(), &LStepExpressWidget::restart_failed, &loop, &QEventLoop::quit);
 
-      hwctr_view_->LStepExpress_Widget()->restart();
+      QTimer::singleShot(1000, hwctr_view_->LStepExpress_Widget(), SLOT(restart()));
       loop.exec();
 
       disconnect(hwctr_view_->LStepExpress_Widget(), &LStepExpressWidget::restart_completed, &loop, &QEventLoop::quit);
-      disconnect(&t_timeout, &QTimer::timeout, &loop, &QEventLoop::quit);
+      disconnect(hwctr_view_->LStepExpress_Widget(), &LStepExpressWidget::restart_failed, &loop, &QEventLoop::quit);
 
       if(motion_model_->getDeviceState()==State::OFF) {
         NQLog("AssemblyMainWindow", NQLog::Fatal) << "Motion Stage Controller could not be started!";
