@@ -618,6 +618,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
       stage_lay->addWidget(stage_values_.at(i), 1, i);
     }
 
+    update_stage_position();
+
     stage_wid->setLayout(stage_lay);
 
     toolBar_->addWidget(stage_wid);
