@@ -93,6 +93,9 @@ class AssemblyAssemblyV2 : public QObject
   void GoToPlatformReferencePoint_start();
   void GoToPlatformReferencePoint_finish();
 
+  void GoToOrigin_start();
+  void GoToOrigin_finish();
+
   void GoToSensorMarkerPreAlignment_start(const bool isMapsa);
   void GoToSensorMarkerPreAlignment_finish();
 
@@ -245,6 +248,8 @@ class AssemblyAssemblyV2 : public QObject
   void PushStep3ToDB_aborted();
 
   void GoToPlatformReferencePoint_finished();
+
+  void GoToOrigin_finished();
 
   void GoToSensorMarkerPreAlignment_finished();
 

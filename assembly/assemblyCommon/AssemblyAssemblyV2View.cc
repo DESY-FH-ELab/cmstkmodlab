@@ -182,6 +182,19 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
       }
       // ----------
 
+      // step: Go to origin
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Go To Origin");
+        PSPToBasep_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(GoToOrigin_start()), SIGNAL(GoToOrigin_finished()));
+      }
+      // ----------
+
       // step: Define/Scan Module ID
       {
         ++assembly_step_N;
