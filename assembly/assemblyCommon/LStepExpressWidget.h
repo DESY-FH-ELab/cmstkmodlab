@@ -102,6 +102,8 @@ class LStepExpressWidget : public QWidget
 
   void restart_completed();
 
+  void restart_failed();
+
   void moveToOrigin_request();
 
   void startCalibrate();
