@@ -160,8 +160,6 @@ class AssemblyMainWindow : public QMainWindow
 
   void messageBox_restartMotionStage();
 
-  void restore_autofocus_settings();
-
  protected:
 
   // Low-Level Controllers (Motion, Camera, Vacuum)
@@ -232,7 +230,6 @@ class AssemblyMainWindow : public QMainWindow
 
   QPushButton* button_mainEmergencyStop_;
   QPushButton* button_info_;
-  QCheckBox* autofocus_checkbox_;
 
   // flags
   bool images_enabled_;
