@@ -7,5 +7,8 @@ if(CMSTKMODLAB_THERMO2)
 endif()
 
 add_subdirectory(thermoDAQ2Root)
+if(CMSTKMODLAB_THERMO_HDF5)
+		add_subdirectory(thermoDAQ2HDF5)
+endif()
 add_subdirectory(thermoDAQ2RootConverter)
 add_subdirectory(thermoDAQ2Log)

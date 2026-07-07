@@ -57,15 +57,18 @@ public:
   unsigned int getKeithleyTopSensor(unsigned int position) const { return keithleyTopSensors_[position]; }
   unsigned int getKeithleyBottomSensor(unsigned int position) const { return keithleyBottomSensors_[position]; }
   unsigned int getKeithleyAmbientSensor() const { return keithleyAmbientSensor_; }
+  unsigned int getKeithleySinkSensor() const { return keithleySinkSensor_; }
   bool getKeithleyState() const { return keithleyState_; }
   bool getKeithleyTopSensorState(unsigned int position) const { return keithleyTopSensorStates_[position]; }
   bool getKeithleyBottomSensorState(unsigned int position) const { return keithleyBottomSensorStates_[position]; }
   bool getKeithleyAmbientSensorState() const { return keithleyAmbientSensorState_; }
+  bool getKeithleySinkSensorState() const { return keithleySinkSensorState_; }
   double getKeithleyTopTemperature(unsigned int position) const { return keithleyTopTemperatures_[position]; }
   const HistoryFifo<double>& getKeithleyTopTemperatureHistory(unsigned int position) const { return keithleyTopTemperatureHistory_[position]; }
   double getKeithleyBottomTemperature(unsigned int position) const { return keithleyBottomTemperatures_[position]; }
   const HistoryFifo<double>& getKeithleyBottomTemperatureHistory(unsigned int position) const { return keithleyBottomTemperatureHistory_[position]; }
   double getKeithleyAmbientTemperature() const { return keithleyAmbientTemperature_; }
+  double getKeithleySinkTemperature() const { return keithleySinkTemperature_; }
 
   bool getCalculationState() const { return calculationState_; }
   double getGradientTop() const { return gradientTop_; }
@@ -144,15 +147,23 @@ protected:
   std::array<double,6> keithleyBottomCor3_;
   unsigned int keithleyAmbientSensor_;
   VKeithleyDAQ6510::ChannelMode_t keithleyAmbientSensorType_;
+  unsigned int keithleySinkSensor_;
+  VKeithleyDAQ6510::ChannelMode_t keithleySinkSensorType_;
+  double keithleySinkCor0_;
+  double keithleySinkCor1_;
+  double keithleySinkCor2_;
+  double keithleySinkCor3_;
   bool keithleyState_;
   std::array<bool,6> keithleyTopSensorStates_;
   std::array<bool,6> keithleyBottomSensorStates_;
   bool keithleyAmbientSensorState_;
+  bool keithleySinkSensorState_;
   std::array<double,6> keithleyTopTemperatures_;
   std::array<HistoryFifo<double>,6> keithleyTopTemperatureHistory_;
   std::array<double,6> keithleyBottomTemperatures_;
   std::array<HistoryFifo<double>,6> keithleyBottomTemperatureHistory_;
   double keithleyAmbientTemperature_;
+  double keithleySinkTemperature_;
 
   double sourcePower_;
 

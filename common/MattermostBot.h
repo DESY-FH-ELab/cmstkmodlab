@@ -17,6 +17,8 @@
 #include <QMutex>
 #include <QString>
 
+#include <ApplicationConfig.h>
+
 /** @addtogroup common
  *  @{
  */

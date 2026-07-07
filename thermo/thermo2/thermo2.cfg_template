@@ -1,75 +1,84 @@
 #
 # Device
 #
-AgilentTwisTorr304Device               /dev/ttyAgilentTwisTorr304
-HuberUnistatDevice                     /dev/ttyHuberUnistat525w
-MartaIPAddress                         10.255.21.224:502
-LeyboldGraphixOneDevice                /dev/ttyLeyboldGraphixOne
-RohdeSchwarzNGE103BDevice              /dev/ttyRohdeSchwarzNGE103B
-KeithleyDAQ6510Device                  /dev/usbtmc0
+AgilentTwisTorr304Device                      /dev/ttyAgilentTwisTorr304
+HuberUnistatDevice                            /dev/ttyHuberUnistat525w
+MartaIPAddress                                10.255.21.224:502
+LeyboldGraphixOneDevice                       /dev/ttyLeyboldGraphixOne
+RohdeSchwarzNGE103BDevice                     /dev/ttyRohdeSchwarzNGE103B
+KeithleyDAQ6510Device                         /dev/usbtmc0
 
 #
 # Active Devices and Measurement Setups
 #
-ChillerAndVacuumActive                 1
-MartaActive                            0
-ThroughPlaneSetupActive                1
+ChillerAndVacuumActive                        1
+MartaActive                                   0
+ThroughPlaneSetupActive                       1
 
 #
 # Data Storage
 #
-DataPath                               /home/cmsdaf/public/thermoDAQ2
-DataGroup                              cms
-ScriptDirectory                        /home/cmsdaf/public/thermoDAQ2/scripts
+DataPath                                      /home/cmsdaf/cmstkmodlab/thermo/thermo2/thermoDAQ2/data
+DataGroup                                     cms
+ScriptDirectory                               /home/cmsdaf/public/thermoDAQ2/scripts
 
 #
 # Communication with Display Application
 #
-ServerPort                             55555
-PlotSaveDirectory                      /home/cmsdaf/public/thermoDAQ2/plots
+ServerPort                                    55555
+PlotSaveDirectory                             /home/cmsdaf/user/soumyaa/plots-2702
 
 #
 # Communication Server settings
 #
-CommServerHostname                     cmssectortest01
-CommServerIP                           131.169.43.223
-CommServerPort                         56666
+CommServerHostname                            cmssectortest01
+CommServerIP                                  131.169.43.223
+CommServerPort                                56666
 
 #
 # Mattermost
 #
-mattermostwebhook                      https://mattermost.web.cern.ch/hooks/d5tpf87e63ntmroe54peebo7eo
-mattermostusername                     thermodaq2
-mattermostchannel                      thermodaq2
+mattermostwebhook                             https://mattermost.web.cern.ch/hooks/xyz
+mattermostusername                            thermodaq2
+mattermostchannel                             thermodaq2
 
 #
 # Ambient temperature sensor
 #
-KeithleyAmbientSensor                  210
-KeithleyAmbientSensorType              4WirePT100
+KeithleyAmbientSensor                         210
+KeithleyAmbientSensorType                     4WirePT100
 
 #
 # Through-Plane Thermal Measurement Setup
 #
-ThroughPlaneAutoConfig                 0      # Automatically configure Keithley channels on startup
-ThroughPlaneMattermostStatus           0      # Send status messages via Mattermost
-ThroughPlaneMattermostInterval         30     # Interval between mattermost status updates in minutes
-ThroughPlaneResistance                 10.0   # Resistance of heat source in Ohm
-ThroughPlaneCableResistance            1.1    # Resistance of cable (incl. feedthrough) in Ohm
-ThroughPlaneKBlock                     394.0  # Thermal conductivity of blocks in W/m/K
-ThroughPlaneABlock                     900.0  # Area of blocks in mm^2 (30 mm x 30 mm)
-ThroughPlaneNGE103BChannel             3
-ThroughPlaneKeithleyTopSensors         101 102 103 104 105 106        # From top to interface to sample
-ThroughPlaneKeithleyTopSensorTypes     4WirePT100                     # Type of temperature probe (4WirePT100 or Therm10k)
-ThroughPlaneKeithleyTopPositions       60.0 50.0 40.0 30.0 20.0 10.0  # Position of sensor from interface to sample in mm
-ThroughPlaneKeithleyTopCor0            -1.987212e-01 +2.000235e-01 -1.577817e-02 -5.809836e-02 -1.302576e-01 +1.045751e-01 
-ThroughPlaneKeithleyTopCor1            +1.008655e+00 +9.923893e-01 +9.992698e-01 +1.000862e+00 +1.000613e+00 +9.991822e-01 
-ThroughPlaneKeithleyTopCor2            +8.242263e-06 -2.451968e-05 -8.094984e-06 +8.687270e-07 +1.614825e-05 +1.291368e-05 
-ThroughPlaneKeithleyTopCor3            0.0 0.0 0.0 0.0 0.0 0.0 
-ThroughPlaneKeithleyBottomSensors      201 202 203 204 205 206        # From interface to sample to heat sink
-ThroughPlaneKeithleyBottomSensorTypes  4WirePT100                     # Type of temperature probe (4WirePT100 or Therm10k)
-ThroughPlaneKeithleyBottomPositions    10.0 20.0 30.0 40.0 50.0 60.0  # Position of sensor from interface to sample in mm
-ThroughPlaneKeithleyBottomCor0         +1.031536e-02 -2.937237e-02 +5.379875e-02 +1.398991e-01 -1.139843e-01 +3.372828e-02 
-ThroughPlaneKeithleyBottomCor1         +9.979621e-01 +1.000199e+00 +9.988582e-01 +9.998310e-01 +1.002932e+00 +9.993718e-01 
-ThroughPlaneKeithleyBottomCor2         -1.655805e-05 +2.156900e-05 +1.888039e-05 -2.684960e-05 -2.272911e-05 +2.119618e-05 
-ThroughPlaneKeithleyBottomCor3         0.0 0.0 0.0 0.0 0.0 0.0 
+ThroughPlaneAutoConfig                        1 # Automatically configure Keithley channels on startup
+ThroughPlaneMattermostStatus                  0 # Send status messages via Mattermost
+ThroughPlaneMattermostInterval                30 # Interval between mattermost status updates in minutes
+ThroughPlaneResistance                        4.639 # Resistance of heat source in Ohm
+ThroughPlaneCableResistance                   1.1 # Resistance of cable (incl. feedthrough) in Ohm
+ThroughPlaneKBlock                            113.0 # Thermal conductivity of blocks in W/m/K
+ThroughPlaneABlock                            900.0 # Area of blocks in mm^2 (30 mm x 30 mm)
+ThroughPlaneNGE103BChannel                    2
+
+ThroughPlaneKeithleyTopSensors                102 103 104 106 107 108 # From top to interface to sample
+ThroughPlaneKeithleyTopSensorTypes            Therm10k # Type of temperature probe (4WirePT100 or Therm10k)
+ThroughPlaneKeithleyTopPositions              60.0 50.0 40.0 30.0 20.0 10.0 # Position of sensor from interface to sample in mm
+ThroughPlaneKeithleyTopCor0                   +1.867047e+00 +1.974071e+00 +1.972656e+00 +2.001257e+00 +2.004000e+00 +2.019869e+00
+ThroughPlaneKeithleyTopCor1                   +9.071821e-01 +9.144013e-01 +9.152761e-01 +9.141911e-01 +9.137625e-01 +9.130001e-01
+ThroughPlaneKeithleyTopCor2                   -1.679512e-04 -8.874945e-05 -1.038256e-04 -8.841044e-05 -7.531900e-05 -7.125249e-05
+ThroughPlaneKeithleyTopCor3                   -2.607405e-06 -4.995105e-07 -7.879806e-07 -6.862114e-07 -1.172647e-06 -1.082051e-06
+
+ThroughPlaneKeithleyBottomSensors             201 203 204 205 206 207 # From interface to sample to heat sink
+ThroughPlaneKeithleyBottomSensorTypes         Therm10k # Type of temperature probe (4WirePT100 or Therm10k)
+ThroughPlaneKeithleyBottomPositions           10.0 20.0 30.0 40.0 50.0 60.0 # Position of sensor from interface to sample in mm
+ThroughPlaneKeithleyBottomCor0                +1.978935e+00 +1.993556e+00 +1.981271e+00 +1.977465e+00 +2.026816e+00 +1.953163e+00
+ThroughPlaneKeithleyBottomCor1                +9.139348e-01 +9.133687e-01 +9.141465e-01 +9.140204e-01 +9.124715e-01 +9.144178e-01
+ThroughPlaneKeithleyBottomCor2                -5.821807e-05 -5.985741e-05 -6.516693e-05 -6.135384e-05 -6.533754e-05 -5.718805e-05
+ThroughPlaneKeithleyBottomCor3                -1.422835e-06 -1.209345e-06 -1.256240e-06 -1.277035e-06 -1.164347e-06 -1.146297e-06
+
+ThroughPlaneKeithleySinkSensor                209
+ThroughPlaneKeithleySinkSensorType            Therm10k
+ThroughPlaneKeithleySinkCor0                  +2.464396e+00
+ThroughPlaneKeithleySinkCor1                  +9.181617e-01
+ThroughPlaneKeithleySinkCor2                  -7.189571e-05
+ThroughPlaneKeithleySinkCor3                  -1.162508e-06

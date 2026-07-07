@@ -26,8 +26,8 @@ CommunicationServer::CommunicationServer(PumpStationModel* model,
 {
 	ApplicationConfig * config = ApplicationConfig::instance();
 
-  pumpChannels_ = config->getValueVector<int>("PumpSwitches");
-  valveChannels_ = config->getValueVector<int>("ValveSwitches");
+  pumpChannels_ = config->getValueVector<int>("main", "PumpSwitches");
+  valveChannels_ = config->getValueVector<int>("main", "ValveSwitches");
 
   connect(this, SIGNAL(setSwitchBlocked(int, bool)),
           model_, SLOT(setSwitchBlocked(int, bool)));
@@ -86,9 +86,7 @@ void CommunicationServer::handleCommand()
   	if (args.count()!=0) {
   		response = "ERR";
   	} else {
-  		ApplicationConfig * config = ApplicationConfig::instance();
-  		config->safe(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
-
+  		ApplicationConfig::instance()->save();
   		response = "OK";
   	}
   } else if (cmd=="setPumpState") {

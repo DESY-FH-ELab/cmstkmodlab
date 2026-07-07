@@ -1,0 +1,3 @@
+[submodule "thermo/thermo2/configurations"]
+	path = thermo/thermo2/configurations
+	url = https://gitlab.desy.de/cms-outer-tracker/thermodaqconfigurations.git

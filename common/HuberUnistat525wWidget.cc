@@ -66,7 +66,7 @@ HuberUnistat525wWidget::HuberUnistat525wWidget(HuberUnistat525wModel* model,
   temperatureSetPointSpinner_->setSingleStep(1.0);
   temperatureSetPointSpinner_->setKeyboardTracking(false);
   temperatureSetPointSpinner_->setMinimum(-40);
-  temperatureSetPointSpinner_->setMaximum(+30);
+  temperatureSetPointSpinner_->setMaximum(+40);
   temperatureSetPointSpinner_->setDecimals(2);
   temperatureSetPointSpinner_->setAlignment(Qt::AlignRight);
 
@@ -226,6 +226,8 @@ void HuberUnistat525wWidget::controlStateChanged(bool enabled)
 {
   huberUnistat525wCheckBox_->setEnabled(enabled);
   operationPanel_->setEnabled(enabled);
+
+  temperatureSetPointSpinner_->blockSignals(enabled);
 }
 
 /**
