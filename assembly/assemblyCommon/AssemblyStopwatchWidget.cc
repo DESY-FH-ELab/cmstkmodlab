@@ -110,7 +110,7 @@ void AssemblyStopwatchWidget::updateStopwatch(){
     if(mediafile.exists()) {
         auto player = new QMediaPlayer;
         player->setMedia(QUrl::fromLocalFile(mediafilename));
-        player->setVolume(100);
+        player->setVolume(80);
         player->play();
     }
   } else if(m_previous_time < QTime(0, 20, 0) && time_elapsed >= QTime(0, 20, 0)) {
