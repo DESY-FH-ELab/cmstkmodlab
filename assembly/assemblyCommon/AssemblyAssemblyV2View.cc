@@ -158,6 +158,43 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
   wid_PSPToBasep_->setLayout(PSPToBasep_lay);
 
   if(assembly->GetAssemblyCenter() == assembly::Center::DESY){
+      // step: Go to platform reference point
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Go To Platform Reference Point");
+        PSPToBasep_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(GoToPlatformReferencePoint_start()), SIGNAL(GoToPlatformReferencePoint_finished()));
+      }
+      // ----------
+
+      // step: Check platform reference point
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->text()->setText("Take an Image and validate that the Platform Reference Marker is centered in the Image");
+        PSPToBasep_lay->addWidget(tmp_wid);
+      }
+      // ----------
+
+      // step: Go to origin
+      {
+        ++assembly_step_N;
+
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+        tmp_wid->label()->setText(QString::number(assembly_step_N));
+        tmp_wid->button()->setText("Go To Origin");
+        PSPToBasep_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(GoToOrigin_start()), SIGNAL(GoToOrigin_finished()));
+      }
+      // ----------
+
       // step: Define/Scan Module ID
       {
         ++assembly_step_N;
