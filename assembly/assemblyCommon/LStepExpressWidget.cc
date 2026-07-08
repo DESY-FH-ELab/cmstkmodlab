@@ -235,6 +235,8 @@ void LStepExpressWidget::restart()
     NQLog("LStepExpressWidget", NQLog::Critical) << "restart [step=" << restart_step_ << "]"
        << ": logic error, motion stage NOT READY (try to initialize LStepExpressModel by ticking the \"Enable Controller\" box)";
 
+    emit restart_failed();
+
     return;
   }
 
@@ -248,6 +250,8 @@ void LStepExpressWidget::restart()
 
       NQLog("LStepExpressWidget", NQLog::Critical) << "restart [step=" << restart_step_ << "]"
          << ": logic error, restart-timer was already initialized (disabled now), restart procedure stopped";
+
+      emit restart_failed();
 
       return;
     }
@@ -470,7 +474,9 @@ void LStepExpressWidget::restart()
       int ret = msgBox->exec();
       switch(ret)
       {
-	case QMessageBox::No: break;
+	case QMessageBox::No:
+          emit restart_failed();
+          break;
         case QMessageBox::Yes:
           restart_step_ = 0;
           this->restart();

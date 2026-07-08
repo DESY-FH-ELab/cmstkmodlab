@@ -336,7 +336,28 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
       // single-shot signal to switch ON motion stage axes automatically
       const int time_to_axes_startup(1.5 * motion_manager_->model()->updateInterval());
-      QTimer::singleShot(time_to_axes_startup, hwctr_view_->LStepExpress_Widget(), SLOT(restart()));
+      QThread::msleep(time_to_axes_startup);
+
+      QEventLoop loop;
+      connect(hwctr_view_->LStepExpress_Widget(), &LStepExpressWidget::restart_completed, &loop, &QEventLoop::quit);
+      connect(hwctr_view_->LStepExpress_Widget(), &LStepExpressWidget::restart_failed, &loop, &QEventLoop::quit);
+
+      QTimer::singleShot(1000, hwctr_view_->LStepExpress_Widget(), SLOT(restart()));
+      loop.exec();
+
+      disconnect(hwctr_view_->LStepExpress_Widget(), &LStepExpressWidget::restart_completed, &loop, &QEventLoop::quit);
+      disconnect(hwctr_view_->LStepExpress_Widget(), &LStepExpressWidget::restart_failed, &loop, &QEventLoop::quit);
+
+      if(motion_model_->getDeviceState()==State::OFF) {
+        NQLog("AssemblyMainWindow", NQLog::Fatal) << "Motion Stage Controller could not be started!";
+
+        QMessageBox* msgBox = new QMessageBox;
+        msgBox->setInformativeText("Motion Stage Controller is not available!");
+
+        msgBox->setStandardButtons(QMessageBox::Ok);
+
+        int ret = msgBox->exec();
+      }
 
       NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_HWCtrl;
     }
@@ -596,6 +617,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
       stage_lay->addWidget(stage_values_.at(i), 1, i);
     }
 
+    update_stage_position();
+
     stage_wid->setLayout(stage_lay);
 
     toolBar_->addWidget(stage_wid);
@@ -644,17 +667,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     if(startup_camera)
     {
       this->enable_images();
-    }
-
-    if(startup_motion_stage && motion_model_->getDeviceState()==State::OFF) {
-      NQLog("AssemblyMainWindow", NQLog::Fatal) << "Motion Stage Controller could not be started!";
-
-      QMessageBox* msgBox = new QMessageBox;
-      msgBox->setInformativeText("Motion Stage Controller is not available!");
-
-      msgBox->setStandardButtons(QMessageBox::Ok);
-
-      int ret = msgBox->exec();
     }
     // ------------------------
 }
