@@ -299,7 +299,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Perform alignment: MaPSA to Motion Stage");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(PerformAlignmentPSP()), SIGNAL(perform_alignment_PSP_request()), SIGNAL(perform_alignment_PSP_abort()));
+    tmp_wid->connect_action(assembly, SLOT(PerformAlignmentPSP()), SIGNAL(perform_alignment_PSP_request()));
   }
   // ----------
 
@@ -681,7 +681,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Perform alignment: PS-s to Motion Stage");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(PerformAlignmentPSS()), SIGNAL(perform_alignment_PSS_request()), SIGNAL(perform_alignment_PSS_abort()));
+    tmp_wid->connect_action(assembly, SLOT(PerformAlignmentPSS()), SIGNAL(perform_alignment_PSS_request()));
   }
   // ----------
 
@@ -1099,7 +1099,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Perform Alignment: MaPSA to Motion Stage");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(PerformAlignmentPSP()), SIGNAL(perform_alignment_PSP_request()), SIGNAL(perform_alignment_PSP_abort()));
+    tmp_wid->connect_action(assembly, SLOT(PerformAlignmentPSP()), SIGNAL(perform_alignment_PSP_request()));
   }
   // ----------
 
