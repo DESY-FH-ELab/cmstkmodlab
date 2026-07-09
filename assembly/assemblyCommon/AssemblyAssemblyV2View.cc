@@ -171,14 +171,16 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
       }
       // ----------
 
-      // step: Check platform reference point
+      // step: Take an image
       {
         ++assembly_step_N;
 
-        AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
         tmp_wid->label()->setText(QString::number(assembly_step_N));
-        tmp_wid->text()->setText("Take an Image and validate that the Platform Reference Marker is centered in the Image");
+        tmp_wid->button()->setText("Take an Image and validate that the Platform Reference Marker is centered in the Image");
         PSPToBasep_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(TakeImage()), SIGNAL(TakeImage_request()), SIGNAL(TakeImage_abort()));
       }
       // ----------
 
@@ -269,6 +271,19 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     PSPToBasep_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(GoToPSPSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()), SIGNAL(GoToSensorMarkerPreAlignment_abort()));
+  }
+  // ----------
+
+  // step: Take an image
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->button()->setText("Take an Image and validate that the Fiducial Marker is within the Image");
+    PSPToBasep_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(TakeImage()), SIGNAL(TakeImage_request()), SIGNAL(TakeImage_abort()));
   }
   // ----------
 
@@ -638,6 +653,19 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     PSSToSpacers_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(GoToPSSSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()), SIGNAL(GoToSensorMarkerPreAlignment_abort()));
+  }
+  // ----------
+
+  // step: Take an image
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->button()->setText("Take an Image and validate that the Fiducial Marker is within the Image");
+    PSSToSpacers_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(TakeImage()), SIGNAL(TakeImage_request()), SIGNAL(TakeImage_abort()));
   }
   // ----------
 
@@ -1043,6 +1071,19 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(GoToPSPMarkerIdealPosition_start()), SIGNAL(GoToPSPMarkerIdealPosition_finished()), SIGNAL(GoToPSPMarkerIdealPosition_abort()));
+  }
+  // ----------
+
+  // step: Take an image
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->button()->setText("Take an Image and validate that the Fiducial Marker is within the Image");
+    PSSToMaPSA_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(TakeImage()), SIGNAL(TakeImage_request()), SIGNAL(TakeImage_abort()));
   }
   // ----------
 
