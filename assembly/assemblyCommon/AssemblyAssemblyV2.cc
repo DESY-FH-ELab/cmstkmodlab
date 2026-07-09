@@ -694,11 +694,8 @@ void AssemblyAssemblyV2::PushStep3ToDB_start()
 void AssemblyAssemblyV2::GoToPlatformReferencePoint_start()
 {
   if(in_action_){
-
-    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "GoToPlatformReferencePoint_start"
-       << ": logic error, an assembly step is still in progress, will not take further action";
-
-    return;
+      reportInAction("GoToPlatformReferencePoint", SIGNAL(GoToPlatformReferencePoint_abort()));
+      return;
   }
 
   const double x0 = config_->getValue<double>("parameters", "RefPointPlatform_X");
@@ -709,7 +706,7 @@ void AssemblyAssemblyV2::GoToPlatformReferencePoint_start()
   connect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToPlatformReferencePoint_finish()));
 
-  in_action_ = true;
+  set_in_action(true);
 
   NQLog("AssemblyAssemblyV2", NQLog::Spam) << "GoToPlatformReferencePoint_start"
      << ": emitting signal \"move_absolute_request(" << x0 << ", " << y0 << ", " << z0 << ", " << a0 << ")\"";
@@ -722,7 +719,7 @@ void AssemblyAssemblyV2::GoToPlatformReferencePoint_finish()
   disconnect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToPlatformReferencePoint_finish()));
 
-  if(in_action_){ in_action_ = false; }
+  if(in_action_){ set_in_action(false); }
 
   NQLog("AssemblyAssemblyV2", NQLog::Spam) << "GoToPlatformReferencePoint_finish"
      << ": emitting signal \"GoToPlatformReferencePoint_finished\"";
@@ -742,11 +739,8 @@ void AssemblyAssemblyV2::GoToPlatformReferencePoint_finish()
 void AssemblyAssemblyV2::GoToOrigin_start()
 {
   if(in_action_){
-
-    NQLog("AssemblyAssemblyV2", NQLog::Warning) << "GoToOrigin_start"
-       << ": logic error, an assembly step is still in progress, will not take further action";
-
-    return;
+      reportInAction("GoToOrigin", SIGNAL(GoToOrigin_abort()));
+      return;
   }
 
   const double x0 = 0;
@@ -757,7 +751,7 @@ void AssemblyAssemblyV2::GoToOrigin_start()
   connect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
   connect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToOrigin_finish()));
 
-  in_action_ = true;
+  set_in_action(true);
 
   NQLog("AssemblyAssemblyV2", NQLog::Spam) << "GoToOrigin_start"
      << ": emitting signal \"move_absolute_request(" << x0 << ", " << y0 << ", " << z0 << ", " << a0 << ")\"";
@@ -770,7 +764,7 @@ void AssemblyAssemblyV2::GoToOrigin_finish()
   disconnect(this, SIGNAL(move_absolute_request(double, double, double, double)), motion_, SLOT(moveAbsolute(double, double, double, double)));
   disconnect(motion_, SIGNAL(motion_finished()), this, SLOT(GoToOrigin_finish()));
 
-  if(in_action_){ in_action_ = false; }
+  if(in_action_){ set_in_action(false); }
 
   NQLog("AssemblyAssemblyV2", NQLog::Spam) << "GoToOrigin_finish"
      << ": emitting signal \"GoToOrigin_finished\"";
@@ -790,7 +784,7 @@ void AssemblyAssemblyV2::GoToOrigin_finish()
 void AssemblyAssemblyV2::GoToSensorMarkerPreAlignment_start(bool isMapsa)
 {
   if(in_action_){
-    reportInAction("GoToSensorMarkerPreAlignment");
+    reportInAction("GoToSensorMarkerPreAlignment", SIGNAL(GoToSensorMarkerPreAlignment_abort()));
     return;
   }
 
@@ -836,7 +830,7 @@ void AssemblyAssemblyV2::GoToSensorMarkerPreAlignment_finish()
 void AssemblyAssemblyV2::EnableVacuumPickupTool_start()
 {
   if(in_action_){
-    reportInAction("EnableVacuumPickupTool");
+    reportInAction("EnableVacuumPickupTool", SIGNAL(EnableVacuumPickupTool_abort()));
     return;
   }
 
@@ -882,7 +876,7 @@ void AssemblyAssemblyV2::EnableVacuumPickupTool_finish()
 void AssemblyAssemblyV2::DisableVacuumPickupTool_start()
 {
   if(in_action_){
-    reportInAction("DisableVacuumPickupTool");
+    reportInAction("DisableVacuumPickupTool", SIGNAL(DisableVacuumPickupTool_abort()));
     return;
   }
 
@@ -928,7 +922,7 @@ void AssemblyAssemblyV2::DisableVacuumPickupTool_finish()
 void AssemblyAssemblyV2::EnableVacuumSpacers_start()
 {
   if(in_action_){
-    reportInAction("EnableVacuumSpacers");
+    reportInAction("EnableVacuumSpacers", SIGNAL(EnableVacuumSpacers_abort()));
     return;
   }
 
@@ -974,7 +968,7 @@ void AssemblyAssemblyV2::EnableVacuumSpacers_finish()
 void AssemblyAssemblyV2::DisableVacuumSpacers_start()
 {
   if(in_action_){
-    reportInAction("DisableVacuumSpacers");
+    reportInAction("DisableVacuumSpacers", SIGNAL(DisableVacuumSpacers_abort()));
     return;
   }
 
@@ -1020,7 +1014,7 @@ void AssemblyAssemblyV2::DisableVacuumSpacers_finish()
 void AssemblyAssemblyV2::EnableVacuumBaseplate_start()
 {
   if(in_action_){
-    reportInAction("EnableVacuumBaseplate");
+    reportInAction("EnableVacuumBaseplate", SIGNAL(EnableVacuumBaseplate_abort()));
     return;
   }
 
@@ -1066,7 +1060,7 @@ void AssemblyAssemblyV2::EnableVacuumBaseplate_finish()
 void AssemblyAssemblyV2::DisableVacuumBaseplate_start()
 {
   if(in_action_){
-    reportInAction("DisableVacuumBaseplate");
+    reportInAction("DisableVacuumBaseplate", SIGNAL(DisableVacuumBaseplate_abort()));
     return;
   }
 
@@ -1112,7 +1106,7 @@ void AssemblyAssemblyV2::DisableVacuumBaseplate_finish()
 void AssemblyAssemblyV2::GoFromSensorMarkerToPickupXY_start()
 {
   if(in_action_){
-    reportInAction("GoFromSensorMarkerToPickupXY");
+    reportInAction("GoFromSensorMarkerToPickupXY", SIGNAL(GoFromSensorMarkerToPickupXY_abort()));
     return;
   }
 
@@ -1157,7 +1151,7 @@ void AssemblyAssemblyV2::GoFromSensorMarkerToPickupXY_finish()
 void AssemblyAssemblyV2::LowerPickupToolOntoMaPSA_start()
 {
   if(in_action_){
-    reportInAction("LowerPickupToolOntoMaPSA");
+    reportInAction("LowerPickupToolOntoMaPSA", SIGNAL(LowerPickupToolOntoMaPSA_abort()));
     return;
   }
 
@@ -1243,7 +1237,7 @@ void AssemblyAssemblyV2::LowerPickupToolOntoMaPSA_finish()
 void AssemblyAssemblyV2::LowerPickupToolOntoPSS_start()
 {
   if(in_action_){
-    reportInAction("LowerPickupToolOntoPSS");
+    reportInAction("LowerPickupToolOntoPSS", SIGNAL(LowerPickupToolOntoPSS_abort()));
     return;
   }
 
@@ -1326,7 +1320,7 @@ void AssemblyAssemblyV2::LowerPickupToolOntoPSS_finish()
 void AssemblyAssemblyV2::PickupMaPSA_start()
 {
   if(in_action_){
-    reportInAction("PickupMaPSA");
+    reportInAction("PickupMaPSA", SIGNAL(PickupMaPSA_abort()));
     return;
   }
 
@@ -1392,7 +1386,7 @@ void AssemblyAssemblyV2::PickupMaPSA_finish()
 void AssemblyAssemblyV2::PickupPSS_start()
 {
   if(in_action_){
-    reportInAction("PickupPSS");
+    reportInAction("PickupPSS_abort", SIGNAL(PickupPSS_abort()));
     return;
   }
 
@@ -1460,7 +1454,7 @@ void AssemblyAssemblyV2::PickupPSS_finish()
 void AssemblyAssemblyV2::GoToXYAPositionToGlueMaPSAToBaseplate_start()
 {
   if(in_action_){
-    reportInAction("GoToXYAPositionToGlueMaPSAToBaseplate");
+    reportInAction("GoToXYAPositionToGlueMaPSAToBaseplate", SIGNAL(GoToXYAPositionToGlueMaPSAToBaseplate_abort()));
     return;
   }
 
@@ -1520,7 +1514,7 @@ void AssemblyAssemblyV2::GoToXYAPositionToGlueMaPSAToBaseplate_finish()
 void AssemblyAssemblyV2::LowerMaPSAOntoBaseplate_start()
 {
   if(in_action_){
-    reportInAction("LowerMaPSAOntoBaseplate");
+    reportInAction("LowerMaPSAOntoBaseplate", SIGNAL(LowerMaPSAOntoBaseplate_abort()));
     return;
   }
 
@@ -1613,7 +1607,7 @@ void AssemblyAssemblyV2::LowerMaPSAOntoBaseplate_finish()
 void AssemblyAssemblyV2::GoToXYAPositionToGluePSSToSpacers_start()
 {
   if(in_action_){
-    reportInAction("GoToXYAPositionToGluePSSToSpacers");
+    reportInAction("GoToXYAPositionToGluePSSToSpacers", SIGNAL(GoToXYAPositionToGluePSSToSpacers_abort()));
     return;
   }
 
@@ -1673,7 +1667,7 @@ void AssemblyAssemblyV2::GoToXYAPositionToGluePSSToSpacers_finish()
 void AssemblyAssemblyV2::LowerPSSOntoSpacers_start()
 {
   if(in_action_){
-    reportInAction("LowerPSSOntoSpacers");
+    reportInAction("LowerPSSOntoSpacers", SIGNAL(LowerPSSOntoSpacers_abort()));
     return;
   }
 
@@ -1768,7 +1762,7 @@ void AssemblyAssemblyV2::LowerPSSOntoSpacers_finish()
 void AssemblyAssemblyV2::GoToPSPMarkerIdealPosition_start()
 {
   if(in_action_){
-    reportInAction("GoToPSPMarkerIdealPosition");
+    reportInAction("GoToPSPMarkerIdealPosition", SIGNAL(GoToPSPMarkerIdealPosition_abort()));
     return;
   }
 
@@ -1824,7 +1818,7 @@ void AssemblyAssemblyV2::GoToPSPMarkerIdealPosition_finish()
 void AssemblyAssemblyV2::ApplyPSPToPSSXYOffset_start()
 {
   if(in_action_){
-    reportInAction("ApplyPSPToPSSXYOffset");
+    reportInAction("ApplyPSPToPSSXYOffset", SIGNAL(ApplyPSPToPSSXYOffset_abort()));
     return;
   }
 
@@ -1869,7 +1863,7 @@ void AssemblyAssemblyV2::ApplyPSPToPSSXYOffset_finish()
 void AssemblyAssemblyV2::MakeSpaceOnPlatform_start()
 {
   if(in_action_){
-    reportInAction("MakeSpaceOnPlatform");
+    reportInAction("MakeSpaceOnPlatfor", SIGNAL(MakeSpaceOnPlatform_abort()));
     return;
   }
 
@@ -1933,7 +1927,7 @@ void AssemblyAssemblyV2::MakeSpaceOnPlatform_finish()
 void AssemblyAssemblyV2::ReturnToPlatform_start()
 {
   if(in_action_){
-    reportInAction("ReturnToPlatform");
+    reportInAction("ReturnToPlatform", SIGNAL(ReturnToPlatform_abort()));
     return;
   }
 
@@ -2032,7 +2026,7 @@ void AssemblyAssemblyV2::ReturnToPlatform_finish()
 void AssemblyAssemblyV2::RegisterPSSPlusSpacersToMaPSAPosition_start()
 {
   if(in_action_){
-    reportInAction("RegisterPSSPlusSpacersToMaPSAPosition");
+    reportInAction("RegisterPSSPlusSpacersToMaPSAPosition", SIGNAL(RegisterPSSPlusSpacersToMaPSAPosition_abort()));
     return;
   }
 
@@ -2081,7 +2075,7 @@ void AssemblyAssemblyV2::RegisterPSSPlusSpacersToMaPSAPosition_finish()
 void AssemblyAssemblyV2::GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start()
 {
   if(in_action_){
-    reportInAction("GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY");
+    reportInAction("GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY", SIGNAL(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_abort()));
     return;
   }
 
@@ -2145,7 +2139,7 @@ void AssemblyAssemblyV2::GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPoin
 void AssemblyAssemblyV2::LowerPSSPlusSpacersOntoGluingStage_start()
 {
   if(in_action_){
-    reportInAction("LowerPSSPlusSpacersOntoGluingStage");
+    reportInAction("LowerPSSPlusSpacersOntoGluingStage", SIGNAL(LowerPSSPlusSpacersOntoGluingStage_abort()));
     return;
   }
 
@@ -2238,7 +2232,7 @@ void AssemblyAssemblyV2::LowerPSSPlusSpacersOntoGluingStage_finish()
 void AssemblyAssemblyV2::SlowlyLiftFromGluingStage_start()
 {
   if(in_action_){
-    reportInAction("SlowlyLiftFromGluingStage");
+    reportInAction("SlowlyLiftFromGluingStage", SIGNAL(SlowlyLiftFromGluingStage_abort()));
     return;
   }
 
@@ -2320,7 +2314,7 @@ void AssemblyAssemblyV2::SlowlyLiftFromGluingStage_finish()
 void AssemblyAssemblyV2::ReturnToPSSPlusSpacersToMaPSAPosition_start()
 {
   if(in_action_){
-    reportInAction("ReturnToPSSPlusSpacersToMaPSAPosition");
+    reportInAction("ReturnToPSSPlusSpacersToMaPSAPosition", SIGNAL(ReturnToPSSPlusSpacersToMaPSAPosition_abort()));
     return;
   }
 
@@ -2414,7 +2408,7 @@ void AssemblyAssemblyV2::ReturnToPSSPlusSpacersToMaPSAPosition_finish()
 void AssemblyAssemblyV2::LowerPSSPlusSpacersOntoMaPSA_start()
 {
   if(in_action_){
-    reportInAction("LowerPSSPlusSpacersOntoMaPSA");
+    reportInAction("LowerPSSPlusSpacersOntoMaPSA", SIGNAL(LowerPSSPlusSpacersOntoMaPSA_abort()));
     return;
   }
 
@@ -2506,7 +2500,7 @@ void AssemblyAssemblyV2::LowerPSSPlusSpacersOntoMaPSA_finish()
 void AssemblyAssemblyV2::PickupPSSPlusSpacers_start()
 {
   if(in_action_){
-    reportInAction("PickupPSSPlusSpacers");
+    reportInAction("PickupPSSPlusSpacers", SIGNAL(PickupPSSPlusSpacers_abort()));
     return;
   }
 
@@ -2574,7 +2568,7 @@ void AssemblyAssemblyV2::PickupPSSPlusSpacers_finish()
 void AssemblyAssemblyV2::LiftUpPickupTool_start()
 {
   if(in_action_){
-    reportInAction("LiftUpPickupTool");
+    reportInAction("LiftUpPickupTool", SIGNAL(LiftUpPickupTool_abort()));
     return;
   }
 
@@ -2628,7 +2622,7 @@ void AssemblyAssemblyV2::LiftUpPickupTool_finish()
 void AssemblyAssemblyV2::AssemblyCompleted_start()
 {
   if(in_action_){
-    reportInAction("AssemblyCompleted");
+    reportInAction("AssemblyCompleted", SIGNAL(AssemblyCompleted_abort()));
     return;
   }
 
@@ -2651,7 +2645,7 @@ void AssemblyAssemblyV2::AssemblyCompleted_start()
 void AssemblyAssemblyV2::switchToAlignmentTab_PSP()
 {
   if(in_action_){
-    reportInAction("switchToAlignmentTab");
+    reportInAction("switchToAlignmentTab_PSP", SIGNAL(switchToAlignmentTab_PSP_abort()));
     return;
   }
 
@@ -2672,7 +2666,7 @@ void AssemblyAssemblyV2::switchToAlignmentTab_PSP()
 void AssemblyAssemblyV2::switchToAlignmentTab_PSS()
 {
   if(in_action_){
-    reportInAction("switchToAlignmentTab_PSS");
+    reportInAction("switchToAlignmentTab_PSS", SIGNAL(switchToAlignmentTab_PSS_abort()));
     return;
   }
 
