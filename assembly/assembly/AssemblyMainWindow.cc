@@ -278,6 +278,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_objectAligner()));
     connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
     connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
+    connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), image_ctr_    , SLOT(restore_autofocus_settings()));
+
 
     connect(this, SIGNAL(set_alignmentMode_PSP_request()), aligner_view_, SLOT(set_alignmentMode_PSP()));
     connect(this, SIGNAL(set_alignmentMode_PSS_request()), aligner_view_, SLOT(set_alignmentMode_PSS()));
@@ -435,6 +437,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_metrology()));
     connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
     connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
+    connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), image_ctr_ , SLOT(restore_autofocus_settings()));
     connect(metrology_view_->button_metrologyClearResults(), SIGNAL(clicked()), metrology_, SLOT(clear_results()));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Metrology;
@@ -941,6 +944,9 @@ void AssemblyMainWindow::start_objectAligner(const AssemblyObjectAligner::Config
 
 void AssemblyMainWindow::disconnect_objectAligner()
 {
+  NQLog("AssemblyMainWindow", NQLog::Debug) << "disconnect_objectAligner"
+     << ": Disconnecting object aligner";
+
   if(image_ctr_ == nullptr)
   {
     NQLog("AssemblyMainWindow", NQLog::Warning) << "disconnect_objectAligner"
