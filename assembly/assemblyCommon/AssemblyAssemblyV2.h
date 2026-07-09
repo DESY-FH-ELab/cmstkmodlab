@@ -215,9 +215,9 @@ protected slots:
   void RegisterPSSPlusSpacersToMaPSAPosition_start();
   void RegisterPSSPlusSpacersToMaPSAPosition_finish();
 
-  void switchToAlignmentTab_PSP();
+  void PerformAlignmentPSP();
 
-  void switchToAlignmentTab_PSS();
+  void PerformAlignmentPSS();
 
   void TakeImage();
   // ---------
@@ -356,11 +356,11 @@ protected slots:
   void RegisterPSSPlusSpacersToMaPSAPosition_finished();
   void RegisterPSSPlusSpacersToMaPSAPosition_abort();
 
-  void switchToAlignmentTab_PSP_request();
-  void switchToAlignmentTab_PSP_abort();
+  void perform_alignment_PSP_request();
+  void perform_alignment_PSP_abort();
 
-  void switchToAlignmentTab_PSS_request();
-  void switchToAlignmentTab_PSS_abort();
+  void perform_alignment_PSS_request();
+  void perform_alignment_PSS_abort();
 
   void TakeImage_request();
   void TakeImage_abort();

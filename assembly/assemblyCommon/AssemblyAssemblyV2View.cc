@@ -296,10 +296,10 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N));
     // tmp_wid->text()->setText("Align MaPSA to Motion Stage (Go to \"Alignment\" Tab and select \"PS-p Sensor\")");
-    tmp_wid->button()->setText("Align MaPSA to Motion Stage (Go to \"Alignment\" Tab and select \"PS-p Sensor\")");
+    tmp_wid->button()->setText("Perform alignment: MaPSA to Motion Stage");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(switchToAlignmentTab_PSP()), SIGNAL(switchToAlignmentTab_PSP_request()), SIGNAL(switchToAlignmentTab_PSP_abort()));
+    tmp_wid->connect_action(assembly, SLOT(PerformAlignmentPSP()), SIGNAL(perform_alignment_PSP_request()), SIGNAL(perform_alignment_PSP_abort()));
   }
   // ----------
 
@@ -678,10 +678,10 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N));
     // tmp_wid->text()->setText("Align PS-s to Motion Stage (Go to \"Alignment\" Tab and select \"PS-s Sensor\")");
-    tmp_wid->button()->setText("Align PS-s to Motion Stage (Go to \"Alignment\" Tab and select \"PS-s Sensor\")");
+    tmp_wid->button()->setText("Perform alignment: PS-s to Motion Stage");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(switchToAlignmentTab_PSS()), SIGNAL(switchToAlignmentTab_PSS_request()), SIGNAL(switchToAlignmentTab_PSS_abort()));
+    tmp_wid->connect_action(assembly, SLOT(PerformAlignmentPSS()), SIGNAL(perform_alignment_PSS_request()), SIGNAL(perform_alignment_PSS_abort()));
   }
   // ----------
 
@@ -1096,10 +1096,10 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N));
     // tmp_wid->text()->setText("Align MaPSA (Go to \"Alignment\" Tab and select \"PS-p Sensor\")");
-    tmp_wid->button()->setText("Align MaPSA (Go to \"Alignment\" Tab and select \"PS-p Sensor\")");
+    tmp_wid->button()->setText("Perform alignment: MaPSA to Motion Stage");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(switchToAlignmentTab_PSP()), SIGNAL(switchToAlignmentTab_PSP_request()), SIGNAL(switchToAlignmentTab_PSP_request()));
+    tmp_wid->connect_action(assembly, SLOT(PerformAlignmentPSP()), SIGNAL(perform_alignment_PSP_request()), SIGNAL(perform_alignment_PSP_abort()));
   }
   // ----------
 
