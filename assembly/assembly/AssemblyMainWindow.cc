@@ -278,7 +278,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_objectAligner()));
     connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
     connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
-    connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), image_ctr_    , SLOT(restore_autofocus_settings()));
 
 
     connect(this, SIGNAL(set_alignmentMode_PSP_request()), aligner_view_, SLOT(set_alignmentMode_PSP()));
@@ -437,7 +436,6 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_metrology()));
     connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
     connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
-    connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), image_ctr_ , SLOT(restore_autofocus_settings()));
     connect(metrology_view_->button_metrologyClearResults(), SIGNAL(clicked()), metrology_, SLOT(clear_results()));
 
     NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Metrology;
@@ -723,6 +721,10 @@ void AssemblyMainWindow::enable_images()
   connect(this      , SIGNAL(autofocus_ON ())  , image_ctr_, SLOT(enable_autofocus()));
   connect(this      , SIGNAL(autofocus_OFF())  , image_ctr_, SLOT(disable_autofocus()));
   connect(image_view_, SIGNAL(request_image()), image_ctr_, SLOT(acquire_image()));
+
+  connect(button_mainEmergencyStop_, SIGNAL(clicked()), image_ctr_, SLOT(restore_autofocus_settings()));
+  connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), image_ctr_, SLOT(restore_autofocus_settings()));
+  connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), image_ctr_, SLOT(restore_autofocus_settings()));
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "enable_images"
      << ": connecting AssemblyImageController";
