@@ -95,6 +95,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
   button_mainEmergencyStop_(nullptr),
   button_info_(nullptr),
+  button_snapshot_(nullptr),
 
   // flags
   images_enabled_(false),
@@ -510,10 +511,10 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     spacer1->setMinimumSize(QSize(50,1));
     toolBar_->addWidget(spacer1);
 
-    auto button_snapshot = new QPushButton(tr("Snapshot"));
-    button_snapshot->setStyleSheet("QPushButton { background-color: rgb(0, 170, 0); font: 18px; border-radius: 8px; padding: 7px; } QPushButton:hover { background-color: green; font: bold 18px; border-radius: 8px; padding: 2px; }");
-    toolBar_->addWidget(button_snapshot);
-    connect(button_snapshot, SIGNAL(clicked()), this, SLOT( get_image ()));
+    button_snapshot_ = new QPushButton(tr("Snapshot"));
+    button_snapshot_->setStyleSheet("QPushButton { background-color: rgb(0, 170, 0); font: 18px; border-radius: 8px; padding: 7px; } QPushButton:hover { background-color: green; font: bold 18px; border-radius: 8px; padding: 2px; }");
+    toolBar_->addWidget(button_snapshot_);
+    connect(button_snapshot_, SIGNAL(clicked()), this, SLOT( get_image ()));
 
     QWidget *spacer2 = new QWidget();
     spacer2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -1426,11 +1427,7 @@ void AssemblyMainWindow::disable_imageButtons(QObject* sender)
 
     NQLog("AssemblyMainWindow", NQLog::Debug) << "Blocking the camera. (from " << sender->metaObject()->className() << ")";
 
-    for(auto& action : toolBar_->actions()){
-      if(action->text() == "Snapshot"){
-        action->setEnabled(false);
-      }
-    }
+    button_snapshot_->setEnabled(false);
     image_view_->autofocus_button()->setEnabled(false);
     aligner_view_->button_runAlignment()->setEnabled(false);
 }
@@ -1448,12 +1445,8 @@ void AssemblyMainWindow::enable_imageButtons(QObject* sender)
       }
     } else {
       NQLog("AssemblyMainWindow", NQLog::Debug) << "Camera will be released.";
-      for(auto& action : toolBar_->actions()){
-        if(action->text() == "Snapshot"){
-          action->setEnabled(true);
-        }
-      }
+      button_snapshot_->setEnabled(true);
+      image_view_->autofocus_button()->setEnabled(true);
+      aligner_view_->button_runAlignment()->setEnabled(true);
     }
-    image_view_->autofocus_button()->setEnabled(true);
-    aligner_view_->button_runAlignment()->setEnabled(true);
 }

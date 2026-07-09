@@ -234,6 +234,7 @@ class AssemblyMainWindow : public QMainWindow
 
   QPushButton* button_mainEmergencyStop_;
   QPushButton* button_info_;
+  QPushButton* button_snapshot_;
 
   // flags
   bool images_enabled_;
