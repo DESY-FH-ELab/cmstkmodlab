@@ -1096,7 +1096,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N));
     // tmp_wid->text()->setText("Align MaPSA (Go to \"Alignment\" Tab and select \"PS-p Sensor\")");
-    tmp_wid->button()->setText("Perform alignment: MaPSA to Motion Stage");
+    tmp_wid->button()->setText("Perform Alignment: MaPSA to Motion Stage");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
     tmp_wid->connect_action(assembly, SLOT(PerformAlignmentPSP()), SIGNAL(perform_alignment_PSP_request()), SIGNAL(perform_alignment_PSP_abort()));

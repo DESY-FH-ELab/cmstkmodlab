@@ -451,6 +451,10 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     connect(subassembly_pickup_, SIGNAL(perform_alignment_PSS_request()), this, SLOT(perform_alignment_pss()));
 
+    connect(subassembly_pickup_, SIGNAL(TakeImage_request()), this, SLOT(select_image_tab()));
+    connect(subassembly_pickup_, SIGNAL(TakeImage_request()), this, SLOT(get_image()));
+
+
     toolbox_view_ = new AssemblyToolboxView(motion_manager_, subassembly_pickup_, controls_tab);
     controls_tab->addTab(toolbox_view_, tabname_Toolbox);
 
@@ -1212,6 +1216,8 @@ void AssemblyMainWindow::disconnect_otherSlots()
     disconnect(this, SIGNAL(set_alignmentMode_PSS_request()), aligner_view_, SLOT(set_alignmentMode_PSS()));
     disconnect(assemblyV2_, SIGNAL(TakeImage_request()), this, SLOT(select_image_tab()));
     disconnect(assemblyV2_, SIGNAL(TakeImage_request()), this, SLOT(get_image()));
+    disconnect(subassembly_pickup_, SIGNAL(TakeImage_request()), this, SLOT(select_image_tab()));
+    disconnect(subassembly_pickup_, SIGNAL(TakeImage_request()), this, SLOT(get_image()));
 
     return;
 }

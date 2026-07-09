@@ -78,7 +78,9 @@ class AssemblySubassemblyPickup : public QObject
   void EnableVacuumSubassembly_start();
   void EnableVacuumSubassembly_finish();
 
-  void switchToAlignmentTab_PSS();
+  void PerformAlignmentPSS();
+
+  void TakeImage();
 
   void GoFromSensorMarkerToPickupXY_start();
   void GoFromSensorMarkerToPickupXY_finish();
@@ -121,7 +123,10 @@ class AssemblySubassemblyPickup : public QObject
   void EnableVacuumSubassembly_finished();
   void DisableVacuumSubassembly_finished();
 
-  void switchToAlignmentTab_PSS_request();
+  void perform_alignment_PSS_request();
+
+  void TakeImage_request();
+  void TakeImage_abort();
 
   void DBLogMessage(const QString);
 
