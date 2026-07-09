@@ -86,7 +86,7 @@ class AssemblyAssemblyV2 : public QObject
   assembly::Center GetAssemblyCenter() const {return assembly_center_;};
 
 protected slots:
-  void reportInAction(std::string target_step);
+  void reportInAction(const QString target_step, const char*);
 
  public slots:
 
@@ -320,8 +320,9 @@ protected slots:
   void Module_ID_updated(const QString);
   // ------
 
-
   void DBLogMessage(const QString);
+
+  void abort_this();
 };
 
 #endif // ASSEMBLYASSEMBLYV2_H

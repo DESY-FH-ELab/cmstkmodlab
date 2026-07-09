@@ -2687,16 +2687,18 @@ void AssemblyAssemblyV2::switchToAlignmentTab_PSS()
 }
 // ----------------------------------------------------------------------------------------------------
 
-void AssemblyAssemblyV2::reportInAction(std::string target_step)
+void AssemblyAssemblyV2::reportInAction(const QString target_step, const char* abort_signal)
 {
-    NQLog("AssemblyAssemblyV2", NQLog::Warning) << QString::fromStdString(target_step)
+    NQLog("AssemblyAssemblyV2", NQLog::Warning) << target_step
       << ": logic error, an assembly step is still in progress, will not take further action";
-    NQLog("AssemblyAssemblyV2", NQLog::Warning) << QString::fromStdString(target_step)
-      << ": in_action: " << in_action_;
+
+    connect(this, SIGNAL(abort_this()), this, abort_signal);
+    emit abort_this();
+    disconnect(this, SIGNAL(abort_this()), this, abort_signal);
 
     QMessageBox msgBox;
     msgBox.setWindowTitle(tr("Error"));
-    QString msg = QString("An assembly step is still in progress.\nCould not perform step:\n") + QString::fromStdString(target_step);
+    QString msg = QString("An assembly step is still in progress.\nCould not perform step:\n") + target_step;
     msgBox.setText(msg);
     msgBox.setInformativeText("Please wait until the step has been completed.\nHint: once an alignment step has been clicked, the alignment has to be performed before being able to continue the assembly.");
     msgBox.setStandardButtons(QMessageBox::Ok);
