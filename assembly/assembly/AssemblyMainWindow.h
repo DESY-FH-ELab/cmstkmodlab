@@ -164,6 +164,8 @@ class AssemblyMainWindow : public QMainWindow
 
   void enable_imageButtons(QObject*);
 
+  void select_image_tab();
+
  protected:
 
   // Low-Level Controllers (Motion, Camera, Vacuum)
@@ -248,6 +250,7 @@ class AssemblyMainWindow : public QMainWindow
   int idx_alignment_tab;
   int idx_module_tab;
   int idx_manual_tab;
+  int idx_image_tab_;
 
   QList<QObject*> camera_blocking_objects_;
 };

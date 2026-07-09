@@ -216,7 +216,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     const QString tabname_Image("Image Viewer");
 
     image_view_ = new AssemblyImageView(assembly_tab);
-    assembly_tab->addTab(image_view_, tabname_Image);
+    idx_image_tab_ = assembly_tab->addTab(image_view_, tabname_Image);
 
     // Thresholder
     thresholder_ = new AssemblyThresholder();
@@ -312,6 +312,9 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
       connect(assemblyV2_, SIGNAL(switchToAlignmentTab_PSP_request()), this, SLOT(update_alignment_tab_psp()));
       connect(assemblyV2_, SIGNAL(switchToAlignmentTab_PSS_request()), this, SLOT(update_alignment_tab_pss()));
+
+      connect(assemblyV2_, SIGNAL(TakeImage_request()), this, SLOT(select_image_tab()));
+      connect(assemblyV2_, SIGNAL(TakeImage_request()), this, SLOT(get_image()));
 
       NQLog("AssemblyMainWindow", NQLog::Message) << "added view " << tabname_Assembly
          << " (assembly_sequence = " << assembly_sequence << ")";
@@ -1207,6 +1210,8 @@ void AssemblyMainWindow::disconnect_otherSlots()
     disconnect(subassembly_pickup_, SIGNAL(switchToAlignmentTab_PSS_request()), this, SLOT(update_alignment_tab_pss()));
     disconnect(this, SIGNAL(set_alignmentMode_PSP_request()), aligner_view_, SLOT(set_alignmentMode_PSP()));
     disconnect(this, SIGNAL(set_alignmentMode_PSS_request()), aligner_view_, SLOT(set_alignmentMode_PSS()));
+    disconnect(assemblyV2_, SIGNAL(TakeImage_request()), this, SLOT(select_image_tab()));
+    disconnect(assemblyV2_, SIGNAL(TakeImage_request()), this, SLOT(get_image()));
 
     return;
 }
@@ -1304,6 +1309,16 @@ void AssemblyMainWindow::switchAndUpdate_alignment_tab(bool psp_mode)
     else {emit set_alignmentMode_PSS_request();}
 
     return;
+}
+
+void AssemblyMainWindow::select_image_tab()
+{
+    main_tab->setCurrentIndex(idx_module_tab);
+
+    QList<QTabWidget*> widgets = main_tab->findChildren<QTabWidget*>();
+    QTabWidget* assemblyTab = widgets[1];
+
+    assemblyTab->setCurrentIndex(idx_image_tab_);
 }
 
 void AssemblyMainWindow::update_stage_position()
