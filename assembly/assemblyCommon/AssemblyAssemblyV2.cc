@@ -2681,6 +2681,29 @@ void AssemblyAssemblyV2::switchToAlignmentTab_PSS()
 }
 // ----------------------------------------------------------------------------------------------------
 
+// ----------------------------------------------------------------------------------------------------
+// takeImage ------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblyAssemblyV2::TakeImage()
+{
+  if(in_action_){
+    reportInAction("TakeImage", SIGNAL(TakeImage_abort()));
+    return;
+  }
+
+  set_in_action(true);
+
+  NQLog("AssemblyAssemblyV2", NQLog::Spam) << "TakeImage"
+    << ": emitting signal \"TakeImage_request\"";
+
+  emit TakeImage_request(); //Will auto-switch to 'Alignment' sub-tab, and select PSS mode
+
+  set_in_action(false);
+
+  return;
+}
+// ----------------------------------------------------------------------------------------------------
+
 void AssemblyAssemblyV2::reportInAction(const QString target_step, const char* abort_signal)
 {
     NQLog("AssemblyAssemblyV2", NQLog::Warning) << target_step
