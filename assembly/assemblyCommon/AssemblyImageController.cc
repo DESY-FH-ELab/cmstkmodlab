@@ -173,10 +173,15 @@ void AssemblyImageController::acquire_autofocused_image()
   connect(this, SIGNAL(autofocused_image_request()), this, SLOT(acquire_image()));
   connect(this, SIGNAL(image_acquired()), this, SLOT(restore_autofocus_settings()));
 
+  connect(this, SIGNAL(block_camera(QObject*)), parent(), SLOT(disable_imageButtons(QObject*)));
+  connect(this, SIGNAL(release_camera(QObject*)), parent(), SLOT(enable_imageButtons(QObject*)));
+
   NQLog("AssemblyImageController", NQLog::Message) << "acquire_autofocused_image"
      << ": emitting signal \"image_request\"";
 
   emit autofocused_image_request();
+
+  emit block_camera(this);
 }
 
 void AssemblyImageController::restore_autofocus_settings()
@@ -193,4 +198,10 @@ void AssemblyImageController::restore_autofocus_settings()
      << ": emitting signal \"autofocused_image_acquired\"";
 
   emit autofocused_image_acquired();
+
+  emit release_camera(this);
+
+  disconnect(this, SIGNAL(block_camera(QObject*)), parent(), SLOT(disable_imageButtons(QObject*)));
+  disconnect(this, SIGNAL(release_camera(QObject*)), parent(), SLOT(enable_imageButtons(QObject*)));
+
 }

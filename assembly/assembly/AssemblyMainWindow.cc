@@ -95,6 +95,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
   button_mainEmergencyStop_(nullptr),
   button_info_(nullptr),
+  button_snapshot_(nullptr),
 
   // flags
   images_enabled_(false),
@@ -277,6 +278,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), this, SLOT(disconnect_objectAligner()));
     connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), motion_manager_, SLOT(emergency_stop()));
     connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), zfocus_finder_ , SLOT(emergencyStop()));
+
 
     connect(this, SIGNAL(set_alignmentMode_PSP_request()), aligner_view_, SLOT(set_alignmentMode_PSP()));
     connect(this, SIGNAL(set_alignmentMode_PSS_request()), aligner_view_, SLOT(set_alignmentMode_PSS()));
@@ -510,10 +512,10 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     spacer1->setMinimumSize(QSize(50,1));
     toolBar_->addWidget(spacer1);
 
-    auto button_snapshot = new QPushButton(tr("Snapshot"));
-    button_snapshot->setStyleSheet("QPushButton { background-color: rgb(0, 170, 0); font: 18px; border-radius: 8px; padding: 7px; } QPushButton:hover { background-color: green; font: bold 18px; border-radius: 8px; padding: 2px; }");
-    toolBar_->addWidget(button_snapshot);
-    connect(button_snapshot, SIGNAL(clicked()), this, SLOT( get_image ()));
+    button_snapshot_ = new QPushButton(tr("Snapshot"));
+    button_snapshot_->setStyleSheet("QPushButton { background-color: rgb(0, 170, 0); font: 18px; border-radius: 8px; padding: 7px; } QPushButton:hover { background-color: green; font: bold 18px; border-radius: 8px; padding: 2px; }");
+    toolBar_->addWidget(button_snapshot_);
+    connect(button_snapshot_, SIGNAL(clicked()), this, SLOT( get_image ()));
 
     QWidget *spacer2 = new QWidget();
     spacer2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -706,7 +708,7 @@ void AssemblyMainWindow::enable_images()
 
   if(image_ctr_ == nullptr)
   {
-    image_ctr_ = new AssemblyImageController(camera_, zfocus_finder_);
+    image_ctr_ = new AssemblyImageController(camera_, zfocus_finder_, this);
   }
 
   connect(this      , SIGNAL(images_ON())      , image_ctr_, SLOT(enable()));
@@ -719,6 +721,10 @@ void AssemblyMainWindow::enable_images()
   connect(this      , SIGNAL(autofocus_ON ())  , image_ctr_, SLOT(enable_autofocus()));
   connect(this      , SIGNAL(autofocus_OFF())  , image_ctr_, SLOT(disable_autofocus()));
   connect(image_view_, SIGNAL(request_image()), image_ctr_, SLOT(acquire_image()));
+
+  connect(button_mainEmergencyStop_, SIGNAL(clicked()), image_ctr_, SLOT(restore_autofocus_settings()));
+  connect(metrology_view_->button_metrologyEmergencyStop(), SIGNAL(clicked()), image_ctr_, SLOT(restore_autofocus_settings()));
+  connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), image_ctr_, SLOT(restore_autofocus_settings()));
 
   NQLog("AssemblyMainWindow", NQLog::Message) << "enable_images"
      << ": connecting AssemblyImageController";
@@ -933,11 +939,16 @@ void AssemblyMainWindow::start_objectAligner(const AssemblyObjectAligner::Config
   // if successful, emits signal "configuration_updated()"
   aligner_->update_configuration(conf);
 
+  this->disable_imageButtons(this);
+
   return;
 }
 
 void AssemblyMainWindow::disconnect_objectAligner()
 {
+  NQLog("AssemblyMainWindow", NQLog::Debug) << "disconnect_objectAligner"
+     << ": Disconnecting object aligner";
+
   if(image_ctr_ == nullptr)
   {
     NQLog("AssemblyMainWindow", NQLog::Warning) << "disconnect_objectAligner"
@@ -982,6 +993,8 @@ void AssemblyMainWindow::disconnect_objectAligner()
   aligner_view_->Configuration_Widget()->setEnabled(true);
 
   aligner_connected_ = false;
+
+  this->enable_imageButtons(this);
 
   return;
 }
@@ -1413,5 +1426,35 @@ void AssemblyMainWindow::closeEvent (QCloseEvent *event)
 
             event->accept();
         }
+    }
+}
+
+void AssemblyMainWindow::disable_imageButtons(QObject* sender)
+{
+    camera_blocking_objects_.append(sender);
+
+    NQLog("AssemblyMainWindow", NQLog::Debug) << "Blocking the camera. (from " << sender->metaObject()->className() << ")";
+
+    button_snapshot_->setEnabled(false);
+    image_view_->autofocus_button()->setEnabled(false);
+    aligner_view_->button_runAlignment()->setEnabled(false);
+}
+
+void AssemblyMainWindow::enable_imageButtons(QObject* sender)
+{
+    NQLog("AssemblyMainWindow", NQLog::Debug) << "Camera release request. (from " << sender->metaObject()->className() << ")";
+
+    camera_blocking_objects_.removeAll(sender);
+    if(camera_blocking_objects_.size())
+    {
+      NQLog("AssemblyMainWindow", NQLog::Debug) << "There are still " << camera_blocking_objects_.size() << " objects blocking the camera:";
+      for(auto& obj : camera_blocking_objects_){
+        NQLog("AssemblyMainWindow", NQLog::Debug) << "   "  << obj->metaObject()->className();
+      }
+    } else {
+      NQLog("AssemblyMainWindow", NQLog::Debug) << "Camera will be released.";
+      button_snapshot_->setEnabled(true);
+      image_view_->autofocus_button()->setEnabled(true);
+      aligner_view_->button_runAlignment()->setEnabled(true);
     }
 }
