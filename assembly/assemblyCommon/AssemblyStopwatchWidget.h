@@ -44,11 +44,17 @@ class AssemblyStopwatchWidget : public QWidget
   QPushButton* reset_;
 
   double seconds_;
+  QTime m_previous_time;
 
   QTimer* update_timer_;
   QTime reference_time_;
 
   QLabel* elapsedTimeLabel_;
+
+  QString m_sound_1min;
+  QString m_sound_20min;
+  int volume_1min_;
+  int volume_20min_;
 
  public slots:
 
