@@ -119,8 +119,8 @@ void AssemblyStopwatchWidget::updateStopwatch(){
         player->setVolume(volume_1min_);
         player->play();
     }
-  } else if(m_previous_time < QTime(0, 1, 10) && time_elapsed >= QTime(0, 1, 10)) {
-    NQLog("AssemblyStopwatchWidget", NQLog::Message) << ": Time to continue.";
+  } else if(m_previous_time < QTime(0, 20, 0) && time_elapsed >= QTime(0, 20, 0)) {
+    NQLog("AssemblyStopwatchWidget", NQLog::Message) << ": Time to continue the assembly.";
 
     auto mediafile = QFile(m_sound_20min);
     if(mediafile.exists()) {
