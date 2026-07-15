@@ -84,7 +84,8 @@ class AssemblyMainWindow : public QMainWindow
   {
       disconnect_otherSlots();
   }
-  void switchAndUpdate_alignment_tab(bool);
+  void switch_tab_and_perform_alignment(bool);
+
 
  private:
     void closeEvent (QCloseEvent *event);
@@ -118,8 +119,8 @@ class AssemblyMainWindow : public QMainWindow
   void quit_thread(QThread*, const QString&) const;
   void quit();
 
-  void update_alignment_tab_psp();
-  void update_alignment_tab_pss();
+  void perform_alignment_psp();
+  void perform_alignment_pss();
 
   void update_stage_position();
 
@@ -159,6 +160,12 @@ class AssemblyMainWindow : public QMainWindow
   void liveUpdate();
 
   void messageBox_restartMotionStage();
+
+  void disable_imageButtons(QObject*);
+
+  void enable_imageButtons(QObject*);
+
+  void select_image_tab();
 
  protected:
 
@@ -230,6 +237,7 @@ class AssemblyMainWindow : public QMainWindow
 
   QPushButton* button_mainEmergencyStop_;
   QPushButton* button_info_;
+  QPushButton* button_snapshot_;
 
   // flags
   bool images_enabled_;
@@ -243,6 +251,9 @@ class AssemblyMainWindow : public QMainWindow
   int idx_alignment_tab;
   int idx_module_tab;
   int idx_manual_tab;
+  int idx_image_tab_;
+
+  QList<QObject*> camera_blocking_objects_;
 };
 
 #endif // ASSEMBLYMAINWINDOW_H

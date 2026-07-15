@@ -307,13 +307,13 @@ void AssemblySubassemblyPickup::EnableVacuumSubassembly_finish()
 // ----------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------
-// switchToAlignmentTab_PSS ------------------------------------------------------------------------------
+// PerformAlignmentPSS ------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
-void AssemblySubassemblyPickup::switchToAlignmentTab_PSS()
+void AssemblySubassemblyPickup::PerformAlignmentPSS()
 {
   if(in_action_){
 
-    NQLog("AssemblySubassemblyPickup", NQLog::Warning) << "switchToAlignmentTab_PSS"
+    NQLog("AssemblySubassemblyPickup", NQLog::Warning) << "PerformAlignmentPSS"
        << ": logic error, an assembly step is still in progress, will not take further action";
 
     return;
@@ -321,10 +321,35 @@ void AssemblySubassemblyPickup::switchToAlignmentTab_PSS()
 
   in_action_ = true;
 
-  NQLog("AssemblySubassemblyPickup", NQLog::Spam) << "switchToAlignmentTab_PSS"
-    << ": emitting signal \"switchToAlignmentTab_PSS_request\"";
+  NQLog("AssemblySubassemblyPickup", NQLog::Spam) << "PerformAlignmentPSS"
+    << ": emitting signal \"perform_alignment_PSS_request\"";
 
-  emit switchToAlignmentTab_PSS_request(); //Will auto-switch to 'Alignment' sub-tab, and select PSS mode
+  emit perform_alignment_PSS_request(); //Will auto-switch to 'Alignment' sub-tab, select PSS mode and start the alignment
+
+  in_action_ = false;
+
+  return;
+}
+// ----------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------
+// takeImage ------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+void AssemblySubassemblyPickup::TakeImage()
+{
+  if(in_action_){
+      NQLog("AssemblySubassemblyPickup", NQLog::Warning) << "TakeImage"
+         << ": logic error, an assembly step is still in progress, will not take further action";
+
+    return;
+  }
+
+  in_action_ = true;
+
+  NQLog("AssemblySubassemblyPickup", NQLog::Spam) << "TakeImage"
+    << ": emitting signal \"TakeImage_request\"";
+
+  emit TakeImage_request(); //Will auto-switch to 'Alignment' sub-tab, and select PSS mode
 
   in_action_ = false;
 

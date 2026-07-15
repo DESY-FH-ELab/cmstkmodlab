@@ -132,10 +132,23 @@ AssemblySubassemblyPickupWidget::AssemblySubassemblyPickupWidget(const AssemblyS
 
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(pickup_step_N));
-    tmp_wid->button()->setText("Align PS-s to Motion Stage (Go to \"Alignment\" Tab and select \"PS-s Sensor\")");
+    tmp_wid->button()->setText("Take an Image and validate that the Fiducial Marker is within the Image");
     sub_pick_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(subassembly_pickup, SLOT(switchToAlignmentTab_PSS()), SIGNAL(switchToAlignmentTab_PSS_request()));
+    tmp_wid->connect_action(subassembly_pickup, SLOT(TakeImage()), SIGNAL(TakeImage_request()));
+  }
+  // ----------
+
+  // step: Align PSS to motion stage
+  {
+    ++pickup_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(pickup_step_N));
+    tmp_wid->button()->setText("Perform Alignment: PS-s to Motion Stage");
+    sub_pick_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(subassembly_pickup, SLOT(PerformAlignmentPSS()), SIGNAL(perform_alignment_PSS_request()));
   }
   // ----------
 

@@ -167,18 +167,20 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
         tmp_wid->button()->setText("Go To Platform Reference Point");
         PSPToBasep_lay->addWidget(tmp_wid);
 
-        tmp_wid->connect_action(assembly, SLOT(GoToPlatformReferencePoint_start()), SIGNAL(GoToPlatformReferencePoint_finished()));
+        tmp_wid->connect_action(assembly, SLOT(GoToPlatformReferencePoint_start()), SIGNAL(GoToPlatformReferencePoint_finished()), SIGNAL(GoToPlatformReferencePoint_abort()));
       }
       // ----------
 
-      // step: Check platform reference point
+      // step: Take an image
       {
         ++assembly_step_N;
 
-        AssemblyAssemblyTextWidget* tmp_wid = new AssemblyAssemblyTextWidget;
+        AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
         tmp_wid->label()->setText(QString::number(assembly_step_N));
-        tmp_wid->text()->setText("Take an Image and validate that the Platform Reference Marker is centered in the Image");
+        tmp_wid->button()->setText("Take an Image and validate that the Platform Reference Marker is centered in the Image");
         PSPToBasep_lay->addWidget(tmp_wid);
+
+        tmp_wid->connect_action(assembly, SLOT(TakeImage()), SIGNAL(TakeImage_request()), SIGNAL(TakeImage_abort()));
       }
       // ----------
 
@@ -191,7 +193,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
         tmp_wid->button()->setText("Go To Origin");
         PSPToBasep_lay->addWidget(tmp_wid);
 
-        tmp_wid->connect_action(assembly, SLOT(GoToOrigin_start()), SIGNAL(GoToOrigin_finished()));
+        tmp_wid->connect_action(assembly, SLOT(GoToOrigin_start()), SIGNAL(GoToOrigin_finished()), SIGNAL(GoToOrigin_abort()));
       }
       // ----------
 
@@ -255,7 +257,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Enable Vacuum on MaPSA");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(EnableVacuumBaseplate_start()), SIGNAL(EnableVacuumBaseplate_finished()));
+    tmp_wid->connect_action(assembly, SLOT(EnableVacuumBaseplate_start()), SIGNAL(EnableVacuumBaseplate_finished()), SIGNAL(EnableVacuumBaseplate_abort()));
   }
   // ----------
 
@@ -268,7 +270,20 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Go To Measurement Position on MaPSA");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoToPSPSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoToPSPSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()), SIGNAL(GoToSensorMarkerPreAlignment_abort()));
+  }
+  // ----------
+
+  // step: Take an image
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->button()->setText("Take an Image and validate that the Fiducial Marker is within the Image");
+    PSPToBasep_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(TakeImage()), SIGNAL(TakeImage_request()), SIGNAL(TakeImage_abort()));
   }
   // ----------
 
@@ -281,10 +296,10 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N));
     // tmp_wid->text()->setText("Align MaPSA to Motion Stage (Go to \"Alignment\" Tab and select \"PS-p Sensor\")");
-    tmp_wid->button()->setText("Align MaPSA to Motion Stage (Go to \"Alignment\" Tab and select \"PS-p Sensor\")");
+    tmp_wid->button()->setText("Perform alignment: MaPSA to Motion Stage");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(switchToAlignmentTab_PSP()), SIGNAL(switchToAlignmentTab_PSP_request()));
+    tmp_wid->connect_action(assembly, SLOT(PerformAlignmentPSP()), SIGNAL(perform_alignment_PSP_request()));
   }
   // ----------
 
@@ -297,7 +312,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Go From Sensor Marker Ref-Point to Pickup XY");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoFromSensorMarkerToPickupXY_start()), SIGNAL(GoFromSensorMarkerToPickupXY_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoFromSensorMarkerToPickupXY_start()), SIGNAL(GoFromSensorMarkerToPickupXY_finished()), SIGNAL(GoFromSensorMarkerToPickupXY_abort()));
   }
   // ----------
 
@@ -310,7 +325,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Lower Pickup-Tool onto MaPSA");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(LowerPickupToolOntoMaPSA_start()), SIGNAL(LowerPickupToolOntoMaPSA_finished()));
+    tmp_wid->connect_action(assembly, SLOT(LowerPickupToolOntoMaPSA_start()), SIGNAL(LowerPickupToolOntoMaPSA_finished()), SIGNAL(LowerPickupToolOntoMaPSA_abort()));
   }
   // ----------
 
@@ -323,7 +338,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Enable Vacuum on Pickup-Tool");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(EnableVacuumPickupTool_start()), SIGNAL(EnableVacuumPickupTool_finished()));
+    tmp_wid->connect_action(assembly, SLOT(EnableVacuumPickupTool_start()), SIGNAL(EnableVacuumPickupTool_finished()), SIGNAL(EnableVacuumPickupTool_abort()));
   }
   // ----------
 
@@ -336,7 +351,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Disable Vacuum on MaPSA");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(DisableVacuumBaseplate_start()), SIGNAL(DisableVacuumBaseplate_finished()));
+    tmp_wid->connect_action(assembly, SLOT(DisableVacuumBaseplate_start()), SIGNAL(DisableVacuumBaseplate_finished()), SIGNAL(DisableVacuumBaseplate_abort()));
   }
   // ----------
 
@@ -349,7 +364,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Pick Up MaPSA");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(PickupMaPSA_start()), SIGNAL(PickupMaPSA_finished()));
+    tmp_wid->connect_action(assembly, SLOT(PickupMaPSA_start()), SIGNAL(PickupMaPSA_finished()), SIGNAL(PickupMaPSA_abort()));
   }
   // ----------
 
@@ -401,7 +416,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Enable Vacuum on Baseplate");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(EnableVacuumBaseplate_start()), SIGNAL(EnableVacuumBaseplate_finished()));
+    tmp_wid->connect_action(assembly, SLOT(EnableVacuumBaseplate_start()), SIGNAL(EnableVacuumBaseplate_finished()), SIGNAL(EnableVacuumBaseplate_abort()));
   }
   // ----------
 
@@ -427,7 +442,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Go To XYA Position To Glue MaPSA To Baseplate");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoToXYAPositionToGlueMaPSAToBaseplate_start()), SIGNAL(GoToXYAPositionToGlueMaPSAToBaseplate_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoToXYAPositionToGlueMaPSAToBaseplate_start()), SIGNAL(GoToXYAPositionToGlueMaPSAToBaseplate_finished()), SIGNAL(GoToXYAPositionToGlueMaPSAToBaseplate_abort()));
   }
   // ----------
 
@@ -441,7 +456,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
         tmp_wid->button()->setText("Move away pickup tool to make space for dispensing of fast glue");
         PSPToBasep_lay->addWidget(tmp_wid);
 
-        tmp_wid->connect_action(assembly, SLOT(MakeSpaceOnPlatform_start()), SIGNAL(MakeSpaceOnPlatform_finished()));
+        tmp_wid->connect_action(assembly, SLOT(MakeSpaceOnPlatform_start()), SIGNAL(MakeSpaceOnPlatform_finished()), SIGNAL(MakeSpaceOnPlatform_abort()));
       }
       // ----------
 
@@ -465,7 +480,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
         tmp_wid->button()->setText("Return to previous position");
         PSPToBasep_lay->addWidget(tmp_wid);
 
-        tmp_wid->connect_action(assembly, SLOT(ReturnToPlatform_start()), SIGNAL(ReturnToPlatform_finished()));
+        tmp_wid->connect_action(assembly, SLOT(ReturnToPlatform_start()), SIGNAL(ReturnToPlatform_finished()), SIGNAL(ReturnToPlatform_abort()));
       }
       // ----------
   }
@@ -479,10 +494,10 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Lower MaPSA onto Baseplate");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(LowerMaPSAOntoBaseplate_start()), SIGNAL(LowerMaPSAOntoBaseplate_finished()));
+    tmp_wid->connect_action(assembly, SLOT(LowerMaPSAOntoBaseplate_start()), SIGNAL(LowerMaPSAOntoBaseplate_finished()), SIGNAL(LowerMaPSAOntoBaseplate_abort()));
   }
   // ----------
-  
+
   // step: Push IDs to Database
   if(assembly->GetAssemblyCenter() == assembly::Center::DESY)
   {
@@ -527,7 +542,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Disable Vacuum on Pickup-Tool");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(DisableVacuumPickupTool_start()), SIGNAL(DisableVacuumPickupTool_finished()));
+    tmp_wid->connect_action(assembly, SLOT(DisableVacuumPickupTool_start()), SIGNAL(DisableVacuumPickupTool_finished()), SIGNAL(DisableVacuumPickupTool_abort()));
   }
   // ----------
 
@@ -540,7 +555,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Lift Up Pickup-Tool");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(LiftUpPickupTool_start()), SIGNAL(LiftUpPickupTool_finished()));
+    tmp_wid->connect_action(assembly, SLOT(LiftUpPickupTool_start()), SIGNAL(LiftUpPickupTool_finished()), SIGNAL(LiftUpPickupTool_abort()));
   }
   // ----------
 
@@ -564,7 +579,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Disable Vacuum on Baseplate");
     PSPToBasep_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(DisableVacuumBaseplate_start()), SIGNAL(DisableVacuumBaseplate_finished()));
+    tmp_wid->connect_action(assembly, SLOT(DisableVacuumBaseplate_start()), SIGNAL(DisableVacuumBaseplate_finished()), SIGNAL(DisableVacuumBaseplate_abort()));
   }
   // ----------
 
@@ -624,7 +639,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Enable Vacuum on PS-s");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(EnableVacuumBaseplate_start()), SIGNAL(EnableVacuumBaseplate_finished()));
+    tmp_wid->connect_action(assembly, SLOT(EnableVacuumBaseplate_start()), SIGNAL(EnableVacuumBaseplate_finished()), SIGNAL(EnableVacuumBaseplate_abort()));
   }
   // ----------
 
@@ -637,7 +652,20 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Go To Measurement Position on PS-s");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoToPSSSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoToPSSSensorMarkerPreAlignment_start()), SIGNAL(GoToSensorMarkerPreAlignment_finished()), SIGNAL(GoToSensorMarkerPreAlignment_abort()));
+  }
+  // ----------
+
+  // step: Take an image
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->button()->setText("Take an Image and validate that the Fiducial Marker is within the Image");
+    PSSToSpacers_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(TakeImage()), SIGNAL(TakeImage_request()), SIGNAL(TakeImage_abort()));
   }
   // ----------
 
@@ -650,10 +678,10 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N));
     // tmp_wid->text()->setText("Align PS-s to Motion Stage (Go to \"Alignment\" Tab and select \"PS-s Sensor\")");
-    tmp_wid->button()->setText("Align PS-s to Motion Stage (Go to \"Alignment\" Tab and select \"PS-s Sensor\")");
+    tmp_wid->button()->setText("Perform alignment: PS-s to Motion Stage");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(switchToAlignmentTab_PSS()), SIGNAL(switchToAlignmentTab_PSS_request()));
+    tmp_wid->connect_action(assembly, SLOT(PerformAlignmentPSS()), SIGNAL(perform_alignment_PSS_request()));
   }
   // ----------
 
@@ -666,7 +694,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Go From Sensor Marker Ref-Point to Pickup XY");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoFromSensorMarkerToPickupXY_start()), SIGNAL(GoFromSensorMarkerToPickupXY_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoFromSensorMarkerToPickupXY_start()), SIGNAL(GoFromSensorMarkerToPickupXY_finished()), SIGNAL(GoFromSensorMarkerToPickupXY_abort()));
   }
   // ----------
 
@@ -679,7 +707,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Lower Pickup-Tool onto PS-s");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(LowerPickupToolOntoPSS_start()), SIGNAL(LowerPickupToolOntoPSS_finished()));
+    tmp_wid->connect_action(assembly, SLOT(LowerPickupToolOntoPSS_start()), SIGNAL(LowerPickupToolOntoPSS_finished()), SIGNAL(LowerPickupToolOntoPSS_abort()));
   }
   // ----------
 
@@ -692,7 +720,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Enable Vacuum on Pickup-Tool");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(EnableVacuumPickupTool_start()), SIGNAL(EnableVacuumPickupTool_finished()));
+    tmp_wid->connect_action(assembly, SLOT(EnableVacuumPickupTool_start()), SIGNAL(EnableVacuumPickupTool_finished()), SIGNAL(EnableVacuumPickupTool_abort()));
   }
   // ----------
 
@@ -705,7 +733,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Disable Vacuum on Assembly Platform");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(DisableVacuumBaseplate_start()), SIGNAL(DisableVacuumBaseplate_finished()));
+    tmp_wid->connect_action(assembly, SLOT(DisableVacuumBaseplate_start()), SIGNAL(DisableVacuumBaseplate_finished()), SIGNAL(DisableVacuumBaseplate_abort()));
   }
   // ----------
 
@@ -718,7 +746,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Pick Up PS-s");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(PickupPSS_start()), SIGNAL(PickupPSS_finished()));
+    tmp_wid->connect_action(assembly, SLOT(PickupPSS_start()), SIGNAL(PickupPSS_finished()), SIGNAL(PickupPSS_abort()));
   }
   // ----------
 
@@ -731,7 +759,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Go To XYA Position To Glue PS-s to Spacers");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoToXYAPositionToGluePSSToSpacers_start()), SIGNAL(GoToXYAPositionToGluePSSToSpacers_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoToXYAPositionToGluePSSToSpacers_start()), SIGNAL(GoToXYAPositionToGluePSSToSpacers_finished()), SIGNAL(GoToXYAPositionToGluePSSToSpacers_abort()));
   }
   // ----------
 
@@ -758,7 +786,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
       tmp_wid->button()->setText("Move away pickup tool to make space for placing spacers and dispensing of fast glue");
       PSSToSpacers_lay->addWidget(tmp_wid);
 
-      tmp_wid->connect_action(assembly, SLOT(MakeSpaceOnPlatform_start()), SIGNAL(MakeSpaceOnPlatform_finished()));
+      tmp_wid->connect_action(assembly, SLOT(MakeSpaceOnPlatform_start()), SIGNAL(MakeSpaceOnPlatform_finished()), SIGNAL(MakeSpaceOnPlatform_abort()));
     }
     // ----------
 
@@ -771,7 +799,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
       tmp_wid->button()->setText("Enable Vacuum on Spacers");
       PSSToSpacers_lay->addWidget(tmp_wid);
 
-      tmp_wid->connect_action(assembly, SLOT(EnableVacuumSpacers_start()), SIGNAL(EnableVacuumSpacers_finished()));
+      tmp_wid->connect_action(assembly, SLOT(EnableVacuumSpacers_start()), SIGNAL(EnableVacuumSpacers_finished()), SIGNAL(EnableVacuumSpacers_abort()));
     }
     // ----------
 
@@ -806,7 +834,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
       tmp_wid->button()->setText("Return to previous position");
       PSSToSpacers_lay->addWidget(tmp_wid);
 
-      tmp_wid->connect_action(assembly, SLOT(ReturnToPlatform_start()), SIGNAL(ReturnToPlatform_finished()));
+      tmp_wid->connect_action(assembly, SLOT(ReturnToPlatform_start()), SIGNAL(ReturnToPlatform_finished()), SIGNAL(ReturnToPlatform_abort()));
     }
     // ----------
   } else {
@@ -830,7 +858,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
       tmp_wid->button()->setText("Enable Vacuum on Spacers");
       PSSToSpacers_lay->addWidget(tmp_wid);
 
-      tmp_wid->connect_action(assembly, SLOT(EnableVacuumSpacers_start()), SIGNAL(EnableVacuumSpacers_finished()));
+      tmp_wid->connect_action(assembly, SLOT(EnableVacuumSpacers_start()), SIGNAL(EnableVacuumSpacers_finished()), SIGNAL(EnableVacuumSpacers_abort()));
     }
     // ----------
 
@@ -854,7 +882,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
       tmp_wid->button()->setText("Move away pickup tool to make space for the Placement of the Spacer Clamp");
       PSSToSpacers_lay->addWidget(tmp_wid);
 
-      tmp_wid->connect_action(assembly, SLOT(MakeSpaceOnPlatform_start()), SIGNAL(MakeSpaceOnPlatform_finished()));
+      tmp_wid->connect_action(assembly, SLOT(MakeSpaceOnPlatform_start()), SIGNAL(MakeSpaceOnPlatform_finished()), SIGNAL(MakeSpaceOnPlatform_abort()));
     }
     // ----------
 
@@ -889,7 +917,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
         tmp_wid->button()->setText("Return to previous position");
         PSSToSpacers_lay->addWidget(tmp_wid);
 
-        tmp_wid->connect_action(assembly, SLOT(ReturnToPlatform_start()), SIGNAL(ReturnToPlatform_finished()));
+        tmp_wid->connect_action(assembly, SLOT(ReturnToPlatform_start()), SIGNAL(ReturnToPlatform_finished()), SIGNAL(ReturnToPlatform_abort()));
     }
     // ----------
   }
@@ -903,7 +931,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Lower PS-s onto Spacers");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(LowerPSSOntoSpacers_start()), SIGNAL(LowerPSSOntoSpacers_finished()));
+    tmp_wid->connect_action(assembly, SLOT(LowerPSSOntoSpacers_start()), SIGNAL(LowerPSSOntoSpacers_finished()), SIGNAL(LowerPSSOntoSpacers_abort()));
   }
   // ----------
 
@@ -951,7 +979,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Disable Vacuum on Spacers");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(DisableVacuumSpacers_start()), SIGNAL(DisableVacuumSpacers_finished()));
+    tmp_wid->connect_action(assembly, SLOT(DisableVacuumSpacers_start()), SIGNAL(DisableVacuumSpacers_finished()), SIGNAL(DisableVacuumSpacers_abort()));
   }
   // ----------
 
@@ -964,7 +992,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Pick Up \"PS-s + Spacers\"");
     PSSToSpacers_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(PickupPSSPlusSpacers_start()), SIGNAL(PickupPSSPlusSpacers_finished()));
+    tmp_wid->connect_action(assembly, SLOT(PickupPSSPlusSpacers_start()), SIGNAL(PickupPSSPlusSpacers_finished()), SIGNAL(PickupPSSPlusSpacers_abort()));
   }
   // ----------
 
@@ -1018,7 +1046,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Enable Vacuum on Baseplate");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(EnableVacuumBaseplate_start()), SIGNAL(EnableVacuumBaseplate_finished()));
+    tmp_wid->connect_action(assembly, SLOT(EnableVacuumBaseplate_start()), SIGNAL(EnableVacuumBaseplate_finished()), SIGNAL(EnableVacuumBaseplate_abort()));
   }
   // ----------
 
@@ -1042,7 +1070,20 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Go To Measurement Position on \"MaPSA + Baseplate\"");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoToPSPMarkerIdealPosition_start()), SIGNAL(GoToPSPMarkerIdealPosition_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoToPSPMarkerIdealPosition_start()), SIGNAL(GoToPSPMarkerIdealPosition_finished()), SIGNAL(GoToPSPMarkerIdealPosition_abort()));
+  }
+  // ----------
+
+  // step: Take an image
+  {
+    ++assembly_step_N;
+
+    AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
+    tmp_wid->label()->setText(QString::number(assembly_step_N));
+    tmp_wid->button()->setText("Take an Image and validate that the Fiducial Marker is within the Image");
+    PSSToMaPSA_lay->addWidget(tmp_wid);
+
+    tmp_wid->connect_action(assembly, SLOT(TakeImage()), SIGNAL(TakeImage_request()), SIGNAL(TakeImage_abort()));
   }
   // ----------
 
@@ -1055,10 +1096,10 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     AssemblyAssemblyActionWidget* tmp_wid = new AssemblyAssemblyActionWidget;
     tmp_wid->label()->setText(QString::number(assembly_step_N));
     // tmp_wid->text()->setText("Align MaPSA (Go to \"Alignment\" Tab and select \"PS-p Sensor\")");
-    tmp_wid->button()->setText("Align MaPSA (Go to \"Alignment\" Tab and select \"PS-p Sensor\")");
+    tmp_wid->button()->setText("Perform Alignment: MaPSA to Motion Stage");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(switchToAlignmentTab_PSP()), SIGNAL(switchToAlignmentTab_PSP_request()));
+    tmp_wid->connect_action(assembly, SLOT(PerformAlignmentPSP()), SIGNAL(perform_alignment_PSP_request()));
   }
   // ----------
 
@@ -1071,7 +1112,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Go From Sensor Marker Ref-Point to Pickup XY");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(GoFromSensorMarkerToPickupXY_start()), SIGNAL(GoFromSensorMarkerToPickupXY_finished()));
+    tmp_wid->connect_action(assembly, SLOT(GoFromSensorMarkerToPickupXY_start()), SIGNAL(GoFromSensorMarkerToPickupXY_finished()), SIGNAL(GoFromSensorMarkerToPickupXY_abort()));
   }
   // ----------
 
@@ -1084,7 +1125,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Apply \"PS-p To PS-s\" XY Offset");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(ApplyPSPToPSSXYOffset_start()), SIGNAL(ApplyPSPToPSSXYOffset_finished()));
+    tmp_wid->connect_action(assembly, SLOT(ApplyPSPToPSSXYOffset_start()), SIGNAL(ApplyPSPToPSSXYOffset_finished()), SIGNAL(ApplyPSPToPSSXYOffset_abort()));
   }
   // ----------
 
@@ -1099,7 +1140,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
             tmp_wid->button()->setText("Move away pickup tool to make space for glue dispensing");
             PSSToMaPSA_lay->addWidget(tmp_wid);
 
-            tmp_wid->connect_action(assembly, SLOT(MakeSpaceOnPlatform_start()), SIGNAL(MakeSpaceOnPlatform_finished()));
+            tmp_wid->connect_action(assembly, SLOT(MakeSpaceOnPlatform_start()), SIGNAL(MakeSpaceOnPlatform_finished()), SIGNAL(MakeSpaceOnPlatform_abort()));
           }
           // ----------
 
@@ -1123,7 +1164,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
             tmp_wid->button()->setText("Return to previous position");
             PSSToMaPSA_lay->addWidget(tmp_wid);
 
-            tmp_wid->connect_action(assembly, SLOT(ReturnToPlatform_start()), SIGNAL(ReturnToPlatform_finished()));
+            tmp_wid->connect_action(assembly, SLOT(ReturnToPlatform_start()), SIGNAL(ReturnToPlatform_finished()), SIGNAL(ReturnToPlatform_abort()));
           }
           // ----------
 
@@ -1140,7 +1181,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
         tmp_wid->button()->setText("Register \"PS-s to MaPSA\" XYZA Position");
         PSSToMaPSA_lay->addWidget(tmp_wid);
 
-        tmp_wid->connect_action(assembly, SLOT(RegisterPSSPlusSpacersToMaPSAPosition_start()), SIGNAL(RegisterPSSPlusSpacersToMaPSAPosition_finished()));
+        tmp_wid->connect_action(assembly, SLOT(RegisterPSSPlusSpacersToMaPSAPosition_start()), SIGNAL(RegisterPSSPlusSpacersToMaPSAPosition_finished()), SIGNAL(RegisterPSSPlusSpacersToMaPSAPosition_abort()));
       }
       // ----------
 
@@ -1164,7 +1205,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
         tmp_wid->button()->setText("Go From \"PS-s To MaPSA\" Position to Gluing Stage (XY) Ref-Point");
         PSSToMaPSA_lay->addWidget(tmp_wid);
 
-        tmp_wid->connect_action(assembly, SLOT(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start()), SIGNAL(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished()));
+        tmp_wid->connect_action(assembly, SLOT(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_start()), SIGNAL(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished()), SIGNAL(GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_abort()));
       }
       // ----------
 
@@ -1177,7 +1218,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
         tmp_wid->button()->setText("Lower \"PS-s + Spacers\" onto Gluing Stage");
         PSSToMaPSA_lay->addWidget(tmp_wid);
 
-        tmp_wid->connect_action(assembly, SLOT(LowerPSSPlusSpacersOntoGluingStage_start()), SIGNAL(LowerPSSPlusSpacersOntoGluingStage_finished()));
+        tmp_wid->connect_action(assembly, SLOT(LowerPSSPlusSpacersOntoGluingStage_start()), SIGNAL(LowerPSSPlusSpacersOntoGluingStage_finished()), SIGNAL(LowerPSSPlusSpacersOntoGluingStage_abort()));
       }
       // ----------
 
@@ -1201,7 +1242,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
           tmp_wid->button()->setText("Slowly lift from gluing stage by 5 mm");
           PSSToMaPSA_lay->addWidget(tmp_wid);
 
-          tmp_wid->connect_action(assembly, SLOT(SlowlyLiftFromGluingStage_start()), SIGNAL(SlowlyLiftFromGluingStage_finished()));
+          tmp_wid->connect_action(assembly, SLOT(SlowlyLiftFromGluingStage_start()), SIGNAL(SlowlyLiftFromGluingStage_finished()), SIGNAL(SlowlyLiftFromGluingStage_abort()));
       }
       // ----------
 
@@ -1215,7 +1256,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
         tmp_wid->button()->setText("Return To \"PS-s to MaPSA\" Position (XYZA)");
         PSSToMaPSA_lay->addWidget(tmp_wid);
 
-        tmp_wid->connect_action(assembly, SLOT(ReturnToPSSPlusSpacersToMaPSAPosition_start()), SIGNAL(ReturnToPSSPlusSpacersToMaPSAPosition_finished()));
+        tmp_wid->connect_action(assembly, SLOT(ReturnToPSSPlusSpacersToMaPSAPosition_start()), SIGNAL(ReturnToPSSPlusSpacersToMaPSAPosition_finished()), SIGNAL(ReturnToPSSPlusSpacersToMaPSAPosition_abort()));
       }
       // ----------
   }
@@ -1228,7 +1269,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Lower \"PS-s + Spacers\" onto MaPSA");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(LowerPSSPlusSpacersOntoMaPSA_start()), SIGNAL(LowerPSSPlusSpacersOntoMaPSA_finished()));
+    tmp_wid->connect_action(assembly, SLOT(LowerPSSPlusSpacersOntoMaPSA_start()), SIGNAL(LowerPSSPlusSpacersOntoMaPSA_finished()), SIGNAL(LowerPSSPlusSpacersOntoMaPSA_abort()));
   }
   // ----------
 
@@ -1252,7 +1293,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Disable Vacuum on Pickup-Tool");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(DisableVacuumPickupTool_start()), SIGNAL(DisableVacuumPickupTool_finished()));
+    tmp_wid->connect_action(assembly, SLOT(DisableVacuumPickupTool_start()), SIGNAL(DisableVacuumPickupTool_finished()), SIGNAL(DisableVacuumPickupTool_abort()));
   }
   // ----------
 
@@ -1265,7 +1306,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Lift Up Pickup-Tool");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(LiftUpPickupTool_start()), SIGNAL(LiftUpPickupTool_finished()));
+    tmp_wid->connect_action(assembly, SLOT(LiftUpPickupTool_start()), SIGNAL(LiftUpPickupTool_finished()), SIGNAL(LiftUpPickupTool_abort()));
   }
   // ----------
 
@@ -1278,7 +1319,7 @@ AssemblyAssemblyV2View::AssemblyAssemblyV2View(const AssemblyAssemblyV2* const a
     tmp_wid->button()->setText("Disable Vacuum on MaPSA");
     PSSToMaPSA_lay->addWidget(tmp_wid);
 
-    tmp_wid->connect_action(assembly, SLOT(DisableVacuumBaseplate_start()), SIGNAL(DisableVacuumBaseplate_finished()));
+    tmp_wid->connect_action(assembly, SLOT(DisableVacuumBaseplate_start()), SIGNAL(DisableVacuumBaseplate_finished()), SIGNAL(DisableVacuumBaseplate_abort()));
   }
   // ----------
 
