@@ -39,6 +39,8 @@ class AssemblyAssemblyV2 : public QObject
 
   const AssemblySmartMotionManager* smart_motion() const;
 
+  void set_in_action(bool in_action);
+
  protected:
   const LStepExpressMotionManager* const motion_;
   const RelayCardManager* const vacuum_;
@@ -62,6 +64,7 @@ class AssemblyAssemblyV2 : public QObject
 
   bool use_smartMove_;
   bool in_action_;
+  std::mutex in_action_mutex_;
 
   bool PSSPlusSpacersToMaPSAPosition_isRegistered_;
   double PSSPlusSpacersToMaPSAPosition_X_;
@@ -81,6 +84,9 @@ class AssemblyAssemblyV2 : public QObject
 
  public:
   assembly::Center GetAssemblyCenter() const {return assembly_center_;};
+
+protected slots:
+  void reportInAction(const QString target_step, const char*);
 
  public slots:
 
@@ -248,40 +254,76 @@ class AssemblyAssemblyV2 : public QObject
   void PushStep3ToDB_aborted();
 
   void GoToPlatformReferencePoint_finished();
+  void GoToPlatformReferencePoint_abort();
 
   void GoToOrigin_finished();
+  void GoToOrigin_abort();
 
   void GoToSensorMarkerPreAlignment_finished();
+  void GoToSensorMarkerPreAlignment_abort();
 
   void GoFromSensorMarkerToPickupXY_finished();
+  void GoFromSensorMarkerToPickupXY_abort();
 
   void LowerPickupToolOntoMaPSA_finished();
+  void LowerPickupToolOntoMaPSA_abort();
+
   void PickupMaPSA_finished();
+  void PickupMaPSA_abort();
 
   void GoToXYAPositionToGlueMaPSAToBaseplate_finished();
+  void GoToXYAPositionToGlueMaPSAToBaseplate_abort();
+
   void LowerMaPSAOntoBaseplate_finished();
+  void LowerMaPSAOntoBaseplate_abort();
 
   void LowerPickupToolOntoPSS_finished();
+  void LowerPickupToolOntoPSS_abort();
+
   void PickupPSS_finished();
+  void PickupPSS_abort();
 
   void GoToXYAPositionToGluePSSToSpacers_finished();
+  void GoToXYAPositionToGluePSSToSpacers_abort();
+
   void LowerPSSOntoSpacers_finished();
+  void LowerPSSOntoSpacers_abort();
+
   void PickupPSSPlusSpacers_finished();
+  void PickupPSSPlusSpacers_abort();
 
   void GoToPSPMarkerIdealPosition_finished();
+  void GoToPSPMarkerIdealPosition_abort();
 
   void ApplyPSPToPSSXYOffset_finished();
+  void ApplyPSPToPSSXYOffset_abort();
+
   void MakeSpaceOnPlatform_finished();
+  void MakeSpaceOnPlatform_abort();
+
   void ReturnToPlatform_finished();
+  void ReturnToPlatform_abort();
+
   void PSSPlusSpacersToMaPSAPosition_registered();
+  void PSSPlusSpacersToMaPSAPosition_abort();
 
   void GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_finished();
+  void GoFromPSSPlusSpacersToMaPSAPositionToGluingStageRefPointXY_abort();
+
   void LowerPSSPlusSpacersOntoGluingStage_finished();
+  void LowerPSSPlusSpacersOntoGluingStage_abort();
+
   void ReturnToPSSPlusSpacersToMaPSAPosition_finished();
+  void ReturnToPSSPlusSpacersToMaPSAPosition_abort();
 
   void SlowlyLiftFromGluingStage_finished();
+  void SlowlyLiftFromGluingStage_abort();
+
   void LowerPSSPlusSpacersOntoMaPSA_finished();
+  void LowerPSSPlusSpacersOntoMaPSA_abort();
+
   void LiftUpPickupTool_finished();
+  void LiftUpPickupTool_abort();
   // ------
 
   // vacuum
@@ -289,21 +331,31 @@ class AssemblyAssemblyV2 : public QObject
   void vacuum_OFF_request(const int);
 
   void EnableVacuumPickupTool_finished();
+  void EnableVacuumPickupTool_abort();
   void DisableVacuumPickupTool_finished();
+  void DisableVacuumPickupTool_abort();
 
   void EnableVacuumSpacers_finished();
+  void EnableVacuumSpacers_abort();
   void DisableVacuumSpacers_finished();
+  void DisableVacuumSpacers_abort();
 
   void EnableVacuumBaseplate_finished();
+  void EnableVacuumBaseplate_abort();
   void DisableVacuumBaseplate_finished();
+  void DisableVacuumBaseplate_abort();
 
   void AssemblyCompleted_finished();
+  void AssemblyCompleted_abort();
   // ------
 
   // others
   void RegisterPSSPlusSpacersToMaPSAPosition_finished();
+  void RegisterPSSPlusSpacersToMaPSAPosition_abort();
   void switchToAlignmentTab_PSP_request();
+  void switchToAlignmentTab_PSP_abort();
   void switchToAlignmentTab_PSS_request();
+  void switchToAlignmentTab_PSS_abort();
 
   void MaPSA_ID_updated(const QString);
   void PSS_ID_updated(const QString);
@@ -314,8 +366,9 @@ class AssemblyAssemblyV2 : public QObject
   void Module_ID_updated(const QString);
   // ------
 
-
   void DBLogMessage(const QString);
+
+  void abort_this();
 };
 
 #endif // ASSEMBLYASSEMBLYV2_H

@@ -155,6 +155,8 @@ void AssemblyAssemblyActionWidget::disable_action()
 
     disconnect(qobject_, stop_signal_, this, SLOT(disable_action()));
 
+    disconnect(qobject_, abort_signal_, this, SLOT(abort_action()));
+
     inhibit_dialogue_ = true;
     checkbox_->setCheckState(Qt::Checked);
   }
@@ -167,6 +169,9 @@ void AssemblyAssemblyActionWidget::disable_action()
 
 void AssemblyAssemblyActionWidget::abort_action()
 {
+  NQLog("AssemblyAssemblyActionWidget", NQLog::Message) << "abort_action"
+       << ": action aborted";
+
   if(qobject_)
   {
     disconnect(this, SIGNAL(action_request()), qobject_, start_slot_);
