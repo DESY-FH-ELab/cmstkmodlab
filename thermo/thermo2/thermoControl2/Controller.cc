@@ -73,9 +73,8 @@ void Controller::sendCommand()
 
   QString buffer = "COM ";
   buffer += command_;
-  buffer += " ";
   for (int i=0; i<parameters_.size(); ++i) {
-    if (i>0) buffer += " ";
+    buffer += " ";
     buffer += parameters_.at(i);
   }
   

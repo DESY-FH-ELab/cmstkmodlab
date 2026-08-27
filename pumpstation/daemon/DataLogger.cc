@@ -91,7 +91,7 @@ void DataLogger::start()
   QDateTime dt = QDateTime::currentDateTime();
 
   ApplicationConfig* config = ApplicationConfig::instance();
-  QString dataPath(config->getValue<std::string>("DataPath").c_str());
+  QString dataPath(config->getValue<std::string>("main", "DataPath").c_str());
 
   currentDir_.setPath(dataPath);
 
@@ -175,8 +175,7 @@ void DataLogger::checkRestart()
 
   if (fileDateTime_.secsTo(utime)<60*60) return;
 
-  ApplicationConfig * config = ApplicationConfig::instance();
-  config->safe(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
+  ApplicationConfig::instance()->save();
 
   stop();
   start();
@@ -302,8 +301,7 @@ void DataLogger::handleSigInt()
     thread_->quit();
     thread_->wait();
 
-    ApplicationConfig * config = ApplicationConfig::instance();
-    config->safe(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
+    ApplicationConfig::instance()->save();
 
     QCoreApplication::exit(0);
 

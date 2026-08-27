@@ -16,6 +16,8 @@
 
 #include "PilotOneComHandler.h"
 
+// #define __HUBERPILOTONE_DEBUG 1
+
 /*!
   The USB serial port &lt;ioPort&gt; may be specified in several ways:<br><br>
   ttyUSB0 ... ttyUSB3<br>
@@ -42,13 +44,22 @@ PilotOneComHandler::~PilotOneComHandler( void )
 
 //! Send the command string &lt;commandString&gt; to device.
 void PilotOneComHandler::SendCommand(const char *commandString)
-{
+{ 
+
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[PilotOneComHandler::SendCommand] -- DEBUG: Called." << std::endl;
+#endif
+  
   if (!fDeviceAvailable) return;
 
   std::string theCommand = commandString;
-  theCommand += "\r\n";
+  theCommand += "\n\r";
+  ssize_t bytesWritten = write( fIoPortFileDescriptor, theCommand.c_str(), theCommand.length());
 
-  write( fIoPortFileDescriptor, theCommand.c_str(), theCommand.length());
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[PilotOneComHandler::SendCommand] -- DEBUG:" << " Command sent: " << theCommand.c_str()
+            << " (" << bytesWritten << ")" << std::endl;
+#endif
 }
 
 //! Read a string from device.
@@ -67,12 +78,11 @@ void PilotOneComHandler::ReceiveString( char *receiveString )
     receiveString[0] = 0;
     return;
   }
-
-  usleep( 10000 );
+  usleep( 50000 );
 
   int timeout = 0, readResult = 0;
 
-  while ( timeout < 100000 )  {
+  while ( timeout < 100000 ) {
 
     readResult = read( fIoPortFileDescriptor, receiveString, 1024 );
 
@@ -83,6 +93,10 @@ void PilotOneComHandler::ReceiveString( char *receiveString )
     
     timeout++;
   }
+  
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[PilotOneComHandler::ReceiveString] -- DEBUG:" << " Command received: " << readResult << std::endl;
+#endif
 }
 
 //! Open I/O port.
@@ -93,6 +107,10 @@ void PilotOneComHandler::OpenIoPort( void )
 {
   // open io port ( read/write | no term control | no DCD line check )
   fIoPortFileDescriptor = open( fIoPort, O_RDWR | O_NOCTTY  | O_NDELAY );
+
+#ifdef __HUBERPILOTONE_DEBUG
+  std::cout << "[PilotOneComHandler::OpenIoPort] -- DEBUG:" << " fIoPortFileDescriptor: " << fIoPortFileDescriptor << std::endl;
+#endif
 
   // check if successful
   if ( fIoPortFileDescriptor == -1 ) {

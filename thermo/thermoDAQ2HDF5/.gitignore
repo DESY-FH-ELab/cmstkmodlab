@@ -1,0 +1,8 @@
+.qmake.stash
+.qmake.cache
+Makefile
+*.d
+*.o
+moc_*
+thermoDAQ2HDF5
+*.h5

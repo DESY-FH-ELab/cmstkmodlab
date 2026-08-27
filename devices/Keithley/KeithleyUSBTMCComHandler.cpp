@@ -131,6 +131,10 @@ void KeithleyUSBTMCComHandler::OpenIoPort( void )
   // open io port ( read/write | no term control | no DCD line check )
   fIoPortFileDescriptor = open( fIoPort, O_RDWR);
 
+#ifdef __DEBUG
+  std::cout << "void KeithleyUSBTMCComHandler::fIoPortFileDescriptor: " << fIoPortFileDescriptor << std::endl;
+#endif
+
   // check if successful
   if ( fIoPortFileDescriptor == -1 ) {
     std::cerr << "[NGE103BComHandler::OpenIoPort] ** ERROR: could not open device file "

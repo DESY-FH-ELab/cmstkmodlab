@@ -115,13 +115,14 @@ int main(int argc, char *argv[])
 
   qRegisterMetaType<State>("State");
 
-  ApplicationConfig * config = ApplicationConfig::instance(std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
+  ApplicationConfig * config = ApplicationConfig::instance();
+  config->append("main", std::string(Config::CMSTkModLabBasePath) + "/pumpstation/pumpstation.cfg");
   
-  std::string conradPort = config->getValue("ConradPort");
+  std::string conradPort = config->getValue("main", "ConradPort");
   ConradModel conrad(conradPort.c_str(), &app);
 
-  std::string leyboldPort = config->getValue("LeyboldPort");
-  LeyboldGraphixThreeModel leybold(leyboldPort.c_str(), config->getValue<int>("LeyboldUpdateInterval"), &app);
+  std::string leyboldPort = config->getValue("main", "LeyboldPort");
+  LeyboldGraphixThreeModel leybold(leyboldPort.c_str(), config->getValue<int>("main", "LeyboldUpdateInterval"), &app);
 
   /*
   QDateTime dt = QDateTime::currentDateTime();

@@ -47,7 +47,7 @@ void CommunicationThread::run()
   if (ipAddress.isEmpty())
     ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
 
-  quint16 port = ApplicationConfig::instance()->getValue("ServerPort", 63432);
+  quint16 port = ApplicationConfig::instance()->getDefaultValue<quint16>("main", "ServerPort", 63432);
 
   if (!server_->listen(QHostAddress(ipAddress), port)) {
     NQLog("pumpstation") << "Unable to start the server: " << server_->errorString().toStdString();

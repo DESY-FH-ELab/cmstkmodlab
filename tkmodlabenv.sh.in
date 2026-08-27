@@ -3,6 +3,7 @@ export TKMODLABBASE="@basepath@"
 export PATH="@basepath@/tools/bin:$PATH"
 
 export PATH="@basepath@/thermo/thermoDAQ2Root:$PATH"
+export PATH="@basepath@/thermo/thermoDAQ2HDF5:$PATH"
 export PATH="@basepath@/thermo/thermoDAQ2RootConverter:$PATH"
 export PATH="@basepath@/thermo/thermoDAQ2Log:$PATH"
 export PATH="@basepath@/thermo/thermo1/thermoDAQ:$PATH"
