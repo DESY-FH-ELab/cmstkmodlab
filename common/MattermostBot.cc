@@ -16,7 +16,6 @@
 #include <curl/curl.h>
 
 #include <nqlogger.h>
-#include <ApplicationConfig.h>
 
 #include "MattermostBot.h"
 
@@ -27,7 +26,7 @@ MattermostBot::MattermostBot(std::string config_alias, QObject *parent)
     webhook_(),
     config_alias_(config_alias)
 {
-
+    config_ = ApplicationConfig::instance();
 }
 
 MattermostBot::MattermostBot(QString channel, std::string config_alias, QObject *parent)
@@ -35,7 +34,7 @@ MattermostBot::MattermostBot(QString channel, std::string config_alias, QObject 
     channel_(channel),
     config_alias_(config_alias)
 {
-
+    config_ = ApplicationConfig::instance();
 }
 
 MattermostBot::MattermostBot(QString channel, QString username, std::string config_alias, QObject *parent)
@@ -44,7 +43,7 @@ MattermostBot::MattermostBot(QString channel, QString username, std::string conf
     username_(username),
     config_alias_(config_alias)
 {
-
+    config_ = ApplicationConfig::instance();
 }
 
 MattermostBot::MattermostBot(QString channel, QString username, QString webhook, std::string config_alias, QObject *parent)
