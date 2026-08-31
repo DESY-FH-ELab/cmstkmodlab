@@ -430,7 +430,7 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: abs_distance = " << abs_distance;
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle_difference = " << angle_difference;
 
-    if(fabs(abs_distance - design_distance) > 0.05 || fabs(angle_difference) > 0.1) {
+    if(fabs(abs_distance - design_distance) > 0.05 || fabs(angle_difference) > 0.15) {
         int retDistance = QMessageBox::NoButton;
         while(retDistance == QMessageBox::NoButton || retDistance == QMessageBox::Help) {
             auto sound_issue = QString::fromStdString(Config::CMSTkModLabBasePath + "/share/assembly/issue.mp3");
