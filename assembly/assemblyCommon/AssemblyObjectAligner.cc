@@ -127,8 +127,10 @@ void AssemblyObjectAligner::reset()
 
   posi_x1_ = 0.;
   posi_y1_ = 0.;
+  angle_1_ = 0.;
   posi_x2_ = 0.;
   posi_y2_ = 0.;
+  angle_2_ = 0.;
 
   obj_angle_deg_ = 0.;
 
@@ -327,6 +329,7 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
     // marker-1: position of PatRec best-match
     posi_x1_ = motion_manager_->get_position_X() + patrec_dX;
     posi_y1_ = motion_manager_->get_position_Y() + patrec_dY;
+    angle_1_ = patrec_angle;
 
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: motion-stage X = " << motion_manager_->get_position_X();
@@ -337,6 +340,7 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: x1-position = " << posi_x1_;
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: y1-position = " << posi_y1_;
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle_1 = " << angle_1_;
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
     // relative movement to reach the opposite marker
@@ -408,20 +412,25 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
   {
     posi_x2_ = motion_manager_->get_position_X() + patrec_dX;
     posi_y2_ = motion_manager_->get_position_Y() + patrec_dY;
+    angle_2_ = patrec_angle;
 
     double abs_distance = sqrt(pow((posi_x2_ - posi_x1_),2) + pow((posi_y2_ - posi_y1_),2));
     double design_distance = sqrt(pow(this->configuration().object_deltaX, 2) + pow(this->configuration().object_deltaY, 2));
+    double angle_difference = angle_2_ - angle_1_;
 
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: position(X1) = " << posi_x1_;
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: position(Y1) = " << posi_y1_;
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(1) = " << angle_1_;
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: position(X2) = " << posi_x2_;
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: position(Y2) = " << posi_y2_;
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(2) = " << angle_2_;
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: abs_distance = " << abs_distance;
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle_difference = " << angle_difference;
 
-    if(fabs(abs_distance - design_distance) > 0.05) {
+    if(fabs(abs_distance - design_distance) > 0.05 || fabs(angle_difference) > 0.1) {
         int retDistance = QMessageBox::NoButton;
         while(retDistance == QMessageBox::NoButton || retDistance == QMessageBox::Help) {
             auto sound_issue = QString::fromStdString(Config::CMSTkModLabBasePath + "/share/assembly/issue.mp3");
