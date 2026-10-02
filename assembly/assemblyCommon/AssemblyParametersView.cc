@@ -447,6 +447,27 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   button_moveRelRefDist6_  = new QPushButton(tr("Apply Relative Movement"));
   dist_lay->addWidget(button_moveRelRefDist6_, row_index, 9, Qt::AlignLeft);
 
+  // distance: correction for PSP placement on Baseplate
+  ++row_index;
+
+  tmp_tag = "PSPToBaseplateCorrection";
+  tmp_des = "Correction for PSP placement on Baseplate :";
+
+  map_lineEdit_[tmp_tag+"_dX"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_dY"] = new QLineEdit(tr(""));
+  map_lineEdit_[tmp_tag+"_dA"] = new QLineEdit(tr(""));
+
+  dist_lay->addWidget(new QLabel(tmp_des)     , row_index, 0, Qt::AlignLeft);
+  dist_lay->addWidget(new QLabel(tr("dX"))    , row_index, 1, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dX"), row_index, 2, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dY"))    , row_index, 3, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dY"), row_index, 4, Qt::AlignRight);
+  dist_lay->addWidget(new QLabel(tr("dA"))    , row_index, 7, Qt::AlignRight);
+  dist_lay->addWidget(this->get(tmp_tag+"_dA"), row_index, 8, Qt::AlignRight);
+
+  button_moveRelRefDist21_  = new QPushButton(tr("Apply Relative Movement"));
+  dist_lay->addWidget(button_moveRelRefDist21_, row_index, 9, Qt::AlignLeft);
+
   // distance: from best-focus z-position to pickup z-position
   ++row_index;
 
@@ -687,6 +708,7 @@ AssemblyParametersView::AssemblyParametersView(QWidget* parent)
   connect(button_moveRelRefDist18_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist18()));
   connect(button_moveRelRefDist19_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist19()));
   connect(button_moveRelRefDist20_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist20()));
+  connect(button_moveRelRefDist21_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist21()));
   connect(this , SIGNAL(click_moveByRelRefDist(int)), this, SLOT(askConfirmMoveByRelRefDist(int)));
 
   connect(config_, SIGNAL(valueChanged()), this, SLOT(copy_values()));
@@ -735,6 +757,7 @@ AssemblyParametersView::~AssemblyParametersView()
     disconnect(button_moveRelRefDist18_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist18()));
     disconnect(button_moveRelRefDist19_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist19()));
     disconnect(button_moveRelRefDist20_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist20()));
+    disconnect(button_moveRelRefDist21_ , SIGNAL(clicked()), this, SLOT(moveByRelRefDist21()));
     disconnect(this , SIGNAL(click_moveByRelRefDist(int)), this, SLOT(askConfirmMoveByRelRefDist(int)));
 }
 
@@ -1071,6 +1094,8 @@ void AssemblyParametersView::askConfirmMoveByRelRefDist(int refPoint)
         case 19: tmp_tag = "Sensor_PSS_deltaY";
             break;
         case 20: tmp_tag = "FromPickupHeightToGlueHeight";
+            break;
+        case 21: tmp_tag = "PSPToBaseplateCorrection";
             break;
         default: return;
     }

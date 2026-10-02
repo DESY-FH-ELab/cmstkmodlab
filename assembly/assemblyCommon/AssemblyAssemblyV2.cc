@@ -1469,6 +1469,7 @@ void AssemblyAssemblyV2::GoToXYAPositionToGlueMaPSAToBaseplate_start()
    + config_->getValue<double>("parameters", "FromRefPointPlatformToPSPEdge_dX")
    + config_->getValue<double>("parameters", "FromPSPEdgeToPSPRefPoint_dX")
    + config_->getValue<double>("parameters", "FromSensorRefPointToSensorPickup_dX")
+   + config_->getValue<double>("parameters", "PSPToBaseplateCorrection_dX")
    - motion_->get_position_X();
 
   const double dy0 =
@@ -1476,12 +1477,14 @@ void AssemblyAssemblyV2::GoToXYAPositionToGlueMaPSAToBaseplate_start()
    + config_->getValue<double>("parameters", "FromRefPointPlatformToPSPEdge_dY")
    + config_->getValue<double>("parameters", "FromPSPEdgeToPSPRefPoint_dY")
    + config_->getValue<double>("parameters", "FromSensorRefPointToSensorPickup_dY")
+   + config_->getValue<double>("parameters", "PSPToBaseplateCorrection_dY")
    - motion_->get_position_Y();
 
   const double dz0 = 0.0;
 
   const double da0 =
      config_->getValue<double>("parameters", "RefPointPlatform_A")
+   + config_->getValue<double>("parameters", "PSPToBaseplateCorrection_dA")
    - motion_->get_position_A();
 
   connect(this, SIGNAL(move_relative_request(double, double, double, double)), motion_, SLOT(moveRelative(double, double, double, double)));

@@ -55,7 +55,7 @@ class AssemblyParametersView : public QWidget
   QPushButton* paramIO_button_write_;
 
   QPushButton *button_moveAbsRefPos1_, *button_moveAbsRefPos2_, *button_moveAbsRefPos4_, *button_moveAbsRefPos5_;
-  QPushButton *button_moveRelRefDist1_, *button_moveRelRefDist2_, *button_moveRelRefDist3_, *button_moveRelRefDist4_, *button_moveRelRefDist5_, *button_moveRelRefDist6_, *button_moveRelRefDist7_, *button_moveRelRefDist8_, *button_moveRelRefDist9_, *button_moveRelRefDist10_, *button_moveRelRefDist11_, *button_moveRelRefDist12_, *button_moveRelRefDist13_, *button_moveRelRefDist14_, *button_moveRelRefDist15_, *button_moveRelRefDist16_, *button_moveRelRefDist17_, *button_moveRelRefDist18_, *button_moveRelRefDist19_, *button_moveRelRefDist20_;
+  QPushButton *button_moveRelRefDist1_, *button_moveRelRefDist2_, *button_moveRelRefDist3_, *button_moveRelRefDist4_, *button_moveRelRefDist5_, *button_moveRelRefDist6_, *button_moveRelRefDist7_, *button_moveRelRefDist8_, *button_moveRelRefDist9_, *button_moveRelRefDist10_, *button_moveRelRefDist11_, *button_moveRelRefDist12_, *button_moveRelRefDist13_, *button_moveRelRefDist14_, *button_moveRelRefDist15_, *button_moveRelRefDist16_, *button_moveRelRefDist17_, *button_moveRelRefDist18_, *button_moveRelRefDist19_, *button_moveRelRefDist20_, *button_moveRelRefDist21_;
 
   std::map<std::string, QLineEdit*> map_lineEdit_;
 
@@ -104,6 +104,7 @@ class AssemblyParametersView : public QWidget
   void moveByRelRefDist18() {emit click_moveByRelRefDist(18);};
   void moveByRelRefDist19() {emit click_moveByRelRefDist(19);};
   void moveByRelRefDist20() {emit click_moveByRelRefDist(20);};
+  void moveByRelRefDist21() {emit click_moveByRelRefDist(21);};
   void askConfirmMoveByRelRefDist(int);
 
  signals:
