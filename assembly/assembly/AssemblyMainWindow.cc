@@ -265,7 +265,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
     const QString tabname_Alignm("Alignment");
 
     aligner_view_ = new AssemblyObjectAlignerView(assembly_tab);
-    idx_alignment_tab = assembly_tab->addTab(aligner_view_, tabname_Alignm);
+    idx_alignment_tab_ = assembly_tab->addTab(aligner_view_, tabname_Alignm);
 
     // aligner
     aligner_ = new AssemblyObjectAligner(motion_manager_);
@@ -317,6 +317,7 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
       connect(aligner_view_->button_alignerEmergencyStop(), SIGNAL(clicked()), assemblyV2_, SLOT(AbortAlignment()));
       connect(aligner_view_, SIGNAL(execution_failed()), assemblyV2_, SLOT(AbortAlignment()));
+      connect(aligner_, SIGNAL(execution_failed()), assemblyV2_, SLOT(AbortAlignment()));
       connect(image_view_->autofocus_emergencyStop_button(), SIGNAL(clicked()), assemblyV2_, SLOT(AbortAlignment()));
 
       connect(assemblyV2_, SIGNAL(TakeImage_request()), this, SLOT(select_image_tab()));
@@ -649,8 +650,8 @@ AssemblyMainWindow::AssemblyMainWindow(const QString& outputdir_path, const QStr
 
     main_tab->setTabPosition(QTabWidget::North);
 
-    idx_module_tab = main_tab->addTab(assembly_tab, tr("Module Assembly"));
-    idx_manual_tab = main_tab->addTab(controls_tab, tr("Additional Tools"));
+    idx_module_tab_ = main_tab->addTab(assembly_tab, tr("Module Assembly"));
+    idx_manual_tab_ = main_tab->addTab(controls_tab, tr("Additional Tools"));
 
     assembly_tab->setStyleSheet(assembly_tab->styleSheet()+" QTabBar::tab {width: 300px; }");
     controls_tab->setStyleSheet(controls_tab->styleSheet()+" QTabBar::tab {width: 375px; }");
@@ -905,6 +906,9 @@ void AssemblyMainWindow::disconnect_images()
 
 void AssemblyMainWindow::start_objectAligner(const AssemblyObjectAligner::Configuration& conf)
 {
+  NQLog("AssemblyMainWindow", NQLog::Debug) << "start_objectAligner"
+     << ": Starting object aligner";
+
   if(image_ctr_ == nullptr)
   {
     NQLog("AssemblyMainWindow", NQLog::Warning) << "start_objectAligner"
@@ -942,6 +946,10 @@ void AssemblyMainWindow::start_objectAligner(const AssemblyObjectAligner::Config
 
   // once completed, disable connections between controllers used for alignment
   connect(aligner_, SIGNAL(execution_completed()), this, SLOT(disconnect_objectAligner()));
+
+  // if aligner wants to go to results, go to results
+  connect(aligner_, SIGNAL(switch_to_alignment_results_request()), this, SLOT(select_alignment_tab()));
+  connect(aligner_, SIGNAL(switch_to_alignment_results_request()), aligner_view_, SLOT(switch_to_results()));
 
   // kick-start alignment
   connect(aligner_, SIGNAL(configuration_updated()), aligner_, SLOT(execute()));
@@ -1001,6 +1009,10 @@ void AssemblyMainWindow::disconnect_objectAligner()
 
   // once completed, disable connections between controllers used for alignment
   disconnect(aligner_, SIGNAL(execution_completed()), this, SLOT(disconnect_objectAligner()));
+
+  // if aligner wants to go to results, go to results
+  disconnect(aligner_, SIGNAL(switch_to_alignment_results_request()), this, SLOT(select_alignment_tab()));
+  disconnect(aligner_, SIGNAL(switch_to_alignment_results_request()), aligner_view_, SLOT(switch_to_results()));
 
   // kick-start alignment
   disconnect(aligner_, SIGNAL(configuration_updated()), aligner_, SLOT(execute()));
@@ -1309,13 +1321,15 @@ void AssemblyMainWindow::switch_tab_and_perform_alignment(bool psp_mode)
 {
     // std::cout<<"There are "<<main_tab->count()<<" main tabs"<<std::endl; //Count main tabs
     // QTabWidget* assemblyTab = main_tab->findChild<QTabWidget*>("Module Assembly");
-    main_tab->setCurrentIndex(idx_module_tab);
+    main_tab->setCurrentIndex(idx_module_tab_);
 
     QList<QTabWidget*> widgets = main_tab->findChildren<QTabWidget*>(); //Get main tabs
     QTabWidget* assemblyTab = widgets[1]; //Get 'Module Assembly' main tab
     // std::cout<<"There are "<<assemblyTab->count()<<" sub-tabs"<<std::endl; //Count sub-tabs
 
-    assemblyTab->setCurrentIndex(idx_alignment_tab); //Switch to 'Alignment' sub-tab
+    assemblyTab->setCurrentIndex(idx_alignment_tab_); //Switch to 'Alignment' sub-tab
+
+    aligner_view_->clearResults();
 
     //Emit signal to set either PSP or PSS alignment mode
     if(psp_mode) {aligner_view_->set_alignmentMode_PSP();}
@@ -1326,9 +1340,19 @@ void AssemblyMainWindow::switch_tab_and_perform_alignment(bool psp_mode)
     return;
 }
 
+void AssemblyMainWindow::select_alignment_tab()
+{
+    main_tab->setCurrentIndex(idx_module_tab_);
+
+    QList<QTabWidget*> widgets = main_tab->findChildren<QTabWidget*>();
+    QTabWidget* assemblyTab = widgets[1];
+
+    assemblyTab->setCurrentIndex(idx_alignment_tab_);
+}
+
 void AssemblyMainWindow::select_image_tab()
 {
-    main_tab->setCurrentIndex(idx_module_tab);
+    main_tab->setCurrentIndex(idx_module_tab_);
 
     QList<QTabWidget*> widgets = main_tab->findChildren<QTabWidget*>();
     QTabWidget* assemblyTab = widgets[1];

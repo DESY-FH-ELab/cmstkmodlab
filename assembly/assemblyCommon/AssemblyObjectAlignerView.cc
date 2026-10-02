@@ -700,9 +700,9 @@ void AssemblyObjectAlignerView::transmit_configuration()
   NQLog("AssemblyObjectAlignerView", NQLog::Spam) << "transmit_configuration"
      << ": emitting signal \"configuration(AssemblyObjectAligner::Configuration)\"";
 
-  emit configuration(conf);
-
   switch_to_results();
+
+  emit configuration(conf);
 }
 
 AssemblyObjectAligner::Configuration AssemblyObjectAlignerView::get_configuration(bool& valid_conf) const

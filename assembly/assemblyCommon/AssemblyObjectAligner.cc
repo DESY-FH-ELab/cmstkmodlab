@@ -18,6 +18,7 @@
 
 #include <QMediaPlayer>
 #include <QFile>
+#include <QPushButton>
 
 #include <cmath>
 
@@ -126,8 +127,10 @@ void AssemblyObjectAligner::reset()
 
   posi_x1_ = 0.;
   posi_y1_ = 0.;
+  angle_1_ = 0.;
   posi_x2_ = 0.;
   posi_y2_ = 0.;
+  angle_2_ = 0.;
 
   obj_angle_deg_ = 0.;
 
@@ -326,6 +329,7 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
     // marker-1: position of PatRec best-match
     posi_x1_ = motion_manager_->get_position_X() + patrec_dX;
     posi_y1_ = motion_manager_->get_position_Y() + patrec_dY;
+    angle_1_ = patrec_angle;
 
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: motion-stage X = " << motion_manager_->get_position_X();
@@ -336,6 +340,7 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: x1-position = " << posi_x1_;
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: y1-position = " << posi_y1_;
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle_1 = " << angle_1_;
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
 
     // relative movement to reach the opposite marker
@@ -407,13 +412,70 @@ void AssemblyObjectAligner::run_alignment(const double patrec_dX, const double p
   {
     posi_x2_ = motion_manager_->get_position_X() + patrec_dX;
     posi_y2_ = motion_manager_->get_position_Y() + patrec_dY;
+    angle_2_ = patrec_angle;
+
+    double abs_distance = sqrt(pow((posi_x2_ - posi_x1_),2) + pow((posi_y2_ - posi_y1_),2));
+    double design_distance = sqrt(pow(this->configuration().object_deltaX, 2) + pow(this->configuration().object_deltaY, 2));
+    double angle_difference = angle_2_ - angle_1_;
 
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: position(X1) = " << posi_x1_;
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: position(Y1) = " << posi_y1_;
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(1) = " << angle_1_;
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: position(X2) = " << posi_x2_;
     NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: position(Y2) = " << posi_y2_;
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle(2) = " << angle_2_;
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]";
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: abs_distance = " << abs_distance;
+    NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: angle_difference = " << angle_difference;
+
+    if(fabs(abs_distance - design_distance) > 0.05 || fabs(angle_difference) > 0.15) {
+        int retDistance = QMessageBox::NoButton;
+        while(retDistance == QMessageBox::NoButton || retDistance == QMessageBox::Help) {
+            auto sound_issue = QString::fromStdString(Config::CMSTkModLabBasePath + "/share/assembly/issue.mp3");
+            auto mediafile = QFile(sound_issue);
+            if(mediafile.exists()) {
+                auto player = new QMediaPlayer;
+                player->setMedia(QUrl::fromLocalFile(sound_issue));
+                player->setVolume(80);
+                player->play();
+            } else {
+                NQLog("AssemblyObjectAligner", NQLog::Message) << "Sound file not found.";
+            }
+
+            QMessageBox* msgBoxDistance = new QMessageBox;
+            msgBoxDistance->setWindowTitle("Alignment - Problem");
+            msgBoxDistance->setText("The distance between the recognised markers does not match the expectations. Please validate that the blue rectangles overlay with the markers and abort the alignment if they don't.");
+            msgBoxDistance->setInformativeText("Do the blue rectangles overlay with the markers?");
+
+            auto show_image_button = msgBoxDistance->addButton(tr("Show Images"), QMessageBox::HelpRole);
+
+            msgBoxDistance->setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+
+            retDistance = msgBoxDistance->exec();
+
+            if(msgBoxDistance->clickedButton() == show_image_button) {
+                emit switch_to_alignment_results_request();
+            }
+        }
+
+        if(retDistance == QMessageBox::No) {
+            NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: User requests abort of alignment.";
+
+            this->reset();
+            this->reset_counter_numOfRotations();
+
+            emit execution_completed();
+            emit execution_failed();
+
+            return;
+        } else if(retDistance == QMessageBox::Yes) {
+            NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: User requests to continue alignment.";
+        } else {
+            NQLog("AssemblyObjectAligner", NQLog::Message) << "run_alignment: step [" << alignment_step_ << "]: Received unexpected result from user dialogue.";
+        }
+    }
 
     // measurement of object orientation
     if(posi_x2_ == posi_x1_)
@@ -607,13 +669,61 @@ void AssemblyObjectAligner::report_alignment_completed() {
         NQLog("AssemblyObjectAligner", NQLog::Message) << "Sound file not found.";
     }
 
-    QMessageBox* msgBox = new QMessageBox;
-    msgBox->setInformativeText("Alignment routine completed successfully!");
+    int retApprove = QMessageBox::NoButton;
+    while(retApprove == QMessageBox::NoButton || retApprove == QMessageBox::Help) {
+        QMessageBox* msgBoxApprove = new QMessageBox;
+        msgBoxApprove->setWindowTitle("Alignment - Approval");
+        msgBoxApprove->setText("Please validate that the alignment routine identified the markers correctly (blue rectangles surround the markers).");
+        msgBoxApprove->setInformativeText("Do the blue rectangles overlay with the markers?");
 
-    msgBox->setStandardButtons(QMessageBox::Ok);
+        auto show_image_button = msgBoxApprove->addButton(tr("Show Images"), QMessageBox::HelpRole);
+        msgBoxApprove->setStandardButtons(QMessageBox::No | QMessageBox::Yes);
 
-    int ret = msgBox->exec();
+        retApprove = msgBoxApprove->exec();
 
-    emit execution_completed();
-    emit execution_successful();
+        if(msgBoxApprove->clickedButton() == show_image_button) {
+            emit switch_to_alignment_results_request();
+        }
+    }
+
+    switch(retApprove) {
+        case QMessageBox::Yes:
+            {
+                QMessageBox* msgBoxYes = new QMessageBox;
+                msgBoxYes->setWindowTitle("Alignment - Success");
+                msgBoxYes->setInformativeText("Alignment routine completed successfully!");
+
+                msgBoxYes->setStandardButtons(QMessageBox::Ok);
+
+                int retYes = msgBoxYes->exec();
+
+                emit execution_completed();
+                emit execution_successful();
+
+                break;
+            }
+        case QMessageBox::No:
+            {
+                QMessageBox* msgBoxNo = new QMessageBox;
+                msgBoxNo->setWindowTitle("Alignment - Repeat Alignment");
+                msgBoxNo->setText("Please change the light conditions and repeat the alignment.");
+                msgBoxNo->setInformativeText("Consult an expert if the issue persists.");
+
+                msgBoxNo->setStandardButtons(QMessageBox::Ok);
+
+                int retNo = msgBoxNo->exec();
+
+                emit execution_completed();
+                emit execution_failed();
+
+            break;
+            }
+        default:
+            {
+            emit execution_completed();
+            emit execution_failed();
+
+            break;
+            }
+    }
 }

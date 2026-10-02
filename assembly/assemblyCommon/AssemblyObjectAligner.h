@@ -80,8 +80,8 @@ class AssemblyObjectAligner : public QObject
     int alignment_step_;
     int counter_numOfRotations_; //Count the number of rotations executed during the alignment routine
 
-    double posi_x1_, posi_y1_;
-    double posi_x2_, posi_y2_;
+    double posi_x1_, posi_y1_, angle_1_;
+    double posi_x2_, posi_y2_, angle_2_;
 
     double obj_angle_deg_;
 
@@ -127,8 +127,10 @@ class AssemblyObjectAligner : public QObject
     void execution_completed();
 
     void execution_failed();
-    
+
     void execution_successful();
+
+    void switch_to_alignment_results_request();
 
     void DBLogMessage(const QString);
 };

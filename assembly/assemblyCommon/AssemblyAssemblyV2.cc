@@ -2706,6 +2706,8 @@ void AssemblyAssemblyV2::PerformAlignmentPSS()
 // ----------------------------------------------------------------------------------------------------
 void AssemblyAssemblyV2::AbortAlignment()
 {
+    NQLog("AssemblyAssemblyV2", NQLog::Spam) << "AbortAlignment"
+        << ": Alignment is aborted. Emitting signal \"perform_alignment_aborted\"";
     set_in_action(false);
     emit perform_alignment_aborted();
 }
