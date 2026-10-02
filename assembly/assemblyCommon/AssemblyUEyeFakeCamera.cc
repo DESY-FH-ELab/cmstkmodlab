@@ -31,11 +31,23 @@ AssemblyUEyeFakeCamera::AssemblyUEyeFakeCamera(QObject* parent) :
     imageFilenamesForPixelClock_[5] = filenames;
 
     filenames.clear();
-    filenames.push_back(QString(filename + "/share/assembly/oldSpareSensor_master.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/markedglass_marker1_master.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/markedglass_marker2_master.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/SiDummyPSp_master_200218.png").toStdString());
-    filenames.push_back(QString(filename + "/share/assembly/SiDummyPSp_master_200120.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/PSP_alignment_0.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/PSP_alignment_1.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/PSP_alignment_2.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/PSP_alignment_3.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/PSP_alignment_4.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/PSS_alignment_0.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/PSS_alignment_1.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/PSS_alignment_2.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/PSS_alignment_3.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/PSS_alignment_4.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/PSP_alignment_issue_0.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/PSP_alignment_issue_1.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/PSP_alignment_issue_2.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/PSP_alignment_issue_3.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/PSP_alignment_issue_4.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/PSP_alignment_issue_5.png").toStdString());
+    filenames.push_back(QString(filename + "/share/assembly/PSP_alignment_issue_6.png").toStdString());
     imageFilenamesForPixelClock_[24] = filenames;
 
     filenames.clear();
