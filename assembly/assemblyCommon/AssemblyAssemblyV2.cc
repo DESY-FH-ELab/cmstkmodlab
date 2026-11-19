@@ -29,6 +29,8 @@
 #include <QMediaPlayer>
 #include <QFile>
 
+#include "utils/MaPSAConverter.h"
+
 AssemblyAssemblyV2::AssemblyAssemblyV2(const LStepExpressMotionManager* const motion, const RelayCardManager* const vacuum, const AssemblySmartMotionManager* const smart_motion, QObject* parent)
  : QObject(parent)
 
@@ -181,24 +183,47 @@ void AssemblyAssemblyV2::use_smartMove(const int state)
 
 void AssemblyAssemblyV2::ScanMaPSAID_start()
 {
-    bool ok = false;
-    QString MaPSA_ID = QInputDialog::getText(nullptr, tr("Scan MaPSA ID"),
+  NQLog("AssemblyAssemblyV2", NQLog::Message) << "Scan MaPSA ID" ;
+  bool ok = false;
+    QString raw_MaPSA_ID = QInputDialog::getText(nullptr, tr("Scan MaPSA ID"),
                                          tr("Scan MaPSA ID:"), QLineEdit::Normal,
                                          tr(""), &ok);
+    QString MaPSA_ID = utils::convert_MaPSA_ID(raw_MaPSA_ID);
     if (!ok || MaPSA_ID.isEmpty()){
         emit ScanMaPSAID_aborted();
         return;
-    } else {
-        if(!database_->is_component_available(MaPSA_ID, "MaPSA"))
-        {
-            emit ScanMaPSAID_aborted();
-            return;
+    }else{
+      QStringList options;
+      if (MaPSA_ID == raw_MaPSA_ID){
+        //If the name is already formatted, use only it for the DB check
+        options << MaPSA_ID;
+      }else{
+        //Otherwise prepare two names for different vendors
+        options << QString("QPT_%1").arg(MaPSA_ID);
+        options << QString("HPK_%1").arg(MaPSA_ID);
+      }
+      for (const QString &option : options) {
+        NQLog("AssemblyAssemblyV2", NQLog::Message) << "Checking if " << option << "exists in the DB.";
+        if (database_->is_component_available(option, "MaPSA")) {
+            MaPSA_ID_ = option;
+            emit MaPSA_ID_updated(option);
+            emit ScanMaPSAID_finished();
+          return;
         }
-        MaPSA_ID_ = MaPSA_ID;
-        emit MaPSA_ID_updated(MaPSA_ID);
-        emit ScanMaPSAID_finished();
+      }
+      //If none of the options worked, then the name is not correct
+      QMessageBox msgBox;
+      msgBox.setWindowTitle(tr("Warning - MaPSA ID"));
+      if(MaPSA_ID==raw_MaPSA_ID){
+        msgBox.setText(QString("MapPSA ID option: %1 is not found at the database. Please contact the experts or register MaPSA manually by yourself.").arg(options[0]));
+      }else{
+        msgBox.setText(QString("MapPSA ID options: %1 or %2 are not found at the database. Please contact the experts or register MaPSA manually by yourself.").arg(options[0]).arg(options[1]));
+      }
+      msgBox.setStandardButtons(QMessageBox::Ok);
+      msgBox.exec();
+      emit ScanMaPSAID_aborted();
     }
-}
+    }
 
 void AssemblyAssemblyV2::ScanPSSID_start()
 {

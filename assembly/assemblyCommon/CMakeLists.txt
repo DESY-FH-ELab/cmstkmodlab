@@ -67,6 +67,7 @@ add_library(AssemblyCommon SHARED
         AssemblyDBLoggerView.cc
         AssemblyStopwatchWidget.cc
         VDatabase.cc
+        utils/MaPSAConverter.cpp
         DatabaseDESY.cc
         DatabaseBrown.cc
         DatabaseDummy.cc
