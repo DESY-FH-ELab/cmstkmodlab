@@ -538,7 +538,7 @@ bool DatabaseDESY::is_component_available(QString part_name, QString structure_n
         auto n_parts = reply_data_check_component.value("count").toInt();
         if(n_parts != 1)
         {
-            error_message(QString("Component of structure %1 could not be found in DB: %2. Details: Number of parts with this name registered in DB: %3.").arg(structure_name).arg(part_name).arg(n_parts));
+                NQLog("DatabaseDESY", NQLog::Fatal) << QString("Component of structure %1 could not be found in DB: %2. Details: Number of parts with this name registered in DB: %3.").arg(structure_name).arg(part_name).arg(n_parts);
             return false;
         }
 
